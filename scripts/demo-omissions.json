@@ -1,0 +1,70 @@
+{
+  "button": {
+    "scope": "微信开放能力，依赖 open-type=getAuthorize，H5/App 无效，有意省略",
+    "openType": "微信开放能力，需配 open-type 场景，H5/App 无效，有意省略",
+    "formType": "需配 <form> 场景，演示页未覆盖，有意省略",
+    "appParameter": "open-type=launchApp 参数，H5/App 无效，有意省略",
+    "lang": "返回用户信息语言，仅微信小程序，有意省略",
+    "sessionFrom": "open-type=contact 会话来源，仅微信小程序，有意省略",
+    "sendMessageTitle": "open-type=contact 消息卡片标题，仅微信小程序，有意省略",
+    "sendMessagePath": "open-type=contact 消息卡片跳转路径，仅微信小程序，有意省略",
+    "sendMessageImg": "open-type=contact 消息卡片图片，仅微信小程序，有意省略",
+    "showMessageCard": "open-type=contact 是否显示消息卡片，仅微信小程序，有意省略",
+    "hoverClass": "按压样式类，App 端已被内联 pressing 取代，仅 H5/小程序生效，实际用途有限，有意省略",
+    "hoverStartTime": "按住后点击态生效时间，App 端按下内联 pressing 驱动，有意省略",
+    "hoverStayTime": "松开后点击态保留时间，App 端内联 pressing 驱动，有意省略",
+    "dataName": "小程序 dataset 透传，通过 target.dataset 获取，H5/App 无效，有意省略",
+    "hoverStopPropagation": "阻止祖先节点点击态，仅微信小程序，有意省略"
+  },
+  "card": {
+    "titleColor": "标题颜色，默认主色即风格统一，演示页缺省，有意省略",
+    "titleSize": "标题字号，默认 15px 即演示外观，有意省略",
+    "subTitleColor": "副标题颜色，默认 tips 色，演示页缺省，有意省略",
+    "subTitleSize": "副标题字号，默认 13px 即演示外观，有意省略",
+    "index": "标识点击第几个卡片，演示页未用多卡片场景，有意省略",
+    "margin": "卡片与两侧/上下间距，默认值即可，有意省略",
+    "headStyle": "头部内联样式，已用 head 插槽自定义替代，有意省略",
+    "bodyStyle": "主体内联样式，已用默认插槽自定义替代，有意省略",
+    "footStyle": "底部内联样式，已用 foot 插槽自定义替代，有意省略",
+    "headBorderBottom": "头部下边框，默认开启即演示外观，有意省略",
+    "footBorderTop": "底部上边框，插槽卡片默认展示，有意省略",
+    "showHead": "是否显示头部，演示页均展示头部，有意省略",
+    "showFoot": "是否显示底部，演示页均展示底部，有意省略",
+    "thumbWidth": "缩略图宽高，默认 30px 即演示外观，有意省略",
+    "padding": "头/体/底内边距，默认 15px 统一，有意省略"
+  },
+  "image": {
+    "showMenuByLongpress": "长按显示识别小程序码菜单，仅微信小程序生效，H5/App 无效，有意省略",
+    "webp": "webp 仅对微信小程序网络资源有效，H5/App 忽略，有意省略"
+  },
+  "icon": {
+    "type": "image 演示页内嵌 ux-icon 作 error 插槽占位，主题取色非本页重点，有意省略",
+    "bold": "粗体系列仅字体图标使用，image 演示缺省，有意省略",
+    "customPrefix": "自定义图标前缀，image 演示缺省，有意省略",
+    "imgMode": "图片图标的裁剪模式，image 演示缺省，有意省略",
+    "width": "图标宽度，image 演示按 size 缩放，有意省略",
+    "height": "图标高度，image 演示按 size 缩放，有意省略",
+    "top": "图标垂直偏移，image 演示缺省，有意省略"
+  },
+  "text": {
+    "show": "文本显隐控制，演示页无切换场景，有意省略",
+    "sendMessagePath": "open-type=contact 消息卡片跳转路径，仅微信小程序，有意省略",
+    "sendMessageImg": "open-type=contact 消息卡片图片，仅微信小程序，有意省略",
+    "showMessageCard": "open-type=contact 是否显示消息卡片，仅微信小程序，有意省略",
+    "appParameter": "open-type=launchApp 参数，H5/App 无效，有意省略",
+    "formType": "需配 <form> 场景，演示页未覆盖，有意省略"
+  },
+  "input": {
+    "cursorColor": "原生光标颜色透传，演示页未覆盖，有意省略",
+    "cursorSpacing": "光标与键盘间距，平台原生行为，演示页未覆盖，有意省略",
+    "selectionStart": "光标起始位置，需与 selection-end 搭配自动聚焦，演示页未覆盖，有意省略",
+    "selectionEnd": "光标结束位置，需与 selection-start 搭配自动聚焦，演示页未覆盖，有意省略",
+    "confirmType": "键盘右下角按钮文字，仅 type=text 生效，演示页未覆盖，有意省略",
+    "fixed": "textarea 处于 position:fixed 区域才需要，演示页未覆盖，有意省略",
+    "showConfirmbar": "键盘上方完成按钮栏，平台原生行为，有意省略",
+    "adjustPosition": "弹出键盘自动调节高度，平台原生行为，有意省略",
+    "confirmHold": "点击完成保持键盘不收起，平台原生行为，有意省略",
+    "placeholderStyle": "placeholder 内联样式，演示页未覆盖，有意省略",
+    "selectOpen": "type=select 右侧图标旋转状态，select 演示未覆盖，有意省略"
+  }
+}

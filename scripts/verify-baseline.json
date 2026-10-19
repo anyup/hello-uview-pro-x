@@ -1,0 +1,15 @@
+{
+  "_说明": "verify-script-order.mjs 的存量豁免基线。键=组件目录名（去 .uvue），值=该组件已知违规的检测原文数组（必须与脚本输出字面完全一致）。命中则豁免≡；基线未覆盖的新违规仍报错。ux-button / ux-navbar 为合规模板，不在基线（全从严）。存量组件整改一条、清零一条：运行全库扫描 → 将仍报的原文粘贴进对应组件数组 → 提交基线。",
+  "_示例": {
+    "ux-xxx": [
+      "模板 class 硬编码 BEM 裸类 'ux-xxx__foo'：组件自身类必须用 bem.b/e/m/em/is 生成（xxx）",
+      "px 手拼违规（应改 `$u.addUnit(...)`，仅纯字面量可直接写）：xxx"
+    ]
+  },
+  "ux-collapse-item": [
+    "script 硬编码 BEM 裸类 'ux-collapse-item--hover'：类名一律用 bem.b/e/m/em/is 生成后存入变量/返回值，不得手写字符串字面量"
+  ],
+  "ux-grid-item": [
+    "script 硬编码 BEM 裸类 'ux-grid-item--hover'：类名一律用 bem.b/e/m/em/is 生成后存入变量/返回值，不得手写字符串字面量"
+  ]
+}

@@ -27,3 +27,5 @@ node_modules
 *.sln
 *.sw?
 .npmrc
+
+.agents/
