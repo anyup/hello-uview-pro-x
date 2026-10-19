@@ -1,0 +1,111 @@
+name: deploy-h5-edgeone
+
+# 触发：手动（workflow_dispatch，可指定组件库 ref）+ push 到 master
+on:
+  workflow_dispatch:
+    inputs:
+      uvpx_ref:
+        description: 'uview-pro-x 组件库的分支或标签（默认 master）'
+        required: false
+        default: master
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    # HBuilderX CLI 官方仅验证 Ubuntu 20.04；但 GitHub 已完成废弃 20.04 导致 runner 排队极慢。
+    # 折中采用 22.04（GitHub 维护中，且已有用户实测可跑 HBuilderX 编译）。勿用 ubuntu-latest(24.04) 以免兼容风险。
+    runs-on: ubuntu-22.04
+
+    env:
+      # HBuilderX Linux 正式版（官方源）。升级 HBuilderX 时改这里。
+      HX_TARBALL_URL: https://download1.dcloud.net.cn/download/HBuilderX.5.24.2026081301.linux_x64.full.tar.gz
+      # EdgeOne Pages 产物目录（checkout 后仓库根即项目根，cli publish web 输出到 unpackage/dist/build/web）
+      BUILD_DIR: unpackage/dist/build/web
+      # EdgeOne Pages 项目名
+      EO_PROJECT: h5-uview-pro-x
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 1) 拉取组件库：本仓库只有宿主工程与示例页，ux-* 组件源码在私有库 anyup/uview-pro-x。
+      #    私有库按“纯库仓库”组织（根目录即组件库包：package.json + components/ + index.uts…），
+      #    因此可直接检出到 uni_modules/uview-pro-x，无需二次搬运子目录。
+      #    跨仓库访问私有库不能用本仓库的 GITHUB_TOKEN（令牌只对当前仓库有效），
+      #    需 secrets.UVIEW_PRO_X_TOKEN（对 anyup/uview-pro-x 有 Contents 读权限）。
+      - name: Checkout uview-pro-x library
+        uses: actions/checkout@v4
+        with:
+          repository: anyup/uview-pro-x
+          ref: ${{ github.event.inputs.uvpx_ref || 'master' }}
+          token: ${{ secrets.UVIEW_PRO_X_TOKEN }}
+          path: uni_modules/uview-pro-x
+          # 不在检出目录里留下凭据（无后续 git 操作，避免 Token 残留）
+          persist-credentials: false
+
+      # 2) 剥掉组件库仓库自带的脚手架（.git/.github 等），只留组件库包本体，避免污染编译与 H5 产物
+      - name: Strip library scaffolding
+        run: |
+          rm -rf uni_modules/uview-pro-x/.git uni_modules/uview-pro-x/.github uni_modules/uview-pro-x/.agents \
+                 uni_modules/uview-pro-x/scripts uni_modules/uview-pro-x/unpackage uni_modules/uview-pro-x/node_modules
+          # 防御验证：组件库必需文件缺失则显式失败
+          test -f uni_modules/uview-pro-x/package.json
+          test -f uni_modules/uview-pro-x/index.uts
+
+      # 3) 缓存 HBuilderX 原始包（tar.gz，稳定不变对象）。不缓存解压目录——避免 cli open/publish 写入运行态
+      #    导致缓存文件变动、Post 阶段上传失败。命中则跳过重新下载 1.7GB。
+      - name: Cache HBuilderX tarball
+        id: cache-hx
+        uses: actions/cache@v4
+        with:
+          path: hbx.tar.gz
+          key: hbuilderx-5.24
+
+      # 4) 安装 HBuilderX Linux CLI（hit 时使用缓存的 tar.gz 直接解压，不再 curl）
+      - name: Install HBuilderX Linux CLI
+        run: |
+          if [ ! -f hbx.tar.gz ]; then
+            curl -fL -o hbx.tar.gz "$HX_TARBALL_URL"
+          fi
+          tar -zxf hbx.tar.gz
+          test -f HBuilderX/cli
+
+      # 5) 启动 CLI 进程（publish 前置）
+      - name: Start HBuilderX CLI
+        run: |
+          ./HBuilderX/cli open
+          sleep 10
+
+      # 6) DCloud 账号登录（uni-app x 的 Linux CLI 编译必需；凭据来自 GitHub Secrets）
+      - name: Login to HBuilderX (DCloud)
+        run: |
+          test -n "$DCLOUD_USER" -a -n "$DCLOUD_PASS" || { echo 'Secrets DCLOUD_USERNAME/DCLOUD_PASSWORD missing'; exit 1; }
+          ./HBuilderX/cli user login --username "$DCLOUD_USER" --password "$DCLOUD_PASS"
+        env:
+          DCLOUD_USER: ${{ secrets.DCLOUD_USERNAME }}
+          DCLOUD_PASS: ${{ secrets.DCLOUD_PASSWORD }}
+
+      # 7) 编译 uni-app x H5（Linux CLI 需登录；产物输出到 dist/build/web）
+      # 必须先 project open 导入，HBuilderX CLI 才能识别该目录为工程并 publish 编译
+      - name: Build uni-app x H5
+        run: |
+          ./HBuilderX/cli project open --path "$GITHUB_WORKSPACE"
+          ./HBuilderX/cli publish web --project "$GITHUB_WORKSPACE" --sourceMap false
+          # 防御验证：产物必须存在，否则显式失败
+          test -d "unpackage/dist/build/web" || { echo "Build output missing"; exit 1; }
+
+      # 8) 安装 EdgeOne CLI（全新 npm 环境，干净）
+      - name: Install EdgeOne CLI
+        run: npm install --global edgeone
+
+      # 9) 部署产物目录到 EdgeOne Pages（CI Token 免交互鉴权）
+      - name: Deploy to EdgeOne Pages
+        run: edgeone pages deploy "$BUILD_DIR" -n "$EO_PROJECT" -t "$EDGEONE_API_TOKEN"
+        env:
+          EDGEONE_API_TOKEN: ${{ secrets.EDGEONE_API_TOKEN }}
