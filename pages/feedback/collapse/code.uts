@@ -1,0 +1,225 @@
+/**
+ * collapse 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法（非手风琴模式） */
+const basic = `
+<template>
+    <ux-collapse :accordion="false">
+        <ux-collapse-item title="标题一">
+            <text class="body">内容一：非手风琴模式下可同时展开多个面板</text>
+        </ux-collapse-item>
+        <ux-collapse-item title="标题二">
+            <text class="body">内容二：点击标题切换展开/收起</text>
+        </ux-collapse-item>
+        <ux-collapse-item title="标题三">
+            <text class="body">内容三：互不影响，可全部展开</text>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<style scoped>
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+/** 手风琴模式 */
+const accordion = `
+<template>
+    <ux-collapse accordion>
+        <ux-collapse-item title="标题一">
+            <text class="body">内容一：手风琴模式同时只能展开一个</text>
+        </ux-collapse-item>
+        <ux-collapse-item title="标题二">
+            <text class="body">内容二：手风琴模式同时只能展开一个</text>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<style scoped>
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+/** 初始展开 */
+const initial = `
+<template>
+    <ux-collapse>
+        <ux-collapse-item title="标题一" open>
+            <text class="body">内容一：默认展开状态</text>
+        </ux-collapse-item>
+        <ux-collapse-item title="标题二">
+            <text class="body">内容二：默认收起状态</text>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<style scoped>
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+/** 自定义标题 */
+const custom = `
+<template>
+    <ux-collapse>
+        <ux-collapse-item>
+            <template #title>
+                <view class="head">
+                    <ux-icon name="star" size="15" color="#fa3534" />
+                    <text class="head-text">自定义标题</text>
+                </view>
+            </template>
+            <text class="body">通过 title 插槽自定义标题内容</text>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<style scoped>
+.head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.head-text {
+    font-size: 15px;
+    color: #303133;
+    margin-left: 4px;
+}
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+/** 禁用状态 */
+const disabled = `
+<template>
+    <ux-collapse>
+        <ux-collapse-item title="禁用面板" disabled>
+            <text class="body">禁用状态下无法展开</text>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<style scoped>
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+/** 自定义样式 */
+const customStyle = `
+<template>
+    <ux-collapse
+        arrow-color="#2979ff"
+        :body-style="customBodyStyle"
+        :head-style="customHeadStyle"
+        :item-style="customItemStyle"
+    >
+        <ux-collapse-item title="自定义边框与圆角">
+            <text class="body">itemStyle 为每个面板添加了边框、圆角与外边距</text>
+        </ux-collapse-item>
+        <ux-collapse-item title="自定义头部与内容样式">
+            <text class="body">headStyle 设置了头部背景色，bodyStyle 设置了内容内边距</text>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<script setup lang="uts">
+const customItemStyle: UTSJSONObject = {
+    'border-width': '1px',
+    'border-style': 'solid',
+    'border-color': '#ebeef5',
+    'border-radius': '8px',
+    'margin-top': '12px',
+    'overflow': 'hidden'
+};
+const customHeadStyle: UTSJSONObject = {
+    'background-color': '#f8f9fb',
+    'padding-left': '12px',
+    'padding-right': '12px'
+};
+const customBodyStyle: UTSJSONObject = {
+    'padding-left': '12px',
+    'padding-right': '12px'
+};
+</script>
+
+<style scoped>
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+/** 嵌套折叠 */
+const nested = `
+<template>
+    <ux-collapse>
+        <ux-collapse-item title="外层面板（默认展开）" open>
+            <text class="body">外层内容：下方嵌套了一组内层折叠面板</text>
+            <ux-collapse :item-style="nestedItemStyle">
+                <ux-collapse-item title="内层面板一">
+                    <text class="body">内层内容一：点击内层标题可独立展开，不影响外层状态</text>
+                </ux-collapse-item>
+                <ux-collapse-item title="内层面板二（默认展开）" open>
+                    <text class="body">内层内容二：外层容器高度会随内层展开/收起自动变化</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </ux-collapse-item>
+    </ux-collapse>
+</template>
+
+<script setup lang="uts">
+const nestedItemStyle: UTSJSONObject = {
+    'border-width': '1px',
+    'border-style': 'solid',
+    'border-color': '#ebeef5',
+    'border-radius': '6px',
+    'margin-top': '8px',
+    'padding-left': '12px',
+    'padding-right': '12px',
+    'background-color': '#fafafa',
+    'overflow': 'hidden'
+};
+</script>
+
+<style scoped>
+.body {
+    font-size: 14px;
+    color: #909399;
+    line-height: 1.6;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    accordion,
+    initial,
+    custom,
+    disabled,
+    customStyle,
+    nested
+};

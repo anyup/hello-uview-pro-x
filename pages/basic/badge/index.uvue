@@ -1,0 +1,307 @@
+﻿﻿<template>
+    <demo-page :title="t('badge.title')" :subtitle="t('badge.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('badge.basicTitle')" :code="codes.basic">
+            <view class="badge-row">
+                <ux-badge :count="5" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.message') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="99" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.message') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="200" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.message') }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 预设类型 -->
+        <demo-block :title="t('badge.typeTitle')" :code="codes.type">
+            <view class="badge-row">
+                <ux-badge
+                    v-for="(item, index) in typeList"
+                    :key="index"
+                    :type="item.type"
+                    :count="8"
+                    :offset="badgeOffset"
+                    custom-class="badge-gap"
+                >
+                    <view class="badge-box"><text class="badge-box-text">{{ item.label }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 圆点模式 -->
+        <demo-block :title="t('badge.dotTitle')" :code="codes.dot">
+            <view class="badge-row">
+                <ux-badge :is-dot="true" is-center custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.message') }}</text></view>
+                </ux-badge>
+                <ux-badge :is-dot="true" type="primary" is-center custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.notice') }}</text></view>
+                </ux-badge>
+                <ux-badge :is-dot="true" type="warning" is-center custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.remind') }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 迷你尺寸 -->
+        <demo-block :title="t('badge.miniTitle')" :code="codes.mini">
+            <view class="badge-row">
+                <ux-badge :count="5" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.defaultText') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="5" size="mini" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.mini') }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 封顶值 -->
+        <demo-block :title="t('badge.overflowTitle')" :code="codes.overflow">
+            <view class="badge-row">
+                <ux-badge :count="100" :overflow-count="99" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">99+</text></view>
+                </ux-badge>
+                <ux-badge :count="10" :overflow-count="9" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">9+</text></view>
+                </ux-badge>
+                <ux-badge :count="1000" :overflow-count="999" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">999+</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 显示0 -->
+        <demo-block :title="t('badge.showZeroTitle')" :code="codes.showZero">
+            <view class="badge-row">
+                <ux-badge :count="0" :show-zero="false" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.hideZero') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="0" :show-zero="true" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.showZero') }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('badge.customColorTitle')" :code="codes.customColor">
+            <view class="badge-row">
+                <ux-badge :count="8" bg-color="#7232dd" color="#fff" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.custom') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="16" bg-color="#19be6b" color="#fff" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.custom') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="3" bg-color="#ff9900" color="#fff" font-size="16" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.custom') }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 位置偏移 -->
+        <demo-block :title="t('badge.offsetTitle')" :code="codes.offset">
+            <view class="badge-row">
+                <view class="badge-demo">
+                    <ux-badge :count="5" :offset="[0, 0]">
+                        <view class="badge-box"><text class="badge-box-text">{{ t('badge.origin') }}</text></view>
+                    </ux-badge>
+                    <text class="badge-demo-label">[0, 0]</text>
+                </view>
+                <view class="badge-demo">
+                    <ux-badge :count="5" :offset="[-5, -5]">
+                        <view class="badge-box"><text class="badge-box-text">{{ t('badge.offsetOut') }}</text></view>
+                    </ux-badge>
+                    <text class="badge-demo-label">[-10, -10]</text>
+                </view>
+                <view class="badge-demo">
+                    <ux-badge :count="5" :offset="[8, 15]">
+                        <view class="badge-box"><text class="badge-box-text">{{ t('badge.offsetIn') }}</text></view>
+                    </ux-badge>
+                    <text class="badge-demo-label">[8, 15]</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 中心点重合 -->
+        <demo-block :title="t('badge.centerTitle')" :code="codes.center">
+            <view class="badge-row">
+                <ux-badge :count="5" :offset="badgeOffset" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.normal') }}</text></view>
+                </ux-badge>
+                <ux-badge :count="5" :is-center="true" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.center') }}</text></view>
+                </ux-badge>
+                <ux-badge :is-dot="true" :is-center="true" type="primary" custom-class="badge-gap">
+                    <view class="badge-box"><text class="badge-box-text">{{ t('badge.dot') }}</text></view>
+                </ux-badge>
+            </view>
+        </demo-block>
+
+        <!-- 双模式：包裹 / 单用 -->
+        <demo-block :title="t('badge.dualTitle')" :code="codes.dual">
+            <view class="dual-row">
+                <view class="dual-card">
+                    <text class="mode-title">{{ t('badge.wrapMode') }}</text>
+                    <ux-badge :count="3" :offset="[-5, -5]">
+                        <view class="badge-box"><text class="badge-box-text">{{ t('badge.message') }}</text></view>
+                    </ux-badge>
+                    <text class="mode-desc">{{ t('badge.wrapDesc') }}</text>
+                </view>
+                <view class="dual-card">
+                    <text class="mode-title">{{ t('badge.singleMode') }}</text>
+                    <view class="badge-host">
+                        <view class="badge-box"><text class="badge-box-text">{{ t('badge.message') }}</text></view>
+                        <ux-badge :count="3" :offset="[-5, -5]"></ux-badge>
+                    </view>
+                    <text class="mode-desc">{{ t('badge.singleDesc') }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 非绝对定位 -->
+        <demo-block :title="t('badge.absoluteTitle')" :code="codes.absolute">
+            <view class="badge-inline-row">
+                <text>{{ t('badge.unread') }}</text>
+                <ux-badge :count="12" :absolute="false" custom-class="badge-inline"></ux-badge>
+            </view>
+            <view class="badge-inline-row">
+                <text>{{ t('badge.newNotice') }}</text>
+                <ux-badge :is-dot="true" :absolute="false" type="success" custom-class="badge-inline"></ux-badge>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+
+    type TypeItem = {
+        type: string;
+        label: string;
+    };
+
+    /** 角标偏移量 [top, right]，负值使角标略微外凸（包裹模式下相对内容右上角） */
+    const badgeOffset = [-10, -10];
+
+    const typeList: TypeItem[] = [
+        { type: 'error', label: 'error' },
+        { type: 'primary', label: 'primary' },
+        { type: 'success', label: 'success' },
+        { type: 'warning', label: 'warning' },
+        { type: 'info', label: 'info' },
+    ];
+</script>
+
+<style lang="scss">
+    .badge-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /* 角标凸出依托的行容器需放行（App/小程序 view 默认 overflow:hidden），一行覆盖所有凸出角标 */
+        overflow: visible;
+        margin-top: 10px;
+    }
+
+    /* 包裹模式下 customClass 挂在自带锚点层上，可安全追加间距；锁定不压缩，保证内部 box 尺寸一致 */
+    .badge-gap {
+        margin-right: 20px;
+        margin-bottom: 15px;
+        flex-shrink: 0;
+    }
+
+    .badge-box {
+        /* 宽度随文案自适应：min-width 保底 60px 方形观感，超宽文案（如英文多字）由内容撑宽，不再凸出盒外 */
+        min-width: 60px;
+        height: 60px;
+        padding: 0 10px;
+        box-sizing: border-box;
+        background-color: $u-bg-color;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* 防止被 flex 压缩导致各块 box 大小不一 */
+        flex-shrink: 0;
+    }
+
+    .badge-box-text {
+        font-size: 13px;
+        color: $u-content-color;
+        white-space: nowrap;
+    }
+
+    /* 位置偏移：每组 = 角标演示 + 下方数值标注 */
+    .badge-demo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: 25px;
+        margin-bottom: 15px;
+        flex-shrink: 0;
+        /* 单组直接容器也放行，承接角标凸出 */
+        overflow: visible;
+    }
+
+    .badge-demo-label {
+        font-size: 11px;
+        color: $u-tips-color;
+        margin-top: 10px;
+    }
+
+    .badge-inline-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    /* 单用（非包裹）角标的分隔间距 */
+    .badge-inline {
+        margin-left: 8px;
+    }
+
+    /** 双模式：包裹 / 单用 演示块 */
+    .dual-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /* 承接角标凸出，放行溢出 */
+        overflow: visible;
+    }
+
+    .dual-card {
+        display: flex;
+        flex-direction: column;
+        /* 禁止交叉轴（宽度）拉伸：否则定位锚点被拉宽到整卡宽，角标 right 偏移相对整卡，远离方框右上角 */
+        align-items: flex-start;
+        margin-right: 25px;
+        margin-bottom: 15px;
+        flex-shrink: 0;
+        overflow: visible;
+    }
+
+    .mode-title {
+        font-size: 12px;
+        color: $u-main-color;
+        margin-bottom: 8px;
+    }
+
+    .mode-desc {
+        font-size: 11px;
+        color: $u-tips-color;
+        margin-top: 8px;
+        max-width: 100px;
+    }
+
+    /* 单用模式：宿主需自行提供定位锚点 */
+    .badge-host {
+        position: relative;
+        overflow: visible;
+    }
+</style>

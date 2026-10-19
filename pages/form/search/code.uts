@@ -1,0 +1,90 @@
+/**
+ * search 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-search v-model="value" @search="onSearch" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+
+const onSearch = (val: string) => {
+    uni.showToast({ title: '搜索: ' + val, icon: 'none' });
+};
+</script>
+`;
+
+/** 搜索框形状 */
+const shape = `
+<template>
+    <!-- 两档形状全演示：square 小圆角（4px，不传即此档） / round 胶囊 -->
+    <ux-search v-model="squareValue" shape="square" />
+    <ux-search v-model="roundValue" shape="round" />
+</template>
+
+<script setup lang="uts">
+const squareValue = ref<string>('');
+const roundValue = ref<string>('');
+</script>
+`;
+
+/** 清除控件 */
+const clearable = `
+<template>
+    <ux-search v-model="value" :clearabled="true" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('可清除内容');
+</script>
+`;
+
+/** 右侧控件 */
+const action = `
+<template>
+    <ux-search v-model="value" :show-action="true" @custom="onCustom" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+
+const onCustom = (val: string) => {
+    uni.showToast({ title: '点击了右侧按钮: ' + val, icon: 'none' });
+};
+</script>
+`;
+
+/** 动画展开 */
+const animation = `
+<template>
+    <ux-search v-model="value" :animation="true" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 输入框对齐方式 */
+const align = `
+<template>
+    <ux-search v-model="value" input-align="center" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+export const codes = {
+    basic,
+    shape,
+    clearable,
+    action,
+    animation,
+    align
+};

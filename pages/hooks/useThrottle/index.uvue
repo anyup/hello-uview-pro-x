@@ -1,0 +1,99 @@
+<script setup lang="uts">
+import { useThrottle, useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+// 解构方式使用：const { throttle } = useThrottle(delay)
+const { throttle } = useThrottle(1000);
+
+const clickCount = ref(0);
+const executeCount = ref(0);
+const lastExecuteTime = ref('');
+
+// 使用默认 1000ms 间隔（time 传 null 使用默认值）
+const handleThrottleClick = () => {
+    clickCount.value++;
+    throttle(() => {
+        executeCount.value++;
+        lastExecuteTime.value = new Date().toLocaleTimeString();
+    }, null);
+};
+
+// 使用自定义 2000ms 间隔
+const customClickCount = ref(0);
+const customExecuteCount = ref(0);
+const handleCustomThrottle = () => {
+    customClickCount.value++;
+    throttle(() => {
+        customExecuteCount.value++;
+    }, 2000);
+};
+
+// 临时指定间隔时间
+const dynamicClickCount = ref(0);
+const dynamicExecuteCount = ref(0);
+const handleDynamicThrottle = () => {
+    dynamicClickCount.value++;
+    throttle(() => {
+        dynamicExecuteCount.value++;
+    }, 3000);
+};
+</script>
+
+<template>
+    <demo-page :title="t('useThrottle.title')" :subtitle="t('useThrottle.subtitle')">
+        <!-- 默认间隔 -->
+        <demo-block :title="t('useThrottle.defaultTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('useThrottle.clickCount') }}{{ clickCount }}</text>
+                <text class="demo-desc">{{ t('useThrottle.actualExec') }}{{ executeCount }}</text>
+                <text class="demo-desc">{{ t('useThrottle.lastExec') }}{{ lastExecuteTime.length > 0 ? lastExecuteTime : '-' }}</text>
+            </view>
+            <view class="demo-btn usethrottle-btn" @click="handleThrottleClick">
+                <text>{{ t('useThrottle.defaultBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 自定义间隔 -->
+        <demo-block :title="t('useThrottle.customTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('useThrottle.clickCount') }}{{ customClickCount }}</text>
+                <text class="demo-desc">{{ t('useThrottle.actualExec') }}{{ customExecuteCount }}</text>
+            </view>
+            <view class="demo-btn usethrottle-btn" @click="handleCustomThrottle">
+                <text>{{ t('useThrottle.customBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 临时指定间隔 -->
+        <demo-block :title="t('useThrottle.dynamicTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('useThrottle.clickCount') }}{{ dynamicClickCount }}</text>
+                <text class="demo-desc">{{ t('useThrottle.actualExec') }}{{ dynamicExecuteCount }}</text>
+            </view>
+            <view class="demo-btn usethrottle-btn" @click="handleDynamicThrottle">
+                <text>{{ t('useThrottle.dynamicBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 方法说明 -->
+        <demo-block :title="t('useThrottle.usageTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">const { throttle } = useThrottle(delay)</text>
+                <text class="demo-desc">{{ t('useThrottle.usageDelay') }}</text>
+                <text class="demo-desc">{{ t('useThrottle.usageThrottle') }}</text>
+                <text class="demo-desc">{{ t('useThrottle.usageCallback') }}</text>
+                <text class="demo-desc">{{ t('useThrottle.usageTime') }}</text>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<style lang="scss">
+/* 使用全局 demo.scss 样式 */
+
+/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
+.usethrottle-btn {
+    margin-bottom: 0;
+}
+</style>

@@ -1,0 +1,290 @@
+/* ========== 头部品牌区域 ========== */
+.tab-header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 15px;
+    margin-bottom: 15px;
+    background-color: $u-bg-white;
+    border-radius: 8px;
+}
+
+.tab-lang-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: $u-type-primary-light;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 搜索入口（与语言切换按钮对称，位于头部左上角） */
+.tab-search-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: $u-type-primary-light;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-lang-btn-text {
+    font-size: 13px;
+    color: $u-type-primary;
+    font-weight: bold;
+}
+
+.tab-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.tab-brand-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: $u-main-color;
+    margin-bottom: 6px;
+}
+
+.tab-brand-desc {
+    font-size: 12px;
+    color: $u-tips-color;
+    line-height: 1.6;
+    text-align: center;
+    margin-top: 2px;
+}
+
+.tab-platforms {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.tab-platform-tag {
+    font-size: 11px;
+    color: $u-type-primary;
+    padding: 3px 9px;
+    background-color: $u-type-primary-light;
+    border-radius: 10px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+}
+
+/* ========== 主题 / 暗黑模式切换 ========== */
+.tab-theme {
+    background-color: $u-bg-white;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 14px;
+}
+
+.tab-theme-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: $u-main-color;
+    margin-bottom: 10px;
+}
+
+.tab-theme-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.tab-theme-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 16px;
+}
+
+.tab-theme-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-theme-dot.is-active {
+    border-color: $u-main-color;
+}
+
+.tab-theme-dot-check {
+    font-size: 16px;
+    color: $u-white-color;
+    font-weight: bold;
+}
+
+.tab-theme-label {
+    font-size: 10px;
+    color: $u-tips-color;
+    margin-top: 4px;
+}
+
+.tab-dark-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.tab-dark-item {
+    padding: 6px 14px;
+    border-radius: 12px;
+    background-color: $u-bg-gray-light;
+    margin-right: 8px;
+}
+
+.tab-dark-text {
+    font-size: 12px;
+    color: $u-content-color;
+}
+
+.tab-dark-text.is-active {
+    color: $u-type-primary;
+    font-weight: bold;
+}
+
+/* ========== 分类区域 ========== */
+.tab-section {
+    margin-bottom: 14px;
+}
+
+.tab-section-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 0;
+    margin-bottom: 6px;
+}
+
+.tab-section-bar {
+    width: 3px;
+    height: 16px;
+    border-radius: 2px;
+    margin-right: 7px;
+}
+
+.tab-section-name {
+    font-size: 15px;
+    font-weight: bold;
+    color: $u-main-color;
+    flex: 1;
+}
+
+.tab-section-badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.tab-section-badge-text {
+    font-size: 11px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* ========== 列表容器 ========== */
+.tab-list {
+    background-color: $u-bg-white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* ========== 列表项 ========== */
+.tab-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 12px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: $u-border-color;
+}
+
+/* ========== 图标圆圈 ========== */
+.tab-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 11px;
+}
+
+.tab-icon-text {
+    font-size: 15px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* ========== 列表项内容 ========== */
+.tab-item-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-item-name {
+    font-size: 14px;
+    color: $u-main-color;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.tab-item-desc {
+    font-size: 12px;
+    color: $u-tips-color;
+}
+
+/* ========== 右侧列信息值（关于页 label / value 行） ========== */
+.tab-info-label {
+    flex: 1;
+    font-size: 14px;
+    color: $u-main-color;
+}
+
+.tab-info-value {
+    font-size: 13px;
+    color: $u-tips-color;
+    margin-left: 10px;
+}
+
+/* ========== 右侧箭头 ========== */
+.tab-arrow {
+    font-size: 18px;
+    color: $u-light-color;
+    margin-left: 6px;
+}
+
+/* ========== 底部信息 ========== */
+.tab-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 0 15px;
+}
+
+.tab-footer-text {
+    font-size: 11px;
+    color: $u-light-color;
+}

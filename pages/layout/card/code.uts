@@ -1,0 +1,259 @@
+/**
+ * card 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-card title="卡片标题" sub-title="副标题" @click="onClick">
+        <text class="body-text">卡片内容区域，支持自定义主体插槽，头部可配置标题与副标题。</text>
+    </ux-card>
+</template>
+
+<script setup lang="uts">
+const onClick = (index: string | number) => {
+    console.log('card click:', index);
+};
+</script>
+
+<style scoped>
+.body-text {
+    font-size: 13px;
+    color: #909399;
+    line-height: 20px;
+}
+</style>
+`;
+
+/** 缩略图 */
+const thumb = `
+<template>
+    <ux-card
+        title="带缩略图"
+        sub-title="圆角头像"
+        thumb="https://ik.imagekit.io/anyup/uview-pro/common/logo-new.png"
+        :thumb-circle="true"
+    >
+        <text class="body-text">通过 thumb 属性在标题左侧显示缩略图。</text>
+    </ux-card>
+</template>
+
+<style scoped>
+.body-text {
+    font-size: 13px;
+    color: #909399;
+    line-height: 20px;
+}
+</style>
+`;
+
+/** 图文卡片：head / body / foot 插槽 */
+const slot = `
+<template>
+    <ux-card :border-radius="14" box-shadow="0 2px 12px rgba(0, 0, 0, 0.06)">
+        <template #head>
+            <view class="feed-head">
+                <text class="feed-title">设计分享圈</text>
+                <text class="feed-follow">+ 关注</text>
+            </view>
+        </template>
+        <view class="feed-author">
+            <image class="feed-avatar" src="https://picsum.photos/seed/card-avatar/72/72" mode="aspectFill" />
+            <view class="feed-meta">
+                <text class="feed-name">uView 设计</text>
+                <text class="feed-time">3分钟前</text>
+            </view>
+        </view>
+        <text class="feed-content">今晚分享一套新的配色方案，主打暖橙渐变，适合电商促销场景……</text>
+        <image class="feed-image" src="https://picsum.photos/seed/card-post/600/360" mode="widthFix" />
+        <template #foot>
+            <view class="feed-actions">
+                <text class="feed-action">点赞 128</text>
+                <text class="feed-action">评论 32</text>
+                <text class="feed-action">转发 12</text>
+            </view>
+        </template>
+    </ux-card>
+</template>
+
+<style scoped>
+.feed-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.feed-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #303133;
+}
+.feed-follow {
+    font-size: 13px;
+    color: #2979ff;
+}
+.feed-author {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.feed-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.feed-meta {
+    display: flex;
+    flex-direction: column;
+}
+.feed-name {
+    font-size: 14px;
+    color: #303133;
+    font-weight: bold;
+}
+.feed-time {
+    font-size: 12px;
+    color: #909399;
+    margin-top: 2px;
+}
+.feed-content {
+    font-size: 14px;
+    color: #606266;
+    line-height: 21px;
+    margin-bottom: 12px;
+}
+.feed-image {
+    width: 100%;
+    border-radius: 8px;
+}
+.feed-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.feed-action {
+    font-size: 13px;
+    color: #909399;
+    margin-right: 28px;
+}
+</style>
+`;
+
+/** 阴影 */
+const shadow = `
+<template>
+    <ux-card title="数据概览" box-shadow="0 6px 18px rgba(0, 0, 0, 0.08)" :border-radius="12">
+        <view class="stats">
+            <view class="stat">
+                <text class="stat-num">128</text>
+                <text class="stat-label">今日访问</text>
+            </view>
+            <view class="stat-divider" />
+            <view class="stat">
+                <text class="stat-num">3.2w</text>
+                <text class="stat-label">累计订单</text>
+            </view>
+            <view class="stat-divider" />
+            <view class="stat">
+                <text class="stat-num">209</text>
+                <text class="stat-label">会员数</text>
+            </view>
+        </view>
+    </ux-card>
+</template>
+
+<style scoped>
+.stats {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 0 2px;
+}
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+.stat-num {
+    font-size: 20px;
+    font-weight: bold;
+    color: #303133;
+}
+.stat-label {
+    font-size: 12px;
+    color: #909399;
+    margin-top: 4px;
+}
+.stat-divider {
+    width: 1px;
+    height: 30px;
+    background-color: #e4e7ed;
+}
+</style>
+`;
+
+/** 圆角 */
+const radius = `
+<template>
+    <ux-card title="自定义圆角" :border-radius="15">
+        <text class="body-text">通过 border-radius 属性调整卡片圆角，0 为直角。</text>
+    </ux-card>
+</template>
+
+<style scoped>
+.body-text {
+    font-size: 13px;
+    color: #909399;
+    line-height: 20px;
+}
+</style>
+`;
+
+/** 边框 */
+const border = `
+<template>
+    <ux-card title="显示边框" sub-title="带边框" :border="true">
+        <text class="body-text">通过 border 属性显示卡片外部边框。</text>
+    </ux-card>
+</template>
+
+<style scoped>
+.body-text {
+    font-size: 13px;
+    color: #909399;
+    line-height: 20px;
+}
+</style>
+`;
+
+/** 全屏无间距 */
+const full = `
+<template>
+    <ux-card title="全屏卡片" sub-title="无间距" :full="true" :border="true">
+        <text class="body-text">full=true 时卡片与屏幕两侧不留空隙。</text>
+    </ux-card>
+</template>
+
+<style scoped>
+.body-text {
+    font-size: 13px;
+    color: #909399;
+    line-height: 20px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    thumb,
+    slot,
+    shadow,
+    radius,
+    border,
+    full
+};

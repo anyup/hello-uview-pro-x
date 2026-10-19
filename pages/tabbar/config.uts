@@ -1,0 +1,225 @@
+/**
+ * TabBar 页面共享配置
+ * 数据驱动 3 个 TabBar 页面渲染，便于维护和扩展
+ */
+
+/** 菜单项 */
+export type MenuItem = {
+    /** 显示名称 */
+    name: string;
+    /** 中文名称（用于搜索匹配） */
+    zhName?: string;
+    /** 描述文字 */
+    desc: string;
+    /** 图标文字（取首字母，显示在彩色圆形图标中） */
+    icon: string;
+    /** 跳转路径（不含 /pages/ 前缀） */
+    path: string;
+};
+
+/** 菜单分类 */
+export type MenuCategory = {
+    /** 分类名称 */
+    name: string;
+    /** 分类图标文字 */
+    icon: string;
+    /** 子项列表 */
+    items: MenuItem[];
+};
+
+// ===================== 组件页（首页） =====================
+
+/** 基础组件 */
+const basicComponentItems: MenuItem[] = [
+    { name: 'Icon', zhName: '图标', desc: 'tabbarMenu.iconDesc', icon: 'I', path: 'basic/icon/index' },
+    { name: 'Image', zhName: '图片', desc: 'tabbarMenu.imageDesc', icon: 'I', path: 'basic/image/index' },
+    { name: 'Button', zhName: '按钮', desc: 'tabbarMenu.buttonDesc', icon: 'B', path: 'basic/button/index' },
+    { name: 'Cell', zhName: '单元格', desc: 'tabbarMenu.cellDesc', icon: 'C', path: 'basic/cell/index' },
+    { name: 'Badge', zhName: '角标', desc: 'tabbarMenu.badgeDesc', icon: 'B', path: 'basic/badge/index' },
+    { name: 'Tag', zhName: '标签', desc: 'tabbarMenu.tagDesc', icon: 'T', path: 'basic/tag/index' },
+    { name: 'Text', zhName: '文本', desc: 'tabbarMenu.textDesc', icon: 'T', path: 'basic/text/index' },
+    { name: 'Avatar', zhName: '头像', desc: 'tabbarMenu.avatarDesc', icon: 'A', path: 'basic/avatar/index' }
+];
+
+/** 表单组件 */
+const formComponentItems: MenuItem[] = [
+    { name: 'Form', zhName: '表单', desc: 'tabbarMenu.formDesc', icon: 'F', path: 'form/form/index' },
+    { name: 'Input', zhName: '输入框', desc: 'tabbarMenu.inputDesc', icon: 'I', path: 'form/input/index' },
+    { name: 'Textarea', zhName: '文本域', desc: 'tabbarMenu.textareaDesc', icon: 'T', path: 'form/textarea/index' },
+    { name: 'Select', zhName: '列选择器', desc: 'tabbarMenu.selectDesc', icon: 'S', path: 'form/select/index' },
+    { name: 'Picker', zhName: '选择器', desc: 'tabbarMenu.pickerDesc', icon: 'P', path: 'form/picker/index' },
+    { name: 'Rate', zhName: '评分', desc: 'tabbarMenu.rateDesc', icon: 'R', path: 'form/rate/index' },
+    { name: 'Search', zhName: '搜索框', desc: 'tabbarMenu.searchDesc', icon: 'S', path: 'form/search/index' },
+    { name: 'NumberBox', zhName: '步进器', desc: 'tabbarMenu.numberBoxDesc', icon: 'N', path: 'form/numberBox/index' },
+    { name: 'Keyboard', zhName: '键盘', desc: 'tabbarMenu.keyboardDesc', icon: 'K', path: 'form/keyboard/index' },
+    { name: 'Checkbox', zhName: '复选框', desc: 'tabbarMenu.checkboxDesc', icon: 'C', path: 'form/checkbox/index' },
+    { name: 'Radio', zhName: '单选框', desc: 'tabbarMenu.radioDesc', icon: 'R', path: 'form/radio/index' },
+    { name: 'Switch', zhName: '开关', desc: 'tabbarMenu.switchDesc', icon: 'S', path: 'form/switch/index' },
+    { name: 'Slider', zhName: '滑块', desc: 'tabbarMenu.sliderDesc', icon: 'S', path: 'form/slider/index' }
+];
+
+/** 数据展示 */
+const dataComponentItems: MenuItem[] = [
+    { name: 'LineProgress', zhName: '线型进度条', desc: 'tabbarMenu.lineProgressDesc', icon: 'L', path: 'data/lineProgress/index' },
+    { name: 'CircleProgress', zhName: '环形进度条', desc: 'tabbarMenu.circleProgressDesc', icon: 'C', path: 'data/circleProgress/index' },
+    { name: 'CountTo', zhName: '数字滚动', desc: 'tabbarMenu.countToDesc', icon: 'C', path: 'data/countTo/index' },
+    { name: 'CountDown', zhName: '倒计时', desc: 'tabbarMenu.countDownDesc', icon: 'C', path: 'data/countDown/index' },
+    { name: 'Swiper', zhName: '轮播图', desc: 'tabbarMenu.swiperDesc', icon: 'S', path: 'data/swiper/index' }
+];
+
+/** 反馈组件 */
+const feedbackComponentItems: MenuItem[] = [
+    { name: 'ActionSheet', zhName: '操作菜单', desc: 'tabbarMenu.actionSheetDesc', icon: 'A', path: 'feedback/actionSheet/index' },
+    { name: 'Toast', zhName: '提示框', desc: 'tabbarMenu.toastDesc', icon: 'T', path: 'feedback/toast/index' },
+    { name: 'NoticeBar', zhName: '通告栏', desc: 'tabbarMenu.noticeBarDesc', icon: 'N', path: 'feedback/noticeBar/index' },
+    { name: 'AlertTips', zhName: '警告提示', desc: 'tabbarMenu.alertTipsDesc', icon: 'A', path: 'feedback/alertTips/index' },
+    { name: 'TopTips', zhName: '顶部提示', desc: 'tabbarMenu.topTipsDesc', icon: 'T', path: 'feedback/topTips/index' },
+    { name: 'Collapse', zhName: '折叠面板', desc: 'tabbarMenu.collapseDesc', icon: 'C', path: 'feedback/collapse/index' },
+    { name: 'Popup', zhName: '弹窗', desc: 'tabbarMenu.popupDesc', icon: 'P', path: 'feedback/popup/index' },
+    { name: 'SwipeAction', zhName: '滑动单元格', desc: 'tabbarMenu.swipeActionDesc', icon: 'S', path: 'feedback/swipeAction/index' },
+    { name: 'Modal', zhName: '弹窗', desc: 'tabbarMenu.modalDesc', icon: 'M', path: 'feedback/modal/index' },
+    { name: 'Mask', zhName: '遮罩层', desc: 'tabbarMenu.maskDesc', icon: 'M', path: 'feedback/mask/index' },
+    { name: 'Overlay', zhName: '遮罩层(新)', desc: 'tabbarMenu.overlayDesc', icon: 'O', path: 'feedback/overlay/index' },
+    { name: 'Loading', zhName: '加载', desc: 'tabbarMenu.loadingDesc', icon: 'L', path: 'feedback/loading/index' },
+    { name: 'Loadmore', zhName: '加载更多', desc: 'tabbarMenu.loadmoreDesc', icon: 'L', path: 'feedback/loadmore/index' },
+    { name: 'Empty', zhName: '内容为空', desc: 'tabbarMenu.emptyDesc', icon: 'E', path: 'feedback/empty/index' },
+    { name: 'NoNetwork', zhName: '无网络', desc: 'tabbarMenu.noNetworkDesc', icon: 'N', path: 'feedback/noNetwork/index' }
+];
+
+/** 布局组件 */
+const layoutComponentItems: MenuItem[] = [
+    { name: 'Line', zhName: '线条', desc: 'tabbarMenu.lineDesc', icon: 'L', path: 'layout/line/index' },
+    { name: 'Card', zhName: '卡片', desc: 'tabbarMenu.cardDesc', icon: 'C', path: 'layout/card/index' },
+    { name: 'Grid', zhName: '宫格', desc: 'tabbarMenu.gridDesc', icon: 'G', path: 'layout/grid/index' },
+    { name: 'Divider', zhName: '分割线', desc: 'tabbarMenu.dividerDesc', icon: 'D', path: 'layout/divider/index' },
+    { name: 'Layout', zhName: '栅格布局', desc: 'tabbarMenu.layoutDesc', icon: 'L', path: 'layout/layout/index' },
+    { name: 'Section', zhName: '区块标题', desc: 'tabbarMenu.sectionDesc', icon: 'S', path: 'layout/section/index' }
+];
+
+/** 导航组件 */
+const navigationComponentItems: MenuItem[] = [
+    { name: 'TabBar', zhName: '标签栏', desc: 'tabbarMenu.tabBarDesc', icon: 'T', path: 'navigation/tabbar/index' },
+    { name: 'BackTop', zhName: '返回顶部', desc: 'tabbarMenu.backTopDesc', icon: 'B', path: 'navigation/backTop/index' },
+    { name: 'Navbar', zhName: '导航栏', desc: 'tabbarMenu.navbarDesc', icon: 'N', path: 'navigation/navbar/index' },
+    { name: 'Tabs', zhName: '标签', desc: 'tabbarMenu.tabsDesc', icon: 'T', path: 'navigation/tabs/index' },
+    { name: 'Subsection', zhName: '分段器', desc: 'tabbarMenu.subsectionDesc', icon: 'S', path: 'navigation/subsection/index' },
+    { name: 'Steps', zhName: '步骤条', desc: 'tabbarMenu.stepsDesc', icon: 'S', path: 'navigation/steps/index' },
+    { name: 'Link', zhName: '链接', desc: 'tabbarMenu.linkDesc', icon: 'L', path: 'navigation/link/index' },
+    { name: 'Pagination', zhName: '分页', desc: 'tabbarMenu.paginationDesc', icon: 'P', path: 'navigation/pagination/index' }
+];
+
+/** 其他 */
+const otherComponentItems: MenuItem[] = [
+    { name: 'Gap', zhName: '间隔槽', desc: 'tabbarMenu.gapDesc', icon: 'G', path: 'others/gap/index' },
+    { name: 'SafeBottom', zhName: '底部安全区', desc: 'tabbarMenu.safeBottomDesc', icon: 'S', path: 'others/safeBottom/index' },
+    { name: 'StatusBar', zhName: '状态栏', desc: 'tabbarMenu.statusBarDesc', icon: 'S', path: 'others/statusBar/index' },
+    { name: 'Transition', zhName: '过渡动画', desc: 'tabbarMenu.transitionDesc', icon: 'T', path: 'others/transition/index' },
+    { name: 'Skeleton', zhName: '骨架屏', desc: 'tabbarMenu.skeletonDesc', icon: 'S', path: 'others/skeleton/index' },
+    { name: 'FullScreen', zhName: '全屏引导', desc: 'tabbarMenu.fullScreenDesc', icon: 'F', path: 'others/fullScreen/index' },
+    { name: 'ConfigProvider', zhName: '配置容器', desc: 'tabbarMenu.configProviderDesc', icon: 'C', path: 'others/configProvider/index' }
+];
+
+/** 组件页分类数据 */
+export const componentCategories: MenuCategory[] = [
+    {
+        name: 'tabbarMenu.categoryBasic',
+        icon: 'C',
+        items: basicComponentItems
+    },
+    {
+        name: 'tabbarMenu.categoryForm',
+        icon: 'F',
+        items: formComponentItems
+    },
+    {
+        name: 'tabbarMenu.categoryData',
+        icon: 'D',
+        items: dataComponentItems
+    },
+    {
+        name: 'tabbarMenu.categoryFeedback',
+        icon: 'F',
+        items: feedbackComponentItems
+    },
+    {
+        name: 'tabbarMenu.categoryLayout',
+        icon: 'L',
+        items: layoutComponentItems
+    },
+    {
+        name: 'tabbarMenu.categoryNavigation',
+        icon: 'N',
+        items: navigationComponentItems
+    },
+    {
+        name: 'tabbarMenu.categoryOther',
+        icon: 'O',
+        items: otherComponentItems
+    }
+];
+
+// ===================== 工具页 =====================
+
+/** 工具函数 */
+export const toolItems: MenuItem[] = [
+    { name: 'addUnit', desc: 'tabbarMenu.addUnitDesc', icon: 'A', path: 'library/addUnit/index' },
+    { name: 'test', desc: 'tabbarMenu.testDesc', icon: 'T', path: 'library/test/index' },
+    { name: 'toStyle', desc: 'tabbarMenu.toStyleDesc', icon: 'S', path: 'library/toStyle/index' },
+    { name: 'color', desc: 'tabbarMenu.colorDesc', icon: 'C', path: 'library/color/index' },
+    { name: 'trim', desc: 'tabbarMenu.trimDesc', icon: 'R', path: 'library/trim/index' },
+    { name: 'debounce', desc: 'tabbarMenu.debounceDesc', icon: 'D', path: 'library/debounce/index' },
+    { name: 'throttle', desc: 'tabbarMenu.throttleDesc', icon: 'L', path: 'library/throttle/index' },
+    { name: 'deepClone', desc: 'tabbarMenu.deepCloneDesc', icon: 'K', path: 'library/deepClone/index' },
+    { name: 'deepMerge', desc: 'tabbarMenu.deepMergeDesc', icon: 'M', path: 'library/deepMerge/index' }
+];
+
+/** Hooks */
+export const hookItems: MenuItem[] = [
+    { name: 'useDebounce', desc: 'tabbarMenu.useDebounceDesc', icon: 'D', path: 'hooks/useDebounce/index' },
+    { name: 'useThrottle', desc: 'tabbarMenu.useThrottleDesc', icon: 'T', path: 'hooks/useThrottle/index' },
+    { name: 'useLocale', desc: 'tabbarMenu.useLocaleDesc', icon: 'I', path: 'hooks/useLocale/index' }
+];
+
+/** 工具页分类数据 */
+export const libraryCategories: MenuCategory[] = [
+    {
+        name: 'tabbarMenu.categoryTool',
+        icon: 'U',
+        items: toolItems
+    },
+    {
+        name: 'tabbarMenu.categoryHooks',
+        icon: 'H',
+        items: hookItems
+    }
+];
+
+// ===================== 关于页 =====================
+
+/** 关于页信息行（文案与值均为 i18n key，空字符串表示该位不渲染） */
+export type InfoRow = {
+    /** 主标题 */
+    name: string;
+    /** 右侧值（与 desc 二选一） */
+    value: string;
+    /** 副标题描述（与 value 二选一） */
+    desc: string;
+};
+
+/** 关于页版本信息 */
+export const aboutVersionRows: InfoRow[] = [
+    { name: 'tabbarAbout.versionLabel', value: 'tabbarAbout.versionValue', desc: '' },
+    { name: 'tabbarAbout.engineLabel', value: 'tabbarAbout.engineValue', desc: '' },
+    { name: 'tabbarAbout.renderLabel', value: 'tabbarAbout.renderValue', desc: '' },
+    { name: 'tabbarAbout.languageLabel', value: 'tabbarAbout.languageValue', desc: '' }
+];
+
+/** 关于页能力特性 */
+export const aboutFeatureRows: InfoRow[] = [
+    { name: 'tabbarAbout.featureVapor', value: '', desc: 'tabbarAbout.featureVaporDesc' },
+    { name: 'tabbarAbout.featureIsolation', value: '', desc: 'tabbarAbout.featureIsolationDesc' },
+    { name: 'tabbarAbout.featureLanguage', value: '', desc: 'tabbarAbout.featureLanguageDesc' },
+    { name: 'tabbarAbout.featureTheme', value: '', desc: 'tabbarAbout.featureThemeDesc' },
+    { name: 'tabbarAbout.featureLocale', value: '', desc: 'tabbarAbout.featureLocaleDesc' },
+    { name: 'tabbarAbout.featureEasycom', value: '', desc: 'tabbarAbout.featureEasycomDesc' }
+];

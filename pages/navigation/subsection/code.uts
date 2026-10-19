@@ -1,0 +1,152 @@
+﻿/**
+ * subsection 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 按钮模式 */
+const button = `
+<template>
+    <ux-subsection :list="list" :current="current" @change="onChange"></ux-subsection>
+</template>
+
+<script setup lang="uts">
+import type { SubsectionListItem } from '@/uni_modules/uview-pro-x';
+
+const list: SubsectionListItem[] = [
+    { name: 'Tab1' },
+    { name: 'Tab2' },
+    { name: 'Tab3' }
+];
+
+const current = ref<number>(0);
+
+function onChange(index: number): void {
+    current.value = index;
+}
+</script>
+`;
+
+/** 分段模式 */
+const subsection = `
+<template>
+    <ux-subsection :list="list" :current="current" mode="subsection" @change="onChange"></ux-subsection>
+</template>
+
+<script setup lang="uts">
+import type { SubsectionListItem } from '@/uni_modules/uview-pro-x';
+
+const list: SubsectionListItem[] = [
+    { name: 'Tab1' },
+    { name: 'Tab2' },
+    { name: 'Tab3' }
+];
+
+const current = ref<number>(0);
+
+function onChange(index: number): void {
+    current.value = index;
+}
+</script>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <ux-subsection :list="list" :current="current" active-color="#fa3534" inactive-color="#909399"></ux-subsection>
+</template>
+
+<script setup lang="uts">
+import type { SubsectionListItem } from '@/uni_modules/uview-pro-x';
+
+const list: SubsectionListItem[] = [
+    { name: 'A' },
+    { name: 'B' },
+    { name: 'C' },
+    { name: 'D' }
+];
+
+const current = ref<number>(1);
+</script>
+`;
+
+/** 关闭动画 */
+const noAnim = `
+<template>
+    <ux-subsection :list="list" :current="current" :animation="false" @change="onChange"></ux-subsection>
+</template>
+
+<script setup lang="uts">
+import type { SubsectionListItem } from '@/uni_modules/uview-pro-x';
+
+const list: SubsectionListItem[] = [
+    { name: 'Tab1' },
+    { name: 'Tab2' },
+    { name: 'Tab3' }
+];
+
+const current = ref<number>(0);
+
+function onChange(index: number): void {
+    current.value = index;
+}
+</script>
+`;
+
+/** 自定义样式 */
+const custom = `
+<template>
+    <ux-subsection :list="list" :current="current" :font-size="12" :height="30" bg-color="#ecf5ff" button-color="#2979ff" active-color="#ffffff" inactive-color="#2979ff"></ux-subsection>
+</template>
+
+<script setup lang="uts">
+import type { SubsectionListItem } from '@/uni_modules/uview-pro-x';
+
+const list: SubsectionListItem[] = [
+    { name: 'Day' },
+    { name: 'Week' },
+    { name: 'Month' }
+];
+
+const current = ref<number>(0);
+</script>
+`;
+
+/** 禁用状态 */
+const disabled = `
+<template>
+    <ux-subsection :list="list" disabled></ux-subsection>
+    <view class="gap"></view>
+    <ux-subsection :list="list2" active-color="#fa3534" inactive-color="#909399"></ux-subsection>
+</template>
+
+<script setup lang="uts">
+import type { SubsectionListItem } from '@/uni_modules/uview-pro-x';
+
+const list: SubsectionListItem[] = [
+    { name: 'Tab1' },
+    { name: 'Tab2' },
+    { name: 'Tab3' }
+];
+
+const list2: SubsectionListItem[] = [
+    { name: 'A' },
+    { name: 'B', disabled: true },
+    { name: 'C' }
+];
+</script>
+
+<style scoped>
+.gap {
+    height: 10px;
+}
+</style>
+`;
+
+export const codes = {
+    button,
+    subsection,
+    color,
+    noAnim,
+    custom,
+    disabled
+};

@@ -1,0 +1,136 @@
+/**
+ * form 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 综合表单（含校验） */
+const basic = `
+<template>
+    <ux-form ref="formRef" :model="model" :rules="rules" :error-type="['message']" label-position="left">
+        <ux-form-item label="姓名" prop="name" required left-icon="account">
+            <ux-input v-model="model.name" placeholder="请输入姓名" border />
+        </ux-form-item>
+        <ux-form-item label="密码" prop="password">
+            <ux-input v-model="model.password" type="password" :password-icon="true" placeholder="请输入密码" border />
+        </ux-form-item>
+        <ux-form-item label="手机号" prop="phone">
+            <ux-input v-model="model.phone" type="number" placeholder="请输入手机号" border />
+        </ux-form-item>
+        <ux-form-item label="性别" prop="sex">
+            <ux-input v-model="model.sex" type="select" :select-open="pickerShow" placeholder="请选择性别" border @click="pickerShow = true" />
+        </ux-form-item>
+    </ux-form>
+    <ux-button type="primary" @click="onSubmit">提交</ux-button>
+    <ux-button type="default" @click="onReset">重置</ux-button>
+    <ux-picker v-model="pickerShow" mode="selector" :columns="columns" @confirm="onConfirm" />
+</template>
+
+<script setup lang="uts">
+import type { FormRule } from '@/uni_modules/uview-pro-x';
+import type { PickerOption } from '@/uni_modules/uview-pro-x';
+
+const formRef = ref<any | null>(null);
+const pickerShow = ref<boolean>(false);
+
+const model = ref<UTSJSONObject>(new UTSJSONObject());
+model.value['name'] = '';
+model.value['password'] = '';
+model.value['phone'] = '';
+model.value['sex'] = '';
+
+const rules = ref<Map<string, FormRule[]>>(new Map([
+    ['name', [
+        { required: true, message: '请输入姓名', trigger: 'blur' },
+        { min: 2, max: 5, message: '姓名长度在 2 到 5 个字符', trigger: 'change' }
+    ]],
+    ['password', [
+        { required: true, message: '请输入密码', trigger: 'blur' }
+    ]],
+    ['phone', [
+        { required: true, message: '请输入手机号', trigger: 'blur' },
+        {
+            validator: (value: any | null): boolean | string => {
+                if (value == null || value === '') return true;
+                if (String(value).length !== 11) return '手机号码不正确';
+                return true;
+            },
+            trigger: 'change'
+        }
+    ]],
+    ['sex', [{ required: true, message: '请选择性别', trigger: 'change' }]]
+]));
+
+const columns: PickerOption[][] = [
+    [
+        { text: '男', value: 'male' },
+        { text: '女', value: 'female' }
+    ]
+];
+
+const onSubmit = () => {
+    formRef.value?.validate().then((valid: boolean) => {
+        if (valid) {
+            uni.showToast({ title: '提交成功', icon: 'success' });
+        } else {
+            uni.showToast({ title: '校验失败', icon: 'none' });
+        }
+    });
+};
+
+const onReset = () => {
+    formRef.value?.resetFields();
+};
+
+const onConfirm = (event: UTSJSONObject): void => {
+    const options = event['selectedOptions'] as PickerOption[];
+    if (options != null && options.length > 0) {
+        model.value['sex'] = options[0].text;
+    }
+};
+</script>
+`;
+
+/** 表单配置 */
+const config = `
+<template>
+    <ux-form :model="model" :error-type="errorType" :label-position="labelPosition">
+        <ux-form-item label="错误提示方式" prop="name">
+            <ux-input v-model="model.name" placeholder="触发校验查看错误提示" border />
+        </ux-form-item>
+    </ux-form>
+    <view class="btn-wrap">
+        <ux-button size="small" :type="errorType[0] === 'message' ? 'primary' : 'default'" @click="setErrorType('message')">message</ux-button>
+        <ux-button size="small" :type="errorType[0] === 'toast' ? 'primary' : 'default'" @click="setErrorType('toast')">toast</ux-button>
+        <ux-button size="small" :type="labelPosition === 'top' ? 'primary' : 'default'" @click="labelPosition = 'top'">标签在上</ux-button>
+        <ux-button size="small" :type="labelPosition === 'left' ? 'primary' : 'default'" @click="labelPosition = 'left'">标签在左</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+import type { FormErrorType } from '@/uni_modules/uview-pro-x';
+
+const model = ref<UTSJSONObject>(new UTSJSONObject());
+model.value['name'] = '';
+
+const errorType = ref<FormErrorType[]>(['message']);
+const labelPosition = ref<'left' | 'top'>('left');
+
+const setErrorType = (value: string) => {
+    errorType.value = [value as FormErrorType];
+};
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    config
+};

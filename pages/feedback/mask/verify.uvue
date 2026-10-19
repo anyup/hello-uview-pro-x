@@ -1,0 +1,390 @@
+<template>
+    <demo-page title="Mask Verify 常驻方案验证" subtitle="visibility 常驻显隐方案 · 临时验证页（验证通过后删除）">
+
+        <!-- 操作区 -->
+        <view class="block">
+            <text class="tip">① 遮罩隐藏时：上下滑动本页应顺畅；点「下层按钮」应正常计数</text>
+            <text class="tip">当前模式：{{ modeText }}；动画时长：{{ duration }}ms；缩放：{{ zoom ? '开' : '关' }}</text>
+            <ux-button type="primary" shape="round" @click="openMask">打开常驻遮罩</ux-button>
+            <view class="btn-row">
+                <ux-button :type="maskClickAble ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setMaskClickAble(true)">点击遮罩可关闭</ux-button>
+                <ux-button :type="!maskClickAble ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setMaskClickAble(false)">点击遮罩禁止关闭</ux-button>
+            </view>
+            <view class="btn-row">
+                <ux-button v-for="(item, index) in durationList" :key="index" :type="duration == item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setDuration(item.value)">{{ item.label }}</ux-button>
+            </view>
+            <view class="btn-row">
+                <ux-button :type="zoom ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setZoom(true)">缩放动画：开</ux-button>
+                <ux-button :type="!zoom ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setZoom(false)">缩放动画：关</ux-button>
+            </view>
+            <ux-button custom-class="btn-gap" type="default" shape="round" @click="hit">下层按钮（点击 +1）：{{ hitCount }}</ux-button>
+            <ux-button custom-class="btn-gap" type="default" shape="round" @click="stress">压力开关 ×10（间隔 80ms）</ux-button>
+        </view>
+
+        <!-- 观察说明 -->
+        <view class="block">
+            <text class="tip">② 打开后观察淡入；点「关闭」或点遮罩本体观察淡出与缩小（可见性在动画播完后由定时器收回）</text>
+            <text class="tip">③ 关闭后立即滑动本页、点下层按钮，应正常</text>
+            <text class="tip">④ 切到「点击遮罩禁止关闭」后打开：点遮罩应无反应，只能点卡片内「关 闭」；同时对比不同动画时长的淡入淡出</text>
+            <text class="tip">⑤ 缩放开启时：内容卡片打开应「由小放大」、关闭应「由大缩小」并淡出（遮罩背景不缩放；App 若无缩放请记录）</text>
+        </view>
+
+        <!-- 滚动区：撑高页面，验证隐藏态不拦截滚动 -->
+        <view v-for="(item, index) in blocks" :key="index" class="scroll-block">
+            <text class="scroll-block-text">{{ item }}</text>
+        </view>
+
+        <!-- 常驻 visibility 遮罩：验证核心（无 v-if；类切换 + 命令式直写双通道，收回由主/兜底双定时器调度） -->
+        <view
+            ref="maskRef"
+            :class="maskClass"
+            :style="$u.toStyle(transStyle)"
+            @click="onMaskClick"
+            @touchmove.stop.prevent="() => {}"
+        >
+            <view
+                :class="cardClass"
+                :style="$u.toStyle(transStyle)"
+                @click.stop
+            >
+                <text class="vmask-card-text">常驻 visibility 遮罩</text>
+                <ux-button type="primary" size="small" shape="round" @click="closeMask">关 闭</ux-button>
+            </view>
+        </view>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u } from '@/uni_modules/uview-pro-x';
+
+    /** 时长档位项 */
+    type DurationItem = {
+        value: number;
+        label: string;
+    };
+
+    /** 遮罩显示状态：目标态，直接驱动 opacity／缩放／命中 */
+    const show = ref(false);
+
+    /**
+     * 可见性窗口：App 端 visibility 不参与过渡、立即切换——
+     * 关闭时若与 show 同时隐藏会把淡出/缩小动画整体截断（生硬关闭），
+     * 故由定时器在过渡播完后收回；显示态 + 关闭过渡窗口内均为 true
+     */
+    const visible = ref(false);
+
+    /** 遮罩元素引用：命令式直写通道用（不依赖响应式提交，是退场可靠性高于类的硬保障） */
+    const maskRef = ref<UniElement | null>(null);
+
+    /** 点击遮罩是否可关闭（false = 禁止点击关闭，只能点卡片内按钮） */
+    const maskClickAble = ref(true);
+
+    /** 动画时长（ms）：随档位切换内联下发 */
+    const duration = ref(300);
+
+    /** 缩放动画开关：开启后打开时由小（0.8）放大到 1、关闭时由 1 缩回 0.8 */
+    const zoom = ref(true);
+
+    /** 时长档位列表 */
+    const durationList: DurationItem[] = [
+        { value: 100, label: '100ms' },
+        { value: 300, label: '300ms' },
+        { value: 800, label: '800ms' }
+    ];
+
+    /**
+     * 遮罩类名（两段分离，验证页非组件直接字面量拼类）：
+     * --visible 管引擎级可见/不命中（显示态 + 关闭过渡窗口），--show 管绘制与命中（opacity/pointer-events）；
+     * 关闭时先撤 --show 播过渡，定时器再撤 --visible 收隐藏
+     */
+    const maskClass = computed<string>(() => {
+        let cls = 'vmask';
+        if (visible.value) cls = cls + ' vmask--visible';
+        if (show.value) cls = cls + ' vmask--show';
+        return cls;
+    });
+
+    /**
+     * 内容卡片类名：缩放值走类切换（与遮罩层 opacity/visibility 同一通道）——
+     * App 端「显隐态走响应式 :style」会丢更新（关闭方向丢缩放），类切换是已验证可靠路径；
+     * 关闭缩放档位时不拼缩放类，卡片无 transform 即无缩放
+     */
+    const cardClass = computed<string>(() => {
+        if (!zoom.value) return 'vmask-card';
+        return show.value ? 'vmask-card vmask-card--show' : 'vmask-card vmask-card--hide';
+    });
+
+    /**
+     * 过渡时长（内联下发，单一数值）：遮罩层与内容卡片共用当前档位时长。
+     * App 端 transition-duration/delay 不支持多值列表（编译直接报错），故只下发单值；
+     * 关闭时的"延迟隐藏"由 hideTimer 收回 --visible 承担，不依赖过渡的延迟参数
+     */
+    const transStyle = computed<UTSJSONObject>(() => {
+        const style = new UTSJSONObject();
+        style['transition-duration'] = duration.value.toString() + 'ms';
+        return style;
+    });
+
+    /**
+     * 命令式退场（只写安全向常量值）：visibility/pointer-events 内联直写。
+     * 内联优先级高于类，与类通道互为冗余——任一道落地即"引擎级不命中"；
+     * App 端类 patch 与 pointer-events 均可能偶发不落地，这是隐形态不吃手势的硬保障
+     */
+    const hideByStyle = (): void => {
+        maskRef.value?.style.setProperty('visibility', 'hidden');
+        maskRef.value?.style.setProperty('pointer-events', 'none');
+    };
+
+    /** 命令式恢复：打开时显式写回可见/可点（不依赖上次值，顺带自愈任何残留卡态） */
+    const showByStyle = (): void => {
+        maskRef.value?.style.setProperty('visibility', 'visible');
+        maskRef.value?.style.setProperty('pointer-events', 'auto');
+    };
+
+    /** 关闭后的收回定时器：主（按时长）/ 兜底（时长方后幂等重写，容错丢失与不落地） */
+    let hideTimer: number | null = null;
+    let hideSafeTimer: number | null = null;
+
+    /** 收回隐藏（幂等；类 + 命令式双通道；迟到时校验显示态，避免误收） */
+    const settleHidden = (): void => {
+        if (show.value) return;
+        visible.value = false;
+        hideByStyle();
+    };
+
+    /**
+     * 显隐联动：打开立即可见（visibility 立即切换刚好保住淡入）；
+     * 关闭时保持可见窗口、过渡播完（当前时长）再收回——
+     * 否则 App 端 visibility 立即 hidden 会把淡出与缩小整体截断（生硬关闭）；
+     * 关闭瞬间先命令式放行命中（窗口期"不吃点击"与类双通道）；
+     * 收回排"主 + 兜底"两个定时器：任一落地即退场（双丢也由下次打开自愈兜底）
+     */
+    watch((): boolean => show.value, (val: boolean) => {
+        if (hideTimer != null) {
+            clearTimeout(hideTimer!);
+            hideTimer = null;
+        }
+        if (hideSafeTimer != null) {
+            clearTimeout(hideSafeTimer!);
+            hideSafeTimer = null;
+        }
+        if (val) {
+            visible.value = true;
+            showByStyle();
+        } else {
+            maskRef.value?.style.setProperty('pointer-events', 'none');
+            hideTimer = setTimeout((): void => {
+                hideTimer = null;
+                settleHidden();
+            }, duration.value);
+            hideSafeTimer = setTimeout((): void => {
+                hideSafeTimer = null;
+                settleHidden();
+            }, duration.value + 800);
+        }
+    });
+
+    onUnmounted(() => {
+        if (hideTimer != null) {
+            clearTimeout(hideTimer!);
+            hideTimer = null;
+        }
+        if (hideSafeTimer != null) {
+            clearTimeout(hideSafeTimer!);
+            hideSafeTimer = null;
+        }
+    });
+
+    /** 当前模式文案（显示在操作区） */
+    const modeText = computed<string>(() => (maskClickAble.value ? '点击遮罩可关闭' : '点击遮罩禁止关闭（只能点卡片内「关 闭」）'));
+
+    /** 下层按钮点击计数：验证隐藏态不拦截点击 */
+    const hitCount = ref(0);
+
+    /** 压力开关剩余次数 */
+    let stressLeft = 0;
+
+    /** 滚动区文案（撑高页面用） */
+    const blocks: string[] = [
+        '滚动区 1/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 2/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 3/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 4/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 5/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 6/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 7/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 8/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 9/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 10/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 11/12：遮罩隐藏时滑动此处，页面应正常滚动',
+        '滚动区 12/12：遮罩隐藏时滑动此处，页面应正常滚动'
+    ];
+
+    /** 打开遮罩 */
+    const openMask = () => {
+        show.value = true;
+    };
+
+    /** 点击下层按钮 */
+    const hit = () => {
+        hitCount.value = hitCount.value + 1;
+    };
+
+    /** 关闭遮罩 */
+    const closeMask = () => {
+        show.value = false;
+    };
+
+    /** 点击遮罩：禁止关闭模式下忽略（不关闭），可关闭模式下关闭 */
+    const onMaskClick = () => {
+        if (!maskClickAble.value) return;
+        show.value = false;
+    };
+
+    /** 切换「点击遮罩是否可关闭」档位 */
+    const setMaskClickAble = (val: boolean) => {
+        maskClickAble.value = val;
+    };
+
+    /** 切换动画时长档位 */
+    const setDuration = (val: number) => {
+        duration.value = val;
+    };
+
+    /** 切换缩放动画开关 */
+    const setZoom = (val: boolean) => {
+        zoom.value = val;
+    };
+
+    /** 压力开关步进：80ms 间隔翻转显示态，直至剩余次数归零 */
+    function stressStep(): void {
+        if (stressLeft <= 0) return;
+        stressLeft = stressLeft - 1;
+        show.value = !show.value;
+        setTimeout(stressStep, 80);
+    }
+
+    /** 压力开关入口 */
+    const stress = () => {
+        stressLeft = 10;
+        stressStep();
+    };
+</script>
+
+<style lang="scss">
+
+    .block {
+        display: flex;
+        flex-direction: column;
+        margin: 12px;
+        padding: 12px;
+        background-color: #ffffff;
+        border-radius: 8px;
+    }
+
+    .tip {
+        font-size: 13px;
+        color: #606266;
+        line-height: 20px;
+        margin-bottom: 10px;
+    }
+
+    .btn-gap {
+        margin-top: 12px;
+    }
+
+    /* 档位按钮行：水平排列 + 自动换行 */
+    .btn-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 12px;
+    }
+
+    /* 档位按钮间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 8px;
+    }
+
+    .scroll-block {
+        margin: 6px 12px;
+        padding: 16px;
+        background-color: #ffffff;
+        border-radius: 8px;
+    }
+
+    .scroll-block-text {
+        font-size: 13px;
+        color: #909399;
+    }
+
+    /* ===== 常驻 visibility 遮罩：验证核心机制 ===== */
+    .vmask {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        /* 隐藏态：不绘制 + 引擎级不命中（官方全端支持 visibility）；pointer-events 为第二保险 */
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        /* 只过渡 opacity（单值——App 端不支持 duration/delay 多值列表，多值直接编译报错）：
+           visibility 不参与过渡（App 端立即切换），由 --visible 类 + 命令式直写（hideByStyle）双通道收回；
+           时长由内联随档位下发，此处为内联不生效时的 fallback */
+        transition-property: opacity;
+        transition-duration: 300ms;
+        transition-delay: 0ms;
+    }
+
+    /* 可见窗口（副通道，主通道为命令式直写 hideByStyle/showByStyle）：显示态 + 关闭过渡期间 */
+    .vmask--visible {
+        visibility: visible;
+    }
+
+    .vmask--show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .vmask-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 240px;
+        height: 240px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        /* 缩放过渡：属性集静态声明（过渡初始化时即生效）；时长由内联随档位下发（单值），缩放值走类 */
+        transition-property: transform;
+        transition-duration: 300ms;
+        transition-delay: 0ms;
+    }
+
+    /* 缩放动画只作用于内容卡片（遮罩层不缩放）：隐藏态缩小、显示态正常；
+       与遮罩层 opacity/visibility 同一类切换通道，规避 App 端「显隐态走响应式 :style 丢更新」 */
+    .vmask-card--hide {
+        transform: scale(0.8, 0.8);
+    }
+
+    .vmask-card--show {
+        transform: scale(1, 1);
+    }
+
+    .vmask-card-text {
+        font-size: 14px;
+        color: #303133;
+        margin-bottom: 16px;
+    }
+
+</style>

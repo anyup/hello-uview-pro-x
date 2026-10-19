@@ -1,0 +1,159 @@
+<template>
+    <demo-page :title="t('mask.title')" :subtitle="t('mask.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('mask.basicTitle')" :desc="t('mask.basicDesc')" :code="codes.basic">
+            <ux-button type="primary" shape="round" @click="showMask">{{ t('mask.showBtn') }}</ux-button>
+        </demo-block>
+
+        <!-- 缩放效果 -->
+        <demo-block :title="t('mask.zoomTitle')" :desc="t('mask.zoomDesc')" :code="codes.zoom">
+            <view class="btn-wrap">
+                <ux-button :type="zoom ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setZoom(true)">{{ t('mask.zoomOn') }}</ux-button>
+                <ux-button :type="!zoom ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setZoom(false)">{{ t('mask.zoomOff') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 内容填充 -->
+        <demo-block :title="t('mask.contentTitle')" :desc="t('mask.contentDesc')" :code="codes.content">
+            <ux-button type="primary" shape="round" @click="showContent">{{ t('mask.contentBtn') }}</ux-button>
+        </demo-block>
+
+        <!-- 动画时长 -->
+        <demo-block :title="t('mask.durationTitle')" :desc="t('mask.durationDesc')" :code="codes.duration">
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in durationList" :key="index" :type="duration == item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setDuration(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 不可点击关闭 -->
+        <demo-block :title="t('mask.clickableTitle')" :desc="t('mask.clickableDesc')" :code="codes.clickable">
+            <ux-button type="primary" shape="round" @click="showNotClickable">{{ t('mask.clickableBtn') }}</ux-button>
+        </demo-block>
+
+        <!-- 遮罩层 -->
+        <ux-mask :show="show" :zoom="zoom" :duration="duration" :mask-click-able="maskClickAble" @click="closeMask">
+            <view v-if="content" class="mask-content">
+                <view class="mask-rect" @click.stop>
+                    <text class="mask-rect-text">{{ t('mask.contentText') }}</text>
+                    <ux-button v-if="!maskClickAble" size="small" type="primary" shape="round" @click="closeMask">{{ t('mask.closeBtn') }}</ux-button>
+                </view>
+            </view>
+        </ux-mask>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type DurationItem = {
+        value: number;
+        label: string;
+    };
+
+    /** 遮罩显示状态 */
+    const show = ref(false);
+    /** 是否使用缩放动画 */
+    const zoom = ref(true);
+    /** 动画时长（ms） */
+    const duration = ref(300);
+    /** 是否显示遮罩内容 */
+    const content = ref(false);
+    /** 点击遮罩是否可关闭 */
+    const maskClickAble = ref(true);
+
+    const durationList: DurationItem[] = [
+        { value: 100, label: '100ms' },
+        { value: 300, label: '300ms' },
+        { value: 800, label: '800ms' }
+    ];
+
+    /** 基础用法：显示遮罩 */
+    const showMask = () => {
+        maskClickAble.value = true;
+        content.value = false;
+        show.value = true;
+    };
+
+    /** 缩放效果：设置 zoom 并显示遮罩 */
+    const setZoom = (val: boolean) => {
+        zoom.value = val;
+        maskClickAble.value = true;
+        content.value = false;
+        show.value = true;
+    };
+
+    /** 内容填充：显示带内容的遮罩 */
+    const showContent = () => {
+        maskClickAble.value = true;
+        content.value = true;
+        show.value = true;
+    };
+
+    /** 动画时长：设置时长并显示遮罩 */
+    const setDuration = (val: number) => {
+        duration.value = val;
+        maskClickAble.value = true;
+        content.value = false;
+        show.value = true;
+    };
+
+    /** 不可点击关闭：点击遮罩不关闭，需通过内容按钮关闭 */
+    const showNotClickable = () => {
+        maskClickAble.value = false;
+        content.value = true;
+        show.value = true;
+    };
+
+    /** 关闭遮罩 */
+    const closeMask = () => {
+        show.value = false;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 按钮容器：水平排列 + 自动换行 */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 按钮间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 遮罩内容：居中白色方块 */
+    .mask-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .mask-rect {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 240px;
+        height: 240px;
+        background-color: $u-bg-white;
+        border-radius: 8px;
+    }
+
+    .mask-rect-text {
+        font-size: 14px;
+        color: $u-content-color;
+        margin-bottom: 16px;
+    }
+</style>

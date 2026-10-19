@@ -1,0 +1,96 @@
+﻿<template>
+    <demo-page :title="t('swiper.title')" :subtitle="t('swiper.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('swiper.basicTitle')" :desc="t('swiper.basicDesc')" :code="codes.basic">
+            <ux-swiper :list="basicList" />
+        </demo-block>
+
+        <!-- 指示器模式 -->
+        <demo-block :title="t('swiper.modeTitle')" :desc="t('swiper.modeDesc')" :code="codes.mode">
+            <ux-swiper :list="basicList" :mode="mode" />
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in modeList"
+                    :key="index"
+                    :type="mode === item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="setMode(item.value)"
+                >{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 3D效果 -->
+        <demo-block :title="t('swiper.effect3dTitle')" :desc="t('swiper.effect3dDesc')" :code="codes.effect3d">
+            <ux-swiper :list="basicList" :effect3d="true" />
+        </demo-block>
+
+        <!-- 标题显示 -->
+        <demo-block :title="t('swiper.titleTitle')" :desc="t('swiper.titleDesc')" :code="codes.title">
+            <ux-swiper :list="titleList" :title="true" height="100" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, type SwiperMode } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type SwiperItem = {
+        image: string;
+        title?: string;
+    };
+
+    type ModeItem = {
+        value: SwiperMode;
+        label: string;
+    };
+
+    const basicList: SwiperItem[] = [
+        { image: 'https://picsum.photos/id/1015/600/300' },
+        { image: 'https://picsum.photos/id/1016/600/300' },
+        { image: 'https://picsum.photos/id/1018/600/300' }
+    ];
+
+    const titleList: SwiperItem[] = [
+        { image: 'https://picsum.photos/id/1015/600/300', title: t('swiper.titleOne') },
+        { image: 'https://picsum.photos/id/1016/600/300', title: t('swiper.titleTwo') },
+        { image: 'https://picsum.photos/id/1018/600/300', title: t('swiper.titleThree') }
+    ];
+
+    /** 指示器模式 */
+    const mode = ref<SwiperMode>('round');
+
+    const modeList: ModeItem[] = [
+        { value: 'rect', label: t('swiper.rect') },
+        { value: 'dot', label: t('swiper.dot') },
+        { value: 'round', label: t('swiper.round') },
+        { value: 'number', label: t('swiper.number') }
+    ];
+
+    /** 设置指示器模式 */
+    const setMode = (val: SwiperMode) => {
+        mode.value = val;
+    };
+</script>
+
+<style lang="scss">
+
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 12px;
+    }
+
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+</style>

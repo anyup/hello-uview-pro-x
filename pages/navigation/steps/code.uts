@@ -1,0 +1,96 @@
+/**
+ * steps 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 点型步骤条 */
+const dot = `
+<template>
+    <ux-steps :current="1">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+    </ux-steps>
+</template>
+`;
+
+/** 数字步骤条 */
+const number = `
+<template>
+    <ux-steps mode="number" :current="2">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+        <ux-step name="步骤四" />
+    </ux-steps>
+</template>
+`;
+
+/** 垂直步骤条 */
+const vertical = `
+<template>
+    <ux-steps direction="column" :current="1">
+        <ux-step name="步骤一" desc="已完成" />
+        <ux-step name="步骤二" desc="进行中" />
+        <ux-step name="步骤三" desc="待处理" />
+    </ux-steps>
+</template>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <ux-steps mode="number" :current="1" active-color="#fa3534" inactive-color="#909399">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+    </ux-steps>
+</template>
+`;
+
+/** 受控步骤条 */
+const control = `
+<template>
+    <ux-steps mode="number" :current="current">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+    </ux-steps>
+    <view class="btn-row">
+        <ux-button size="small" @click="prev" :disabled="current === 0">上一步</ux-button>
+        <ux-button size="small" type="primary" @click="next" :disabled="current === 2">下一步</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const current = ref<number>(0);
+
+function prev(): void {
+    if (current.value > 0) {
+        current.value--;
+    }
+}
+
+function next(): void {
+    if (current.value < 2) {
+        current.value++;
+    }
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+</style>
+`;
+
+export const codes = {
+    dot,
+    number,
+    vertical,
+    color,
+    control
+};

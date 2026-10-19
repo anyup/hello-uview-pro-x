@@ -1,0 +1,103 @@
+<template>
+    <demo-page :title="t('alertTips.title')" :subtitle="t('alertTips.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('alertTips.basicTitle')" :desc="t('alertTips.basicDesc')" :code="codes.basic">
+            <ux-alert-tips :title="t('alertTips.basicTip')" @click="onBasicClick" />
+        </demo-block>
+
+        <!-- 主题 type -->
+        <demo-block :title="t('alertTips.themeTitle')" :desc="t('alertTips.themeDesc')" :code="codes.theme">
+            <view class="alert-tips-list">
+                <ux-alert-tips custom-class="alert-tips-item" type="success" show-icon :title="t('alertTips.themeSuccess')" />
+                <ux-alert-tips custom-class="alert-tips-item" type="warning" show-icon :title="t('alertTips.themeWarning')" />
+                <ux-alert-tips custom-class="alert-tips-item" type="info" show-icon :title="t('alertTips.themeInfo')" />
+                <ux-alert-tips custom-class="alert-tips-item" type="error" show-icon :title="t('alertTips.themeError')" />
+            </view>
+        </demo-block>
+
+        <!-- 标题与描述 -->
+        <demo-block :title="t('alertTips.descTitle')" :desc="t('alertTips.descDesc')" :code="codes.desc">
+            <ux-alert-tips type="warning" show-icon :title="t('alertTips.descTip')" :description="t('alertTips.descText')" />
+        </demo-block>
+
+        <!-- 可关闭 -->
+        <demo-block :title="t('alertTips.closeTitle')" :desc="t('alertTips.closeDesc')" :code="codes.close">
+            <ux-alert-tips :show="closeShow" close-able :close-text="t('alertTips.closeText')" :title="t('alertTips.closeTip')" @close="onClose" />
+            <view v-if="!closeShow" class="alert-tips-actions">
+                <ux-button type="primary" size="small" shape="round" :text="t('alertTips.closeBtnShow')" @click="onShowAgain" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义图标 -->
+        <demo-block :title="t('alertTips.iconTitle')" :desc="t('alertTips.iconDesc')" :code="codes.icon">
+            <ux-alert-tips type="success" show-icon icon="checkmark-circle" :icon-style="iconStyle" :title="t('alertTips.iconTip')" />
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block :title="t('alertTips.styleTitle')" :desc="t('alertTips.styleDesc')" :code="codes.style">
+            <ux-alert-tips :title="t('alertTips.styleTip')" :description="t('alertTips.styleText')" color="#7c3aed" bg-color="#f3e8ff" border-color="#c4b5fd" :title-style="titleStyle" :desc-style="descStyle" />
+        </demo-block>
+
+        <!-- toast 组件实例 -->
+        <ux-toast ref="toastRef" />
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** toast 组件实例 */
+    const toastRef = ref<any>();
+
+    /** 可关闭示例的显示状态 */
+    const closeShow = ref(true);
+
+    /** 自定义图标样式 */
+    const iconStyle: UTSJSONObject = { 'color': '#19be6b' };
+
+    /** 自定义标题样式 */
+    const titleStyle: UTSJSONObject = { 'font-size': '15px' };
+
+    /** 自定义描述样式 */
+    const descStyle: UTSJSONObject = { 'font-size': '12px' };
+
+    /** 点击提示内容 */
+    const onBasicClick = () => {
+        toastRef.value?.show?.({
+            title: t('alertTips.basicTip'),
+            type: 'success',
+            duration: 2000
+        });
+    };
+
+    /** 关闭提示：组件仅触发事件，由外部控制显示状态 */
+    const onClose = () => {
+        closeShow.value = false;
+    };
+
+    /** 重新显示提示 */
+    const onShowAgain = () => {
+        closeShow.value = true;
+    };
+</script>
+
+<style lang="scss">
+
+    .alert-tips-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .alert-tips-item {
+        margin-bottom: 8px;
+    }
+
+    .alert-tips-actions {
+        margin-top: 16px;
+    }
+</style>

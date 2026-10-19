@@ -1,0 +1,53 @@
+/**
+ * loadmore 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 加载更多 */
+const basic = `
+<template>
+    <ux-loadmore status="loadmore" @loadmore="onLoadMore" />
+</template>
+
+<script setup lang="uts">
+function onLoadMore(): void {
+    uni.showToast({ title: '加载更多', icon: 'none' });
+}
+</script>
+`;
+
+/** 加载中 */
+const loading = `
+<template>
+    <ux-loadmore status="loading" />
+</template>
+`;
+
+/** 没有更多 */
+const nomore = `
+<template>
+    <ux-loadmore status="nomore" />
+</template>
+`;
+
+/** 粗点样式 */
+const dot = `
+<template>
+    <ux-loadmore status="nomore" :is-dot="true" />
+</template>
+`;
+
+/** 自定义颜色 */
+const custom = `
+<template>
+    <ux-loadmore status="loading" color="#fa3534" icon-color="#fa3534" />
+</template>
+`;
+
+export const codes = {
+    basic,
+    loading,
+    nomore,
+    dot,
+    custom
+};

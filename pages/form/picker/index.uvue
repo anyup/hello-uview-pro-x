@@ -1,0 +1,176 @@
+﻿<template>
+    <demo-page :title="t('picker.title')" :subtitle="t('picker.subtitle')">
+
+        <demo-block :title="t('picker.selectorTitle')" :desc="t('picker.selectorDesc')" :code="codes.selector">
+            <ux-button shape="round" @click="show1 = true">{{ t('picker.openBtn') }}</ux-button>
+            <demo-result v-if="result1 !== ''" :text="t('picker.result') + ': ' + result1" />
+        </demo-block>
+
+        <demo-block :title="t('picker.multiTitle')" :desc="t('picker.multiDesc')" :code="codes.multi">
+            <ux-button shape="round" @click="show2 = true">{{ t('picker.openBtn') }}</ux-button>
+            <demo-result v-if="result2 !== ''" :text="t('picker.result') + ': ' + result2" />
+        </demo-block>
+
+        <demo-block :title="t('picker.cascadeTitle')" :desc="t('picker.cascadeDesc')" :code="codes.cascade">
+            <ux-button shape="round" @click="show3 = true">{{ t('picker.openBtn') }}</ux-button>
+            <demo-result v-if="result3 !== ''" :text="t('picker.result') + ': ' + result3" />
+        </demo-block>
+
+        <demo-block :title="t('picker.customTitle')" :desc="t('picker.customDesc')" :code="codes.custom">
+            <ux-button shape="round" @click="show4 = true">{{ t('picker.openBtn') }}</ux-button>
+            <demo-result v-if="result4 !== ''" :text="t('picker.result') + ': ' + result4" />
+        </demo-block>
+
+        <ux-picker
+            v-model="show1"
+            mode="selector"
+            :columns="selectorColumns"
+            :default-index="[2]"
+            :title="t('picker.selectorTitle')"
+            @confirm="onConfirm1"
+        ></ux-picker>
+
+        <ux-picker
+            v-model="show2"
+            mode="multiSelector"
+            :columns="multiColumns"
+            :default-index="[0, 0, 1]"
+            :title="t('picker.multiTitle')"
+            @confirm="onConfirm2"
+        ></ux-picker>
+
+        <ux-picker
+            v-model="show3"
+            mode="cascade"
+            :columns="regionColumns"
+            :default-index="[0, 0, 0]"
+            :title="t('picker.cascadeTitle')"
+            @confirm="onConfirm3"
+        ></ux-picker>
+
+        <ux-picker
+            v-model="show4"
+            mode="selector"
+            :columns="colorColumns"
+            :title="t('picker.customTitle')"
+            cancel-color="#909399"
+            confirm-color="#fa3534"
+            @confirm="onConfirm4"
+        ></ux-picker>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale, type PickerOption } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const show1 = ref<boolean>(false);
+const show2 = ref<boolean>(false);
+const show3 = ref<boolean>(false);
+const show4 = ref<boolean>(false);
+
+const result1 = ref<string>('');
+const result2 = ref<string>('');
+const result3 = ref<string>('');
+const result4 = ref<string>('');
+
+const selectorColumns: PickerOption[][] = [
+    [
+        { text: t('picker.poem1'), value: 1 },
+        { text: t('picker.poem2'), value: 2 },
+        { text: t('picker.poem3'), value: 3 },
+        { text: t('picker.poem4'), value: 4 },
+        { text: t('picker.poem5'), value: 5 },
+        { text: t('picker.poem6'), value: 6 },
+        { text: t('picker.poem7'), value: 7 }
+    ]
+];
+
+const multiColumns: PickerOption[][] = [
+    [
+        { text: t('picker.asia'), value: 'asia' },
+        { text: t('picker.europe'), value: 'europe' }
+    ],
+    [
+        { text: t('picker.china'), value: 'cn' },
+        { text: t('picker.japan'), value: 'jp' }
+    ],
+    [
+        { text: t('picker.beijing'), value: 'bj' },
+        { text: t('picker.shanghai'), value: 'sh' },
+        { text: t('picker.guangzhou'), value: 'gz' }
+    ]
+];
+
+const regionColumns: PickerOption[][] = [
+    [
+        {
+            text: t('picker.shandong'),
+            children: [
+                {
+                    text: t('picker.qingdao'),
+                    children: [
+                        { text: t('picker.laoshan') },
+                        { text: t('picker.shinan') }
+                    ]
+                },
+                {
+                    text: t('picker.jinan'),
+                    children: [
+                        { text: t('picker.lixia') },
+                        { text: t('picker.shizhong') }
+                    ]
+                }
+            ]
+        },
+        {
+            text: t('picker.hainan'),
+            children: [
+                {
+                    text: t('picker.sanya'),
+                    children: [
+                        { text: t('picker.haitang') },
+                        { text: t('picker.jiyang') }
+                    ]
+                }
+            ]
+        }
+    ]
+];
+
+const colorColumns: PickerOption[][] = [
+    [
+        { text: t('picker.red'), value: 'red' },
+        { text: t('picker.blue'), value: 'blue' },
+        { text: t('picker.green'), value: 'green' }
+    ]
+];
+
+function joinValues(event: UTSJSONObject): string {
+    const values = event['selectedValues'] as string[];
+    if (values == null) return '';
+    return values.join(' / ');
+}
+
+function onConfirm1(event: UTSJSONObject): void {
+    result1.value = joinValues(event);
+}
+
+function onConfirm2(event: UTSJSONObject): void {
+    result2.value = joinValues(event);
+}
+
+function onConfirm3(event: UTSJSONObject): void {
+    result3.value = joinValues(event);
+}
+
+function onConfirm4(event: UTSJSONObject): void {
+    result4.value = joinValues(event);
+}
+</script>
+
+<style lang="scss">
+</style>

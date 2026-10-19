@@ -1,0 +1,216 @@
+/**
+ * mask 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button type="primary" @click="showMask">显示遮罩</ux-button>
+    <ux-mask :show="show" :zoom="zoom" @click="closeMask"></ux-mask>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+const zoom = ref<boolean>(true);
+
+function showMask(): void {
+    show.value = true;
+}
+
+function closeMask(): void {
+    show.value = false;
+}
+</script>
+`;
+
+/** 缩放效果 */
+const zoom = `
+<template>
+    <view class="btn-wrap">
+        <ux-button :type="zoom ? 'primary' : 'default'" custom-class="btn-item" @click="setZoom(true)">开启缩放</ux-button>
+        <ux-button :type="!zoom ? 'primary' : 'default'" custom-class="btn-item" @click="setZoom(false)">关闭缩放</ux-button>
+    </view>
+    <ux-mask :show="show" :zoom="zoom" @click="closeMask"></ux-mask>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+const zoom = ref<boolean>(true);
+
+function setZoom(val: boolean): void {
+    zoom.value = val;
+    show.value = true;
+}
+
+function closeMask(): void {
+    show.value = false;
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 内容填充 */
+const content = `
+<template>
+    <ux-button type="primary" @click="showContent">显示内容</ux-button>
+    <ux-mask :show="show" @click="closeMask">
+        <view class="wrap">
+            <view class="rect">
+                <text class="rect-text">自定义内容</text>
+            </view>
+        </view>
+    </ux-mask>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+
+function showContent(): void {
+    show.value = true;
+}
+
+function closeMask(): void {
+    show.value = false;
+}
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.rect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    height: 240px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+.rect-text {
+    font-size: 14px;
+    color: #606266;
+}
+</style>
+`;
+
+/** 动画时长 */
+const duration = `
+<template>
+    <view class="btn-wrap">
+        <ux-button v-for="(item, index) in durationList" :key="index" :type="duration == item.value ? 'primary' : 'default'" custom-class="btn-item" @click="setDuration(item.value)">{{ item.label }}</ux-button>
+    </view>
+    <ux-mask :show="show" :duration="duration" @click="closeMask"></ux-mask>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+const duration = ref<number>(300);
+
+const durationList = [
+    { value: 100, label: '100ms' },
+    { value: 300, label: '300ms' },
+    { value: 800, label: '800ms' }
+];
+
+function setDuration(val: number): void {
+    duration.value = val;
+    show.value = true;
+}
+
+function closeMask(): void {
+    show.value = false;
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 不可点击关闭 */
+const clickable = `
+<template>
+    <ux-button type="primary" @click="showNotClickable">显示遮罩</ux-button>
+    <ux-mask :show="show" :mask-click-able="false" @click="closeMask">
+        <view class="wrap">
+            <view class="rect" @click.stop>
+                <text class="rect-text">点击遮罩无法关闭</text>
+                <ux-button size="small" type="primary" @click="closeMask">关闭</ux-button>
+            </view>
+        </view>
+    </ux-mask>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+
+function showNotClickable(): void {
+    show.value = true;
+}
+
+function closeMask(): void {
+    show.value = false;
+}
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.rect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    height: 240px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+.rect-text {
+    font-size: 14px;
+    color: #606266;
+    margin-bottom: 16px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    zoom,
+    content,
+    duration,
+    clickable
+};

@@ -1,0 +1,173 @@
+/**
+ * avatar 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法：三种尺寸 */
+const basic = `
+<template>
+    <view class="avatar-row">
+        <ux-avatar src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" @click="onClick" />
+        <ux-avatar size="large" src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" />
+        <ux-avatar size="small" src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const onClick = (index: string | number) => {
+    uni.showToast({ title: '点击了头像: ' + index, icon: 'none' });
+};
+</script>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+/** 文字头像 */
+const text = `
+<template>
+    <view class="avatar-row">
+        <ux-avatar text="A" bg-color="#2979ff" />
+        <ux-avatar text="B" bg-color="#19be6b" size="large" />
+        <ux-avatar text="C" bg-color="#fa3534" size="small" />
+    </view>
+</template>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+/** 形状两档 */
+const square = `
+<template>
+    <!-- shape 两档全演示：circle 正圆（不传即此档） / square 小圆角 4px 方形 -->
+    <view class="avatar-row">
+        <ux-avatar src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" shape="circle" />
+        <ux-avatar src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" shape="square" custom-class="avatar-item" />
+        <ux-avatar text="A" bg-color="#2979ff" shape="circle" size="large" custom-class="avatar-item" />
+        <ux-avatar text="B" bg-color="#19be6b" shape="square" size="large" custom-class="avatar-item" />
+    </view>
+</template>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+/** 性别角标 */
+const sex = `
+<template>
+    <view class="avatar-row">
+        <ux-avatar text="A" bg-color="#2979ff" show-sex sex-icon="man" />
+        <ux-avatar text="B" bg-color="#fa3534" show-sex sex-icon="woman" />
+    </view>
+</template>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+/** 等级图标 */
+const level = `
+<template>
+    <view class="avatar-row">
+        <ux-avatar text="A" bg-color="#2979ff" show-level />
+        <ux-avatar text="B" bg-color="#fa3534" show-level level-bg-color="#ff9900" />
+    </view>
+</template>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+/** 自定义角标颜色 */
+const badgeColor = `
+<template>
+    <view class="avatar-row">
+        <ux-avatar text="A" bg-color="#2979ff" show-sex sex-icon="man" sex-bg-color="#19be6b" />
+        <ux-avatar text="B" bg-color="#fa3534" show-level level-bg-color="#2979ff" />
+    </view>
+</template>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+/** 图片裁剪模式 */
+const imgMode = `
+<template>
+    <view class="avatar-row">
+        <ux-avatar src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" img-mode="aspectFill" />
+        <ux-avatar src="https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png" img-mode="scaleToFill" size="large" />
+    </view>
+</template>
+
+<style scoped>
+.avatar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.avatar-row ux-avatar {
+    margin-right: 16px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    text,
+    square,
+    sex,
+    level,
+    badgeColor,
+    imgMode
+};

@@ -1,0 +1,86 @@
+<template>
+    <demo-page :title="t('link.title')" :subtitle="t('link.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('link.basicTitle')" :desc="t('link.basicDesc')" :code="codes.basic">
+            <ux-link href="https://uviewpro.cn/zh/">{{ t('link.linkText') }}</ux-link>
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('link.colorTitle')" :desc="t('link.colorDesc')" :code="codes.color">
+            <view class="link-demo-row">
+                <view class="link-item"><ux-link href="https://uviewpro.cn/zh/" color="red">{{ t('link.redLink') }}</ux-link></view>
+                <view class="link-item"><ux-link href="https://uviewpro.cn/zh/" color="#19be6b">{{ t('link.greenLink') }}</ux-link></view>
+                <view class="link-item"><ux-link href="https://uviewpro.cn/zh/" color="#2979ff">{{ t('link.themeLink') }}</ux-link></view>
+            </view>
+        </demo-block>
+
+        <!-- 自定义大小 -->
+        <demo-block :title="t('link.fontSizeTitle')" :desc="t('link.fontSizeDesc')" :code="codes.fontSize">
+            <view class="link-demo-col">
+                <view class="link-item-col"><ux-link href="https://uviewpro.cn/zh/" :font-size="12">{{ t('link.smallLink') }}</ux-link></view>
+                <view class="link-item-col"><ux-link href="https://uviewpro.cn/zh/" :font-size="17">{{ t('link.largeLink') }}</ux-link></view>
+            </view>
+        </demo-block>
+
+        <!-- 下划线 -->
+        <demo-block :title="t('link.underlineTitle')" :desc="t('link.underlineDesc')" :code="codes.underline">
+            <view class="link-demo-row">
+                <view class="link-item"><ux-link href="https://uviewpro.cn/zh/" under-line>{{ t('link.withUnderline') }}</ux-link></view>
+                <view class="link-item"><ux-link href="https://uviewpro.cn/zh/">{{ t('link.withoutUnderline') }}</ux-link></view>
+            </view>
+        </demo-block>
+
+        <!-- 自定义下划线颜色 -->
+        <demo-block :title="t('link.lineColorTitle')" :desc="t('link.lineColorDesc')" :code="codes.lineColor">
+            <ux-link href="https://uviewpro.cn/zh/" under-line color="#2979ff" line-color="#fa3534">{{ t('link.blueRedUnderline') }}</ux-link>
+        </demo-block>
+
+        <!-- 自定义点击事件 -->
+        <demo-block :title="t('link.clickTitle')" :desc="t('link.clickDesc')" :code="codes.click">
+            <ux-link href="https://uviewpro.cn/zh/" :default-click="false" @click="onLinkClick">{{ t('link.clickText') }}</ux-link>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+
+    const onLinkClick = (href: string) => {
+        uni.showToast({
+            title: t('link.toastIntercept', { href: href }),
+            icon: 'none'
+        });
+    };
+</script>
+
+<style lang="scss">
+    .link-demo-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .link-item {
+        flex-direction: row;
+        margin-right: 15px;
+        margin-bottom: 8px;
+    }
+
+    .link-demo-col {
+        display: flex;
+        flex-direction: column;
+        margin-top: 8px;
+    }
+
+    .link-item-col {
+        flex-direction: column;
+        margin-bottom: 8px;
+    }
+
+</style>

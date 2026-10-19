@@ -1,0 +1,199 @@
+/**
+ * icon 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const grid = `
+<template>
+    <view class="icon-grid">
+        <view class="icon-item" v-for="(item, index) in iconList" :key="index">
+            <ux-icon :name="item.name" size="20" color="#909399"></ux-icon>
+            <text class="icon-name">{{ item.name }}</text>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+const iconList = [
+    { name: 'home' },
+    { name: 'star' },
+    { name: 'search' },
+    { name: 'setting' },
+    { name: 'phone' },
+    { name: 'heart' }
+];
+</script>
+
+<style scoped>
+.icon-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 33.33%;
+    padding: 12px 0;
+}
+.icon-name {
+    font-size: 11px;
+    color: #909399;
+    margin-top: 6px;
+}
+</style>
+`;
+
+/** 尺寸与颜色 */
+const custom = `
+<template>
+    <view class="icon-row">
+        <ux-icon name="home" size="15" color="#2979ff" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="home" size="20" color="#2979ff" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="home" size="25" color="#2979ff" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="home" size="30" color="#2979ff" custom-class="icon-spacing"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-spacing {
+    margin-right: 16px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 加粗 */
+const bold = `
+<template>
+    <view class="icon-row">
+        <ux-icon name="home" bold size="20" color="#2979ff" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="home" size="20" color="#2979ff" custom-class="icon-spacing"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-spacing {
+    margin-right: 16px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 图片图标 */
+const img = `
+<template>
+    <view class="icon-row">
+        <ux-icon name="/static/logo.png" width="30" height="30" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="/static/logo.png" img-mode="aspectFit" width="30" height="30" custom-class="icon-spacing"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-spacing {
+    margin-right: 16px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 主题色 */
+const type = `
+<template>
+    <view class="icon-row">
+        <ux-icon name="star-fill" size="20" type="primary" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="heart-fill" size="20" type="success" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="bell-fill" size="20" type="error" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="setting-fill" size="20" type="warning" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="info-circle" size="20" type="info" custom-class="icon-spacing"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-spacing {
+    margin-right: 16px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 自定义前缀 */
+const prefix = `
+<template>
+    <view class="icon-row">
+        <ux-icon name="gift" size="20" custom-prefix="custom-icon" custom-class="icon-spacing"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-spacing {
+    margin-right: 16px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 垂直微调 */
+const top = `
+<template>
+    <view class="icon-row">
+        <ux-icon name="star-fill" size="20" type="primary" top="4" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="heart-fill" size="20" color="#fa3534" top="0" custom-class="icon-spacing"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-spacing {
+    margin-right: 16px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+export const codes = {
+    custom,
+    bold,
+    type,
+    prefix,
+    top,
+    img,
+    grid
+};

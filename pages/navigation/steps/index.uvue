@@ -1,0 +1,88 @@
+<template>
+    <demo-page :title="t('steps.title')" :subtitle="t('steps.subtitle')">
+
+        <demo-block :title="t('steps.dotTitle')" :desc="t('steps.dotDesc')" :code="codes.dot">
+            <ux-steps :current="current1">
+                <ux-step :name="t('steps.step1')" />
+                <ux-step :name="t('steps.step2')" />
+                <ux-step :name="t('steps.step3')" />
+            </ux-steps>
+        </demo-block>
+
+        <demo-block :title="t('steps.numberTitle')" :desc="t('steps.numberDesc')" :code="codes.number">
+            <ux-steps mode="number" :current="current2">
+                <ux-step :name="t('steps.step1')" />
+                <ux-step :name="t('steps.step2')" />
+                <ux-step :name="t('steps.step3')" />
+                <ux-step :name="t('steps.step4')" />
+            </ux-steps>
+        </demo-block>
+
+        <demo-block :title="t('steps.verticalTitle')" :desc="t('steps.verticalDesc')" :code="codes.vertical">
+            <ux-steps direction="column" :current="current3">
+                <ux-step :name="t('steps.step1')" :desc="t('steps.step1Desc')" />
+                <ux-step :name="t('steps.step2')" :desc="t('steps.step2Desc')" />
+                <ux-step :name="t('steps.step3')" :desc="t('steps.step3Desc')" />
+            </ux-steps>
+        </demo-block>
+
+        <demo-block :title="t('steps.colorTitle')" :desc="t('steps.colorDesc')" :code="codes.color">
+            <ux-steps mode="number" :current="current4" active-color="#fa3534" inactive-color="#909399">
+                <ux-step :name="t('steps.step1')" />
+                <ux-step :name="t('steps.step2')" />
+                <ux-step :name="t('steps.step3')" />
+            </ux-steps>
+        </demo-block>
+
+        <demo-block :title="t('steps.controlTitle')" :desc="t('steps.controlDesc')" :code="codes.control">
+            <ux-steps mode="number" :current="current5">
+                <ux-step :name="t('steps.step1')" />
+                <ux-step :name="t('steps.step2')" />
+                <ux-step :name="t('steps.step3')" />
+            </ux-steps>
+            <view class="demo-btn-row">
+                <ux-button custom-class="demo-btn-item" size="small" shape="round" @click="prevStep" :disabled="current5 === 0">{{ t('steps.prev') }}</ux-button>
+                <ux-button size="small" shape="round" type="primary" @click="nextStep" :disabled="current5 === 2">{{ t('steps.next') }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const current1 = ref<number>(1);
+const current2 = ref<number>(2);
+const current3 = ref<number>(1);
+const current4 = ref<number>(1);
+const current5 = ref<number>(0);
+
+function prevStep(): void {
+    if (current5.value > 0) {
+        current5.value--;
+    }
+}
+
+function nextStep(): void {
+    if (current5.value < 2) {
+        current5.value++;
+    }
+}
+</script>
+
+<style lang="scss">
+
+.demo-btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+.demo-btn-item {
+    margin-right: 10px;
+}
+</style>

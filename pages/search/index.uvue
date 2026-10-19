@@ -1,0 +1,390 @@
+<template>
+    <view class="search-page">
+        <!-- 导航栏：主题主色渐变背景，白字，返回上一页 -->
+        <ux-navbar
+            :title="t('searchPage.title')"
+            :background="navBackground"
+            :border-bottom="false"
+            title-color="#ffffff"
+            back-icon-color="#ffffff"
+        ></ux-navbar>
+
+        <!-- 搜索框 -->
+        <view class="search-bar">
+            <ux-search
+                v-model="keyword"
+                :placeholder="t('searchPage.placeholder')"
+                :action-text="t('searchPage.searchBtn')"
+                :focus="true"
+                @search="onSearch"
+                @custom="onSearch"
+            />
+        </view>
+
+        <!-- 无关键字：展示搜索历史 -->
+        <view class="search-body" v-if="!isSearching">
+            <view class="search-history" v-if="history.length > 0">
+                <view class="search-history-header">
+                    <text class="search-history-title">{{ t('searchPage.historyTitle') }}</text>
+                    <view class="search-history-clear" @click="clearHistory">
+                        <ux-icon name="trash" size="14" :color="$u.color.lightColor" />
+                        <text class="search-history-clear-text">{{ t('searchPage.clearText') }}</text>
+                    </view>
+                </view>
+                <view class="search-history-list">
+                    <view
+                        class="search-history-item"
+                        v-for="(h, hIdx) in history"
+                        :key="hIdx"
+                        @click="onHistoryClick(h)"
+                    >
+                        <text class="search-history-item-text">{{ h }}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 有关键字：展示搜索结果 -->
+        <view class="search-body" v-else>
+            <view class="search-list" v-if="results.length > 0">
+                <view
+                    class="search-item"
+                    v-for="(item, itemIdx) in results"
+                    :key="itemIdx"
+                    :class="item.last ? 'search-item--last' : ''"
+                    @click="onResultClick(item)"
+                >
+                    <view class="search-item-icon" :style="'background-color:' + $u.color.primary">
+                        <text class="search-item-icon-text">{{ item.icon }}</text>
+                    </view>
+                    <view class="search-item-body">
+                        <text class="search-item-name">{{ item.name }}</text>
+                        <text class="search-item-zh" v-if="item.zhName !== ''">{{ item.zhName }}</text>
+                    </view>
+                    <text class="search-item-arrow">›</text>
+                </view>
+            </view>
+            <view class="search-empty" v-else>
+                <text class="search-empty-text">{{ t('searchPage.noResult') }}</text>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+import { componentCategories } from '../tabbar/config';
+
+/** 搜索结果项 */
+type SearchResult = {
+    name: string;
+    zhName: string;
+    icon: string;
+    path: string;
+    /** 是否为末项（末项去自身底线，底部收口线由 .search-list 容器提供）。
+       标记在数据层计算：App 端蒸汽引擎下，v-for 子项的动态绑定里读取源数组自身（如 results.length）
+       会触发 FlushJobs 字段表越界原生崩溃（UniDynamicSharedDataState field N is outside of class M range），
+       依赖必须收窄在项自身字段上 */
+    last: boolean;
+};
+
+const { t } = useLocale('demo');
+
+// 搜索历史本地存储：数组以分隔符拼接为字符串存储，规避 UTS 端存储数组类型差异
+const HISTORY_KEY = 'ux-pro-x-search-history';
+const HISTORY_SEP = '\u0001';
+const HISTORY_MAX = 10;
+
+/** 输入关键字 */
+const keyword = ref<string>('');
+
+/** 是否处于搜索状态（关键字非空） */
+const isSearching = computed<boolean>(() => keyword.value.trim() !== '');
+
+/** 全部组件平铺索引 */
+const searchIndex = computed<SearchResult[]>(() => {
+    const list: SearchResult[] = [];
+    const cats = componentCategories;
+    for (let i = 0; i < cats.length; i++) {
+        const items = cats[i].items;
+        for (let j = 0; j < items.length; j++) {
+            const item = items[j];
+            list.push({
+                name: item.name,
+                zhName: $u.strOr(item.zhName, ''),
+                icon: item.icon,
+                path: item.path,
+                last: false
+            });
+        }
+    }
+    return list;
+});
+
+/**
+ * 模糊搜索结果：按组件英文名（含 ux- 前缀真实名）与中文名做包含匹配
+ */
+const results = computed<SearchResult[]>(() => {
+    const kw = keyword.value.trim();
+    if (kw === '') {
+        return [];
+    }
+    const kwLower = kw.toLowerCase();
+    const list: SearchResult[] = [];
+    const index = searchIndex.value;
+    for (let i = 0; i < index.length; i++) {
+        const item = index[i];
+        const nameLower = item.name.toLowerCase();
+        if (nameLower.indexOf(kwLower) > -1 || ('ux-' + nameLower).indexOf(kwLower) > -1 || item.zhName.indexOf(kw) > -1) {
+            list.push(item);
+        }
+    }
+    // 末项标记在数据层下沉，模板项内表达式不再引用 results 自身
+    if (list.length > 0) {
+        list[list.length - 1].last = true;
+    }
+    return list;
+});
+
+/** 搜索历史 */
+const history = ref<string[]>(readHistory());
+
+/** 读取本地搜索历史 */
+function readHistory(): string[] {
+    try {
+        const raw = uni.getStorageSync(HISTORY_KEY);
+        if (raw != null && typeof raw === 'string' && (raw as string).length > 0) {
+            const parts = (raw as string).split(HISTORY_SEP);
+            const list: string[] = [];
+            for (let i = 0; i < parts.length; i++) {
+                const p = parts[i];
+                if (p.length > 0) {
+                    list.push(p);
+                }
+            }
+            return list;
+        }
+    } catch (e) {
+        // 忽略读取失败
+    }
+    return [];
+}
+
+/** 写入本地搜索历史 */
+function writeHistory(list: string[]): void {
+    try {
+        uni.setStorageSync(HISTORY_KEY, list.join(HISTORY_SEP));
+    } catch (e) {
+        // 忽略写入失败
+    }
+}
+
+/**
+ * 记录搜索历史：去重后置顶，最多保留 HISTORY_MAX 条
+ */
+function saveHistory(value: string): void {
+    const k = value.trim();
+    if (k === '') {
+        return;
+    }
+    const cur = history.value;
+    const list: string[] = [k];
+    for (let i = 0; i < cur.length && list.length < HISTORY_MAX; i++) {
+        if (cur[i] !== k) {
+            list.push(cur[i]);
+        }
+    }
+    history.value = list;
+    writeHistory(list);
+}
+
+/** 清空搜索历史 */
+function clearHistory(): void {
+    history.value = [];
+    writeHistory([]);
+}
+
+/** 确认搜索（回车 / 点击搜索按钮） */
+function onSearch(value: string): void {
+    saveHistory(value);
+}
+
+/** 点击历史条目：回填关键字并置顶 */
+function onHistoryClick(value: string): void {
+    keyword.value = value;
+    saveHistory(value);
+}
+
+/** 点击搜索结果：记录历史后跳转 */
+function onResultClick(item: SearchResult): void {
+    saveHistory(keyword.value);
+    uni.navigateTo({ url: '/pages/' + item.path });
+}
+
+// 导航栏背景：主题主色左→右渐变（primary → 与黑色 50% 混合的加深色），标题置白字
+const navBackground = computed<UTSJSONObject>(() => {
+    const style = new UTSJSONObject();
+    const end = $u.mixColor($u.color.primary, '#000000', 0.5);
+    style['background-image'] = 'linear-gradient(90deg, ' + $u.color.primary + ' 0%, ' + end + ' 100%)';
+    return style;
+});
+</script>
+
+<style lang="scss">
+.search-page {
+    /* #ifndef APP */
+    min-height: 100vh;
+    /* #endif */
+    /* #ifdef APP */
+    flex: 1;
+    /* #endif */
+    background-color: $u-bg-color;
+}
+
+/* ========== 搜索框 ========== */
+.search-bar {
+    /* 白色底与页面灰底形成层次，避免 ux-search 默认灰底胶囊在灰页面上"隐形" */
+    padding: 12px 15px;
+    background-color: $u-bg-white;
+}
+
+/* ========== 历史 / 结果容器 ========== */
+.search-body {
+    /* 顶部间距与白色搜索条拉开距离，避免内容区紧贴搜索条 */
+    padding: 12px 15px 0;
+}
+
+/* ========== 搜索历史 ========== */
+.search-history {
+    background-color: $u-bg-white;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.search-history-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.search-history-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: bold;
+    color: $u-main-color;
+}
+
+.search-history-clear {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.search-history-clear-text {
+    font-size: 12px;
+    color: $u-light-color;
+    margin-left: 4px;
+}
+
+.search-history-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.search-history-item {
+    padding: 6px 12px;
+    border-radius: 14px;
+    background-color: $u-bg-gray-light;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.search-history-item-text {
+    font-size: 12px;
+    color: $u-content-color;
+}
+
+/* ========== 搜索结果 ========== */
+.search-list {
+    background-color: $u-bg-white;
+    border-radius: 8px;
+    overflow: hidden;
+    /* 底部收口线：只有一个 item 或最后一个 item 时，底部必须显示下划线。
+       由容器自身渲染底线，保证上述两种情况下线条完整可见，且两端随卡片圆角自然收口 */
+    border-bottom: 1px solid $u-border-color;
+}
+
+.search-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 12px;
+    /* 行间分隔线：最后一项（含仅一项）不在此画，底部线由 .search-list 容器统一提供 */
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: $u-border-color;
+}
+
+/* 最后一个（含仅此一个）item：自身不画底线，底部下划线统一由 .search-list 容器渲染，避免双线叠加 */
+.search-item--last {
+    border-bottom: none;
+}
+
+.search-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-right: 11px;
+}
+
+.search-item-icon-text {
+    font-size: 15px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.search-item-body {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.search-item-name {
+    font-size: 14px;
+    color: $u-main-color;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.search-item-zh {
+    font-size: 12px;
+    color: $u-tips-color;
+}
+
+.search-item-arrow {
+    font-size: 18px;
+    color: $u-light-color;
+    margin-left: 6px;
+}
+
+/* ========== 空状态 ========== */
+.search-empty {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 15px;
+}
+
+.search-empty-text {
+    font-size: 14px;
+    color: $u-tips-color;
+}
+</style>

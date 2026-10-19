@@ -1,0 +1,96 @@
+﻿<template>
+    <demo-page :title="t('line.title')" :subtitle="t('line.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('line.basicTitle')" :code="codes.basic">
+            <ux-line></ux-line>
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('line.colorTitle')" :code="codes.color">
+            <ux-line color="#f56c6c"></ux-line>
+        </demo-block>
+
+        <!-- 自定义长度 -->
+        <demo-block :title="t('line.lengthTitle')" :code="codes.length">
+            <ux-line length="50%"></ux-line>
+            <ux-line length="150px"></ux-line>
+        </demo-block>
+
+        <!-- 竖向线条 -->
+        <demo-block :title="t('line.colTitle')" :code="codes.col">
+            <view class="line-row-box">
+                <view class="line-row-item">
+                    <text class="line-row-text">{{ t('line.contentOne') }}</text>
+                    <ux-line direction="col" length="50px" margin="0 10px"></ux-line>
+                    <text class="line-row-text">{{ t('line.contentTwo') }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 线条类型 -->
+        <demo-block :title="t('line.borderStyleTitle')" :code="codes.borderStyle">
+            <ux-line border-style="dashed"></ux-line>
+            <ux-line border-style="dotted"></ux-line>
+        </demo-block>
+
+        <!-- 粗细线条 -->
+        <demo-block :title="t('line.hairLineTitle')" :code="codes.hairLine">
+            <ux-line></ux-line>
+            <ux-line :hair-line="false"></ux-line>
+        </demo-block>
+
+        <!-- 边距 -->
+        <demo-block :title="t('line.marginTitle')" :code="codes.margin">
+            <view class="line-margin-box">
+                <text class="line-margin-text">{{ t('line.blockOne') }}</text>
+            </view>
+            <ux-line margin="15px 0"></ux-line>
+            <view class="line-margin-box">
+                <text class="line-margin-text">{{ t('line.blockTwo') }}</text>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+</script>
+
+<style lang="scss">
+    .line-row-box {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .line-row-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .line-row-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+
+    .line-margin-box {
+        width: 100%;
+        height: 40px;
+        background-color: $u-bg-color;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .line-margin-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

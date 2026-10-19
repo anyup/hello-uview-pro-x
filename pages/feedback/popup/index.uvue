@@ -1,0 +1,1025 @@
+﻿<template>
+    <demo-page :title="t('popup.title')" :subtitle="t('popup.subtitle')">
+
+        <!-- ==================== 分组 1 · 基础用法（mode） ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupBasic') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupBasicSub') }}</text>
+        </view>
+
+        <!-- B1 弹出方向：mode 五向 -->
+        <demo-block :title="t('popup.basicTitle')" :desc="t('popup.basicDesc')" :code="codes.basic">
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in modes"
+                    :key="index"
+                    :type="currentMode == item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    :text="item.label"
+                    @click="openByMode(item.value)"
+                ></ux-button>
+            </view>
+        </demo-block>
+
+        <!-- B2 内嵌面板：mode=inline -->
+        <demo-block :title="t('popup.inlineTitle')" :desc="t('popup.inlineDesc')" :code="codes.inline">
+            <ux-popup mode="inline" width="100%" :border-radius="8">
+                <view class="popup-body">
+                    <text class="popup-body-title">{{ t('popup.inlineTitle') }}</text>
+                    <view class="popup-params">
+                        <text v-for="(line, index) in inlineParams" :key="index" class="popup-params-item">{{ line }}</text>
+                    </view>
+                    <text class="popup-body-tip">{{ t('popup.inlineTip') }}</text>
+                </view>
+            </ux-popup>
+        </demo-block>
+
+        <!-- ==================== 分组 2 · 尺寸与位置 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupSize') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupSizeSub') }}</text>
+        </view>
+
+        <!-- B3 尺寸：length / width / height -->
+        <demo-block :title="t('popup.sizeTitle')" :desc="t('popup.sizeDesc')" :code="codes.size">
+            <view class="btn-wrap">
+                <ux-button custom-class="btn-item" shape="round" type="primary" :text="t('popup.sizeBottom')" @click="openSize('bottom', '45%', '', '')"></ux-button>
+                <ux-button custom-class="btn-item" shape="round" type="primary" :text="t('popup.sizeCenter')" @click="openSize('center', 'auto', '70%', '45%')"></ux-button>
+                <ux-button custom-class="btn-item" shape="round" type="primary" :text="t('popup.sizeLeft')" @click="openSize('left', '60%', '', '')"></ux-button>
+            </view>
+        </demo-block>
+
+        <!-- B4 圆角、背景色与居中偏移：border-radius / bg-color / margin-top -->
+        <demo-block :title="t('popup.radiusTitle')" :desc="t('popup.radiusDesc')" :code="codes.appearance">
+            <ux-cell-group>
+                <ux-cell-item :title="bgOn ? t('popup.bgOn') : t('popup.bgOff')" :arrow="false" :border-bottom="false">
+                    <ux-switch v-model="bgOn"></ux-switch>
+                </ux-cell-item>
+            </ux-cell-group>
+            <text class="popup-level-label">{{ t('popup.radiusLevel') }}</text>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in radiusList"
+                    :key="index"
+                    :type="radiusValue == item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    :text="item.label"
+                    @click="radiusValue = item.value"
+                ></ux-button>
+            </view>
+            <text class="popup-level-label">{{ t('popup.marginTopLevel') }}</text>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in marginTopList"
+                    :key="index"
+                    :type="marginTopValue == item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    :text="item.label"
+                    @click="marginTopValue = item.value"
+                ></ux-button>
+            </view>
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.openRadius')" @click="appearanceShow = true"></ux-button>
+        </demo-block>
+
+        <!-- ==================== 分组 3 · 遮罩 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupMask') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupMaskSub') }}</text>
+        </view>
+
+        <!-- B5 遮罩显隐与点击关闭：mask / mask-close-able -->
+        <demo-block :title="t('popup.maskTitle')" :desc="t('popup.maskDesc')" :code="codes.mask">
+            <ux-cell-group>
+                <ux-cell-item :title="maskShow ? t('popup.maskShow') : t('popup.maskNotShow')" :arrow="false">
+                    <ux-switch v-model="maskShow"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="maskClickClose ? t('popup.maskClickClose') : t('popup.maskNotClickClose')" :arrow="false" :border-bottom="false">
+                    <ux-switch v-model="maskClickClose"></ux-switch>
+                </ux-cell-item>
+            </ux-cell-group>
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.openMask')" @click="maskShowPopup = true"></ux-button>
+        </demo-block>
+
+        <!-- B6 遮罩样式与层级：mask-custom-style / z-index -->
+        <demo-block :title="t('popup.maskStyleTitle')" :desc="t('popup.maskStyleDesc')" :code="codes.maskStyle">
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.openMaskStyle')" @click="maskStyleShow = true"></ux-button>
+        </demo-block>
+
+        <!-- ==================== 分组 4 · 关闭图标 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupCloseIcon') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupCloseIconSub') }}</text>
+        </view>
+
+        <!-- B7 关闭图标：closeable / close-icon / -position / -color / -size -->
+        <demo-block :title="t('popup.closeTitle')" :desc="t('popup.closeDesc')" :code="codes.close">
+            <ux-cell-group>
+                <ux-cell-item :title="closeableOn ? t('popup.closeableOn') : t('popup.closeableOff')" :arrow="false">
+                    <ux-switch v-model="closeableOn"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="closeIconCircle ? t('popup.closeIconCircle') : t('popup.closeIconPlain')" :arrow="false">
+                    <ux-switch v-model="closeIconCircle"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="closeIconPrimary ? t('popup.closeIconPrimary') : t('popup.closeIconError')" :arrow="false" :border-bottom="false">
+                    <ux-switch v-model="closeIconPrimary"></ux-switch>
+                </ux-cell-item>
+            </ux-cell-group>
+            <text class="popup-level-label">{{ t('popup.closePos') }}</text>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(pos, index) in closePositions"
+                    :key="index"
+                    :type="closeIconPosValue == pos.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    :text="pos.label"
+                    @click="openByClosePos(pos.value)"
+                ></ux-button>
+            </view>
+        </demo-block>
+
+        <!-- ==================== 分组 5 · 安全区与动画 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupSafeAnim') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupSafeAnimSub') }}</text>
+        </view>
+
+        <!-- B8 安全区适配：safe-area-inset-bottom / safe-area-inset-top -->
+        <demo-block :title="t('popup.safeAreaTitle')" :desc="t('popup.safeAreaDesc')" :code="codes.safeArea">
+            <ux-cell-group>
+                <ux-cell-item :title="safeAreaInsetBottom ? t('popup.safeAreaBottomOn') : t('popup.safeAreaBottomOff')" :arrow="false">
+                    <ux-switch v-model="safeAreaInsetBottom"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="safeAreaInsetTop ? t('popup.safeAreaTopOn') : t('popup.safeAreaTopOff')" :arrow="false" :border-bottom="false">
+                    <ux-switch v-model="safeAreaInsetTop"></ux-switch>
+                </ux-cell-item>
+            </ux-cell-group>
+            <view class="btn-wrap btn-wrap--first">
+                <ux-button custom-class="btn-item" shape="round" type="primary" :text="t('popup.openSafeArea')" @click="safeAreaShow = true"></ux-button>
+                <ux-button custom-class="btn-item" shape="round" type="primary" :text="t('popup.openSafeAreaTop')" @click="safeAreaTopShow = true"></ux-button>
+                <ux-button custom-class="btn-item" shape="round" type="primary" :text="t('popup.openSafeAreaLeft')" @click="safeAreaLeftShow = true"></ux-button>
+            </view>
+            <text class="popup-config-tip">{{ t('popup.safeEdgeTip') }}</text>
+        </demo-block>
+
+        <!-- B9 过渡时长与缩放：duration / zoom -->
+        <demo-block :title="t('popup.durationTitle')" :desc="t('popup.durationDesc')" :code="codes.anim">
+            <ux-cell-group>
+                <ux-cell-item :title="zoomOn ? t('popup.zoomOn') : t('popup.zoomOff')" :arrow="false" :border-bottom="false">
+                    <ux-switch v-model="zoomOn"></ux-switch>
+                </ux-cell-item>
+            </ux-cell-group>
+            <text class="popup-level-label">{{ t('popup.durationLevel') }}</text>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in durationList"
+                    :key="index"
+                    :type="duration == item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    :text="item.label"
+                    @click="duration = item.value"
+                ></ux-button>
+            </view>
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.openDuration')" @click="durationShow = true"></ux-button>
+        </demo-block>
+
+        <!-- ==================== 分组 6 · 下拉关闭手势 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupSlide') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupSlideSub') }}</text>
+        </view>
+
+        <!-- B10 手势关闭：show-drag-bar / close-on-slide-down / slide-down-threshold / scroll-id -->
+        <demo-block :title="t('popup.slideTitle')" :desc="t('popup.slideDesc')" :code="codes.slide">
+            <ux-cell-group>
+                <ux-cell-item :title="dragBarOn ? t('popup.dragBarOn') : t('popup.dragBarOff')" :arrow="false">
+                    <ux-switch v-model="dragBarOn"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="slideClose ? t('popup.slideCloseOn') : t('popup.slideCloseOff')" :arrow="false" :border-bottom="false">
+                    <ux-switch v-model="slideClose"></ux-switch>
+                </ux-cell-item>
+            </ux-cell-group>
+            <text class="popup-level-label">{{ t('popup.thresholdLevel') }}</text>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in thresholdList"
+                    :key="index"
+                    :type="threshold == item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    :text="item.label"
+                    @click="threshold = item.value"
+                ></ux-button>
+            </view>
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.openDrag')" @click="slideShow = true"></ux-button>
+            <text class="popup-config-tip">{{ t('popup.slideTip') }}</text>
+        </demo-block>
+
+        <!-- ==================== 分组 7 · 受控与拦截 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupControl') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupControlSub') }}</text>
+        </view>
+
+        <!-- B11 关闭前拦截：before-close -->
+        <demo-block :title="t('popup.beforeTitle')" :desc="t('popup.beforeDesc')" :code="codes.beforeClose">
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.beforeOpen')" @click="openBefore()"></ux-button>
+        </demo-block>
+
+        <!-- B12 受控关闭：popup=false -->
+        <demo-block :title="t('popup.controlledTitle')" :desc="t('popup.controlledDesc')" :code="codes.controlled">
+            <ux-button block custom-class="btn-open" shape="round" type="primary" :text="t('popup.openControlled')" @click="controlledShow = true"></ux-button>
+        </demo-block>
+
+        <!-- ==================== 分组 8 · 事件与诊断 ==================== -->
+        <view class="popup-group">
+            <text class="popup-group-title">{{ t('popup.groupEvent') }}</text>
+            <text class="popup-group-sub">{{ t('popup.groupEventSub') }}</text>
+        </view>
+
+        <!-- B13 事件计数：opened / closed（只保留计数，不记详细日志） -->
+        <demo-block :title="t('popup.countTitle')" :desc="t('popup.countDesc')">
+            <ux-cell-group>
+                <ux-cell-item :title="t('popup.countOpen')" :value="openCount" :arrow="false"></ux-cell-item>
+                <ux-cell-item :title="t('popup.countClose')" :value="closeCount" :arrow="false"></ux-cell-item>
+                <ux-cell-item :title="t('popup.duration')" :value="durationText" :arrow="false" :border-bottom="false"></ux-cell-item>
+            </ux-cell-group>
+            <ux-button block custom-class="btn-open" shape="round" :text="t('popup.countReset')" @click="resetCount()"></ux-button>
+        </demo-block>
+
+        <!-- ==================== 以下为各演示块的弹窗实例 ==================== -->
+
+        <!-- B1 弹出方向弹窗 -->
+        <ux-popup v-model:show="show" :mode="currentMode" :closeable="true" length="50%" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ getModeLabel(currentMode) }} {{ t('popup.popupContent') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in modeParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.containerTip') }}</text>
+                <view class="popup-body-action">
+                    <ux-button block type="primary" :text="t('popup.close')" @click="close()"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B3 尺寸弹窗（三入口共用一个实例，尺寸项由 openSize 写入） -->
+        <ux-popup v-model:show="sizeShow" :mode="sizeMode" :length="sizeLength" :width="sizeWidth" :height="sizeHeight" :border-radius="12" :closeable="true" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ getModeLabel(sizeMode) }} {{ t('popup.sizeTitle') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in sizeParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.sizeTip') }}</text>
+                <view class="popup-body-action">
+                    <ux-button block type="primary" :text="t('popup.close')" @click="sizeShow = false"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B4 圆角 / 背景色 / 居中偏移弹窗（内容区不设背景，bg-color 才能整块透出） -->
+        <ux-popup v-model:show="appearanceShow" mode="center" width="70%" :border-radius="radiusValue" :bg-color="appearanceBgColor" :margin-top="marginTopValue" :closeable="true" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.radiusTitle') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in appearanceParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.radiusTip') }}</text>
+                <view class="popup-body-action">
+                    <ux-button block type="primary" :text="t('popup.close')" @click="appearanceShow = false"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B5 遮罩配置弹窗 -->
+        <ux-popup v-model:show="maskShowPopup" mode="top" length="45%" :mask="maskShow" :mask-close-able="maskClickClose" :border-radius="12" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.openMask') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in maskParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.maskTip') }}</text>
+                <view class="popup-body-action">
+                    <ux-button block type="primary" :text="t('popup.close')" @click="maskShowPopup = false"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B6 遮罩样式与层级弹窗 -->
+        <ux-popup v-model:show="maskStyleShow" mode="center" width="70%" height="38%" :border-radius="12" :closeable="true" :mask-custom-style="maskCustomStyle" :z-index="2000" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.openMaskStyle') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in maskStyleParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B7 关闭图标弹窗（关闭图标自身就是点击入口，故内容区只留参数回显） -->
+        <ux-popup
+            v-model:show="closeShow"
+            mode="bottom"
+            length="35%"
+            :border-radius="12"
+            :closeable="closeableOn"
+            :close-icon="closeIconName"
+            :close-icon-position="closeIconPosValue"
+            :close-icon-color="closeIconColor"
+            :close-icon-size="22"
+            :mask-close-able="true"
+            @closed="countClosed()"
+            @opened="countOpened()"
+        >
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.closeTitle') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in closeParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ closeableOn ? t('popup.closeIconTip') : t('popup.closeOffTip') }}</text>
+            </view>
+        </ux-popup>
+
+        <!-- B8 底部安全区弹窗：内容贴到根节点下边缘（贴底按钮 + 标尺），padding-bottom 才看得出差异 -->
+        <ux-popup v-model:show="safeAreaShow" mode="bottom" length="45%" :border-radius="12" :safe-area-inset-bottom="safeAreaInsetBottom" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body popup-body--fill">
+                <text class="popup-body-title">{{ t('popup.openSafeArea') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in safeBottomParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.safeBottomTip') }}</text>
+                <view class="popup-body-spacer"></view>
+                <view class="popup-body-action popup-body-action--flush">
+                    <ux-button block type="primary" shape="square" :border-radius="0" :text="t('popup.bottomAction')" @click="safeAreaShow = false"></ux-button>
+                    <view class="popup-safe-edge"></view>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B8 顶部安全区弹窗：贴顶标尺，padding-top 让它从状态栏下方开始 -->
+        <ux-popup v-model:show="safeAreaTopShow" mode="top" length="45%" :border-radius="12" :safe-area-inset-top="safeAreaInsetTop" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <view class="popup-safe-edge"></view>
+                <text class="popup-body-title">{{ t('popup.openSafeAreaTop') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in safeTopParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.safeTopTip') }}</text>
+                <view class="popup-body-action">
+                    <ux-button block type="primary" :text="t('popup.close')" @click="safeAreaTopShow = false"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B8 左侧抽屉弹窗：高度 100%，上下两端都贴屏幕边，两项避让同时生效 -->
+        <ux-popup v-model:show="safeAreaLeftShow" mode="left" length="70%" :border-radius="12" :safe-area-inset-bottom="safeAreaInsetBottom" :safe-area-inset-top="safeAreaInsetTop" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body popup-body--fill">
+                <view class="popup-safe-edge"></view>
+                <text class="popup-body-title">{{ t('popup.leftDrawerAction') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in safeLeftParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.safeLeftTip') }}</text>
+                <view class="popup-body-spacer"></view>
+                <view class="popup-body-action popup-body-action--flush">
+                    <ux-button block type="primary" shape="square" :border-radius="0" :text="t('popup.close')" @click="safeAreaLeftShow = false"></ux-button>
+                    <view class="popup-safe-edge"></view>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B9 过渡时长与缩放弹窗（center 方向 zoom 才生效） -->
+        <ux-popup v-model:show="durationShow" mode="center" width="70%" :border-radius="12" :duration="duration" :zoom="zoomOn" :closeable="true" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.durationTitle') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in animParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.animTip') }}</text>
+                <view class="popup-body-action">
+                    <ux-button block type="primary" :text="t('popup.close')" @click="durationShow = false"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B10 下拉关闭弹窗：滚动区靠 flex:1 拿确定高度，内部 10 行编号内容确保可滚 -->
+        <ux-popup
+            v-model:show="slideShow"
+            mode="bottom"
+            length="65%"
+            :border-radius="12"
+            :show-drag-bar="dragBarOn"
+            :close-on-slide-down="slideClose"
+            :slide-down-threshold="threshold"
+            scroll-id="popup-scroll-content"
+            @closed="countClosed()"
+            @opened="countOpened()"
+        >
+            <view class="popup-body popup-body--fill">
+                <text class="popup-body-title">{{ t('popup.openDrag') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in slideParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <scroll-view id="popup-scroll-content" class="popup-scroll">
+                    <view
+                        v-for="(row, index) in scrollRows"
+                        :key="index"
+                        class="popup-scroll-row"
+                        :class="index == scrollRows.length - 1 ? 'popup-scroll-row--last' : ''"
+                    >
+                        <text class="popup-scroll-row-no">{{ row }}</text>
+                        <text class="popup-scroll-row-text">{{ t('popup.scrollItemText') }}</text>
+                    </view>
+                </scroll-view>
+                <view class="popup-body-action popup-body-action--flush">
+                    <ux-button block type="primary" shape="square" :border-radius="0" :text="t('popup.close')" @click="slideShow = false"></ux-button>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- B11 关闭前拦截弹窗：只留组件内部关闭路径（图标 / 遮罩），才能被 before-close 拦下 -->
+        <ux-popup v-model:show="beforeShow" mode="bottom" length="35%" :border-radius="12" :before-close="beforeGuard" :closeable="true" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.beforeTitle') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in beforeParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.beforeHint') }}</text>
+            </view>
+        </ux-popup>
+
+        <!-- B12 受控关闭弹窗（popup=false：组件只派发 close，由本页回写） -->
+        <ux-popup v-model:show="controlledShow" mode="top" length="35%" :border-radius="12" :closeable="true" :popup="false" @close="onControlledClose()" @closed="countClosed()" @opened="countOpened()">
+            <view class="popup-body">
+                <text class="popup-body-title">{{ t('popup.openControlled') }}</text>
+                <view class="popup-params">
+                    <text v-for="(line, index) in controlledParams" :key="index" class="popup-params-item">{{ line }}</text>
+                </view>
+                <text class="popup-body-tip">{{ t('popup.controlledTip') }}</text>
+            </view>
+        </ux-popup>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useLocale, useSafeArea, useWindowInfo, type BeforeChangeInterceptor, type PopupCloseIconPos, type PopupMode } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+    // 安全区演示要回显真实高度：组件内部同样用这两个 hook 计算根节点 padding
+    const { bottom } = useSafeArea();
+    const { statusBarHeight } = useWindowInfo();
+
+    /* ------------------------- 公共回显工具 ------------------------- */
+
+    /** 回显行统一格式：`prop = 值`；值留空时标注为未设置，让「不传走什么」也可观察 */
+    function paramLine(key: string, value: string): string {
+        return key + ' = ' + (value != '' ? value : t('popup.unsetValue'));
+    }
+
+    /** 布尔值按代码字面量回显，避免中英文语境下「开启/关闭」与 true/false 混淆 */
+    function boolText(value: boolean): string {
+        return value ? 'true' : 'false';
+    }
+
+    /** 安全区高度回显：无安全区的设备要直说「本机看不出差异」，避免被当成组件失效 */
+    function insetText(px: number): string {
+        return px > 0 ? px.toString() + 'px' : t('popup.noSafeArea');
+    }
+
+    /* ------------------------- B1 / B2 基础用法 ------------------------- */
+
+    /** 弹出方向弹窗显隐 */
+    const show = ref(false);
+    /** 当前弹出方向（默认居中，保证首次打开也有确定值） */
+    const currentMode = ref<PopupMode>('center');
+
+    /** 可用的弹出方向选项 */
+    const modes: { value: PopupMode; label: string }[] = [
+        { label: t('popup.top'), value: 'top' },
+        { label: t('popup.bottom'), value: 'bottom' },
+        { label: t('popup.left'), value: 'left' },
+        { label: t('popup.right'), value: 'right' },
+        { label: t('popup.center'), value: 'center' }
+    ];
+
+    /** 根据方向取中文标签 */
+    function getModeLabel(mode: PopupMode): string {
+        const item = modes.find(m => m.value === mode);
+        return item != null ? item.label : mode;
+    }
+
+    /** 点击方向单元格，设置并打开 */
+    function openByMode(mode: PopupMode): void {
+        currentMode.value = mode;
+        show.value = true;
+    }
+
+    /** 关闭弹窗 */
+    function close(): void {
+        show.value = false;
+    }
+
+    const modeParams = computed<string[]>(() => [
+        paramLine('mode', currentMode.value),
+        paramLine('length', '50%'),
+        paramLine('closeable', boolText(true))
+    ]);
+
+    const inlineParams = computed<string[]>(() => [
+        paramLine('mode', 'inline'),
+        paramLine('width', '100%'),
+        paramLine('border-radius', '8')
+    ]);
+
+    /* ------------------------- B3 尺寸 ------------------------- */
+
+    /** 尺寸弹窗显隐 */
+    const sizeShow = ref(false);
+    /** 尺寸弹窗方向（三个入口分别落不同方向） */
+    const sizeMode = ref<PopupMode>('bottom');
+    /** 尺寸弹窗 length / width / height 实参（留空即未设置） */
+    const sizeLength = ref('45%');
+    const sizeWidth = ref('');
+    const sizeHeight = ref('');
+
+    /** 打开尺寸演示弹窗：入口直接给出该项的三维取值 */
+    function openSize(mode: PopupMode, length: string, width: string, height: string): void {
+        sizeMode.value = mode;
+        sizeLength.value = length;
+        sizeWidth.value = width;
+        sizeHeight.value = height;
+        sizeShow.value = true;
+    }
+
+    const sizeParams = computed<string[]>(() => [
+        paramLine('mode', sizeMode.value),
+        paramLine('length', sizeLength.value),
+        paramLine('width', sizeWidth.value),
+        paramLine('height', sizeHeight.value)
+    ]);
+
+    /* ------------------------- B4 圆角 / 背景 / 偏移 ------------------------- */
+
+    /** 外观弹窗显隐 */
+    const appearanceShow = ref(false);
+    /** 圆角档位（px 字符串，0 即直角） */
+    const radiusValue = ref('12');
+    /** 居中纵向偏移档位（px，正值下移、负值上移） */
+    const marginTopValue = ref('0');
+    /** 是否自定义背景色 */
+    const bgOn = ref(true);
+    /** 外观弹窗背景色：关闭时留空，走主题白底 */
+    const bgColorValue = '#eaf2ff';
+
+    const radiusList: { value: string; label: string }[] = [
+        { label: '0', value: '0' },
+        { label: '12', value: '12' },
+        { label: '24', value: '24' }
+    ];
+
+    const marginTopList: { value: string; label: string }[] = [
+        { label: '-80', value: '-80' },
+        { label: '0', value: '0' },
+        { label: '40', value: '40' }
+    ];
+
+    /** 传给组件的背景色：关闭时为 '' 表示未设置 */
+    const appearanceBgColor = computed<string>((): string => bgOn.value ? bgColorValue : '');
+
+    const appearanceParams = computed<string[]>(() => [
+        paramLine('border-radius', radiusValue.value),
+        paramLine('bg-color', appearanceBgColor.value),
+        paramLine('margin-top', marginTopValue.value)
+    ]);
+
+    /* ------------------------- B5 / B6 遮罩 ------------------------- */
+
+    /** 遮罩弹窗显隐 */
+    const maskShowPopup = ref(false);
+    /** 是否显示遮罩 */
+    const maskShow = ref(true);
+    /** 点击遮罩是否关闭 */
+    const maskClickClose = ref(true);
+
+    const maskParams = computed<string[]>(() => [
+        paramLine('mask', boolText(maskShow.value)),
+        paramLine('mask-close-able', boolText(maskClickClose.value)),
+        paramLine('mode', 'top'),
+        paramLine('length', '45%')
+    ]);
+
+    /** 遮罩样式弹窗显隐 */
+    const maskStyleShow = ref(false);
+    /** 遮罩自定义样式：蓝色半透明遮罩（键统一连字符） */
+    const maskCustomStyle = ref<UTSJSONObject>({
+        'background-color': 'rgba(24, 144, 255, 0.35)'
+    });
+
+    const maskStyleParams = computed<string[]>(() => [
+        paramLine('mask-custom-style', 'background-color: rgba(24,144,255,.35)'),
+        paramLine('z-index', '2000'),
+        paramLine('width', '70%'),
+        paramLine('height', '38%')
+    ]);
+
+    /* ------------------------- B7 关闭图标 ------------------------- */
+
+    /** 关闭图标弹窗显隐 */
+    const closeShow = ref(false);
+    /** 是否显示关闭图标 */
+    const closeableOn = ref(true);
+    /** 图标形态：true 用 close-circle，false 用 close */
+    const closeIconCircle = ref(true);
+    /** 图标颜色：true 主题蓝，false 错误红 */
+    const closeIconPrimary = ref(false);
+    /** 关闭图标位置（可切换） */
+    const closeIconPosValue = ref<PopupCloseIconPos>('top-right');
+    /** 关闭图标可选位置 */
+    const closePositions: { value: PopupCloseIconPos; label: string }[] = [
+        { label: t('popup.posTopLeft'), value: 'top-left' },
+        { label: t('popup.posTopRight'), value: 'top-right' },
+        { label: t('popup.posBottomLeft'), value: 'bottom-left' },
+        { label: t('popup.posBottomRight'), value: 'bottom-right' }
+    ];
+
+    const closeIconName = computed<string>((): string => closeIconCircle.value ? 'close-circle' : 'close');
+    const closeIconColor = computed<string>((): string => closeIconPrimary.value ? $u.strOr($u.color.primary) : $u.strOr($u.color.error));
+
+    /** 点击关闭图标位置单元格，设置并打开 */
+    function openByClosePos(pos: PopupCloseIconPos): void {
+        closeIconPosValue.value = pos;
+        closeShow.value = true;
+    }
+
+    const closeParams = computed<string[]>(() => [
+        paramLine('closeable', boolText(closeableOn.value)),
+        paramLine('close-icon', closeIconName.value),
+        paramLine('close-icon-position', closeIconPosValue.value),
+        paramLine('close-icon-color / size', closeIconColor.value + ' / 22')
+    ]);
+
+    /* ------------------------- B8 安全区 ------------------------- */
+
+    /** 底部安全区弹窗显隐 */
+    const safeAreaShow = ref(false);
+    /** 顶部安全区弹窗显隐 */
+    const safeAreaTopShow = ref(false);
+    /** 两端贴边（上下都避让）的左侧抽屉弹窗显隐 */
+    const safeAreaLeftShow = ref(false);
+    /** 底部安全区开关 */
+    const safeAreaInsetBottom = ref(true);
+    /** 顶部安全区开关 */
+    const safeAreaInsetTop = ref(true);
+
+    const safeBottomParams = computed<string[]>(() => [
+        paramLine('safe-area-inset-bottom', boolText(safeAreaInsetBottom.value)),
+        paramLine('useSafeArea().bottom', insetText(bottom.value)),
+        paramLine('mode', 'bottom'),
+        paramLine('length', '45%')
+    ]);
+
+    const safeTopParams = computed<string[]>(() => [
+        paramLine('safe-area-inset-top', boolText(safeAreaInsetTop.value)),
+        paramLine('statusBarHeight', insetText(statusBarHeight.value)),
+        paramLine('mode', 'top'),
+        paramLine('length', '45%')
+    ]);
+
+    const safeLeftParams = computed<string[]>(() => [
+        paramLine('safe-area-inset-top', boolText(safeAreaInsetTop.value)),
+        paramLine('safe-area-inset-bottom', boolText(safeAreaInsetBottom.value)),
+        paramLine('mode', 'left'),
+        paramLine('length', '70%')
+    ]);
+
+    /* ------------------------- B9 过渡时长与缩放 ------------------------- */
+
+    /** 动画弹窗显隐 */
+    const durationShow = ref(false);
+    /** 当前过渡时长（与 ux-popup 的 duration 默认值一致） */
+    const duration = ref(300);
+    /** 居中缩放动画开关（仅 center 生效） */
+    const zoomOn = ref(true);
+
+    const durationList: { value: number; label: string }[] = [
+        { label: '100ms', value: 100 },
+        { label: '300ms', value: 300 },
+        { label: '600ms', value: 600 }
+    ];
+
+    const animParams = computed<string[]>(() => [
+        paramLine('duration', duration.value.toString() + 'ms'),
+        paramLine('zoom', boolText(zoomOn.value)),
+        paramLine('mode', 'center')
+    ]);
+
+    /* ------------------------- B10 下拉关闭 ------------------------- */
+
+    /** 下拉关闭弹窗显隐 */
+    const slideShow = ref(false);
+    /** 拖拽条把手渲染开关 */
+    const dragBarOn = ref(true);
+    /** 内容区下拉关闭开关 */
+    const slideClose = ref(true);
+    /** 下拉触发阈值 */
+    const threshold = ref(80);
+
+    const thresholdList: { value: number; label: string }[] = [
+        { label: '40px', value: 40 },
+        { label: '80px', value: 80 },
+        { label: '120px', value: 120 }
+    ];
+
+    /** 滚动区行号（10 行确保内容高于可视区，滚动位移才看得见） */
+    const scrollRows = computed<string[]>(() => {
+        const rows: string[] = [];
+        for (let i = 1; i <= 10; i++) {
+            rows.push(i.toString());
+        }
+        return rows;
+    });
+
+    const slideParams = computed<string[]>(() => [
+        paramLine('show-drag-bar', boolText(dragBarOn.value)),
+        paramLine('close-on-slide-down', boolText(slideClose.value)),
+        paramLine('slide-down-threshold', threshold.value.toString() + 'px'),
+        paramLine('scroll-id', 'popup-scroll-content')
+    ]);
+
+    /* ------------------------- B11 关闭前拦截 ------------------------- */
+
+    /** 拦截演示弹窗显隐 */
+    const beforeShow = ref(false);
+    /** 本次演示已拦截次数：第一次拦下，第二次放行后清零 */
+    const beforeCount = ref(0);
+
+    /** 打开拦截演示弹窗：每次重新演示都从「未拦截」开始 */
+    function openBefore(): void {
+        beforeCount.value = 0;
+        beforeShow.value = true;
+    }
+
+    /** 拦截器：第一次返回 false 拦下关闭，第二次放行
+        注：只有组件内部的关闭路径（关闭图标 / 遮罩点击 / 下拉关闭）会走 before-close；
+        直接回写 v-model 不经过拦截，故本演示弹窗内部不放关闭入口。
+        拦截时 toast 佐证事件确实到达过页面，放行后关闭计数器才会 +1 */
+    const beforeGuard: BeforeChangeInterceptor = (): boolean => {
+        beforeCount.value = beforeCount.value + 1;
+        if (beforeCount.value == 1) {
+            uni.showToast({
+                title: t('popup.beforeTip'),
+                icon: 'none'
+            });
+            return false;
+        }
+        beforeCount.value = 0;
+        return true;
+    };
+
+    const beforeParams = computed<string[]>(() => [
+        paramLine('before-close', 'interceptor()'),
+        paramLine(t('popup.interceptCount'), beforeCount.value.toString()),
+        paramLine('closeable', boolText(true))
+    ]);
+
+    /* ------------------------- B12 受控关闭 ------------------------- */
+
+    /** 受控演示弹窗显隐（popup=false，回写由本页负责） */
+    const controlledShow = ref(false);
+
+    /** popup=false 契约：组件只派发 close，本页负责回写 false 驱动退场动画 */
+    function onControlledClose(): void {
+        controlledShow.value = false;
+    }
+
+    const controlledParams = computed<string[]>(() => [
+        paramLine('popup', boolText(false)),
+        paramLine('mode', 'top'),
+        paramLine(t('popup.controlledPair'), 'close → show=false')
+    ]);
+
+    /* ------------------------- B13 事件计数 ------------------------- */
+
+    /** 打开计数器：累加组件 opened 事件（全部实例共用一组） */
+    const openCount = ref(0);
+    /** 关闭计数器：累加组件 closed 事件 */
+    const closeCount = ref(0);
+
+    /** 当前时长档位文本，计数区回显用 */
+    const durationText = computed((): string => duration.value.toString() + 'ms');
+
+    /** opened → 打开计数 +1 */
+    function countOpened(): void {
+        openCount.value = openCount.value + 1;
+    }
+
+    /** closed → 关闭计数 +1 */
+    function countClosed(): void {
+        closeCount.value = closeCount.value + 1;
+    }
+
+    /** 清零两个计数器 */
+    function resetCount(): void {
+        openCount.value = 0;
+        closeCount.value = 0;
+    }
+</script>
+
+<style lang="scss">
+    /* ------------------------- 分组段落头 ------------------------- */
+    .popup-group {
+        padding: 0 4px;
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    .popup-group-title {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 15px;
+        font-weight: bold;
+        color: $u-main-color;
+    }
+
+    .popup-group-sub {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-tips-color;
+        line-height: 1.6;
+        margin-top: 2px;
+    }
+
+    /* ------------------------- 页面侧档位与提示 ------------------------- */
+    /* 档位/打开入口统一用 ux-button（与全库演示页一致）：.btn-wrap 横向流式排列，.btn-item 走间距，
+       单行入口另走 .btn-open（block 占满一行 + 顶部留白，不能直接贴在 cell-group 下边框上） */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    .btn-open {
+        margin-top: 12px;
+    }
+
+    /* 紧接在 ux-cell-group 后的档位/入口行：cell 组自身不带下外边距，由本类补出间距 */
+    .btn-wrap--first {
+        margin-top: 12px;
+    }
+
+    /* 档位行标题：原本放在 ux-cell-item 里，按钮化后单独占一行作标签 */
+    .popup-level-label {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 13px;
+        color: $u-content-color;
+        margin-top: 12px;
+        margin-bottom: 6px;
+    }
+
+    .popup-config-tip {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-tips-color;
+        line-height: 1.6;
+        margin-top: 8px;
+    }
+
+    /* ------------------------- 弹窗内容区 ------------------------- */
+    .popup-inline-body {
+        padding: 4px 0 12px 0;
+    }
+
+    .popup-body {
+        width: 100%;
+    }
+
+    /* 弹窗根节点在 bottom/top 方向已有确定高度，内容区用 flex:1 吃满剩余空间，
+       才能把贴边锚点（安全区演示的下沿按钮）送到根节点 padding 边界上 */
+    .popup-body--fill {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .popup-body-spacer {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .popup-body-title {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 16px;
+        font-weight: bold;
+        color: $u-main-color;
+        text-align: center;
+        /* 左右内缩必须避开关闭图标热区（图标尺寸 + CLOSE_ICON_INSET 16px 接近 40px），
+           否则长标题换行后最后一行会从图标底下穿过去 */
+        padding: 16px 44px 8px 44px;
+    }
+
+    /* 参数回显清单：把本例生效的 prop 与取值直接写在弹窗里，差异点不必回头对照演示块 */
+    .popup-params {
+        margin: 0 16px;
+        padding: 8px 10px;
+        background-color: $u-bg-color;
+        border-radius: 6px;
+    }
+
+    .popup-params-item {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-content-color;
+        line-height: 1.7;
+    }
+
+    .popup-body-tip {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-tips-color;
+        line-height: 1.6;
+        padding: 10px 16px 0 16px;
+    }
+
+    .popup-body-action {
+        padding: 16px;
+    }
+
+    /* 贴边形态：按钮与标尺直接坐到内容区末端，安全区 padding 的差异才可见 */
+    .popup-body-action--flush {
+        padding: 16px 0 0 0;
+    }
+
+    /* 安全区锚点标尺：贴在根节点内边缘的 3px 色条，开关切换时整体位移一个安全区高度 */
+    .popup-safe-edge {
+        width: 100%;
+        height: 3px;
+        background-color: $u-type-primary;
+    }
+
+    /* ------------------------- B10 滚动区 ------------------------- */
+    /* 滚动区必须拿到确定高度才能滚：父级已受限时用 flex:1，不能再叠 height（两者并存相当于
+       没有高度约束，滚动区会被内容撑开，反而滚不动）。上下留白由 margin 承担，边框标出可视视口 */
+    .popup-scroll {
+        flex: 1;
+        min-height: 0;
+        margin: 10px 16px 0 16px;
+        border: 1px solid $u-border-color;
+        border-radius: 6px;
+    }
+
+    .popup-scroll-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 44px;
+        padding: 0 10px;
+        border-bottom: 1px solid $u-border-color;
+    }
+
+    .popup-scroll-row--last {
+        border-bottom: none;
+    }
+
+    .popup-scroll-row-no {
+        font-size: 13px;
+        font-weight: bold;
+        color: $u-type-primary;
+        width: 26px;
+    }
+
+    .popup-scroll-row-text {
+        flex: 1;
+        min-width: 0;
+        font-size: 13px;
+        color: $u-content-color;
+    }
+</style>

@@ -1,0 +1,96 @@
+/**
+ * pagination 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-pagination v-model="current" :total="50" :page-size="5"></ux-pagination>
+</template>
+
+<script setup lang="uts">
+const current = ref<number>(1);
+</script>
+`;
+
+/** 图标按钮 */
+const icon = `
+<template>
+    <ux-pagination v-model="current" :total="50" :page-size="5" show-icon></ux-pagination>
+</template>
+
+<script setup lang="uts">
+const current = ref<number>(1);
+</script>
+`;
+
+/** 自定义文字 */
+const text = `
+<template>
+    <ux-pagination v-model="current" :total="50" :page-size="5" prev-text="Prev" next-text="Next"></ux-pagination>
+</template>
+
+<script setup lang="uts">
+const current = ref<number>(1);
+</script>
+`;
+
+/** 自定义样式 */
+const custom = `
+<template>
+    <ux-pagination v-model="current" :total="50" :page-size="5" show-icon :custom-style="customStyle"></ux-pagination>
+</template>
+
+<script setup lang="uts">
+import { createStyle } from '@/uni_modules/uview-pro-x';
+
+const current = ref<number>(1);
+
+const customStyle = computed<UTSJSONObject>((): UTSJSONObject => {
+    const style = createStyle();
+    style['backgroundColor'] = '#f5f5f5';
+    style['paddingTop'] = '10px';
+    style['paddingBottom'] = '10px';
+    style['paddingLeft'] = '10px';
+    style['paddingRight'] = '10px';
+    style['borderRadius'] = '6px';
+    return style;
+});
+</script>
+`;
+
+/** 监听变化 */
+const event = `
+<template>
+    <ux-pagination v-model="current" :total="50" :page-size="5" show-icon @change="onChange"></ux-pagination>
+    <text class="result">当前页: {{ current }} / {{ totalPages }}</text>
+</template>
+
+<script setup lang="uts">
+const current = ref<number>(1);
+const totalPages = Math.ceil(50 / 5);
+
+function onChange(payload: UTSJSONObject): void {
+    const page = payload['current'] as number;
+    const type = payload['type'] as string;
+    uni.showToast({ title: type + ' → ' + page, icon: 'none' });
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    icon,
+    text,
+    custom,
+    event
+};

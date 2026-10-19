@@ -1,0 +1,219 @@
+/**
+ * input 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-input v-model="value" placeholder="请输入内容" border />
+    <text class="input-status">当前输入: {{ value }}</text>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+
+<style scoped>
+.input-status {
+    font-size: 13px;
+    color: #606266;
+    margin-top: 8px;
+}
+</style>
+`;
+
+/** 输入框类型 */
+const type = `
+<template>
+    <ux-input v-model="value" :type="type" placeholder="请输入内容" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+const type = ref<string>('text');
+</script>
+`;
+
+/** 对齐方式 */
+const align = `
+<template>
+    <ux-input v-model="value" input-align="center" placeholder="居中对齐" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 尺寸配置 */
+const size = `
+<template>
+    <ux-input v-model="value" size="large" placeholder="大尺寸输入框" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 边框颜色 */
+const border = `
+<template>
+    <ux-input v-model="value" placeholder="自定义边框颜色" border border-color="#19be6b" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 自定义字号 */
+const fontSize = `
+<template>
+    <ux-input v-model="value" font-size="20" placeholder="自定义字号" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 密码类型 */
+const password = `
+<template>
+    <ux-input v-model="value" type="password" :password-icon="true" placeholder="请输入密码" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 清空 */
+const clear = `
+<template>
+    <ux-input v-model="value" :clearable="true" placeholder="可一键清空" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('ux-input');
+</script>
+`;
+
+/** 字数统计 */
+const count = `
+<template>
+    <ux-input v-model="value" type="textarea" :count="true" :maxlength="100" placeholder="支持字数统计" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 禁用 / 只读 */
+const state = `
+<template>
+    <ux-input v-model="disabledValue" disabled placeholder="禁用状态" border />
+    <ux-input v-model="readonlyValue" readonly placeholder="只读状态" border />
+</template>
+
+<script setup lang="uts">
+const disabledValue = ref<string>('禁用状态');
+const readonlyValue = ref<string>('只读状态');
+</script>
+`;
+
+/** 自定义高度 */
+const height = `
+<template>
+    <ux-input v-model="value" :height="50" placeholder="自定义高度" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 前置内容 */
+const prefix = `
+<template>
+    <ux-input v-model="value" type="digit" placeholder="请输入金额" border>
+        <template #prefix>
+            <ux-icon name="rmb-circle-fill" :size="8" />
+        </template>
+    </ux-input>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 自动聚焦 */
+const focus = `
+<template>
+    <ux-input v-model="value" :focus="focus" placeholder="自动聚焦的输入框" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+const focus = ref<boolean>(true);
+</script>
+`;
+
+/** 自动增高 */
+const autoHeight = `
+<template>
+    <ux-input v-model="value" type="textarea" :auto-height="autoHeight" placeholder="多行输入，自动增高" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+const autoHeight = ref<boolean>(true);
+</script>
+`;
+
+/** 去除两端空格 */
+const trim = `
+<template>
+    <ux-input v-model="value" :trim="trim" placeholder="输入带空格的内容" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+const trim = ref<boolean>(true);
+</script>
+`;
+
+/** 验证状态 */
+const validateState = `
+<template>
+    <ux-input v-model="value" :validate-state="validateState" placeholder="验证失败示例" border />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+const validateState = ref<boolean>(true);
+</script>
+`;
+
+export const codes = {
+    basic,
+    type,
+    align,
+    size,
+    fontSize,
+    border,
+    password,
+    clear,
+    count,
+    state,
+    height,
+    prefix,
+    focus,
+    autoHeight,
+    trim,
+    validateState
+};

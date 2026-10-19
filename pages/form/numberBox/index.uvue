@@ -1,0 +1,46 @@
+<template>
+    <demo-page :title="t('numberBox.title')" :subtitle="t('numberBox.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('numberBox.basicTitle')" :desc="t('numberBox.basicDesc')" :code="codes.basic">
+            <ux-number-box v-model="val1" />
+        </demo-block>
+
+        <!-- 步长设置 -->
+        <demo-block :title="t('numberBox.stepTitle')" :desc="t('numberBox.stepDesc')" :code="codes.step">
+            <ux-number-box v-model="val2" :step="10" />
+        </demo-block>
+
+        <!-- 限制范围 -->
+        <demo-block :title="t('numberBox.rangeTitle')" :desc="t('numberBox.rangeDesc')" :code="codes.range">
+            <ux-number-box v-model="val3" :min="5" :max="50" />
+        </demo-block>
+
+        <!-- 禁用状态 -->
+        <demo-block :title="t('numberBox.disabledTitle')" :desc="t('numberBox.disabledDesc')" :code="codes.disabled">
+            <ux-number-box v-model="val4" :disabled="true" />
+        </demo-block>
+
+        <!-- 自定义尺寸 -->
+        <demo-block :title="t('numberBox.sizeTitle')" :desc="t('numberBox.sizeDesc')" :code="codes.size">
+            <ux-number-box v-model="val5" :size="15" :input-width="60" :input-height="30" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const val1 = ref<number>(1);
+const val2 = ref<number>(10);
+const val3 = ref<number>(5);
+const val4 = ref<number>(1);
+const val5 = ref<number>(1);
+</script>
+
+<style lang="scss">
+</style>

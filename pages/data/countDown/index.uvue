@@ -1,0 +1,113 @@
+<template>
+    <demo-page :title="t('countDown.title')" :subtitle="t('countDown.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('countDown.basicTitle')" :desc="t('countDown.basicDesc')" :code="codes.basic">
+            <ux-count-down :timestamp="86399"></ux-count-down>
+        </demo-block>
+
+        <!-- 中文分隔符 -->
+        <demo-block :title="t('countDown.zhSepTitle')" :desc="t('countDown.zhSepDesc')" :code="codes.zhSep">
+            <ux-count-down :timestamp="86399" separator="zh"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="86399" separator="zh" separator-color="#fa3534"></ux-count-down>
+        </demo-block>
+
+        <!-- 隐藏天 -->
+        <demo-block :title="t('countDown.hideDaysTitle')" :desc="t('countDown.hideDaysDesc')" :code="codes.hideDays">
+            <ux-count-down :timestamp="86400" :show-days="false"></ux-count-down>
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block :title="t('countDown.customStyleTitle')" :desc="t('countDown.customStyleDesc')" :code="codes.customStyle">
+            <ux-count-down :timestamp="3600" :font-size="20" color="#2979ff" :separator-size="15"></ux-count-down>
+        </demo-block>
+
+        <!-- 数字边框 -->
+        <demo-block :title="t('countDown.borderTitle')" :desc="t('countDown.borderDesc')" :code="codes.border">
+            <ux-count-down :timestamp="7200" :show-border="true" :height="32" bg-color="#ecf5ff" color="#fb7299"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="7200" :show-border="true" :height="32" border-color="#19be6b" bg-color="#f0f9eb" color="#67c23a"></ux-count-down>
+        </demo-block>
+
+        <!-- 显示单元控制 -->
+        <demo-block :title="t('countDown.unitsTitle')" :desc="t('countDown.unitsDesc')" :code="codes.units">
+            <ux-count-down :timestamp="59" :show-days="false" :show-hours="false" :show-minutes="false"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="7200" :show-seconds="false"></ux-count-down>
+        </demo-block>
+
+        <!-- 隐藏零天 -->
+        <demo-block :title="t('countDown.zeroDayTitle')" :desc="t('countDown.zeroDayDesc')" :code="codes.zeroDay">
+            <ux-count-down :timestamp="3599" :hide-zero-day="false"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="3599" :hide-zero-day="true"></ux-count-down>
+        </demo-block>
+
+        <!-- 毫秒刷新 -->
+        <demo-block :title="t('countDown.msTitle')" :desc="t('countDown.msDesc')" :code="codes.ms">
+            <ux-count-down :timestamp="5" :millisecond="true"></ux-count-down>
+        </demo-block>
+
+        <!-- 手动控制 -->
+        <demo-block :title="t('countDown.controlTitle')" :desc="t('countDown.controlDesc')" :code="codes.control">
+            <ux-count-down ref="countDownRef" :timestamp="10" :autoplay="false"></ux-count-down>
+            <view class="demo-gap"></view>
+            <view class="demo-btn-row">
+                <view class="demo-btn" @click="startCountDown"><text class="demo-btn-text">{{ t('countDown.startBtn') }}</text></view>
+                <view class="demo-btn" @click="endCountDown"><text class="demo-btn-text">{{ t('countDown.endBtn') }}</text></view>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+
+    /** countDown 组件实例 */
+    const countDownRef = ref<any>();
+
+    /** 手动开始倒计时 */
+    const startCountDown = () => {
+        countDownRef.value?.start();
+    };
+
+    /** 手动结束倒计时 */
+    const endCountDown = () => {
+        countDownRef.value?.end();
+    };
+</script>
+
+<style lang="scss">
+    .demo-gap {
+        height: 20px;
+    }
+
+    .demo-btn-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .demo-btn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 12px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        background-color: #ecf5ff;
+    }
+
+    .demo-btn-text {
+        font-size: 13px;
+        color: #2979ff;
+    }
+
+</style>

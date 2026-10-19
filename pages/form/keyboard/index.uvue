@@ -1,0 +1,320 @@
+<template>
+    <demo-page :title="t('keyboard.title')" :subtitle="t('keyboard.subtitle')">
+
+        <!-- 数字键盘 -->
+        <demo-block :title="t('keyboard.numberTitle')" :desc="t('keyboard.numberDesc')" :code="codes.number">
+            <view class="keyboard-display">
+                <text class="keyboard-display-text">{{ numberValue.length > 0 ? numberValue : t('keyboard.numberPh') }}</text>
+            </view>
+            <ux-button type="primary" shape="round" :text="t('keyboard.numberBtn')" @click="openNumber" />
+            <ux-keyboard
+                v-model="numberShow"
+                mode="number"
+                @change="onNumberChange"
+                @backspace="onNumberBackspace"
+                @confirm="onNumberConfirm"
+                @cancel="onCancel"
+            />
+        </demo-block>
+
+        <!-- 身份证键盘 -->
+        <demo-block :title="t('keyboard.cardTitle')" :desc="t('keyboard.cardDesc')" :code="codes.card">
+            <view class="keyboard-display">
+                <text class="keyboard-display-text">{{ cardValue.length > 0 ? cardValue : t('keyboard.numberPh') }}</text>
+            </view>
+            <ux-button type="primary" shape="round" :text="t('keyboard.cardBtn')" @click="openCard" />
+            <ux-keyboard
+                v-model="cardShow"
+                mode="card"
+                @change="onCardChange"
+                @backspace="onCardBackspace"
+                @confirm="onCardConfirm"
+                @cancel="onCancel"
+            />
+        </demo-block>
+
+        <!-- 车牌号键盘 -->
+        <demo-block :title="t('keyboard.carTitle')" :desc="t('keyboard.carDesc')" :code="codes.car">
+            <view class="keyboard-display">
+                <text class="keyboard-display-text">{{ carValue.length > 0 ? carValue : t('keyboard.numberPh') }}</text>
+            </view>
+            <ux-button type="primary" shape="round" :text="t('keyboard.carBtn')" @click="openCar" />
+            <ux-keyboard
+                v-model="carShow"
+                mode="car"
+                @change="onCarChange"
+                @backspace="onCarBackspace"
+                @confirm="onCarConfirm"
+                @cancel="onCancel"
+            />
+        </demo-block>
+
+        <!-- 定制文案与按键 -->
+        <demo-block :title="t('keyboard.customTitle')" :desc="t('keyboard.customDesc')" :code="codes.custom">
+            <ux-button type="warning" shape="round" :text="t('keyboard.customBtn')" @click="openCustom" />
+            <ux-keyboard
+                v-model="customShow"
+                mode="number"
+                :random="true"
+                :tips="t('keyboard.customTips')"
+                :cancel-text="t('keyboard.customCancel')"
+                :confirm-text="t('keyboard.customConfirm')"
+                @change="onNoopChange"
+                @backspace="onNoopBackspace"
+                @confirm="onNoopConfirm"
+                @cancel="onNoopCancel"
+            />
+        </demo-block>
+
+        <!-- 工具条与遮罩开关 -->
+        <demo-block :title="t('keyboard.switchTitle')" :desc="t('keyboard.switchDesc')" :code="codes.switch">
+            <view class="keyboard-row">
+                <ux-button custom-class="keyboard-item" type="success" size="small" shape="round" :text="t('keyboard.switchBtnNoTooltip')" @click="openSwitch('noTooltip')" />
+                <ux-button custom-class="keyboard-item" type="success" size="small" shape="round" :text="t('keyboard.switchBtnNoTips')" @click="openSwitch('noTips')" />
+                <ux-button custom-class="keyboard-item" type="success" size="small" shape="round" :text="t('keyboard.switchBtnNoMask')" @click="openSwitch('noMask')" />
+            </view>
+            <ux-keyboard
+                v-model="switchShow"
+                mode="number"
+                :tooltip="switchTooltip"
+                :show-tips="switchShowTips"
+                :cancel-btn="switchCancelBtn"
+                :confirm-btn="switchConfirmBtn"
+                :dot-enabled="switchDot"
+                :mask="switchMask"
+                @change="onNoopChange"
+                @backspace="onNoopBackspace"
+                @confirm="onNoopConfirm"
+                @cancel="onNoopCancel"
+            />
+        </demo-block>
+
+        <!-- 安全区与层级 -->
+        <demo-block :title="t('keyboard.flatTitle')" :desc="t('keyboard.flatDesc')" :code="codes.flat">
+            <ux-button type="info" shape="round" :text="t('keyboard.flatBtn')" @click="openFlat" />
+            <ux-keyboard
+                v-model="flatShow"
+                mode="number"
+                :mask-close-able="false"
+                :safe-area-inset-bottom="true"
+                :z-index="9999"
+                @change="onNoopChange"
+                @backspace="onNoopBackspace"
+                @confirm="onNoopConfirm"
+                @cancel="onNoopCancel"
+            />
+        </demo-block>
+
+        <!-- toast 组件实例 -->
+        <ux-toast ref="toastRef" />
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** toast 组件实例 */
+    const toastRef = ref<any>();
+
+    /** 数字键盘：显示状态与输入内容 */
+    const numberShow = ref(false);
+    const numberValue = ref('');
+
+    /** 身份证键盘：显示状态与输入内容 */
+    const cardShow = ref(false);
+    const cardValue = ref('');
+
+    /** 车牌号键盘：显示状态与输入内容 */
+    const carShow = ref(false);
+    const carValue = ref('');
+
+    /** 定制文案键盘：显示状态 */
+    const customShow = ref(false);
+
+    /** 工具条开关键盘：显示状态与各开关 */
+    const switchShow = ref(false);
+    const switchTooltip = ref(true);
+    const switchShowTips = ref(true);
+    const switchCancelBtn = ref(true);
+    const switchConfirmBtn = ref(true);
+    const switchDot = ref(true);
+    const switchMask = ref(true);
+
+    /** 安全区与层级键盘：显示状态 */
+    const flatShow = ref(false);
+
+    /** 按键内容转字符串（string | number 联合类型收窄） */
+    const keyToString = (value: string | number): string => {
+        return typeof value == 'number' ? (value as number).toString() : value as string;
+    };
+
+    /** 退格：删除末位字符 */
+    const backspaceStr = (value: string): string => {
+        return value.length > 0 ? value.substring(0, value.length - 1) : '';
+    };
+
+    /** 打开数字键盘 */
+    const openNumber = () => {
+        numberShow.value = true;
+    };
+
+    /** 打开身份证键盘 */
+    const openCard = () => {
+        cardShow.value = true;
+    };
+
+    /** 打开车牌号键盘 */
+    const openCar = () => {
+        carShow.value = true;
+    };
+
+    /** 打开定制文案键盘 */
+    const openCustom = () => {
+        customShow.value = true;
+    };
+
+    /** 按开关组合打开键盘 */
+    const openSwitch = (kind: string) => {
+        if (kind == 'noTooltip') {
+            // 关闭整个工具条
+            switchTooltip.value = false;
+            switchShowTips.value = true;
+            switchCancelBtn.value = true;
+            switchConfirmBtn.value = true;
+            switchDot.value = true;
+            switchMask.value = true;
+        } else if (kind == 'noTips') {
+            // 隐藏工具条中间的提示与左右按钮
+            switchTooltip.value = true;
+            switchShowTips.value = false;
+            switchCancelBtn.value = false;
+            switchConfirmBtn.value = false;
+            switchDot.value = true;
+            switchMask.value = true;
+        } else {
+            // 无遮罩且无小数点
+            switchTooltip.value = true;
+            switchShowTips.value = true;
+            switchCancelBtn.value = true;
+            switchConfirmBtn.value = true;
+            switchDot.value = false;
+            switchMask.value = false;
+        }
+        switchShow.value = true;
+    };
+
+    /** 打开安全区与层级键盘 */
+    const openFlat = () => {
+        flatShow.value = true;
+    };
+
+    /** 数字键盘输入 */
+    const onNumberChange = (value: string | number) => {
+        numberValue.value = numberValue.value + keyToString(value);
+    };
+
+    /** 身份证键盘输入 */
+    const onCardChange = (value: string | number) => {
+        cardValue.value = cardValue.value + keyToString(value);
+    };
+
+    /** 车牌号键盘输入 */
+    const onCarChange = (value: string | number) => {
+        carValue.value = carValue.value + keyToString(value);
+    };
+
+    /** 数字键盘退格 */
+    const onNumberBackspace = () => {
+        numberValue.value = backspaceStr(numberValue.value);
+        toastRef.value?.show?.({
+            title: t('keyboard.backspaceToast'),
+            type: 'warning',
+            duration: 1000
+        });
+    };
+
+    /** 身份证键盘退格 */
+    const onCardBackspace = () => {
+        cardValue.value = backspaceStr(cardValue.value);
+    };
+
+    /** 车牌号键盘退格 */
+    const onCarBackspace = () => {
+        carValue.value = backspaceStr(carValue.value);
+    };
+
+    /** 数字键盘完成 */
+    const onNumberConfirm = () => {
+        toastRef.value?.show?.({
+            title: t('keyboard.confirmToast') + numberValue.value,
+            type: 'success',
+            duration: 2000
+        });
+    };
+
+    /** 身份证键盘完成 */
+    const onCardConfirm = () => {
+        toastRef.value?.show?.({
+            title: t('keyboard.confirmToast') + cardValue.value,
+            type: 'success',
+            duration: 2000
+        });
+    };
+
+    /** 车牌号键盘完成 */
+    const onCarConfirm = () => {
+        toastRef.value?.show?.({
+            title: t('keyboard.confirmToast') + carValue.value,
+            type: 'success',
+            duration: 2000
+        });
+    };
+
+    /** 取消输入 */
+    const onCancel = () => {
+        toastRef.value?.show?.({
+            title: t('keyboard.cancelToast'),
+            type: 'info',
+            duration: 2000
+        });
+    };
+
+    /** 仅演示工具条文案与开关的键盘：按键无展示区域，统一空处理 */
+    const onNoopChange = (value: string | number) => {};
+    const onNoopBackspace = () => {};
+    const onNoopConfirm = () => {};
+    const onNoopCancel = () => {};
+</script>
+
+<style lang="scss">
+
+    .keyboard-display {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 6px;
+        background-color: #f8f8f8;
+        margin-bottom: 12px;
+    }
+
+    .keyboard-display-text {
+        font-size: 14px;
+        color: #303133;
+    }
+
+    .keyboard-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .keyboard-item {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+</style>

@@ -1,0 +1,113 @@
+/**
+ * link 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-link href="https://uviewpro.cn/zh/">uView Pro 官方文档</ux-link>
+</template>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <view class="row">
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/" color="red">红色链接</ux-link></view>
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/" color="#19be6b">绿色链接</ux-link></view>
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/" color="#2979ff">主题链接</ux-link></view>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+.item {
+    flex-direction: row;
+    margin-right: 15px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义大小 */
+const fontSize = `
+<template>
+    <view class="col">
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/" :font-size="12">小号链接</ux-link></view>
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/" :font-size="17">大号链接</ux-link></view>
+    </view>
+</template>
+
+<style scoped>
+.col {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+}
+.item {
+    flex-direction: column;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 下划线 */
+const underline = `
+<template>
+    <view class="row">
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/" under-line>带下划线</ux-link></view>
+        <view class="item"><ux-link href="https://uviewpro.cn/zh/">无下划线</ux-link></view>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+.item {
+    flex-direction: row;
+    margin-right: 15px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义下划线颜色 */
+const lineColor = `
+<template>
+    <ux-link href="https://uviewpro.cn/zh/" under-line color="#2979ff" line-color="#fa3534">蓝字红线下划线</ux-link>
+</template>
+`;
+
+/** 自定义点击事件 */
+const click = `
+<template>
+    <ux-link href="https://uviewpro.cn/zh/" :default-click="false" @click="onClick">自定义点击事件</ux-link>
+</template>
+
+<script setup lang="uts">
+function onClick(href: string): void {
+    uni.showToast({ title: '拦截跳转: ' + href, icon: 'none' });
+}
+</script>
+`;
+
+export const codes = {
+    basic,
+    color,
+    fontSize,
+    underline,
+    lineColor,
+    click
+};

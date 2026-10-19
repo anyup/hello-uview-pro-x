@@ -1,0 +1,141 @@
+<template>
+    <demo-page :title="t('loading.title')" :subtitle="t('loading.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('loading.basicTitle')" :desc="t('loading.basicDesc')" :code="codes.basic">
+            <view class="loading-demo">
+                <ux-loading />
+            </view>
+        </demo-block>
+
+        <!-- 模式切换 -->
+        <demo-block :title="t('loading.modeTitle')" :desc="t('loading.modeDesc')" :code="codes.mode">
+            <view class="loading-demo">
+                <ux-loading :mode="mode" :color="color" :size="size" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button :type="mode === 'circle' ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setMode('circle')">{{ t('loading.modeCircle') }}</ux-button>
+                <ux-button :type="mode === 'flower' ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setMode('flower')">{{ t('loading.modeFlower') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 颜色配置（只对圆圈模式有效） -->
+        <demo-block :title="t('loading.colorTitle')" :desc="t('loading.colorDesc')" :code="codes.color">
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in colorList" :key="index" :type="color === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setColor(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 尺寸配置 -->
+        <demo-block :title="t('loading.sizeTitle')" :desc="t('loading.sizeDesc')" :code="codes.size">
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in sizeList" :key="index" :type="size === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setSize(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 显示/隐藏 -->
+        <demo-block :title="t('loading.showTitle')" :desc="t('loading.showDesc')" :code="codes.show">
+            <view class="loading-demo">
+                <ux-loading v-if="show" :mode="mode" :color="color" :size="size" />
+                <text v-else class="loading-hidden-text">{{ t('loading.hiddenText') }}</text>
+            </view>
+            <view class="btn-wrap">
+                <ux-button :type="show ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="toggleShow">{{ t('loading.toggleBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type ColorItem = {
+        value: string;
+        label: string;
+    };
+
+    type SizeItem = {
+        value: string;
+        label: string;
+    };
+
+    /** 加载模式 */
+    const mode = ref<'circle' | 'flower'>('circle');
+    /** 加载颜色（只对圆圈模式有效） */
+    const color = ref('');
+    /** 加载尺寸（px） */
+    const size = ref('17');
+    /** 是否显示 */
+    const show = ref(true);
+
+    const colorList: ColorItem[] = [
+        { value: '', label: 'default' },
+        { value: '#2979ff', label: 'primary' },
+        { value: '#fa3534', label: 'error' },
+        { value: '#ff9900', label: 'warning' },
+        { value: '#19be6b', label: 'success' }
+    ];
+
+    const sizeList: SizeItem[] = [
+        { value: '28', label: '28' },
+        { value: '34', label: '34' },
+        { value: '40', label: '40' }
+    ];
+
+    /** 切换加载模式 */
+    const setMode = (val: 'circle' | 'flower') => {
+        mode.value = val;
+    };
+
+    /** 切换颜色 */
+    const setColor = (val: string) => {
+        color.value = val;
+    };
+
+    /** 切换尺寸 */
+    const setSize = (val: string) => {
+        size.value = val;
+    };
+
+    /** 切换显示状态 */
+    const toggleShow = () => {
+        show.value = !show.value;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 按钮容器：水平排列 + 自动换行 */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 按钮间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 加载动画演示区 */
+    .loading-demo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        min-height: 60px;
+        margin-bottom: 12px;
+    }
+
+    /* 隐藏时的占位文字 */
+    .loading-hidden-text {
+        font-size: 14px;
+        color: $u-tips-color;
+    }
+</style>

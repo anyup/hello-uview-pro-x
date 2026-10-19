@@ -1,0 +1,180 @@
+<template>
+    <view class="demo-block" :style="$u.toStyle(customStyle)">
+        <view v-if="title !== ''" class="demo-block-header">
+            <view class="demo-block-title-wrap">
+                <view class="demo-block-bar"></view>
+                <text class="demo-block-title" :max-lines="1">{{ title }}</text>
+            </view>
+            <!-- 标题右侧扩展区：状态标签等 -->
+            <view class="demo-block-extra">
+                <!-- 复制演示代码按钮 -->
+                <view v-if="code !== ''" class="demo-block-copy" hover-class="demo-block-copy--hover" @click="onCopyCode">
+                    <ux-icon name="file-text" size="14" color="primary" />
+                    <text class="demo-block-copy-text">{{ copyLabel }}</text>
+                </view>
+                <slot name="extra" />
+            </view>
+        </view>
+        <text v-if="showDesc && desc !== ''" class="demo-block-desc">{{ desc }}</text>
+        <view class="demo-block-content">
+            <slot />
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x'
+
+    defineOptions({
+        name: 'demo-block',
+        styleIsolation: 'app-and-page'
+    });
+
+    /**
+     * 演示区块组件 - 统一示例卡片
+     * - title：区块标题（左侧主色竖条装饰）
+     * - desc：区块描述说明
+     * - showDesc：是否显示描述
+     * - code：该区块的演示代码（非空时标题右侧显示复制按钮，点击复制可直接运行的代码片段）
+     * - copyText：复制按钮文案
+     * - customStyle：自定义样式（对象或字符串）
+     */
+    const props = withDefaults(defineProps<{
+        title?: string;
+        desc?: string;
+        showDesc?: boolean;
+        code?: string;
+        copyText?: string;
+        customStyle?: UTSJSONObject | string;
+    }>(), {
+        title: '',
+        desc: '',
+        showDesc: true,
+        code: '',
+        copyText: '',
+        customStyle: (): UTSJSONObject => new UTSJSONObject()
+    });
+
+    const { t } = useLocale('demo');
+
+    /** 复制按钮文案：未显式传入时取 locale */
+    const copyLabel = computed(() => props.copyText !== '' ? props.copyText : t('copyLabel'));
+
+    /** 复制演示代码 */
+    const onCopyCode = () => {
+        uni.setClipboardData({
+            data: props.code,
+            success: () => {
+                uni.showToast({
+                    title: t('copyCode'),
+                    icon: 'none'
+                });
+            }
+        });
+    };
+</script>
+
+<style lang="scss" scoped>
+    @import '@/uni_modules/uview-pro-x/theme.scss';
+
+    .demo-block {
+        margin-bottom: 12px;
+        padding: 12px;
+        background-color: $u-bg-white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        /* App 端 view 默认 overflow: hidden，圆角卡片会裁剪凸出内容（角标等），显式开放 */
+        overflow: visible;
+    }
+
+    .demo-block-content {
+        overflow: visible;
+    }
+
+    .demo-block-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .demo-block-title-wrap {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        /* 标题区可收缩，长文案省略号截断，不挤压右侧复制按钮 */
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* 标题左侧主色竖条装饰 */
+    .demo-block-bar {
+        width: 3px;
+        height: 15px;
+        border-radius: 2px;
+        background-color: $u-type-primary;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+
+    .demo-block-title {
+        font-size: 15px;
+        font-weight: bold;
+        color: $u-main-color;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        /* #ifdef APP */
+        /* App 端单行省略由 <text :max-lines="1"> 原生承担，nowrap 兜底防换行（同 ux-text__value--single-line 写法） */
+        white-space: nowrap;
+        /* #endif */
+
+        /* #ifndef APP */
+        /* H5/小程序用 -webkit-line-clamp 裁切；uni-app x H5 的 text 默认 flex-shrink:0，需显式允许收缩 */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        flex-shrink: 1;
+        /* #endif */
+    }
+
+    /* 标题右侧扩展区 */
+    .demo-block-extra {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        /* 复制按钮等固定控件不参与收缩，始终完整可见 */
+        flex-shrink: 0;
+    }
+
+    /* 复制按钮 */
+    .demo-block-copy {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 3px 7px;
+        border-radius: 500px;
+        background-color: $u-bg-color;
+        margin-left: 6px;
+    }
+
+    .demo-block-copy--hover {
+        opacity: 0.7;
+    }
+
+    .demo-block-copy-text {
+        font-size: 11px;
+        color: $u-type-primary;
+        margin-left: 3px;
+    }
+
+    .demo-block-desc {
+        font-size: 13px;
+        color: $u-content-color;
+        line-height: 1.6;
+        margin-bottom: 8px;
+    }
+</style>

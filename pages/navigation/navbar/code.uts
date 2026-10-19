@@ -1,0 +1,140 @@
+/**
+ * navbar 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-navbar :title="title" :is-fixed="false" />
+    <ux-navbar :title="title" back-text="返回" :is-fixed="false" />
+</template>
+
+<script setup lang="uts">
+const title = ref<string>('导航标题');
+</script>
+`;
+
+/** 标题样式 */
+const titleStyle = `
+<template>
+    <ux-navbar :title="defaultTitle" :is-fixed="false" />
+    <ux-navbar :title="boldTitle" title-bold title-size="18" :is-fixed="false" />
+    <ux-navbar :title="primaryTitle" title-color="#2979ff" :is-fixed="false" />
+    <!-- 超长标题：title-width 限制最大宽度，超出单行省略 -->
+    <ux-navbar :title="longTitle" title-width="120" :is-fixed="false" />
+</template>
+
+<script setup lang="uts">
+const defaultTitle = ref<string>('导航标题');
+const boldTitle = ref<string>('加粗大标题');
+const primaryTitle = ref<string>('主题蓝标题');
+const longTitle = ref<string>('这是一个很长的标题，超出部分将显示省略号');
+</script>
+`;
+
+/** 返回栏 */
+const backBar = `
+<template>
+    <ux-navbar :title="title" :is-fixed="false" />
+    <ux-navbar :title="noBackTitle" :is-back="false" :is-fixed="false" />
+    <ux-navbar :title="title" back-text="上一页" back-icon-name="arrow-left" :is-fixed="false" />
+    <ux-navbar :title="title" back-icon-color="#2979ff" back-icon-size="18" :is-fixed="false" />
+</template>
+
+<script setup lang="uts">
+const title = ref<string>('返回栏');
+const noBackTitle = ref<string>('隐藏返回');
+</script>
+`;
+
+/** 背景颜色 */
+const bg = `
+<template>
+    <ux-navbar :title="title" :background="gradient" back-icon-color="#ffffff" title-color="#ffffff" :is-fixed="false" />
+    <ux-navbar :title="title" :background="{ background: '#39CCCC' }" back-icon-color="#ffffff" title-color="#ffffff" :is-fixed="false" />
+    <ux-navbar :title="title" :background="{ background: '#B471CC' }" back-icon-color="#ffffff" title-color="#ffffff" :is-fixed="false" />
+</template>
+
+<script setup lang="uts">
+const title = ref<string>('背景色');
+const gradient = ref<UTSJSONObject>({
+    'background-image': 'linear-gradient(90deg, rgb(28, 187, 180), rgb(141, 198, 63))'
+});
+</script>
+`;
+
+/** 自定义插槽 */
+const slot = `
+<template>
+    <ux-navbar :background="gradient" back-icon-color="#ffffff" :is-fixed="false">
+        <template #left>
+            <text style="color:#ffffff;font-size:11px;">左侧</text>
+        </template>
+        <!-- 默认插槽：居中内容区 -->
+        <text style="flex:1;color:#ffffff;font-size:14px;text-align:center;">轻舟已过万重山</text>
+        <template #right>
+            <ux-icon name="chat" size="18" color="#ffffff" />
+            <ux-icon name="calendar-fill" size="18" color="#ffffff" />
+        </template>
+    </ux-navbar>
+</template>
+
+<script setup lang="uts">
+const gradient = ref<UTSJSONObject>({
+    'background-image': 'linear-gradient(90deg, rgb(28, 187, 180), rgb(141, 198, 63))'
+});
+</script>
+`;
+
+/** 自定义返回事件 */
+const customBack = `
+<template>
+    <ux-navbar title="自定义返回" :custom-back="customBack" :is-fixed="false" />
+    <text>点击返回按钮不会退出页面，而是触发自定义事件</text>
+</template>
+
+<script setup lang="uts">
+const customBack = () => {
+    uni.showToast({ title: '拦截了返回事件', icon: 'none' });
+};
+</script>
+`;
+
+/** 边框与高度 */
+const border = `
+<template>
+    <ux-navbar :title="noBorder" :border-bottom="false" :is-fixed="false" />
+    <ux-navbar :title="customHeight" height="56" :is-fixed="false" />
+</template>
+
+<script setup lang="uts">
+const noBorder = ref<string>('无下边框');
+const customHeight = ref<string>('自定义高度');
+</script>
+`;
+
+/** 固定与沉浸 */
+const fixed = `
+<template>
+    <!-- is-fixed=true 固定在页面顶部（默认），下方内容随页面滚动 -->
+    <ux-navbar title="固定导航栏" back-text="返回"
+        :background="{ 'background-image': 'linear-gradient(90deg, rgb(28,187,180), rgb(141,198,63))' }"
+        back-icon-color="#ffffff" title-color="#ffffff" />
+</template>
+
+<script setup lang="uts">
+const title = ref<string>('固定导航栏');
+</script>
+`;
+
+export const codes = {
+    basic,
+    titleStyle,
+    backBar,
+    bg,
+    slot,
+    customBack,
+    border,
+    fixed
+};

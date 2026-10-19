@@ -1,0 +1,192 @@
+<template>
+    <view>
+        <!-- 固定导航栏：is-fixed=true 固定在页面顶部的真实场景（默认），配 immersive 取消占位（见下方"固定与沉浸"说明） -->
+        <ux-navbar
+            :title="t('navbar.defaultTitle')"
+            :back-text="t('navbar.back')"
+            back-icon-color="#ffffff"
+            back-text-color="#ffffff"
+            :background="gradientBg"
+            title-color="#ffffff"
+        ></ux-navbar>
+
+        <demo-page :title="t('navbar.title')" :subtitle="t('navbar.subtitle')" hide-navbar>
+
+            <!-- 基础用法 -->
+            <demo-block :title="t('navbar.basicTitle')" :desc="t('navbar.basicDesc')" :code="codes.basic">
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.defaultTitle')" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.defaultTitle')" :back-text="t('navbar.backText')" :is-fixed="false" />
+                </view>
+            </demo-block>
+
+            <!-- 标题样式 -->
+            <demo-block :title="t('navbar.titleStyleTitle')" :desc="t('navbar.titleStyleDesc')" :code="codes.titleStyle">
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.defaultTitle')" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.titleBold')" title-bold title-size="18" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.titlePrimary')" title-color="#2979ff" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <!-- 超长标题：title-width 限制最大宽度，超出单行省略（三端兼容） -->
+                    <ux-navbar :title="longTitle" title-width="180" :is-fixed="false" />
+                </view>
+            </demo-block>
+
+            <!-- 返回栏 -->
+            <demo-block :title="t('navbar.backBarTitle')" :desc="t('navbar.backBarDesc')" :code="codes.backBar">
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.backBarTitle')" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.hideBack')" :is-back="false" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.backBarTitle')" :back-text="t('navbar.backTextAlt')" back-icon-name="arrow-left" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.backBarTitle')" back-icon-color="#2979ff" back-icon-size="18" :is-fixed="false" />
+                </view>
+            </demo-block>
+
+            <!-- 背景颜色 -->
+            <demo-block :title="t('navbar.bgTitle')" :desc="t('navbar.bgDesc')" :code="codes.bg">
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.gradient')" :background="gradientBg" back-icon-color="#ffffff" title-color="#ffffff" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.teal')" :background="{ background: '#39CCCC' }" back-icon-color="#ffffff" title-color="#ffffff" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.purple')" :background="{ background: '#B471CC' }" back-icon-color="#ffffff" title-color="#ffffff" :is-fixed="false" />
+                </view>
+            </demo-block>
+
+            <!-- 自定义插槽 -->
+            <demo-block :title="t('navbar.slotTitle')" :desc="t('navbar.slotDesc')" :code="codes.slot">
+                <view class="navbar-block">
+                    <ux-navbar :background="gradientBg" back-icon-color="#ffffff" :is-fixed="false" :is-back="false">
+                        <template #left>
+                            <!-- App 端裸文本不继承父容器颜色，必须显式 <text> 给色 -->
+                            <view class="slot-tag"><text class="slot-tag-text">{{ t('navbar.slotLeft') }}</text></view>
+                        </template>
+                        <!-- 默认插槽：居中内容区 -->
+                        <text class="slot-center">{{ t('navbar.slotText') }}</text>
+                        <template #right>
+                            <view class="navbar-right">
+                                <ux-icon name="chat" size="18" color="#ffffff" />
+                                <ux-icon name="calendar-fill" size="18" color="#ffffff" custom-style="margin-left: 12px;" />
+                            </view>
+                        </template>
+                    </ux-navbar>
+                </view>
+            </demo-block>
+
+            <!-- 自定义返回事件 -->
+            <demo-block :title="t('navbar.customBackTitle')" :desc="t('navbar.customBackDesc')" :code="codes.customBack">
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.customBackTitle')" :custom-back="customBack" :is-fixed="false" />
+                </view>
+                <text class="navbar-tip" v-if="customBackActive">{{ t('navbar.backTip') }}</text>
+            </demo-block>
+
+            <!-- 边框与高度 -->
+            <demo-block :title="t('navbar.borderTitle')" :desc="t('navbar.borderDesc')" :code="codes.border">
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.noBorder')" :border-bottom="false" :is-fixed="false" />
+                </view>
+                <view class="navbar-block">
+                    <ux-navbar :title="t('navbar.customHeight')" height="56" :is-fixed="false" />
+                </view>
+            </demo-block>
+
+            <!-- 固定与沉浸（特殊场景说明） -->
+            <demo-block :title="t('navbar.fixedTitle')" :desc="t('navbar.fixedDesc')" :code="codes.fixed">
+                <text class="navbar-fixed-note">{{ t('navbar.fixedNote') }}</text>
+            </demo-block>
+
+        </demo-page>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 长标题：演示超长标题单行省略 */
+    const longTitle = ref(t('navbar.long'));
+
+    /** 渐变背景对象 */
+    const gradientBg = ref<UTSJSONObject>({
+        'background-image': 'linear-gradient(90deg, rgb(28, 187, 180), rgb(141, 198, 63))'
+    });
+
+    /** 自定义返回触发标记 */
+    const customBackActive = ref(false);
+
+    /** 自定义返回：拦截返回事件，仅提示不真正返回（演示 custom-back 属性） */
+    const customBack = () => {
+        customBackActive.value = true;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 每个平铺导航栏之间的间距 */
+    .navbar-block {
+        margin-bottom: 12px;
+    }
+
+    /* 自定义返回触发提示 */
+    .navbar-tip {
+        font-size: 12px;
+        color: $u-type-success;
+        margin-top: 6px;
+    }
+
+    /* 自定义插槽：左侧标签（左内边距由组件 .ux-navbar__slot-left 提供，这里不再设置） */
+    .slot-tag {
+        padding: 2px 8px;
+        border-radius: 50px;
+        background-color: rgba(240, 240, 240, 0.35);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    /* 插槽标签文字：App 端颜色不继承，需在 <text> 上显式给白色 */
+    .slot-tag-text {
+        color: #ffffff;
+        font-size: 11px;
+    }
+
+    /* 自定义插槽：居中内容区文字（App 端样式不继承，需显式给色） */
+    .slot-center {
+        flex: 1;
+        color: #ffffff;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* 自定义插槽：右侧图标区（右内边距由组件 .ux-navbar__slot-right 提供；App 端无 gap、uvue 不支持 `+` 兄弟选择器，图标间距用各自 custom-style 的 margin 拉开） */
+    .navbar-right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    /* 固定与沉浸说明 */
+    .navbar-fixed-note {
+        font-size: 13px;
+        color: $u-content-color;
+        line-height: 1.8;
+    }
+</style>

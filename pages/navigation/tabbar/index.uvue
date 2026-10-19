@@ -1,0 +1,205 @@
+<template>
+    <demo-page
+        :subtitle="t('tabbar.subtitle')"
+        :title="t('tabbar.title')"
+    >
+
+        <!-- 场景切换 -->
+        <demo-block
+            :code="currentCode"
+            :desc="t('tabbar.selectSceneDesc')"
+            :title="t('tabbar.selectSceneTitle')"
+        >
+            <view class="tabbar-variant-row">
+                <view
+                    v-for="(v, i) in variants"
+                    class="tabbar-variant"
+                    :class="variant === v.value ? 'is-active' : ''"
+                    :key="i"
+                    @click="selectVariant(v.value)"
+                >
+                    <text
+                        class="tabbar-variant-text"
+                        :style="variant === v.value ? 'color:#ffffff' : ''"
+                    >{{ v.label }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 场景说明 -->
+        <demo-block
+            :code="currentCode"
+            :desc="currentHint"
+            :title="currentDesc"
+        >
+        </demo-block>
+
+        <!-- 仅图标（App 端验证图标水平居中） -->
+        <!-- 演示页非 tabBar 页面，隐藏原生 tabbar 会报错（hideTabBar:fail not TabBar page），故传 hide-tab-bar=false -->
+        <ux-tabbar
+            v-if="variant === 'icon'"
+            :hide-tab-bar="false"
+            :list="iconList"
+            @change="onChange"
+        ></ux-tabbar>
+        <!-- 图标 + 文字 -->
+        <ux-tabbar
+            v-else-if="variant === 'iconText'"
+            :hide-tab-bar="false"
+            :list="iconTextList"
+            @change="onChange"
+        ></ux-tabbar>
+        <!-- 凸起按钮 -->
+        <ux-tabbar
+            v-else-if="variant === 'midButton'"
+            border-top
+            mid-button
+            :hide-tab-bar="false"
+            :list="midButtonList"
+            @change="onChange"
+        ></ux-tabbar>
+        <!-- 角标 -->
+        <ux-tabbar
+            v-else-if="variant === 'badge'"
+            :hide-tab-bar="false"
+            :list="badgeList"
+            @change="onChange"
+        ></ux-tabbar>
+        <!-- 自定义颜色 / 边框 -->
+        <ux-tabbar
+            v-else
+            active-color="#19be6b"
+            inactive-color="#909399"
+            :border-top="false"
+            :hide-tab-bar="false"
+            :list="customList"
+            @change="onChange"
+        ></ux-tabbar>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale, type TabbarItem } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+// 当前演示场景
+const variant = ref<string>('icon');
+
+// 切换 tab 时触发
+const onChange = (index: number) => {
+    uni.showToast({ title: t('tabbar.toastChange', { index: index + 1 }), icon: 'none' });
+};
+
+// 切换演示场景
+const selectVariant = (value: string) => {
+    variant.value = value;
+};
+
+// 演示场景
+const variants = computed(() => [
+    { label: t('tabbar.iconLabel'), value: 'icon' },
+    { label: t('tabbar.iconTextLabel'), value: 'iconText' },
+    { label: t('tabbar.midButtonLabel'), value: 'midButton' },
+    { label: t('tabbar.badgeLabel'), value: 'badge' },
+    { label: t('tabbar.customLabel'), value: 'custom' }
+]);
+
+// 当前场景对应的演示代码
+const currentCode = computed((): string => {
+    switch (variant.value) {
+        case 'icon': return codes.icon!;
+        case 'iconText': return codes.iconText!;
+        case 'midButton': return codes.midButton!;
+        case 'badge': return codes.badge!;
+        default: return codes.custom!;
+    }
+});
+
+const currentDesc = computed((): string => {
+    switch (variant.value) {
+        case 'icon': return t('tabbar.iconDesc');
+        case 'iconText': return t('tabbar.iconTextDesc');
+        case 'midButton': return t('tabbar.midButtonDesc');
+        case 'badge': return t('tabbar.badgeDesc');
+        default: return t('tabbar.customDesc');
+    }
+});
+
+const currentHint = computed((): string => {
+    switch (variant.value) {
+        case 'icon': return t('tabbar.iconHint');
+        case 'iconText': return t('tabbar.iconTextHint');
+        case 'midButton': return t('tabbar.midButtonHint');
+        case 'badge': return t('tabbar.badgeHint');
+        default: return t('tabbar.customHint');
+    }
+});
+
+// 各场景 tabbar 数据
+const iconList = computed<TabbarItem[]>(() => [
+    { iconPath: 'home', selectedIconPath: 'home-fill' },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill' },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill' },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill' }
+]);
+
+const iconTextList = computed<TabbarItem[]>(() => [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: t('tabbar.home') },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: t('tabbar.shop') },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: t('tabbar.coupon') },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: t('tabbar.mine') }
+]);
+
+const midButtonList = computed<TabbarItem[]>(() => [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: t('tabbar.home') },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: t('tabbar.shop') },
+    { iconPath: 'photo', selectedIconPath: 'photo', text: t('tabbar.publish'), midButton: true },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: t('tabbar.coupon') },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: t('tabbar.mine') }
+]);
+
+const badgeList = computed<TabbarItem[]>(() => [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: t('tabbar.home'), count: 5 },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: t('tabbar.shop'), count: 99 },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: t('tabbar.coupon'), isDot: true },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: t('tabbar.mine') }
+]);
+
+const customList = computed<TabbarItem[]>(() => [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: t('tabbar.home') },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: t('tabbar.shop') },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: t('tabbar.coupon') },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: t('tabbar.mine') }
+]);
+</script>
+
+<style lang="scss">
+
+.tabbar-variant-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tabbar-variant {
+    padding: 6px 14px;
+    border-radius: 16px;
+    background-color: $u-bg-color;
+    border: 1px solid $u-border-color;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.tabbar-variant.is-active {
+    background-color: $u-type-primary;
+    border-color: $u-type-primary;
+}
+
+.tabbar-variant-text {
+    font-size: 13px;
+    color: $u-content-color;
+}
+</style>

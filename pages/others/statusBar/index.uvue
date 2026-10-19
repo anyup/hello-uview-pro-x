@@ -1,0 +1,53 @@
+<template>
+    <demo-page :title="t('statusBar.title')" :subtitle="t('statusBar.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('statusBar.basicTitle')" :desc="t('statusBar.basicDesc')" :code="codes.basic">
+            <ux-status-bar />
+            <view class="statusbar-demo">
+                <text class="statusbar-demo-text">{{ t('statusBar.demoText') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 自定义背景色 -->
+        <demo-block :title="t('statusBar.bgTitle')" :desc="t('statusBar.bgDesc')" :code="codes.bg">
+            <ux-status-bar background="#2979ff" />
+            <view class="statusbar-demo statusbar-demo--primary">
+                <text class="statusbar-demo-text statusbar-demo-text--white">{{ t('statusBar.primaryText') }}</text>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+</script>
+
+<style lang="scss">
+
+    .statusbar-demo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+        background-color: $u-bg-color;
+    }
+
+    .statusbar-demo--primary {
+        background-color: #2979ff;
+    }
+
+    .statusbar-demo-text {
+        font-size: 13px;
+        color: $u-main-color;
+    }
+
+    .statusbar-demo-text--white {
+        color: #ffffff;
+    }
+</style>

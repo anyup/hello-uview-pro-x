@@ -1,0 +1,86 @@
+<template>
+    <demo-page :title="t('empty.title')" :subtitle="t('empty.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('empty.basicTitle')" :desc="t('empty.basicDesc')" :code="codes.basic">
+            <ux-empty :text="t('empty.basicText')" mode="data"></ux-empty>
+        </demo-block>
+
+        <!-- 内置图标 -->
+        <demo-block :title="t('empty.iconsTitle')" :desc="t('empty.iconsDesc')" :code="codes.icons">
+            <view class="empty-icons">
+                <view class="empty-icon-item">
+                    <ux-empty mode="car"></ux-empty>
+                </view>
+                <view class="empty-icon-item">
+                    <ux-empty mode="list"></ux-empty>
+                </view>
+                <view class="empty-icon-item">
+                    <ux-empty mode="search"></ux-empty>
+                </view>
+                <view class="empty-icon-item">
+                    <ux-empty mode="order"></ux-empty>
+                </view>
+                <view class="empty-icon-item">
+                    <ux-empty mode="address"></ux-empty>
+                </view>
+                <view class="empty-icon-item">
+                    <ux-empty mode="favor"></ux-empty>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 自定义颜色和大小 -->
+        <demo-block :title="t('empty.colorTitle')" :desc="t('empty.colorDesc')" :code="codes.color">
+            <ux-empty
+                :text="t('empty.colorText')"
+                mode="data"
+                color="#2979ff"
+                icon-color="#2979ff"
+                :icon-size="80"
+                :font-size="15"
+            ></ux-empty>
+        </demo-block>
+
+        <!-- 自定义图片 -->
+        <demo-block :title="t('empty.srcTitle')" :desc="t('empty.srcDesc')" :code="codes.src">
+            <ux-empty :text="t('empty.srcText')" src="/static/logo.png"></ux-empty>
+        </demo-block>
+
+        <!-- bottom 插槽 -->
+        <demo-block :title="t('empty.slotTitle')" :desc="t('empty.slotDesc')" :code="codes.slot">
+            <ux-empty :text="t('empty.slotText')">
+                <template #bottom>
+                    <ux-button type="primary" shape="round" @click="onBtnClick">{{ t('empty.reloadBtnText') }}</ux-button>
+                </template>
+            </ux-empty>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    const onBtnClick = () => {
+        uni.showToast({
+            title: t('empty.toastTitle'),
+            icon: 'none'
+        });
+    };
+</script>
+
+<style lang="scss">
+    .empty-icons {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .empty-icon-item {
+        width: 50%;
+    }
+</style>

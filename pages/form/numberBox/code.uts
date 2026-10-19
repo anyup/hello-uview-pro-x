@@ -1,0 +1,67 @@
+/**
+ * numberBox 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-number-box v-model="val" />
+</template>
+
+<script setup lang="uts">
+const val = ref<number>(1);
+</script>
+`;
+
+/** 步长设置 */
+const step = `
+<template>
+    <ux-number-box v-model="val" :step="10" />
+</template>
+
+<script setup lang="uts">
+const val = ref<number>(10);
+</script>
+`;
+
+/** 限制范围 */
+const range = `
+<template>
+    <ux-number-box v-model="val" :min="5" :max="50" />
+</template>
+
+<script setup lang="uts">
+const val = ref<number>(5);
+</script>
+`;
+
+/** 禁用状态 */
+const disabled = `
+<template>
+    <ux-number-box v-model="val" :disabled="true" />
+</template>
+
+<script setup lang="uts">
+const val = ref<number>(1);
+</script>
+`;
+
+/** 自定义尺寸 */
+const size = `
+<template>
+    <ux-number-box v-model="val" :size="15" :input-width="60" :input-height="30" />
+</template>
+
+<script setup lang="uts">
+const val = ref<number>(1);
+</script>
+`;
+
+export const codes = {
+    basic,
+    step,
+    range,
+    disabled,
+    size
+};

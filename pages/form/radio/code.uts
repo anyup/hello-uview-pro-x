@@ -1,0 +1,83 @@
+/**
+ * radio 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-radio-group v-model="value">
+        <ux-radio label="荔枝" name="荔枝" />
+        <ux-radio label="香蕉" name="香蕉" />
+        <ux-radio label="橙子" name="橙子" />
+    </ux-radio-group>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('荔枝');
+</script>
+`;
+
+/** 形状 */
+const shape = `
+<template>
+    <ux-radio-group v-model="value" shape="square">
+        <ux-radio label="荔枝" name="荔枝" />
+        <ux-radio label="香蕉" name="香蕉" />
+    </ux-radio-group>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('荔枝');
+</script>
+`;
+
+/** 尺寸 */
+const size = `
+<template>
+    <ux-radio-group v-model="value" size="large">
+        <ux-radio label="荔枝" name="荔枝" />
+        <ux-radio label="香蕉" name="香蕉" />
+    </ux-radio-group>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('荔枝');
+</script>
+`;
+
+/** 激活颜色 */
+const color = `
+<template>
+    <ux-radio-group v-model="value" active-color="#19be6b">
+        <ux-radio label="荔枝" name="荔枝" />
+        <ux-radio label="香蕉" name="香蕉" />
+    </ux-radio-group>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('荔枝');
+</script>
+`;
+
+/** 禁用 */
+const disabled = `
+<template>
+    <ux-radio-group v-model="value">
+        <ux-radio label="荔枝" name="荔枝" :disabled="true" />
+        <ux-radio label="香蕉" name="香蕉" />
+    </ux-radio-group>
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('香蕉');
+</script>
+`;
+
+export const codes = {
+    basic,
+    shape,
+    size,
+    color,
+    disabled
+};

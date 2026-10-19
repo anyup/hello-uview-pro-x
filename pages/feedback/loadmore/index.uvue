@@ -1,0 +1,47 @@
+<template>
+    <demo-page :title="t('loadmore.title')" :subtitle="t('loadmore.subtitle')">
+
+        <!-- 加载更多 -->
+        <demo-block :title="t('loadmore.basicTitle')" :desc="t('loadmore.basicDesc')" :code="codes.basic">
+            <ux-loadmore status="loadmore" @loadmore="onLoadMore" />
+        </demo-block>
+
+        <!-- 加载中 -->
+        <demo-block :title="t('loadmore.loadingTitle')" :desc="t('loadmore.loadingDesc')" :code="codes.loading">
+            <ux-loadmore status="loading" />
+        </demo-block>
+
+        <!-- 没有更多 -->
+        <demo-block :title="t('loadmore.nomoreTitle')" :desc="t('loadmore.nomoreDesc')" :code="codes.nomore">
+            <ux-loadmore status="nomore" />
+        </demo-block>
+
+        <!-- 粗点样式 -->
+        <demo-block :title="t('loadmore.dotTitle')" :desc="t('loadmore.dotDesc')" :code="codes.dot">
+            <ux-loadmore status="nomore" :is-dot="true" />
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('loadmore.customTitle')" :desc="t('loadmore.customDesc')" :code="codes.custom">
+            <ux-loadmore status="loading" color="#fa3534" icon-color="#fa3534" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+function onLoadMore(): void {
+    uni.showToast({
+        title: t('loadmore.clickTip'),
+        icon: 'none'
+    });
+}
+</script>
+
+<style lang="scss">
+</style>

@@ -1,0 +1,124 @@
+﻿/**
+ * swiper 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-swiper :list="list" />
+</template>
+
+<script setup lang="uts">
+type SwiperItem = {
+    image: string;
+    title?: string;
+};
+
+const list: SwiperItem[] = [
+    { image: 'https://picsum.photos/id/1015/600/300' },
+    { image: 'https://picsum.photos/id/1016/600/300' },
+    { image: 'https://picsum.photos/id/1018/600/300' }
+];
+</script>
+`;
+
+/** 指示器模式 */
+const mode = `
+<template>
+    <ux-swiper :list="list" :mode="mode" />
+    <view class="btn-wrap">
+        <ux-button v-for="(item, index) in modeList" :key="index" :type="mode === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" @click="mode = item.value">{{ item.label }}</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+import type { SwiperMode } from '@/uni_modules/uview-pro-x';
+
+type SwiperItem = {
+    image: string;
+    title?: string;
+};
+
+type ModeItem = {
+    value: SwiperMode;
+    label: string;
+};
+
+const list: SwiperItem[] = [
+    { image: 'https://picsum.photos/id/1015/600/300' },
+    { image: 'https://picsum.photos/id/1016/600/300' },
+    { image: 'https://picsum.photos/id/1018/600/300' }
+];
+
+const mode = ref<SwiperMode>('round');
+
+const modeList: ModeItem[] = [
+    { value: 'rect', label: '矩形' },
+    { value: 'dot', label: '圆点' },
+    { value: 'round', label: '圆条' },
+    { value: 'number', label: '数字' }
+];
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 12px;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 3D效果 */
+const effect3d = `
+<template>
+    <ux-swiper :list="list" :effect3d="true" />
+</template>
+
+<script setup lang="uts">
+type SwiperItem = {
+    image: string;
+    title?: string;
+};
+
+const list: SwiperItem[] = [
+    { image: 'https://picsum.photos/id/1015/600/300' },
+    { image: 'https://picsum.photos/id/1016/600/300' },
+    { image: 'https://picsum.photos/id/1018/600/300' }
+];
+</script>
+`;
+
+/** 标题显示 */
+const title = `
+<template>
+    <ux-swiper :list="list" :title="true" height="100" />
+</template>
+
+<script setup lang="uts">
+type SwiperItem = {
+    image: string;
+    title?: string;
+};
+
+const list: SwiperItem[] = [
+    { image: 'https://picsum.photos/id/1015/600/300', title: '风景一' },
+    { image: 'https://picsum.photos/id/1016/600/300', title: '风景二' },
+    { image: 'https://picsum.photos/id/1018/600/300', title: '风景三' }
+];
+</script>
+`;
+
+export const codes = {
+    basic,
+    mode,
+    effect3d,
+    title
+};

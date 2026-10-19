@@ -1,0 +1,93 @@
+﻿<template>
+    <demo-page :title="t('tabs.title')" :subtitle="t('tabs.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('tabs.basicTitle')" :desc="t('tabs.basicDesc')" :code="codes.basic">
+            <view class="tabs-demo">
+                <ux-tabs
+                    :current="tabsCurrent"
+                    :list="basicList"
+                    @change="onChange"
+                />
+            </view>
+            <text class="tabs-tip">{{ t('tabs.current') }}: {{ tabsCurrent }}</text>
+        </demo-block>
+
+        <!-- 禁止滚动 -->
+        <demo-block :title="t('tabs.scrollTitle')" :desc="t('tabs.scrollDesc')" :code="codes.noScroll">
+            <ux-tabs
+                :current="tabsCurrent"
+                :is-scroll="false"
+                :list="basicList"
+                @change="onChange"
+            />
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('tabs.colorTitle')" :desc="t('tabs.colorDesc')" :code="codes.color">
+            <ux-tabs
+                active-color="#ffa500"
+                inactive-color="#909399"
+                :current="tabsCurrent"
+                :list="basicList"
+                @change="onChange"
+            />
+        </demo-block>
+
+        <!-- 徽标 -->
+        <demo-block :title="t('tabs.badgeTitle')" :desc="t('tabs.badgeDesc')" :code="codes.badge">
+            <ux-tabs
+                :current="tabsCurrent"
+                :is-scroll="false"
+                :list="badgeList"
+                @change="onChange"
+            />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, type TabsItem } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 当前激活 tab */
+    const tabsCurrent = ref(0);
+
+    const basicList: TabsItem[] = [
+        { name: t('tabs.tab1') },
+        { name: t('tabs.tab2') },
+        { name: t('tabs.tab3') },
+        { name: t('tabs.tab4') },
+        { name: t('tabs.tab5') }
+    ];
+
+    const badgeList: TabsItem[] = [
+        { name: t('tabs.tab1'), count: 5 },
+        { name: t('tabs.tab2'), count: 20 },
+        { name: t('tabs.tab3'), count: 100 },
+        { name: t('tabs.tab4') }
+    ];
+
+    /** 点击标签 */
+    const onChange = (index: number) => {
+        tabsCurrent.value = index;
+        uni.showToast({ title: t('tabs.changeToast') + index, icon: 'none' });
+    };
+</script>
+
+<style lang="scss">
+
+    .tabs-demo {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .tabs-tip {
+        font-size: 12px;
+        color: $u-tips-color;
+        margin-top: 6px;
+    }
+</style>

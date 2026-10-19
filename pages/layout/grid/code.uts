@@ -1,0 +1,149 @@
+/**
+ * grid 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-grid :col="3" @click="onClick">
+        <ux-grid-item :index="0">
+            <ux-icon name="photo" :size="23" />
+            <text class="text">图片</text>
+        </ux-grid-item>
+        <ux-grid-item :index="1">
+            <ux-icon name="lock" :size="23" />
+            <text class="text">锁定</text>
+        </ux-grid-item>
+        <ux-grid-item :index="2">
+            <ux-icon name="hourglass" :size="23" />
+            <text class="text">沙漏</text>
+        </ux-grid-item>
+        <ux-grid-item :index="3">
+            <ux-icon name="home" :size="23" />
+            <text class="text">首页</text>
+        </ux-grid-item>
+        <ux-grid-item :index="4">
+            <ux-icon name="star" :size="23" />
+            <text class="text">收藏</text>
+        </ux-grid-item>
+        <ux-grid-item :index="5">
+            <ux-icon name="volume-up" :size="23" />
+            <text class="text">音量</text>
+        </ux-grid-item>
+    </ux-grid>
+</template>
+
+<script setup lang="uts">
+function onClick(index: string | number): void {
+    uni.showToast({ title: '点击了第' + (Number(index) + 1) + '个', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.text {
+    font-size: 14px;
+    margin-top: 2px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 自定义列数 */
+const col = `
+<template>
+    <ux-grid :col="4">
+        <ux-grid-item :index="0">
+            <ux-icon name="integral" :size="20" />
+            <text class="text">积分</text>
+        </ux-grid-item>
+        <ux-grid-item :index="1">
+            <ux-icon name="gift" :size="20" />
+            <text class="text">礼物</text>
+        </ux-grid-item>
+        <ux-grid-item :index="2">
+            <ux-icon name="scan" :size="20" />
+            <text class="text">扫码</text>
+        </ux-grid-item>
+        <ux-grid-item :index="3">
+            <ux-icon name="trash" :size="20" />
+            <text class="text">删除</text>
+        </ux-grid-item>
+        <ux-grid-item :index="4">
+            <ux-icon name="shopping-cart" :size="20" />
+            <text class="text">购物车</text>
+        </ux-grid-item>
+        <ux-grid-item :index="5">
+            <ux-icon name="rewind-right" :size="20" />
+            <text class="text">快退</text>
+        </ux-grid-item>
+    </ux-grid>
+</template>
+
+<style scoped>
+.text {
+    font-size: 14px;
+    margin-top: 2px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 无边框 */
+const noBorder = `
+<template>
+    <ux-grid :col="3" :border="false">
+        <ux-grid-item :index="0">
+            <ux-icon name="photo" :size="23" />
+            <text class="text">图片</text>
+        </ux-grid-item>
+        <ux-grid-item :index="1">
+            <ux-icon name="lock" :size="23" />
+            <text class="text">锁定</text>
+        </ux-grid-item>
+        <ux-grid-item :index="2">
+            <ux-icon name="home" :size="23" />
+            <text class="text">首页</text>
+        </ux-grid-item>
+    </ux-grid>
+</template>
+
+<style scoped>
+.text {
+    font-size: 14px;
+    margin-top: 2px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 对齐方式 */
+const align = `
+<template>
+    <ux-grid :col="3" align="center">
+        <ux-grid-item :index="0">
+            <ux-icon name="star" :size="23" />
+            <text class="text">收藏</text>
+        </ux-grid-item>
+        <ux-grid-item :index="1">
+            <ux-icon name="home" :size="23" />
+            <text class="text">首页</text>
+        </ux-grid-item>
+    </ux-grid>
+</template>
+
+<style scoped>
+.text {
+    font-size: 14px;
+    margin-top: 2px;
+    color: #909399;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    col,
+    noBorder,
+    align
+};

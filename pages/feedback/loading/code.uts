@@ -1,0 +1,120 @@
+/**
+ * loading 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="demo">
+        <ux-loading />
+    </view>
+</template>
+
+<style scoped>
+.demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+</style>
+`;
+
+/** 模式切换 */
+const mode = `
+<template>
+    <view class="demo">
+        <ux-loading :mode="mode" />
+    </view>
+    <view class="btns">
+        <ux-button size="small" :type="mode === 'circle' ? 'primary' : 'default'" @click="mode = 'circle'">circle</ux-button>
+        <ux-button size="small" :type="mode === 'flower' ? 'primary' : 'default'" @click="mode = 'flower'">flower</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const mode = ref<'circle' | 'flower'>('circle');
+</script>
+
+<style scoped>
+.demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+.btns {
+    display: flex;
+    flex-direction: row;
+}
+</style>
+`;
+
+/** 颜色配置 */
+const color = `
+<template>
+    <view class="demo">
+        <ux-loading mode="circle" color="#2979ff" />
+    </view>
+</template>
+
+<style scoped>
+.demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+</style>
+`;
+
+/** 尺寸配置 */
+const size = `
+<template>
+    <view class="demo">
+        <ux-loading :size="20" />
+    </view>
+</template>
+
+<style scoped>
+.demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+</style>
+`;
+
+/** 显示/隐藏 */
+const show = `
+<template>
+    <view class="demo">
+        <ux-loading v-if="show" />
+        <text v-else>加载已完成</text>
+    </view>
+    <ux-button size="small" :type="show ? 'primary' : 'default'" @click="show = !show">切换显示</ux-button>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(true);
+</script>
+
+<style scoped>
+.demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    mode,
+    color,
+    size,
+    show
+};

@@ -1,0 +1,192 @@
+/**
+ * configProvider 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-config-provider>
+        <view class="config-provider-banner">
+            <text>主题变量已注入：背景色与文字色随全局主题联动</text>
+        </view>
+    </ux-config-provider>
+</template>
+
+<style scoped>
+.config-provider-banner {
+    padding: 12px 15px;
+    border-radius: 6px;
+    background-color: var(--u-type-primary-light, #ecf5ff);
+    color: var(--u-type-primary, #2979ff);
+}
+</style>
+`;
+
+/** 主题注入 */
+const theme = `
+<template>
+    <ux-config-provider :current-theme="currentTheme">
+        <view class="config-provider-row">
+            <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" text="霞光紫（默认）" @click="switchTheme('purple')" />
+            <ux-button custom-class="config-provider-item" type="success" size="small" shape="round" text="清翠绿" @click="switchTheme('green')" />
+            <ux-button custom-class="config-provider-item" type="warning" size="small" shape="round" text="暖阳橙" @click="switchTheme('orange')" />
+        </view>
+    </ux-config-provider>
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { getCurrentTheme } = useTheme();
+
+const themeInfo = getCurrentTheme();
+const currentTheme = ref(themeInfo != null ? themeInfo.name : '');
+
+const switchTheme = (name: string) => {
+    currentTheme.value = name;
+};
+</script>
+
+<style scoped>
+.config-provider-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.config-provider-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 暗黑模式 */
+const dark = `
+<template>
+    <ux-config-provider :dark-mode="currentMode">
+        <view class="config-provider-row">
+            <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" text="亮色" @click="switchMode('light')" />
+            <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" text="暗黑" @click="switchMode('dark')" />
+            <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" text="自动" @click="switchMode('auto')" />
+        </view>
+    </ux-config-provider>
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { getDarkMode } = useTheme();
+
+const currentMode = ref<string>(getDarkMode());
+
+const switchMode = (mode: string) => {
+    currentMode.value = mode;
+};
+</script>
+
+<style scoped>
+.config-provider-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.config-provider-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 国际化 */
+const locale = `
+<template>
+    <ux-config-provider :current-locale="currentLocale">
+        <view class="config-provider-row">
+            <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" text="简体中文" @click="switchLocale('zh-CN')" />
+            <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" text="English" @click="switchLocale('en-US')" />
+        </view>
+    </ux-config-provider>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+
+const { getCurrentLocale } = useLocale();
+
+const localeInfo = getCurrentLocale();
+const currentLocale = ref(localeInfo != null ? localeInfo.name : '');
+
+const switchLocale = (name: string) => {
+    currentLocale.value = name;
+};
+</script>
+
+<style scoped>
+.config-provider-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.config-provider-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 事件回调 */
+const events = `
+<template>
+    <ux-config-provider
+        :current-theme="currentTheme"
+        :dark-mode="currentMode"
+        @theme-change="onThemeChange"
+        @mode-change="onModeChange"
+    >
+        <view class="config-provider-events">
+            <text class="config-provider-event-line">{{ eventText }}</text>
+        </view>
+    </ux-config-provider>
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { getCurrentTheme, getDarkMode } = useTheme();
+
+const themeInfo = getCurrentTheme();
+const currentTheme = ref(themeInfo != null ? themeInfo.name : '');
+const currentMode = ref<string>(getDarkMode());
+
+const eventText = ref('暂无事件');
+
+const onThemeChange = (name: string) => {
+    eventText.value = 'theme-change：' + name;
+};
+
+const onModeChange = (mode: string) => {
+    eventText.value = 'mode-change：' + mode;
+};
+</script>
+
+<style scoped>
+.config-provider-events {
+    display: flex;
+    flex-direction: column;
+}
+.config-provider-event-line {
+    font-size: 13px;
+    color: #606266;
+    line-height: 1.8;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    theme,
+    dark,
+    locale,
+    events
+};

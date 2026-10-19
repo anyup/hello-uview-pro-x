@@ -1,0 +1,247 @@
+/**
+ * keyboard 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 数字键盘 */
+const number = `
+<template>
+    <view class="keyboard-display">
+        <text>{{ inputValue.length > 0 ? inputValue : '请点击按钮唤起键盘' }}</text>
+    </view>
+    <ux-button type="primary" shape="round" text="打开数字键盘" @click="open" />
+    <ux-keyboard v-model="show" mode="number" @change="onChange" @backspace="onBackspace" @confirm="onConfirm" @cancel="onCancel" />
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+const show = ref(false);
+const inputValue = ref('');
+
+const open = () => {
+    show.value = true;
+};
+
+const keyToString = (key: string | number): string => {
+    return typeof key == 'number' ? (key as number).toString() : key as string;
+};
+
+const onChange = (key: string | number) => {
+    inputValue.value = inputValue.value + keyToString(key);
+};
+
+const onBackspace = () => {
+    inputValue.value = inputValue.length > 0 ? inputValue.substring(0, inputValue.length - 1) : '';
+};
+
+const onConfirm = () => {
+    toastRef.value?.show?.({ title: '输入完成：' + inputValue.value, type: 'success', duration: 2000 });
+};
+
+const onCancel = () => {
+    toastRef.value?.show?.({ title: '已取消输入', type: 'info', duration: 2000 });
+};
+</script>
+
+<style scoped>
+.keyboard-display {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 身份证键盘 */
+const card = `
+<template>
+    <ux-button type="primary" shape="round" text="打开身份证键盘" @click="open" />
+    <ux-keyboard v-model="show" mode="card" @change="onChange" @confirm="onConfirm" />
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+const show = ref(false);
+const inputValue = ref('');
+
+const open = () => {
+    show.value = true;
+};
+
+const onChange = (key: string | number) => {
+    inputValue.value = inputValue.value + (typeof key == 'number' ? (key as number).toString() : key as string);
+};
+
+const onConfirm = () => {
+    toastRef.value?.show?.({ title: '输入完成：' + inputValue.value, type: 'success', duration: 2000 });
+};
+</script>
+`;
+
+/** 车牌号键盘 */
+const car = `
+<template>
+    <ux-button type="primary" shape="round" text="打开车牌号键盘" @click="open" />
+    <ux-keyboard v-model="show" mode="car" @change="onChange" @confirm="onConfirm" />
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+const show = ref(false);
+const inputValue = ref('');
+
+const open = () => {
+    show.value = true;
+};
+
+const onChange = (key: string | number) => {
+    inputValue.value = inputValue.value + (typeof key == 'number' ? (key as number).toString() : key as string);
+};
+
+const onConfirm = () => {
+    toastRef.value?.show?.({ title: '输入完成：' + inputValue.value, type: 'success', duration: 2000 });
+};
+</script>
+`;
+
+/** 定制文案与按键 */
+const custom = `
+<template>
+    <ux-button type="warning" shape="round" text="打乱按键并定制文案" @click="open" />
+    <ux-keyboard
+        v-model="show"
+        mode="number"
+        :random="true"
+        tips="安全输入"
+        cancel-text="重输"
+        confirm-text="确定"
+        @change="onChange"
+        @backspace="onBackspace"
+        @confirm="onConfirm"
+        @cancel="onCancel"
+    />
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+const show = ref(false);
+const inputValue = ref('');
+
+const open = () => {
+    show.value = true;
+};
+
+const onChange = (key: string | number) => {
+    inputValue.value = inputValue.value + (typeof key == 'number' ? (key as number).toString() : key as string);
+};
+
+const onBackspace = () => {
+    inputValue.value = inputValue.length > 0 ? inputValue.substring(0, inputValue.length - 1) : '';
+};
+
+const onConfirm = () => {
+    toastRef.value?.show?.({ title: '输入完成：' + inputValue.value, type: 'success', duration: 2000 });
+};
+
+const onCancel = () => {
+    toastRef.value?.show?.({ title: '已取消输入', type: 'info', duration: 2000 });
+};
+</script>
+`;
+
+/** 工具条与遮罩开关 */
+const switchBoard = `
+<template>
+    <view class="keyboard-row">
+        <ux-button custom-class="keyboard-item" type="success" size="small" shape="round" text="无工具条" @click="openBoard('noTooltip')" />
+        <ux-button custom-class="keyboard-item" type="success" size="small" shape="round" text="隐藏提示与按钮" @click="openBoard('noTips')" />
+        <ux-button custom-class="keyboard-item" type="success" size="small" shape="round" text="无遮罩无小数点" @click="openBoard('noMask')" />
+    </view>
+    <ux-keyboard
+        v-model="show"
+        mode="number"
+        :tooltip="tooltip"
+        :show-tips="showTips"
+        :cancel-btn="cancelBtn"
+        :confirm-btn="confirmBtn"
+        :dot-enabled="dotEnabled"
+        :mask="mask"
+    />
+</template>
+
+<script setup lang="uts">
+const show = ref(false);
+const tooltip = ref(true);
+const showTips = ref(true);
+const cancelBtn = ref(true);
+const confirmBtn = ref(true);
+const dotEnabled = ref(true);
+const mask = ref(true);
+
+const openBoard = (kind: string) => {
+    if (kind == 'noTooltip') {
+        tooltip.value = false;
+    } else if (kind == 'noTips') {
+        showTips.value = false;
+        cancelBtn.value = false;
+        confirmBtn.value = false;
+    } else {
+        dotEnabled.value = false;
+        mask.value = false;
+    }
+    show.value = true;
+};
+</script>
+
+<style scoped>
+.keyboard-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.keyboard-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 安全区与层级 */
+const flat = `
+<template>
+    <ux-button type="info" shape="round" text="遮罩不可关 + 自定义层级" @click="open" />
+    <ux-keyboard
+        v-model="show"
+        mode="number"
+        :mask-close-able="false"
+        :safe-area-inset-bottom="true"
+        :z-index="9999"
+    />
+</template>
+
+<script setup lang="uts">
+const show = ref(false);
+
+const open = () => {
+    show.value = true;
+};
+</script>
+`;
+
+// switch 为保留字，常量名用 switchBoard，导出键名保持 switch（与页面 codes.switch 对应）
+export const codes = {
+    number,
+    card,
+    car,
+    custom,
+    switch: switchBoard,
+    flat
+};

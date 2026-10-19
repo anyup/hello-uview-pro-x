@@ -1,0 +1,136 @@
+<template>
+    <demo-page :title="t('noticeBar.title')" :subtitle="t('noticeBar.subtitle')">
+
+        <demo-block :title="t('noticeBar.hBasicTitle')" :desc="t('noticeBar.hBasicDesc')" :code="codes.hBasic">
+            <ux-notice-bar :list="list" @click="onClick"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.hThemeTitle')" :desc="t('noticeBar.hThemeDesc')" :code="codes.hTheme">
+            <ux-notice-bar type="primary" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar type="success" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar type="error" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar type="info" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar type="none" :list="list"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.hIconTitle')" :desc="t('noticeBar.hIconDesc')" :code="codes.hIcon">
+            <ux-notice-bar :volume-icon="false" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar :more-icon="true" :list="list" @get-more="onGetMore"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar :close-icon="true" :list="list" @close="onClose"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.hColorTitle')" :desc="t('noticeBar.hColorDesc')" :code="codes.hColor">
+            <ux-notice-bar color="#2979ff" bg-color="#ecf5ff" :list="list"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.hControlTitle')" :desc="t('noticeBar.hControlDesc')" :code="codes.hControl">
+            <ux-notice-bar :speed="160" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar :play-state="playState" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <view class="demo-btn" @click="onToggle">
+                <text class="demo-btn-text">{{ playing ? t('noticeBar.pauseText') : t('noticeBar.startText') }}</text>
+            </view>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.vBasicTitle')" :desc="t('noticeBar.vBasicDesc')" :code="codes.vBasic">
+            <ux-notice-bar mode="vertical" :list="list"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.vThemeTitle')" :desc="t('noticeBar.vThemeDesc')" :code="codes.vTheme">
+            <ux-notice-bar mode="vertical" type="primary" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" type="success" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" type="info" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" type="none" :list="list"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.vIconTitle')" :desc="t('noticeBar.vIconDesc')" :code="codes.vIcon">
+            <ux-notice-bar mode="vertical" :volume-icon="false" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" :more-icon="true" :list="list" @get-more="onGetMore"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" :close-icon="true" :list="list" @close="onClose"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.vColorTitle')" :desc="t('noticeBar.vColorDesc')" :code="codes.vColor">
+            <ux-notice-bar mode="vertical" color="#2979ff" bg-color="#ecf5ff" :list="list"></ux-notice-bar>
+        </demo-block>
+
+        <demo-block :title="t('noticeBar.vControlTitle')" :desc="t('noticeBar.vControlDesc')" :code="codes.vControl">
+            <ux-notice-bar mode="vertical" :play-state="playState" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" :duration="4000" :list="list"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <ux-notice-bar mode="vertical" :disable-touch="false" :list="list" @end="onEnd"></ux-notice-bar>
+            <view class="demo-gap"></view>
+            <view class="demo-btn" @click="onToggle">
+                <text class="demo-btn-text">{{ playing ? t('noticeBar.pauseText') : t('noticeBar.startText') }}</text>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+const { t } = useLocale('demo');
+
+const list = [t('noticeBar.listItem1'), t('noticeBar.listItem2'), t('noticeBar.listItem3'), t('noticeBar.listItem4')];
+
+const playing = ref(true);
+const playState = ref('play');
+
+const onToggle = () => {
+    playing.value = !playing.value;
+    playState.value = playing.value ? 'play' : 'paused';
+};
+
+const onGetMore = () => {
+    uni.showToast({ title: t('noticeBar.toastMore'), icon: 'none' });
+};
+
+const onClose = () => {
+    uni.showToast({ title: t('noticeBar.toastClose'), icon: 'none' });
+};
+
+const onClick = () => {
+    uni.showToast({ title: t('noticeBar.toastClick'), icon: 'none' });
+};
+
+const onEnd = () => {
+    uni.showToast({ title: t('noticeBar.toastEnd'), icon: 'none' });
+};
+</script>
+
+<style lang="scss">
+
+.demo-gap {
+    height: 12px;
+}
+
+.demo-btn {
+    background-color: $u-type-primary;
+    border-radius: 4px;
+    padding-top: 8px;
+    padding-right: 16px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.demo-btn-text {
+    font-size: 14px;
+    color: $u-white-color;
+}
+</style>

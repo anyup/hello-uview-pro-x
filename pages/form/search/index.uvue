@@ -1,0 +1,210 @@
+﻿<template>
+    <demo-page :title="t('search.title')" :subtitle="t('search.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('search.basicTitle')" :desc="t('search.basicDesc')" :code="codes.basic">
+            <view class="search-demo">
+                <ux-search
+                    v-model="basicValue"
+                    @change="onChange"
+                    @search="onSearch"
+                    @custom="onCustom"
+                    @clear="onClear"
+                />
+            </view>
+            <text class="search-tip">{{ t('search.currentValue') }}: {{ basicValue }}</text>
+        </demo-block>
+
+        <!-- 搜索框形状 -->
+        <demo-block :title="t('search.shapeTitle')" :desc="t('search.shapeDesc')" :code="codes.shape">
+            <view class="search-demo">
+                <ux-search v-model="shapeValue" :shape="shape" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in shapeList"
+                    :key="index"
+                    :type="shape === item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="setShape(item.value)"
+                >{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 清除控件 -->
+        <demo-block :title="t('search.clearableTitle')" :desc="t('search.clearableDesc')" :code="codes.clearable">
+            <view class="search-demo">
+                <ux-search v-model="clearableValue" :clearabled="clearabled" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    :type="clearabled ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="toggleClearable"
+                >{{ t('search.clearableBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 右侧控件 -->
+        <demo-block :title="t('search.actionTitle')" :desc="t('search.actionDesc')" :code="codes.action">
+            <view class="search-demo">
+                <ux-search v-model="actionValue" :show-action="showAction" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    :type="showAction ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="toggleShowAction"
+                >{{ t('search.actionBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 动画展开 -->
+        <demo-block :title="t('search.animationTitle')" :desc="t('search.animationDesc')" :code="codes.animation">
+            <view class="search-demo">
+                <ux-search v-model="animationValue" :animation="true" />
+            </view>
+        </demo-block>
+
+        <!-- 输入框对齐方式 -->
+        <demo-block :title="t('search.alignTitle')" :desc="t('search.alignDesc')" :code="codes.align">
+            <view class="search-demo">
+                <ux-search v-model="alignValue" :input-align="inputAlign" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in alignList"
+                    :key="index"
+                    :type="inputAlign === item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="setInputAlign(item.value)"
+                >{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, type SearchShape, type InputAlign } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type ShapeItem = {
+        value: SearchShape;
+        label: string;
+    };
+
+    type AlignItem = {
+        value: InputAlign;
+        label: string;
+    };
+
+    /** 基础用法值 */
+    const basicValue = ref('');
+    /** 形状演示值 */
+    const shapeValue = ref('天山雪莲');
+    /** 清除控件演示值 */
+    const clearableValue = ref('可清除内容');
+    /** 右侧控件演示值 */
+    const actionValue = ref('');
+    /** 动画展开演示值 */
+    const animationValue = ref('');
+    /** 对齐方式演示值 */
+    const alignValue = ref('');
+
+    /** 搜索框形状，默认档 square（小圆角 4px，与组件默认值一致） */
+    const shape = ref<SearchShape>('square');
+    /** 是否启用清除控件 */
+    const clearabled = ref(true);
+    /** 是否显示右侧控件 */
+    const showAction = ref(true);
+    /** 输入框对齐方式 */
+    const inputAlign = ref<InputAlign>('left');
+
+    const shapeList: ShapeItem[] = [
+        { value: 'square', label: t('search.square') },
+        { value: 'round', label: t('search.round') }
+    ];
+
+    const alignList: AlignItem[] = [
+        { value: 'left', label: t('search.left') },
+        { value: 'center', label: t('search.center') },
+        { value: 'right', label: t('search.right') }
+    ];
+
+    /** 设置形状 */
+    const setShape = (val: SearchShape) => {
+        shape.value = val;
+    };
+
+    /** 切换清除控件 */
+    const toggleClearable = () => {
+        clearabled.value = !clearabled.value;
+    };
+
+    /** 切换右侧控件 */
+    const toggleShowAction = () => {
+        showAction.value = !showAction.value;
+    };
+
+    /** 设置对齐方式 */
+    const setInputAlign = (val: InputAlign) => {
+        inputAlign.value = val;
+    };
+
+    /** 输入框内容变化 */
+    const onChange = (val: string) => {
+        console.log('change:', val);
+    };
+
+    /** 搜索事件 */
+    const onSearch = (val: string) => {
+        uni.showToast({ title: t('search.searchTip') + val, icon: 'none' });
+    };
+
+    /** 点击右侧按钮 */
+    const onCustom = (val: string) => {
+        uni.showToast({ title: t('search.customTip') + val, icon: 'none' });
+    };
+
+    /** 清除事件 */
+    const onClear = () => {
+        console.log('clear');
+    };
+</script>
+
+<style lang="scss">
+
+    .search-demo {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .search-tip {
+        font-size: 12px;
+        color: $u-tips-color;
+        margin-top: 6px;
+    }
+
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+</style>

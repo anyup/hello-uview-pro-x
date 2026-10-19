@@ -1,0 +1,83 @@
+﻿<template>
+    <demo-page :title="t('gap.title')" :subtitle="t('gap.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('gap.basicTitle')" :code="codes.basic">
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockOne') }}</text>
+            </view>
+            <ux-gap></ux-gap>
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockTwo') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 高度 -->
+        <demo-block :title="t('gap.heightTitle')" :code="codes.height">
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockOne') }}</text>
+            </view>
+            <ux-gap height="40"></ux-gap>
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockTwo') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 背景颜色 -->
+        <demo-block :title="t('gap.bgColorTitle')" :code="codes.bgColor">
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockOne') }}</text>
+            </view>
+            <ux-gap height="20" bg-color="#f56c6c"></ux-gap>
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockTwo') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 上下间距 -->
+        <demo-block :title="t('gap.marginTitle')" :code="codes.margin">
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockOne') }}</text>
+            </view>
+            <ux-gap height="15" margin-top="20" margin-bottom="20"></ux-gap>
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockTwo') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 透明背景 -->
+        <demo-block :title="t('gap.transparentTitle')" :code="codes.transparent">
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockOne') }}</text>
+            </view>
+            <ux-gap height="15" bg-color="transparent"></ux-gap>
+            <view class="gap-box">
+                <text class="gap-box-text">{{ t('gap.blockTwo') }}</text>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+</script>
+
+<style lang="scss">
+    .gap-box {
+        width: 100%;
+        height: 50px;
+        background-color: $u-bg-color;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gap-box-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

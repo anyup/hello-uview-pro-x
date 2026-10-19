@@ -1,0 +1,133 @@
+/**
+ * topTips 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button type="primary" shape="round" text="弹出提示" @click="showBasic" />
+    <ux-top-tips ref="tipsRef" />
+</template>
+
+<script setup lang="uts">
+const tipsRef = ref<any>();
+
+const showBasic = () => {
+    tipsRef.value?.show?.({
+        title: '这是一条顶部提示'
+    });
+};
+</script>
+`;
+
+/** 主题 type */
+const theme = `
+<template>
+    <view class="top-tips-row">
+        <ux-button custom-class="top-tips-item" type="primary" size="small" shape="round" text="primary 主题" @click="showType('primary')" />
+        <ux-button custom-class="top-tips-item" type="success" size="small" shape="round" text="success 主题" @click="showType('success')" />
+        <ux-button custom-class="top-tips-item" type="warning" size="small" shape="round" text="warning 主题" @click="showType('warning')" />
+        <ux-button custom-class="top-tips-item" type="error" size="small" shape="round" text="error 主题" @click="showType('error')" />
+        <ux-button custom-class="top-tips-item" type="info" size="small" shape="round" text="info 主题" @click="showType('info')" />
+    </view>
+    <ux-top-tips ref="tipsRef" />
+</template>
+
+<script setup lang="uts">
+const tipsRef = ref<any>();
+
+const showType = (type: string) => {
+    tipsRef.value?.show?.({
+        title: '这是一条顶部提示',
+        type
+    });
+};
+</script>
+
+<style scoped>
+.top-tips-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.top-tips-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 显示时长 duration */
+const duration = `
+<template>
+    <view class="top-tips-row">
+        <ux-button custom-class="top-tips-item" type="primary" size="small" shape="round" text="停留 1 秒" @click="showDuration(1000)" />
+        <ux-button custom-class="top-tips-item" type="primary" size="small" shape="round" text="停留 3 秒" @click="showDuration(3000)" />
+    </view>
+    <ux-top-tips ref="tipsRef" />
+</template>
+
+<script setup lang="uts">
+const tipsRef = ref<any>();
+
+const showDuration = (duration: number) => {
+    tipsRef.value?.show?.({
+        title: '这是一条顶部提示',
+        duration
+    });
+};
+</script>
+
+<style scoped>
+.top-tips-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.top-tips-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 导航栏高度与层级 */
+const nav = `
+<template>
+    <ux-button type="warning" shape="round" text="从导航栏下方弹出" @click="showNav" />
+    <ux-top-tips ref="tipsRef" :navbar-height="navBarHeight" :z-index="9999" />
+</template>
+
+<script setup lang="uts">
+import { useWindowInfo, useDeviceInfo } from '@/uni_modules/uview-pro-x';
+
+const { statusBarHeight } = useWindowInfo();
+const { platform } = useDeviceInfo();
+
+const tipsRef = ref<any>();
+
+// 顶部避让总高度 = 状态栏 + 自绘导航栏本体（取法与页面 ux-navbar 默认高度一致）
+const navBarHeight = computed((): number => {
+    let body = 44;
+    // #ifdef MP
+    body = platform.value == 'ios' ? 44 : 48;
+    // #endif
+    return statusBarHeight.value + body;
+});
+
+const showNav = () => {
+    tipsRef.value?.show?.({
+        title: '已适配导航栏高度',
+        duration: 3000
+    });
+};
+</script>
+`;
+
+export const codes = {
+    basic,
+    theme,
+    duration,
+    nav
+};

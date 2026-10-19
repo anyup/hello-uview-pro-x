@@ -1,0 +1,171 @@
+﻿<template>
+    <demo-page :title="t('tabbarComponents.title')" :subtitle="t('tabbarComponents.subtitle')" showTabbar hideHeader @scroll="onScroll">
+        <!-- 头部品牌区域 -->
+        <view class="tab-header">
+            <view class="tab-search-btn" @click="goSearch">
+                <ux-icon name="search" size="17" :color="$u.color.primary" />
+            </view>
+            <view class="tab-lang-btn" @click="toggleLocale">
+                <text class="tab-lang-btn-text">{{ langLabel }}</text>
+            </view>
+            <image class="tab-logo" src="/static/logo.png" mode="aspectFit" />
+            <!-- 一句话核心描述 -->
+            <text class="tab-brand-desc">{{ t('tabbarComponents.brandDesc') }}</text>
+            <view class="tab-platforms">
+                <text class="tab-platform-tag">App</text>
+                <text class="tab-platform-tag">H5</text>
+                <text class="tab-platform-tag">{{ t('tabbarComponents.platformMiniProgram') }}</text>
+                <text class="tab-platform-tag">HarmonyOS</text>
+            </view>
+        </view>
+
+        <!-- 主题切换 -->
+        <view class="tab-theme">
+            <text class="tab-theme-title">{{ t('tabbarComponents.themeTitle') }}</text>
+            <view class="tab-theme-list">
+                <view
+                    class="tab-theme-item"
+                    v-for="(th, thIdx) in themes"
+                    :key="thIdx"
+                    @click="setTheme(th.name)"
+                >
+                    <view
+                        class="tab-theme-dot"
+                        :class="{ 'is-active': currentTheme?.name === th.name }"
+                        :style="'background-color:' + $u.strOr(th.color.primary, $u.color.primary)"
+                    >
+                        <text class="tab-theme-dot-check" v-if="currentTheme?.name === th.name">✓</text>
+                    </view>
+                    <text class="tab-theme-label">{{ themeLabel(th.name) }}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 暗黑模式切换 -->
+        <view class="tab-theme">
+            <text class="tab-theme-title">{{ t('tabbarComponents.darkModeTitle') }}</text>
+            <view class="tab-dark-list">
+                <view
+                    class="tab-dark-item"
+                    v-for="(dm, dmIdx) in darkModes"
+                    :key="dmIdx"
+                    @click="setDarkMode(dm.value)"
+                >
+                    <text class="tab-dark-text" :class="{ 'is-active': darkMode === dm.value }">{{ dm.label }}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 分类列表 -->
+        <view class="tab-section" v-for="(cat, catIdx) in categories" :key="catIdx">
+            <view class="tab-section-header">
+                <view class="tab-section-bar" :style="'background-color:' + $u.color.primary"></view>
+                <text class="tab-section-name">{{ t(cat.name) }}</text>
+                <view class="tab-section-badge" :style="'background-color:' + $u.color.primary">
+                    <text class="tab-section-badge-text">{{ cat.items.length }}</text>
+                </view>
+            </view>
+            <view class="tab-list">
+                <view
+                    class="tab-item"
+                    v-for="(item, itemIdx) in cat.items"
+                    :key="itemIdx"
+                    @click="navigate(item.path)"
+                >
+                    <view class="tab-icon" :style="'background-color:' + $u.color.primary">
+                        <text class="tab-icon-text">{{ item.icon }}</text>
+                    </view>
+                    <view class="tab-item-body">
+                        <text class="tab-item-name">{{ item.name }}</text>
+                        <text class="tab-item-desc">{{ t(item.desc) }}</text>
+                    </view>
+                    <text class="tab-arrow">›</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 底部信息 -->
+        <view class="tab-footer">
+            <text class="tab-footer-text">uView Pro X v1.0.0</text>
+        </view>
+
+        <!-- 返回顶部：作为最后一个子节点，避开 App 端同级叠放时被滚动内容覆盖；
+             App 端滚动发生在 demo-page 的 scroll-view 内，靠 parent-id 定位归零容器 -->
+        <ux-back-top
+            :scroll-top="scrollTop"
+            :top="300"
+            parent-id="demo-page-scroll"
+        ></ux-back-top>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale, useTheme, type DarkMode } from '@/uni_modules/uview-pro-x';
+import { componentCategories } from './config';
+
+const categories = componentCategories;
+
+// 返回顶部：App/H5 由 demo-page 上报滚动距离（其 App 分支根为 scroll-view），组件自身拿不到页面滚动
+const scrollTop = ref(0);
+
+const onScroll = (e: UniScrollEvent) => {
+    scrollTop.value = e.detail.scrollTop;
+};
+
+const { currentLocale, setLocale } = useLocale();
+const { t } = useLocale('demo');
+
+// 主题与暗黑模式
+const { themes, currentTheme, darkMode, setTheme, setDarkMode } = useTheme();
+
+// 主题名到 i18n key 的映射（label 字段为组件库内置中文，展示层按 name 国际化）
+function themeLabel(name: string): string {
+    let key = 'themeDefault'
+    if (name === 'purple') key = 'themePurple'
+    else if (name === 'green') key = 'themeGreen'
+    else if (name === 'orange') key = 'themeOrange'
+    else if (name === 'dark') key = 'themeDark'
+    return t('tabbarComponents.' + key)
+}
+
+// 暗黑模式选项（随语言响应式更新）
+const darkModes = computed<{ value: DarkMode; label: string }[]>(() => [
+    { value: 'auto', label: t('tabbarComponents.darkModeAuto') },
+    { value: 'light', label: t('tabbarComponents.darkModeLight') },
+    { value: 'dark', label: t('tabbarComponents.darkModeDark') }
+]);
+
+/**
+ * 当前语言标识：中 / EN
+ */
+const langLabel = computed((): string => {
+    return currentLocale.value?.name === 'en-US' ? 'EN' : t('tabbarComponents.langLabelZh');
+});
+
+/**
+ * 切换中英文
+ */
+function toggleLocale(): void {
+    const target = currentLocale.value?.name === 'en-US' ? 'zh-CN' : 'en-US';
+    setLocale(target);
+}
+
+function navigate(path: string): void {
+    uni.navigateTo({ url: '/pages/' + path });
+}
+
+function goSearch(): void {
+    uni.navigateTo({ url: '/pages/search/index' });
+}
+
+// 小程序自定义组件不支持页面 onPageScroll，需由页面自己监听并传给 ux-back-top
+// #ifdef MP
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
+// #endif
+</script>
+
+<style lang="scss">
+@import './tabbar.scss';
+</style>

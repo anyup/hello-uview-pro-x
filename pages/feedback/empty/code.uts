@@ -1,0 +1,75 @@
+/**
+ * empty 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-empty text="暂无数据" mode="data" />
+</template>
+`;
+
+/** 内置图标：六个场景 */
+const icons = `
+<template>
+    <view class="empty-icons">
+        <view class="empty-icon-item"><ux-empty mode="car" /></view>
+        <view class="empty-icon-item"><ux-empty mode="list" /></view>
+        <view class="empty-icon-item"><ux-empty mode="search" /></view>
+        <view class="empty-icon-item"><ux-empty mode="order" /></view>
+        <view class="empty-icon-item"><ux-empty mode="address" /></view>
+        <view class="empty-icon-item"><ux-empty mode="favor" /></view>
+    </view>
+</template>
+
+<style scoped>
+.empty-icons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.empty-icon-item {
+    width: 50%;
+}
+</style>
+`;
+
+/** 自定义颜色和大小 */
+const color = `
+<template>
+    <ux-empty text="自定义颜色" mode="data" color="#2979ff" icon-color="#2979ff" :icon-size="80" :font-size="15" />
+</template>
+`;
+
+/** 自定义图片 */
+const src = `
+<template>
+    <ux-empty text="自定义图片" src="/static/logo.png" />
+</template>
+`;
+
+/** bottom 插槽 */
+const slot = `
+<template>
+    <ux-empty text="没有更多数据了">
+        <template #bottom>
+            <ux-button type="primary" size="small" shape="round" @click="onReload">重新加载</ux-button>
+        </template>
+    </ux-empty>
+</template>
+
+<script setup lang="uts">
+const onReload = () => {
+    uni.showToast({ title: '点击了重新加载', icon: 'none' });
+};
+</script>
+`;
+
+export const codes = {
+    basic,
+    icons,
+    color,
+    src,
+    slot
+};

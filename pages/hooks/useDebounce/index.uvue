@@ -1,0 +1,99 @@
+<script setup lang="uts">
+import { useDebounce, useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+// 解构方式使用：const { debounce } = useDebounce(delay)
+const { debounce } = useDebounce(500);
+
+const clickCount = ref(0);
+const executeCount = ref(0);
+const lastExecuteTime = ref('');
+
+// 使用默认 500ms 延迟（time 传 null 使用默认值）
+const handleDebounceClick = () => {
+    clickCount.value++;
+    debounce(() => {
+        executeCount.value++;
+        lastExecuteTime.value = new Date().toLocaleTimeString();
+    }, null);
+};
+
+// 使用自定义 1000ms 延迟
+const customClickCount = ref(0);
+const customExecuteCount = ref(0);
+const handleCustomDebounce = () => {
+    customClickCount.value++;
+    debounce(() => {
+        customExecuteCount.value++;
+    }, 1000);
+};
+
+// 临时指定延迟时间
+const dynamicClickCount = ref(0);
+const dynamicExecuteCount = ref(0);
+const handleDynamicDebounce = () => {
+    dynamicClickCount.value++;
+    debounce(() => {
+        dynamicExecuteCount.value++;
+    }, 2000);
+};
+</script>
+
+<template>
+    <demo-page :title="t('useDebounce.title')" :subtitle="t('useDebounce.subtitle')">
+        <!-- 默认延迟 -->
+        <demo-block :title="t('useDebounce.defaultTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('useDebounce.clickCount') }}{{ clickCount }}</text>
+                <text class="demo-desc">{{ t('useDebounce.actualExec') }}{{ executeCount }}</text>
+                <text class="demo-desc">{{ t('useDebounce.lastExec') }}{{ lastExecuteTime.length > 0 ? lastExecuteTime : '-' }}</text>
+            </view>
+            <view class="demo-btn usedebounce-btn" @click="handleDebounceClick">
+                <text>{{ t('useDebounce.defaultBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 自定义延迟 -->
+        <demo-block :title="t('useDebounce.customTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('useDebounce.clickCount') }}{{ customClickCount }}</text>
+                <text class="demo-desc">{{ t('useDebounce.actualExec') }}{{ customExecuteCount }}</text>
+            </view>
+            <view class="demo-btn usedebounce-btn" @click="handleCustomDebounce">
+                <text>{{ t('useDebounce.customBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 临时指定延迟 -->
+        <demo-block :title="t('useDebounce.dynamicTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('useDebounce.clickCount') }}{{ dynamicClickCount }}</text>
+                <text class="demo-desc">{{ t('useDebounce.actualExec') }}{{ dynamicExecuteCount }}</text>
+            </view>
+            <view class="demo-btn usedebounce-btn" @click="handleDynamicDebounce">
+                <text>{{ t('useDebounce.dynamicBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 方法说明 -->
+        <demo-block :title="t('useDebounce.usageTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">const { debounce } = useDebounce(delay)</text>
+                <text class="demo-desc">{{ t('useDebounce.usageDelay') }}</text>
+                <text class="demo-desc">{{ t('useDebounce.usageDebounce') }}</text>
+                <text class="demo-desc">{{ t('useDebounce.usageCallback') }}</text>
+                <text class="demo-desc">{{ t('useDebounce.usageTime') }}</text>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<style lang="scss">
+/* 使用全局 demo.scss 样式 */
+
+/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
+.usedebounce-btn {
+    margin-bottom: 0;
+}
+</style>

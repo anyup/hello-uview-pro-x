@@ -1,0 +1,16 @@
+// App 端 uvue 不支持元素选择器（如 view {}），只支持 class 选择器。
+// 需要 overflow: visible 的容器，必须在对应 class 上逐个设置。
+// 例如：.badge-wrapper { overflow: visible; }
+/* #ifdef H5 */
+uni-app uni-view {
+    overflow: visible;
+}
+
+::-webkit-scrollbar {
+    display: none;
+    width: 0 !important;
+    height: 0 !important;
+    -webkit-appearance: none;
+    background: transparent;
+}
+/* #endif */

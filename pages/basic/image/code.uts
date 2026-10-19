@@ -1,0 +1,170 @@
+/**
+ * image 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="row">
+        <ux-image src="https://placehold.co/100x100.png" width="100" height="100" />
+        <ux-image custom-class="gap" src="https://placehold.co/200x200.png" width="200" height="200" />
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap {
+    margin-left: 12px;
+}
+</style>
+`;
+
+/** 形状两档与自定义圆角 */
+const radius = `
+<template>
+    <!-- shape 两档全演示：square 小圆角（4px，不传即此档） / circle 正圆 -->
+    <view class="row">
+        <ux-image src="https://placehold.co/100x100.png" width="100" height="100" shape="square" />
+        <ux-image custom-class="gap" src="https://placehold.co/100x100.png" width="100" height="100" shape="circle" />
+    </view>
+    <!-- border-radius 一经传入即优先于 shape 预设，传 0 即真直角 -->
+    <view class="row">
+        <ux-image src="https://placehold.co/100x100.png" width="100" height="100" :border-radius="10" />
+        <ux-image custom-class="gap" src="https://placehold.co/100x100.png" width="100" height="100" :border-radius="0" />
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap {
+    margin-left: 12px;
+}
+</style>
+`;
+
+/** 加载失败状态 */
+const error = `
+<template>
+    <ux-image src="https://invalid.example.com/not-found.png" width="100" height="100" />
+</template>
+`;
+
+/** 裁剪模式 */
+const mode = `
+<template>
+    <view class="row">
+        <ux-image src="https://placehold.co/600x200.png" width="100" height="100" mode="aspectFit" />
+        <ux-image custom-class="gap" src="https://placehold.co/600x200.png" width="100" height="100" mode="aspectFill" />
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap {
+    margin-left: 12px;
+}
+</style>
+`;
+
+/** 淡入动画 */
+const fade = `
+<template>
+    <view class="row">
+        <ux-image src="https://placehold.co/100x100.png" width="100" height="100" :fade="false" :lazy-load="false" />
+        <ux-image custom-class="gap" src="https://placehold.co/100x100.png" width="100" height="100" :fade="true" :duration="500" />
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap {
+    margin-left: 12px;
+}
+</style>
+`;
+
+/** 背景色占位 */
+const bg = `
+<template>
+    <view class="row">
+        <ux-image src="https://invalid.example.com/bg-not-found.png" width="100" height="100" />
+        <ux-image custom-class="gap" src="https://invalid.example.com/bg-not-found.png" width="100" height="100" :bg-color="'#f5222d'" />
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap {
+    margin-left: 12px;
+}
+</style>
+`;
+
+/** 自定义插槽/图标 */
+const slot = `
+<template>
+    <view class="row">
+        <ux-image src="https://invalid.example.com/slot-not-found.png" width="100" height="100" :show-error="true">
+            <template #error>
+                <view class="holder">
+                    <ux-icon name="info-circle" color="#f5222d" size="20" />
+                    <text class="tip">自定义失败</text>
+                </view>
+            </template>
+        </ux-image>
+        <ux-image custom-class="gap" src="https://placehold.co/100x100.png?delay=3000" width="100" height="100" loading-icon="star" :show-loading="true" :show-error="false" />
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.gap {
+    margin-left: 12px;
+}
+.holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.tip {
+    font-size: 10px;
+    color: #f5222d;
+    margin-top: 4px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    radius,
+    error,
+    mode,
+    fade,
+    bg,
+    slot
+};

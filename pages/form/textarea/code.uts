@@ -1,0 +1,90 @@
+/**
+ * textarea 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-textarea v-model="value" placeholder="请输入内容" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 字数统计 */
+const count = `
+<template>
+    <ux-textarea v-model="value" count :maxlength="100" placeholder="请输入内容" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 自动高度 */
+const autoHeight = `
+<template>
+    <ux-textarea v-model="value" auto-height count placeholder="请输入内容" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 禁用状态 */
+const disabled = `
+<template>
+    <ux-textarea v-model="value" disabled />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('禁用的内容');
+</script>
+`;
+
+/** 底部边框 */
+const border = `
+<template>
+    <ux-textarea v-model="value" border="bottom" placeholder="请输入内容" />
+</template>
+
+<script setup lang="uts">
+const value = ref<string>('');
+</script>
+`;
+
+/** 不同尺寸 */
+const size = `
+<template>
+    <view>
+        <ux-textarea v-model="value1" size="small" placeholder="小尺寸文本域" />
+        <view class="gap" />
+        <ux-textarea v-model="value2" size="large" placeholder="大尺寸文本域" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const value1 = ref<string>('');
+const value2 = ref<string>('');
+</script>
+
+<style scoped>
+.gap {
+    height: 10px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    count,
+    autoHeight,
+    disabled,
+    border,
+    size
+};

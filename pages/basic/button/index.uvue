@@ -1,0 +1,317 @@
+<template>
+    <demo-page :title="t('button.title')" :subtitle="t('button.subtitle')">
+
+        <!-- 基础用法：统一 flex 容器靠左排列（块级容器中按钮默认全宽居中，演示页统一为收缩靠左，见下方 .btn-wrap 说明）。
+             custom-class 定制根节点样式（间距等）：ux-button 已注册 externalClasses:['custom-class']（见组件 defineOptions），
+             该 external-class 机制在小程序（隔离策略2.0下组件默认 isolated 会屏蔽页面类）也能把本页 .btn-item/.btn-grid-item
+             等类编入组件生效，故三端均可通过 custom-class 定制根节点 —— 验证时看按钮之间的间距/margin 是否为微信小程序与 App/H5 一致 -->
+        <demo-block :title="t('button.basicTitle')" :desc="t('button.basicDesc')" :code="codes.basic">
+            <view class="btn-wrap">
+                <ux-button :text="t('button.basicText')" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 主题类型：3 列网格 -->
+        <demo-block :title="t('button.typeTitle')" :desc="t('button.typeDesc')" :code="codes.type">
+            <view class="btn-grid">
+                <ux-button v-for="(item, index) in typeList" :key="index" :type="item.type" :text="item.label" custom-class="btn-grid-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 镂空：3 列网格，6 色 -->
+        <demo-block :title="t('button.plainTitle')" :desc="t('button.plainDesc')" :code="codes.plain">
+            <view class="btn-grid">
+                <ux-button v-for="(item, index) in typeList" :key="index" :type="item.type" :text="item.label" plain custom-class="btn-grid-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 尺寸大小：竖排 -->
+        <demo-block :title="t('button.sizeTitle')" :desc="t('button.sizeDesc')" :code="codes.size">
+            <view class="btn-stack">
+                <ux-button v-for="(item, index) in sizeList" :key="index" :size="item.size" :text="item.label" type="primary" custom-class="btn-stack-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 按钮形状 -->
+        <demo-block :title="t('button.shapeTitle')" :desc="t('button.shapeDesc')" :code="codes.shape">
+            <view class="btn-wrap">
+                <ux-button shape="square" :text="t('button.square')" type="primary" custom-class="btn-item" @click="btnClick" />
+                <ux-button shape="round" :text="t('button.round')" type="primary" custom-class="btn-item" @click="btnClick" />
+                <!-- circle 为正圆，需宽高相等，故只放图标；带文字会撑成椭圆 -->
+                <ux-button shape="circle" icon="star" type="primary" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义圆角 -->
+        <demo-block :title="t('button.radiusTitle')" :desc="t('button.radiusDesc')" :code="codes.radius">
+            <view class="btn-wrap">
+                <!-- 真直角不再是 shape 档位：shape=square 是小圆角，靠 border-radius=0 内联覆盖回直角 -->
+                <ux-button shape="square" :border-radius="0" :text="t('button.radiusZero')" type="primary" custom-class="btn-item" @click="btnClick" />
+                <ux-button :border-radius="4" :text="t('button.radiusSmall')" type="primary" custom-class="btn-item" @click="btnClick" />
+                <ux-button :border-radius="12" :text="t('button.radiusMid')" type="error" plain custom-class="btn-item" @click="btnClick" />
+                <ux-button :border-radius="24" :text="t('button.radiusLarge')" type="success" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 水波纹 -->
+        <demo-block :title="t('button.rippleTitle')" :desc="t('button.rippleDesc')" :code="codes.ripple">
+            <view class="btn-wrap">
+                <ux-button ripple :text="t('button.rippleText')" type="primary" custom-class="btn-item" @click="btnClick" />
+                <ux-button ripple ripple-bg-color="rgba(255, 255, 255, 0.3)" :text="t('button.rippleText')" type="error" custom-class="btn-item" @click="btnClick" />
+            </view>
+            <!-- 平台兼容说明：App 端 UCSS 无 CSS transform/transition 动画，水波纹暂不支持（见组件内 #ifndef APP），
+                 开启 ripple 时已自动退回按压深色反馈，故此处仅 App 端提示 -->
+            <!-- #ifdef APP -->
+            <text class="btn-tip">App 端暂不支持水波纹效果，开启 ripple 时自动退回按压深色反馈；H5 / 微信小程序可用。</text>
+            <!-- #endif -->
+        </demo-block>
+
+        <!-- 细边框 -->
+        <demo-block :title="t('button.hairLineTitle')" :desc="t('button.hairLineDesc')" :code="codes.hairLine">
+            <view class="btn-wrap">
+                <ux-button type="default" :text="t('button.basicText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button :hair-line="false" type="default" :text="t('button.basicText')" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 加载中：自定义 loading 图标 + loading-text 文案切换 -->
+        <demo-block :title="t('button.loadingTitle')" :desc="t('button.loadingDesc')" :code="codes.loading">
+            <view class="btn-wrap">
+                <ux-button loading type="primary" :text="t('button.basicText')" :loading-text="t('button.loadingText')" custom-class="btn-item" />
+                <ux-button loading type="success" :text="t('button.basicText')" :loading-text="t('button.loadingText')" custom-class="btn-item" />
+            </view>
+            <!-- 加载图标大小 loading-size（单位px，默认按按钮尺寸自动匹配） -->
+            <view class="btn-wrap btn-icon-row">
+                <ux-button loading type="warning" :text="t('button.basicText')" :loading-text="t('button.loadingText')" loading-size="20" custom-class="btn-item" />
+            </view>
+        </demo-block>
+
+        <!-- 禁用 -->
+        <demo-block :title="t('button.disabledTitle')" :desc="t('button.disabledDesc')" :code="codes.disabled">
+            <view class="btn-wrap">
+                <ux-button disabled type="primary" :text="t('button.disabledText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button disabled plain type="primary" :text="t('button.disabledText')" custom-class="btn-item" />
+            </view>
+            <!-- 禁用边框差异：彩色实心（primary/success/error/warning）禁用时隐藏边框，default/info/镂空保留细边框 -->
+            <view class="btn-wrap btn-icon-row">
+                <ux-button disabled type="default" :text="t('button.disabledText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button disabled type="info" :text="t('button.disabledText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button disabled plain type="success" :text="t('button.disabledText')" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 图标按钮 -->
+        <demo-block :title="t('button.iconTitle')" :desc="t('button.iconDesc')" :code="codes.icon">
+            <!-- 图标 + 文字 -->
+            <view class="btn-wrap">
+                <ux-button type="primary" icon="star" :text="t('button.iconText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button type="error" plain icon="heart" :text="t('button.iconText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button type="default" icon="account" icon-color="#2979ff" :text="t('button.iconText')" custom-class="btn-item" @click="btnClick" />
+            </view>
+            <!-- 仅图标：不传插槽内容则只显示图标，可配合 shape 组成各形态 -->
+            <view class="btn-wrap btn-icon-row">
+                <ux-button shape="round" icon="star" type="primary" custom-class="btn-item" @click="btnClick" />
+                <ux-button shape="round" plain icon="heart" type="error" custom-class="btn-item" @click="btnClick" />
+                <ux-button icon="search" type="success" custom-class="btn-item" @click="btnClick" />
+                <ux-button plain icon="close" type="default" custom-class="btn-item" @click="btnClick" />
+            </view>
+            <!-- 图标大小 icon-size 与垂直偏移 icon-top（单位px，正数向上） -->
+            <view class="btn-wrap btn-icon-row">
+                <ux-button type="primary" icon="star" icon-size="20" :text="t('button.iconSizeText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button type="primary" icon="star" icon-size="26" :text="t('button.iconSizeText')" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义内容 slot：text/默认插槽用于纯文字（自动着色）；富自定义内容用 content 插槽（内层文字需自行设色） -->
+        <demo-block :title="t('button.slotTitle')" :desc="t('button.slotDesc')" :code="codes.slot">
+            <view class="btn-wrap">
+                <!-- text 属性：纯文字，组件自动着色 -->
+                <ux-button type="primary" :text="t('button.slotTextProp')" custom-class="btn-item" @click="btnClick" />
+                <!-- 特色示例：content 插槽富拼装（保留 icon/loading）—— 促销售价"大号加粗价格 + 白底省 ¥100 徽标"，
+                     展示纯文字传达不了的混排能力；页面自定义 class 设色 -->
+                <ux-button type="error" custom-class="btn-item" @click="btnClick">
+                    <template #content>
+                        <text class="slot-price">¥299</text>
+                        <text class="slot-badge">省 ¥100</text>
+                    </template>
+                </ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 占满一行 -->
+        <demo-block :title="t('button.blockTitle')" :desc="t('button.blockDesc')" :code="codes.block">
+            <view class="btn-stack">
+                <ux-button block type="primary" icon="star" :text="t('button.blockText')" custom-class="btn-stack-item" @click="btnClick" />
+                <ux-button block type="success" plain :text="t('button.blockText')" custom-class="btn-stack-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 节流 -->
+        <demo-block :title="t('button.throttleTitle')" :desc="t('button.throttleDesc')" :code="codes.throttle">
+            <view class="btn-wrap">
+                <ux-button type="primary" :text="t('button.throttleNormal')" custom-class="btn-item" @click="normalTap" />
+                <ux-button type="error" :throttle-time="1000" :text="t('button.throttleText')" custom-class="btn-item" @click="throttleTap" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义样式：本节为完全自定义场景（黑底白字），组件无法自动推断文字色，故用插槽 + 内层显式设 color -->
+        <demo-block :title="t('button.customStyleTitle')" :desc="t('button.customStyleDesc')" :code="codes.customStyle">
+            <view class="btn-wrap">
+                <ux-button type="default" :custom-style="customStyle" @click="btnClick">
+                    <text :style="slotTextStyle">{{ t('button.customStyleText') }}</text>
+                </ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, createStyle } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+
+    type TypeItem = {
+        type: string;
+        label: string;
+    };
+
+    type SizeItem = {
+        size: string;
+        label: string;
+    };
+
+    const typeList: TypeItem[] = [
+        { type: 'default', label: 'default' },
+        { type: 'primary', label: 'primary' },
+        { type: 'success', label: 'success' },
+        { type: 'error', label: 'error' },
+        { type: 'warning', label: 'warning' },
+        { type: 'info', label: 'info' }
+    ];
+
+    const sizeList: SizeItem[] = [
+        { size: 'large', label: t('button.large') },
+        { size: 'default', label: t('button.default') },
+        { size: 'small', label: t('button.small') }
+    ];
+
+    /** 自定义样式：黑色背景 + 白色文字 */
+    const customStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['backgroundColor'] = '#000000';
+        style['color'] = '#ffffff';
+        return style;
+    });
+
+    /** 插槽内层文字：App 端样式不继承，插槽文字必须自行设置 color。
+        白色用于 primary 按钮、自定义黑底白字按钮的插槽文字 */
+    const slotTextStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['color'] = '#ffffff';
+        return style;
+    });
+
+    /** 按钮点击事件 */
+    const btnClick = () => {
+        uni.showToast({
+            title: t('button.clickToast'),
+            icon: 'none'
+        });
+    };
+
+    /** 无节流按钮：记录点击次数，直观对比节流按钮的丢次数效果 */
+    const normalCount = ref(0);
+    const normalTap = () => {
+        normalCount.value++;
+        uni.showToast({
+            title: t('button.throttleNormalToast', { count: normalCount.value } as UTSJSONObject),
+            icon: 'none'
+        });
+    };
+
+    /** 节流按钮：throttle-time=1000 毫秒，不到 1s 的连击只触发一次 */
+    const throttledCount = ref(0);
+    const throttleTap = () => {
+        throttledCount.value++;
+        uni.showToast({
+            title: t('button.throttleToast', { count: throttledCount.value } as UTSJSONObject),
+            icon: 'none'
+        });
+    };
+</script>
+
+<style lang="scss">
+    /* 普通按钮容器：水平排列 + 自动换行 */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 普通按钮间距：右侧 + 底部，换行时保持间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 特色插槽：促销售价——大号加粗白字价格 */
+    .slot-price {
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* 特色插槽：促销徽标——白底半透明胶囊 + 深红字，加在价格右侧形成"价格+省额"混排 */
+    .slot-badge {
+        margin-left: 8px;
+        padding: 0 8px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.92);
+        color: #ee4d38;
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    /* 图标区块内第二行（仅图标示例）与上一行拉开间距 */
+    .btn-icon-row {
+        margin-top: 8px;
+    }
+
+    /* 3 列网格（UCSS 不支持 nth-child，用固定宽度 + 两端对齐实现） */
+    .btn-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    /* 网格按钮：每行 3 个（组件根 .ux-button 无强写 margin，external-class 可自然覆盖，无需 !important） */
+    .btn-grid-item {
+        width: 30%;
+        margin-bottom: 12px;
+    }
+
+    /* 水波纹平台兼容提示：App 端不支持，浅色提示块（仅 App 端条件编译渲染） */
+    .btn-tip {
+        margin-top: 4px;
+        padding: 6px 8px;
+        border-radius: 4px;
+        background-color: $u-bg-gray-light;
+        color: $u-tips-color;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    /* 尺寸对比竖排：不同高度按钮混排会参差，改为纵向逐个展示 */
+    .btn-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-stack-item {
+        margin-bottom: 12px;
+    }
+</style>

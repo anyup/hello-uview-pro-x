@@ -1,0 +1,81 @@
+<template>
+    <demo-page :title="t('rate.title')" :subtitle="t('rate.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('rate.basicTitle')" :desc="t('rate.basicDesc')" :code="codes.basic">
+            <ux-rate :model-value="basicValue" @change="onChange" />
+            <text class="rate-tip">{{ t('rate.current') }}: {{ basicValue }}</text>
+        </demo-block>
+
+        <!-- 自定义数量与尺寸 -->
+        <demo-block :title="t('rate.countTitle')" :desc="t('rate.countDesc')" :code="codes.count">
+            <ux-rate :count="8" :current="5" :size="22" />
+        </demo-block>
+
+        <!-- 自定义颜色与图标 -->
+        <demo-block :title="t('rate.colorTitle')" :desc="t('rate.colorDesc')" :code="codes.color">
+            <ux-rate :current="3" active-color="#ff9900" inactive-color="#c8c9cc" />
+        </demo-block>
+
+        <!-- 半星 -->
+        <demo-block :title="t('rate.halfTitle')" :desc="t('rate.halfDesc')" :code="codes.half">
+            <ux-rate v-model="halfValue" allow-half active-color="#fa3534" @change="onHalfChange" />
+            <text class="rate-tip">{{ t('rate.current') }}: {{ halfValue }}</text>
+        </demo-block>
+
+        <!-- 禁用状态 -->
+        <demo-block :title="t('rate.disabledTitle')" :desc="t('rate.disabledDesc')" :code="codes.disabled">
+            <ux-rate :current="4" disabled />
+        </demo-block>
+
+        <!-- 分段颜色 -->
+        <demo-block :title="t('rate.colorsTitle')" :desc="t('rate.colorsDesc')" :code="codes.colors">
+            <ux-rate :model-value="colorsValue" :colors="colors" @change="onColorsChange" />
+            <text class="rate-tip">{{ t('rate.current') }}: {{ colorsValue }}</text>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 基础用法选中的星星数 */
+    const basicValue = ref(0);
+
+    /** 半星选中的值 */
+    const halfValue = ref(3.5);
+
+    /** 分段颜色的选中值 */
+    const colorsValue = ref(3);
+
+    /** 分段颜色数组 */
+    const colors: string[] = ['#2979ff', '#ff9900', '#fa3534'];
+
+    /** 点击评分 */
+    const onChange = (value: number) => {
+        basicValue.value = value;
+    };
+
+    /** 半星选择变化 */
+    const onHalfChange = (value: number) => {
+        halfValue.value = value;
+    };
+
+    /** 分段颜色组件 change */
+    const onColorsChange = (value: number) => {
+        colorsValue.value = value;
+    };
+</script>
+
+<style lang="scss">
+
+    .rate-tip {
+        font-size: 12px;
+        color: $u-tips-color;
+        margin-top: 6px;
+    }
+</style>

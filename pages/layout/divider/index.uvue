@@ -1,0 +1,51 @@
+﻿<template>
+    <demo-page :title="t('divider.title')" :subtitle="t('divider.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('divider.basicTitle')" :code="codes.basic">
+            <ux-divider>{{ t('divider.dividerText') }}</ux-divider>
+        </demo-block>
+
+        <!-- 文字颜色 -->
+        <demo-block :title="t('divider.colorTitle')" :code="codes.color">
+            <ux-divider color="#f56c6c">{{ t('divider.dividerText') }}</ux-divider>
+        </demo-block>
+
+        <!-- 线条颜色 -->
+        <demo-block :title="t('divider.borderColorTitle')" :code="codes.borderColor">
+            <ux-divider border-color="#2979ff">{{ t('divider.dividerText') }}</ux-divider>
+        </demo-block>
+
+        <!-- 主题色 -->
+        <demo-block :title="t('divider.typeTitle')" :code="codes.type">
+            <ux-divider type="success">{{ t('divider.dividerText') }}</ux-divider>
+            <ux-divider type="error">{{ t('divider.dividerText') }}</ux-divider>
+            <ux-divider type="warning">{{ t('divider.dividerText') }}</ux-divider>
+            <ux-divider type="info">{{ t('divider.dividerText') }}</ux-divider>
+        </demo-block>
+
+        <!-- 自定义高度 -->
+        <demo-block :title="t('divider.heightTitle')" :code="codes.height">
+            <ux-divider height="40">{{ t('divider.dividerText') }}</ux-divider>
+        </demo-block>
+
+        <!-- 不用 slot -->
+        <demo-block :title="t('divider.useSlotTitle')" :code="codes.useSlot">
+            <ux-divider :use-slot="false"></ux-divider>
+        </demo-block>
+
+        <!-- 自定义半宽 -->
+        <demo-block :title="t('divider.halfWidthTitle')" :code="codes.halfWidth">
+            <ux-divider half-width="100">{{ t('divider.dividerText') }}</ux-divider>
+            <ux-divider half-width="50%">{{ t('divider.dividerText') }}</ux-divider>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+</script>
+

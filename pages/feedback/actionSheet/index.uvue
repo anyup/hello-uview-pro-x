@@ -1,0 +1,102 @@
+﻿<template>
+    <demo-page :title="t('actionSheet.title')" :subtitle="t('actionSheet.subtitle')">
+
+        <demo-block :title="t('actionSheet.basicTitle')" :desc="t('actionSheet.basicDesc')" :code="codes.basic">
+            <ux-button shape="round" @click="show1 = true">{{ t('actionSheet.openBtn') }}</ux-button>
+        </demo-block>
+
+        <demo-block :title="t('actionSheet.tipsTitle')" :desc="t('actionSheet.tipsDesc')" :code="codes.tips">
+            <ux-button shape="round" @click="show2 = true">{{ t('actionSheet.openBtn') }}</ux-button>
+        </demo-block>
+
+        <demo-block :title="t('actionSheet.subTextTitle')" :desc="t('actionSheet.subTextDesc')" :code="codes.subText">
+            <ux-button shape="round" @click="show3 = true">{{ t('actionSheet.openBtn') }}</ux-button>
+        </demo-block>
+
+        <demo-block :title="t('actionSheet.disabledTitle')" :desc="t('actionSheet.disabledDesc')" :code="codes.disabled">
+            <ux-button shape="round" @click="show4 = true">{{ t('actionSheet.openBtn') }}</ux-button>
+        </demo-block>
+
+        <demo-block :title="t('actionSheet.noCancelTitle')" :desc="t('actionSheet.noCancelDesc')" :code="codes.noCancel">
+            <ux-button shape="round" @click="show5 = true">{{ t('actionSheet.openBtn') }}</ux-button>
+        </demo-block>
+
+        <ux-action-sheet
+            v-model="show1"
+            :list="list1"
+            @click="onItemClick"
+            @close="onClose"
+        ></ux-action-sheet>
+
+        <ux-action-sheet
+            v-model="show2"
+            :list="list1"
+            :tips="{ text: t('actionSheet.tipsContent') }"
+            @click="onItemClick"
+        ></ux-action-sheet>
+
+        <ux-action-sheet
+            v-model="show3"
+            :list="list2"
+            @click="onItemClick"
+        ></ux-action-sheet>
+
+        <ux-action-sheet
+            v-model="show4"
+            :list="list3"
+            @click="onItemClick"
+        ></ux-action-sheet>
+
+        <ux-action-sheet
+            v-model="show5"
+            :list="list1"
+            :cancel-btn="false"
+            @click="onItemClick"
+        ></ux-action-sheet>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale, type ActionSheetItem } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const show1 = ref<boolean>(false);
+const show2 = ref<boolean>(false);
+const show3 = ref<boolean>(false);
+const show4 = ref<boolean>(false);
+const show5 = ref<boolean>(false);
+
+const list1: ActionSheetItem[] = [
+    { text: t('actionSheet.action1') },
+    { text: t('actionSheet.action2') },
+    { text: t('actionSheet.action3') }
+];
+
+const list2: ActionSheetItem[] = [
+    { text: t('actionSheet.action1'), subText: t('actionSheet.subText1') },
+    { text: t('actionSheet.action2'), subText: t('actionSheet.subText2') }
+];
+
+const list3: ActionSheetItem[] = [
+    { text: t('actionSheet.action1') },
+    { text: t('actionSheet.action2'), disabled: true },
+    { text: t('actionSheet.action3') }
+];
+
+function onItemClick(index: number): void {
+    uni.showToast({
+        title: t('actionSheet.clickTip') + ': ' + index,
+        icon: 'none'
+    });
+}
+
+function onClose(): void {
+    console.log('action-sheet closed');
+}
+</script>
+
+<style lang="scss">
+</style>

@@ -1,0 +1,115 @@
+<template>
+    <demo-page :title="t('modal.title')" :subtitle="t('modal.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('modal.basicTitle')" :desc="t('modal.basicDesc')" :code="codes.basic">
+            <ux-button :text="t('modal.openBasic')" shape="round" type="primary" @click="openBasic" />
+        </demo-block>
+
+        <!-- 自定义内容与按钮 -->
+        <demo-block :title="t('modal.customTitle')" :desc="t('modal.customDesc')" :code="codes.custom">
+            <ux-button :text="t('modal.openCustom')" shape="round" type="success" @click="openCustom" />
+        </demo-block>
+
+        <!-- 异步关闭 -->
+        <demo-block :title="t('modal.asyncTitle')" :desc="t('modal.asyncDesc')" :code="codes.asyncClose">
+            <ux-button :text="t('modal.openAsync')" shape="round" type="warning" @click="openAsync" />
+            <text class="modal-tip" v-if="asyncLoading">{{ t('modal.asyncLoading') }}</text>
+        </demo-block>
+
+        <!-- 基础弹窗 -->
+        <ux-modal
+            v-model="showBasic"
+            :content="t('modal.basicContent')"
+            :show-cancel-button="true"
+            @confirm="onBasicConfirm"
+            @cancel="onBasicCancel"
+        />
+
+        <!-- 自定义弹窗 -->
+        <ux-modal
+            v-model="showCustom"
+            :title="t('modal.customTitle')"
+            :content="t('modal.customContent')"
+            :show-cancel-button="true"
+            :confirm-text="t('modal.confirmText')"
+            :cancel-text="t('modal.cancelText')"
+            @confirm="onCustomConfirm"
+        />
+
+        <!-- 异步关闭弹窗 -->
+        <ux-modal
+            v-model="showAsync"
+            :title="t('modal.asyncTitle')"
+            :content="t('modal.asyncContent')"
+            :async-close="true"
+            :show-cancel-button="true"
+            @confirm="onAsyncConfirm"
+        />
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 基础弹窗显示状态 */
+    const showBasic = ref(false);
+    /** 自定义弹窗显示状态 */
+    const showCustom = ref(false);
+    /** 异步弹窗显示状态 */
+    const showAsync = ref(false);
+    /** 异步加载中状态 */
+    const asyncLoading = ref(false);
+
+    /** 打开基础弹窗 */
+    const openBasic = () => {
+        showBasic.value = true;
+    };
+
+    /** 打开自定义弹窗 */
+    const openCustom = () => {
+        showCustom.value = true;
+    };
+
+    /** 打开异步关闭弹窗 */
+    const openAsync = () => {
+        showAsync.value = true;
+    };
+
+    /** 基础弹窗确认 */
+    const onBasicConfirm = () => {
+        showBasic.value = false;
+    };
+
+    /** 基础弹窗取消 */
+    const onBasicCancel = () => {
+        showBasic.value = false;
+    };
+
+    /** 自定义弹窗确认 */
+    const onCustomConfirm = () => {
+        showCustom.value = false;
+    };
+
+    /** 异步关闭确认：模拟 2 秒后自动关闭 */
+    const onAsyncConfirm = () => {
+        asyncLoading.value = true;
+        setTimeout(() => {
+            showAsync.value = false;
+            asyncLoading.value = false;
+        }, 2000);
+    };
+</script>
+
+<style lang="scss">
+
+    .modal-tip {
+        font-size: 12px;
+        color: $u-tips-color;
+        margin-top: 6px;
+    }
+</style>

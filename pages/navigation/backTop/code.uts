@@ -1,0 +1,203 @@
+/**
+ * backTop 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="page-content">
+        <view v-for="(item, index) in items" :key="index" class="scroll-item">
+            <text>滚动内容 {{ index + 1 }}</text>
+        </view>
+        <!-- 页面滚动超过 200px 后显示返回顶部按钮 -->
+        <ux-back-top :scroll-top="scrollTop" :top="200" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const scrollTop = ref(0);
+const items = ref<string[]>([]);
+for (let i = 0; i < 20; i++) {
+    items.value.push('item_' + i);
+}
+
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
+</script>
+
+<style scoped>
+.scroll-item {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f3f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义形状 shape */
+const shape = `
+<template>
+    <view class="page-content">
+        <view v-for="(item, index) in items" :key="index" class="scroll-item">
+            <text>滚动内容 {{ index + 1 }}</text>
+        </view>
+        <!-- 两档形状全演示：square 小圆角（4px，不传即此档） / circle 正圆；
+             组件为 position:fixed，靠 bottom/right 错开才能并排看到两个；
+             square 文案超宽时按钮随 tips 加宽，right 间距按最宽文案留足 -->
+        <ux-back-top :scroll-top="scrollTop" :top="200" shape="square" tips="小圆角" :bottom="210" :right="20" />
+        <ux-back-top :scroll-top="scrollTop" :top="200" shape="circle" tips="正圆" :bottom="210" :right="90" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const scrollTop = ref(0);
+const items = ref<string[]>([]);
+for (let i = 0; i < 20; i++) {
+    items.value.push('item_' + i);
+}
+
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
+</script>
+
+<style scoped>
+.scroll-item {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f3f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 提示文字 tips */
+const tips = `
+<template>
+    <view class="page-content">
+        <view v-for="(item, index) in items" :key="index" class="scroll-item">
+            <text>滚动内容 {{ index + 1 }}</text>
+        </view>
+        <ux-back-top :scroll-top="scrollTop" :top="200" tips="顶部" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const scrollTop = ref(0);
+const items = ref<string[]>([]);
+for (let i = 0; i < 20; i++) {
+    items.value.push('item_' + i);
+}
+
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
+</script>
+
+<style scoped>
+.scroll-item {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f3f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义位置 bottom / right */
+const position = `
+<template>
+    <view class="page-content">
+        <view v-for="(item, index) in items" :key="index" class="scroll-item">
+            <text>滚动内容 {{ index + 1 }}</text>
+        </view>
+        <ux-back-top :scroll-top="scrollTop" :top="200" :bottom="150" :right="100" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const scrollTop = ref(0);
+const items = ref<string[]>([]);
+for (let i = 0; i < 20; i++) {
+    items.value.push('item_' + i);
+}
+
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
+</script>
+
+<style scoped>
+.scroll-item {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f3f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义图标样式 icon-style */
+const iconStyle = `
+<template>
+    <view class="page-content">
+        <view v-for="(item, index) in items" :key="index" class="scroll-item">
+            <text>滚动内容 {{ index + 1 }}</text>
+        </view>
+        <ux-back-top
+            :scroll-top="scrollTop"
+            :top="200"
+            :bottom="150"
+            :right="150"
+            :icon-style="{ color: '#2979ff', fontSize: '21px' }"
+        />
+    </view>
+</template>
+
+<script setup lang="uts">
+const scrollTop = ref(0);
+const items = ref<string[]>([]);
+for (let i = 0; i < 20; i++) {
+    items.value.push('item_' + i);
+}
+
+onPageScroll((e) => {
+    scrollTop.value = e.scrollTop;
+});
+</script>
+
+<style scoped>
+.scroll-item {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f3f5;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    shape,
+    tips,
+    position,
+    iconStyle
+};

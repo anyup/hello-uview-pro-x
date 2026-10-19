@@ -1,0 +1,103 @@
+/**
+ * line 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-line />
+</template>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <ux-line color="#f56c6c" />
+</template>
+`;
+
+/** 自定义长度 */
+const length = `
+<template>
+    <view>
+        <ux-line length="50%" />
+        <ux-line length="150px" />
+    </view>
+</template>
+`;
+
+/** 竖向线条 */
+const col = `
+<template>
+    <view class="row">
+        <text>左边内容</text>
+        <ux-line direction="col" length="50px" margin="0 10px" />
+        <text>右边内容</text>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+`;
+
+/** 线条类型 */
+const borderStyle = `
+<template>
+    <view>
+        <ux-line border-style="dashed" />
+        <ux-line border-style="dotted" />
+    </view>
+</template>
+`;
+
+/** 粗细线条 */
+const hairLine = `
+<template>
+    <view>
+        <ux-line />
+        <ux-line :hair-line="false" />
+    </view>
+</template>
+`;
+
+/** 边距 */
+const margin = `
+<template>
+    <view class="box">
+        <text>上方内容</text>
+    </view>
+    <ux-line margin="15px 0" />
+    <view class="box">
+        <text>下方内容</text>
+    </view>
+</template>
+
+<style scoped>
+.box {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f3f5;
+    border-radius: 8px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    color,
+    length,
+    col,
+    borderStyle,
+    hairLine,
+    margin
+};

@@ -1,0 +1,405 @@
+<template>
+    <demo-page :title="t('card.title')" :subtitle="t('card.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('card.basicTitle')" :desc="t('card.basicDesc')" :code="codes.basic">
+            <view class="card-demo">
+                <ux-card
+                    :title="t('card.basicCardTitle')"
+                    :sub-title="t('card.basicCardSubTitle')"
+                    @click="onClick"
+                    @head-click="onHeadClick"
+                >
+                    <text class="card-basic-text">{{ t('card.basicBodyText') }}</text>
+                </ux-card>
+            </view>
+        </demo-block>
+
+        <!-- 缩略图 -->
+        <demo-block :title="t('card.thumbTitle')" :desc="t('card.thumbDesc')" :code="codes.thumb">
+            <view class="card-demo">
+                <ux-card
+                    :title="t('card.thumbCardTitle')"
+                    :sub-title="t('card.thumbCardSubTitle')"
+                    thumb="https://ik.imagekit.io/anyup/uview-pro/common/logo-new.png"
+                    :thumb-circle="thumbCircle"
+                >
+                    <text class="card-basic-text">{{ t('card.thumbBodyText') }}</text>
+                </ux-card>
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    :type="thumbCircle ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="toggleThumbCircle"
+                >{{ t('card.thumbCircleBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 图文卡片（自定义插槽） -->
+        <demo-block :title="t('card.slotTitle')" :desc="t('card.slotDesc')" :code="codes.slot">
+            <view class="card-demo">
+                <ux-card
+                    :border-radius="14"
+                    box-shadow="0 2px 12px rgba(0, 0, 0, 0.06)"
+                    @click="onClick"
+                >
+                    <template #head>
+                        <view class="card-feed__head">
+                            <view class="card-feed__head-group">
+                                <ux-icon name="photo" size="16" :color="$u.color.primary" />
+                                <text class="card-feed__title">{{ t('card.slotHeadText') }}</text>
+                            </view>
+                            <view class="card-feed__follow" @click.stop="onHeadClick">
+                                <text class="card-feed__follow-text">{{ t('card.slotHeadMore') }}</text>
+                            </view>
+                        </view>
+                    </template>
+                    <view class="card-feed__author">
+                        <image
+                            class="card-feed__avatar"
+                            mode="aspectFill"
+                            src="https://picsum.photos/seed/card-avatar/72/72"
+                        />
+                        <view class="card-feed__author-meta">
+                            <text class="card-feed__author-name">{{ t('card.slotAuthorName') }}</text>
+                            <text class="card-feed__author-time">{{ t('card.slotAuthorTime') }}</text>
+                        </view>
+                    </view>
+                    <text class="card-feed__content">{{ t('card.slotPostText') }}</text>
+                    <image
+                        class="card-feed__image"
+                        mode="widthFix"
+                        src="https://picsum.photos/seed/card-post/600/360"
+                    />
+                    <template #foot>
+                        <view class="card-feed__actions">
+                            <view class="card-feed__action">
+                                <ux-icon name="thumb-up-fill" size="16" :color="$u.color.error" />
+                                <text class="card-feed__action-text">{{ t('card.slotLike') }}</text>
+                            </view>
+                            <view class="card-feed__action">
+                                <ux-icon name="chat-fill" size="16" :color="$u.color.primary" />
+                                <text class="card-feed__action-text">{{ t('card.slotComment') }}</text>
+                            </view>
+                            <view class="card-feed__action">
+                                <ux-icon name="share" size="16" :color="$u.color.tipsColor" />
+                                <text class="card-feed__action-text">{{ t('card.slotShare') }}</text>
+                            </view>
+                        </view>
+                    </template>
+                </ux-card>
+            </view>
+        </demo-block>
+
+        <!-- 阴影 -->
+        <demo-block :title="t('card.shadowTitle')" :desc="t('card.shadowDesc')" :code="codes.shadow">
+            <view class="card-demo">
+                <ux-card
+                    :title="t('card.shadowCardTitle')"
+                    box-shadow="0 6px 18px rgba(0, 0, 0, 0.08)"
+                    :border-radius="12"
+                    @click="onClick"
+                >
+                    <view class="card-stats">
+                        <view class="card-stat">
+                            <text class="card-stat-num">128</text>
+                            <text class="card-stat-label">{{ t('card.shadowStat1') }}</text>
+                        </view>
+                        <view class="card-stat-divider" />
+                        <view class="card-stat">
+                            <text class="card-stat-num">3.2w</text>
+                            <text class="card-stat-label">{{ t('card.shadowStat2') }}</text>
+                        </view>
+                        <view class="card-stat-divider" />
+                        <view class="card-stat">
+                            <text class="card-stat-num">209</text>
+                            <text class="card-stat-label">{{ t('card.shadowStat3') }}</text>
+                        </view>
+                    </view>
+                </ux-card>
+            </view>
+        </demo-block>
+
+        <!-- 圆角 -->
+        <demo-block :title="t('card.radiusTitle')" :desc="t('card.radiusDesc')" :code="codes.radius">
+            <view class="card-demo">
+                <ux-card
+                    :title="t('card.radiusCardTitle')"
+                    :border-radius="borderRadius"
+                    :border="true"
+                    @click="onClick"
+                >
+                    <text class="card-basic-text">{{ t('card.radiusBodyText') }}</text>
+                </ux-card>
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    v-for="(item, index) in radiusList"
+                    :key="index"
+                    :type="borderRadius === item.value ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="setRadius(item.value)"
+                >{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 边框 -->
+        <demo-block :title="t('card.borderTitle')" :desc="t('card.borderDesc')" :code="codes.border">
+            <view class="card-demo">
+                <ux-card
+                    :title="t('card.borderCardTitle')"
+                    :sub-title="t('card.borderCardSubTitle')"
+                    :border="border"
+                    @click="onClick"
+                >
+                    <text class="card-basic-text">{{ t('card.borderBodyText') }}</text>
+                </ux-card>
+            </view>
+            <view class="btn-wrap">
+                <ux-button
+                    :type="border ? 'primary' : 'default'"
+                    custom-class="btn-item"
+                    size="small"
+                    shape="round"
+                    @click="toggleBorder"
+                >{{ t('card.borderBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 全屏无间距 -->
+        <demo-block :title="t('card.fullTitle')" :desc="t('card.fullDesc')" :code="codes.full">
+            <view class="card-demo-full">
+                <ux-card
+                    :title="t('card.fullCardTitle')"
+                    :sub-title="t('card.fullCardSubTitle')"
+                    :full="true"
+                    :border="true"
+                    @click="onClick"
+                >
+                    <text class="card-basic-text">{{ t('card.fullBodyText') }}</text>
+                </ux-card>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type RadiusItem = {
+        value: number;
+        label: string;
+    };
+
+    /** 缩略图是否为圆形 */
+    const thumbCircle = ref(false);
+    /** 圆角值 */
+    const borderRadius = ref<number>(16);
+    /** 是否显示边框 */
+    const border = ref(true);
+
+    const radiusList: RadiusItem[] = [
+        { value: 0, label: '0' },
+        { value: 16, label: '16' },
+        { value: 30, label: '30' }
+    ];
+
+    /** 切换缩略图圆形 */
+    const toggleThumbCircle = () => {
+        thumbCircle.value = !thumbCircle.value;
+    };
+
+    /** 设置圆角 */
+    const setRadius = (val: number) => {
+        borderRadius.value = val;
+    };
+
+    /** 切换边框 */
+    const toggleBorder = () => {
+        border.value = !border.value;
+    };
+
+    /** 整个卡片被点击 */
+    const onClick = (index: string | number) => {
+        console.log('card click:', index);
+    };
+
+    /** 卡片头部被点击 */
+    const onHeadClick = (index: string | number) => {
+        console.log('card head click:', index);
+    };
+</script>
+
+<style lang="scss">
+
+    .card-demo {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .card-demo-full {
+        width: 100%;
+        margin-bottom: 12px;
+        /* 负外边距抵消 demo-block 的 12px 内边距，使 full 卡片横向铺满演示区块（不留缝也不悬出） */
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+
+    .card-basic-text {
+        font-size: 13px;
+        color: $u-content-color;
+        line-height: 20px;
+        padding: 2px 0;
+    }
+
+    /* 图文卡片（插槽演示） */
+    .card-feed__head {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .card-feed__head-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card-feed__title {
+        font-size: 15px;
+        font-weight: bold;
+        color: $u-main-color;
+        margin-left: 6px;
+    }
+
+    .card-feed__follow {
+        padding: 3px 12px;
+        border-radius: 14px;
+        border: 1px solid $u-type-primary;
+    }
+
+    .card-feed__follow-text {
+        font-size: 13px;
+        color: $u-type-primary;
+    }
+
+    .card-feed__author {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .card-feed__avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 10px;
+        background-color: $u-bg-color;
+    }
+
+    .card-feed__author-meta {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-feed__author-name {
+        font-size: 14px;
+        color: $u-main-color;
+        font-weight: bold;
+    }
+
+    .card-feed__author-time {
+        font-size: 12px;
+        color: $u-tips-color;
+        margin-top: 2px;
+    }
+
+    .card-feed__content {
+        font-size: 14px;
+        color: $u-content-color;
+        line-height: 21px;
+        margin-bottom: 12px;
+    }
+
+    .card-feed__image {
+        width: 100%;
+        border-radius: 8px;
+        background-color: $u-bg-color;
+    }
+
+    .card-feed__actions {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card-feed__action {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 28px;
+    }
+
+    .card-feed__action-text {
+        font-size: 13px;
+        color: $u-tips-color;
+        margin-left: 4px;
+    }
+
+    /* 阴影数据卡 */
+    .card-stats {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 4px 0 2px;
+    }
+
+    .card-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    .card-stat-num {
+        font-size: 20px;
+        font-weight: bold;
+        color: $u-main-color;
+    }
+
+    .card-stat-label {
+        font-size: 12px;
+        color: $u-tips-color;
+        margin-top: 4px;
+    }
+
+    .card-stat-divider {
+        width: 1px;
+        height: 30px;
+        background-color: $u-border-color;
+    }
+
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+</style>

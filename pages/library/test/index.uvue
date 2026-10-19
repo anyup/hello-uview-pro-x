@@ -1,0 +1,95 @@
+<template>
+    <demo-page :title="t('test.title')" :subtitle="t('test.subtitle')">
+        <!-- 类型判断 -->
+        <demo-block :title="t('test.typeTitle')">
+            <view class="demo-item" :class="index === typeList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in typeList" :key="index">
+                <text class="demo-desc">{{ item.desc }}</text>
+                <text class="demo-result" :class="item.result ? 'demo-result-success' : 'demo-result-error'">
+                    {{ item.result }}
+                </text>
+            </view>
+        </demo-block>
+
+        <!-- 数字判断 -->
+        <demo-block :title="t('test.numberTitle')">
+            <view class="demo-item" :class="index === numberList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in numberList" :key="index">
+                <text class="demo-desc">{{ item.desc }}</text>
+                <text class="demo-result" :class="item.result ? 'demo-result-success' : 'demo-result-error'">
+                    {{ item.result }}
+                </text>
+            </view>
+        </demo-block>
+
+        <!-- 字符串判断 -->
+        <demo-block :title="t('test.stringTitle')">
+            <view class="demo-item" :class="index === stringList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in stringList" :key="index">
+                <text class="demo-desc">{{ item.desc }}</text>
+                <text class="demo-result" :class="item.result ? 'demo-result-success' : 'demo-result-error'">
+                    {{ item.result }}
+                </text>
+            </view>
+        </demo-block>
+
+        <!-- 空值判断 -->
+        <demo-block :title="t('test.emptyTitle')">
+            <view class="demo-item" :class="index === emptyList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in emptyList" :key="index">
+                <text class="demo-desc">{{ item.desc }}</text>
+                <text class="demo-result" :class="item.result ? 'demo-result-success' : 'demo-result-error'">
+                    {{ item.result }}
+                </text>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+type TestItem = {
+    desc: string
+    result: boolean
+}
+
+const typeList: TestItem[] = [
+    { desc: '$u.test.string("hello")', result: $u.test.string('hello') },
+    { desc: '$u.test.number("123")', result: $u.test.number('123') },
+    { desc: '$u.test.array([1,2,3])', result: $u.test.array([1, 2, 3]) },
+    { desc: '$u.test.object({})', result: $u.test.object({}) },
+    { desc: '$u.test.func(() => {})', result: $u.test.func(() => {}) },
+];
+
+const numberList: TestItem[] = [
+    { desc: '$u.test.number("123")', result: $u.test.number('123') },
+    { desc: '$u.test.number("-12.34")', result: $u.test.number('-12.34') },
+    { desc: '$u.test.number("12a")', result: $u.test.number('12a') },
+    { desc: '$u.test.digits("123")', result: $u.test.digits('123') },
+    { desc: '$u.test.digits("12.3")', result: $u.test.digits('12.3') },
+    { desc: '$u.test.range(5, 1, 10)', result: $u.test.range(5, 1, 10) },
+    { desc: '$u.test.range(15, 1, 10)', result: $u.test.range(15, 1, 10) },
+];
+
+const stringList: TestItem[] = [
+    { desc: '$u.test.email("user@example.com")', result: $u.test.email('user@example.com') },
+    { desc: '$u.test.mobile("13800138000")', result: $u.test.mobile('13800138000') },
+    { desc: '$u.test.url("https://www.example.com")', result: $u.test.url('https://www.example.com') },
+    { desc: '$u.test.chinese("' + t('test.chineseTestData') + '")', result: $u.test.chinese(t('test.chineseTestData')) },
+    { desc: '$u.test.letter("abc")', result: $u.test.letter('abc') },
+    { desc: '$u.test.letter("abc123")', result: $u.test.letter('abc123') },
+    { desc: '$u.test.contains("hello world", "world")', result: $u.test.contains('hello world', 'world') },
+    { desc: '$u.test.rangeLength("hello", 2, 10)', result: $u.test.rangeLength('hello', 2, 10) },
+];
+
+const emptyList: TestItem[] = [
+    { desc: '$u.test.empty(null)', result: $u.test.empty(null) },
+    { desc: '$u.test.empty("")', result: $u.test.empty('') },
+    { desc: '$u.test.empty([])', result: $u.test.empty([] as any[]) },
+    { desc: '$u.test.empty(0)', result: $u.test.empty(0) },
+    { desc: '$u.test.empty("hello")', result: $u.test.empty('hello') },
+];
+</script>
+
+<style lang="scss">
+/* 使用全局 demo.scss 样式 */
+</style>

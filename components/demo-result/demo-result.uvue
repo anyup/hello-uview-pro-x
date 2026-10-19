@@ -1,0 +1,62 @@
+<template>
+    <view class="demo-result" :class="'demo-result--' + type">
+        <text class="demo-result-text">{{ text }}</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+    defineOptions({
+        name: 'demo-result',
+        styleIsolation: 'app-and-page'
+    });
+
+    /**
+     * 演示结果展示组件 - 统一结果状态样式
+     * - type：状态类型（default 主色 / success 成功 / error 错误 / warning 警告）
+     * - text：结果文本
+     */
+    const props = withDefaults(defineProps<{
+        type?: 'default' | 'success' | 'error' | 'warning';
+        text: string;
+    }>(), {
+        type: 'default'
+    });
+</script>
+
+<style lang="scss" scoped>
+    @import '@/uni_modules/uview-pro-x/theme.scss';
+
+    .demo-result {
+        font-size: 14px;
+        font-weight: 500;
+        padding: 7px 10px;
+        border-radius: 5px;
+        margin-top: 8px;
+        background-color: $u-bg-color;
+    }
+
+    .demo-result-text {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .demo-result--default {
+        color: $u-type-primary;
+        background-color: $u-type-primary-light;
+    }
+
+    .demo-result--success {
+        color: $u-type-success;
+        background-color: $u-type-success-light;
+    }
+
+    .demo-result--error {
+        color: $u-type-error;
+        background-color: $u-type-error-light;
+    }
+
+    .demo-result--warning {
+        color: $u-type-warning;
+        background-color: $u-type-warning-light;
+    }
+</style>

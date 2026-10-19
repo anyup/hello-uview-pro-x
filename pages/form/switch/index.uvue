@@ -1,0 +1,166 @@
+<template>
+    <demo-page :title="t('switch.title')" :subtitle="t('switch.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('switch.basicTitle')" :desc="t('switch.basicDesc')" :code="codes.basic">
+            <view class="switch-demo">
+                <ux-switch v-model="modelValue" />
+                <text class="switch-status">{{ t('switch.status') }}: {{ modelValue }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 自定义值 -->
+        <demo-block :title="t('switch.valueTitle')" :desc="t('switch.valueDesc')" :code="codes.customValue">
+            <view class="switch-demo">
+                <ux-switch v-model="customValue" :active-value="100" :inactive-value="1" />
+                <text class="switch-status">{{ t('switch.valueLabel') }}: {{ customValue }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 颜色配置 -->
+        <demo-block :title="t('switch.colorTitle')" :desc="t('switch.colorDesc')" :code="codes.color">
+            <view class="switch-demo">
+                <ux-switch v-model="colorValue" :active-color="activeColor" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in colorList" :key="index" :type="activeColor === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setColor(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 尺寸配置 -->
+        <demo-block :title="t('switch.sizeTitle')" :desc="t('switch.sizeDesc')" :code="codes.size">
+            <view class="switch-demo">
+                <ux-switch v-model="sizeValue" :size="size" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in sizeList" :key="index" :type="size === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setSize(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 加载中 -->
+        <demo-block :title="t('switch.loadingTitle')" :desc="t('switch.loadingDesc')" :code="codes.loading">
+            <view class="switch-demo">
+                <ux-switch v-model="loadingValue" :loading="loading" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button :type="loading ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="toggleLoading">{{ t('switch.loadingBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 禁用 -->
+        <demo-block :title="t('switch.disabledTitle')" :desc="t('switch.disabledDesc')" :code="codes.disabled">
+            <view class="switch-demo">
+                <ux-switch v-model="disabledValue" :disabled="disabled" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button :type="disabled ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="toggleDisabled">{{ t('switch.disabledBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type ColorItem = {
+        value: string;
+        label: string;
+    };
+
+    type SizeItem = {
+        value: string;
+        label: string;
+    };
+
+    /** 基础用法开关状态 */
+    const modelValue = ref(true);
+    /** 自定义值开关状态 */
+    const customValue = ref<number>(1);
+    /** 颜色配置开关状态 */
+    const colorValue = ref(true);
+    /** 尺寸配置开关状态 */
+    const sizeValue = ref(true);
+    /** 加载中开关状态 */
+    const loadingValue = ref(true);
+    /** 禁用开关状态 */
+    const disabledValue = ref(true);
+    /** 激活颜色 */
+    const activeColor = ref('');
+    /** 开关尺寸 */
+    const size = ref('default');
+    /** 是否加载中 */
+    const loading = ref(false);
+    /** 是否禁用 */
+    const disabled = ref(false);
+
+    const colorList: ColorItem[] = [
+        { value: '', label: 'primary' },
+        { value: '#fa3534', label: 'error' },
+        { value: '#ff9900', label: 'warning' },
+        { value: '#19be6b', label: 'success' }
+    ];
+
+    const sizeList: SizeItem[] = [
+        { value: 'small', label: 'small' },
+        { value: 'default', label: 'default' },
+        { value: 'large', label: 'large' },
+        { value: '50', label: '50' }
+    ];
+
+    /** 切换激活颜色 */
+    const setColor = (val: string) => {
+        activeColor.value = val;
+    };
+
+    /** 切换尺寸 */
+    const setSize = (val: string) => {
+        size.value = val;
+    };
+
+    /** 切换加载中状态 */
+    const toggleLoading = () => {
+        loading.value = !loading.value;
+    };
+
+    /** 切换禁用状态 */
+    const toggleDisabled = () => {
+        disabled.value = !disabled.value;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 按钮容器：水平排列 + 自动换行 */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 按钮间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 开关演示区 */
+    .switch-demo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-height: 50px;
+        margin-bottom: 12px;
+    }
+
+    /* 状态文字 */
+    .switch-status {
+        margin-left: 12px;
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

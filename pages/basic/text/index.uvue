@@ -1,0 +1,176 @@
+<template>
+    <demo-page :title="t('text.title')" :subtitle="t('text.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('text.basicTitle')" :code="codes.basic">
+            <ux-text :text="t('text.basicText')"></ux-text>
+        </demo-block>
+
+        <!-- 主题色 -->
+        <demo-block :title="t('text.typeTitle')" :code="codes.type">
+            <ux-text type="primary" :text="t('text.primaryText')"></ux-text>
+            <ux-text type="success" :text="t('text.successText')"></ux-text>
+            <ux-text type="error" :text="t('text.errorText')"></ux-text>
+            <ux-text type="warning" :text="t('text.warningText')"></ux-text>
+        </demo-block>
+
+        <!-- 自定义颜色与字号 -->
+        <demo-block :title="t('text.colorSizeTitle')" :code="codes.colorSize">
+            <ux-text color="#2979ff" size="20" :text="t('text.customText')"></ux-text>
+        </demo-block>
+
+        <!-- 粗体与块状 -->
+        <demo-block :title="t('text.boldBlockTitle')" :code="codes.boldBlock">
+            <ux-text bold :text="t('text.boldText')"></ux-text>
+            <ux-text block :text="t('text.blockText')"></ux-text>
+        </demo-block>
+
+        <!-- 行数省略 -->
+        <demo-block :title="t('text.linesTitle')" :code="codes.lines">
+            <ux-text lines="1" :text="t('text.lines1Text')"></ux-text>
+            <ux-text lines="2" :text="t('text.lines2Text')"></ux-text>
+        </demo-block>
+
+        <!-- 价格模式 -->
+        <demo-block :title="t('text.priceTitle')" :code="codes.price">
+            <ux-text mode="price" text="12345.678" type="error"></ux-text>
+        </demo-block>
+
+        <!-- 手机号模式 -->
+        <demo-block :title="t('text.phoneTitle')" :desc="t('text.phoneDesc')" :code="codes.phone">
+            <ux-text mode="phone" format="encrypt" text="13812345678"></ux-text>
+            <ux-text mode="phone" call text="13812345678"></ux-text>
+        </demo-block>
+
+        <!-- 姓名加密 -->
+        <demo-block :title="t('text.nameTitle')" :code="codes.name">
+            <ux-text mode="name" format="encrypt" :text="t('text.nameText')"></ux-text>
+            <ux-text mode="name" format="encrypt" :text="t('text.nameText2')"></ux-text>
+        </demo-block>
+
+        <!-- 日期格式化 -->
+        <demo-block :title="t('text.dateTitle')" :code="codes.date">
+            <ux-text mode="date" :text="dateValue"></ux-text>
+            <ux-text mode="date" format="yyyy-mm-dd hh:MM:ss" :text="dateValue"></ux-text>
+        </demo-block>
+
+        <!-- 超链接 -->
+        <demo-block :title="t('text.linkTitle')" :code="codes.link">
+            <ux-text mode="link" href="https://uviewpro.cn" :text="t('text.linkText')"></ux-text>
+        </demo-block>
+
+        <!-- 前置/后置图标 -->
+        <demo-block :title="t('text.iconTitle')" :code="codes.icon">
+            <ux-text prefix-icon="home" :text="t('text.prefixText')"></ux-text>
+            <ux-text suffix-icon="arrow-right" :text="t('text.suffixText')"></ux-text>
+        </demo-block>
+
+        <!-- 文字装饰 -->
+        <demo-block :title="t('text.decorationTitle')" :desc="t('text.decorationDesc')" :code="codes.decoration">
+            <ux-text decoration="underline" color="#2979ff" :text="t('text.decorationText')"></ux-text>
+            <ux-text decoration="line-through" color="#fa3534" :text="t('text.decorationText2')"></ux-text>
+        </demo-block>
+
+        <!-- 外边距与行高 -->
+        <demo-block :title="t('text.spacingTitle')" :desc="t('text.spacingDesc')" :code="codes.spacing">
+            <ux-text :margin="20" :line-height="30" :text="t('text.spacingText')"></ux-text>
+            <ux-text :margin="20" :line-height="40" color="#2979ff" :text="t('text.spacingText')"></ux-text>
+        </demo-block>
+
+        <!-- 对齐与换行 -->
+        <demo-block :title="t('text.layoutTitle')" :desc="t('text.layoutDesc')" :code="codes.layout">
+            <ux-text block align="center" word-wrap="break-word" :text="t('text.layoutText')"></ux-text>
+        </demo-block>
+
+        <!-- 样式对象 -->
+        <demo-block :title="t('text.styleObjTitle')" :desc="t('text.styleObjDesc')" :code="codes.styleObj">
+            <ux-text
+                prefix-icon="home"
+                :icon-style="iconCustomStyle"
+                :text-style="textCustomStyle"
+                :text="t('text.styleObjText')"
+            ></ux-text>
+        </demo-block>
+
+        <!-- 开放能力（仅微信小程序，App/H5 无 open-type 概念） -->
+        <!-- #ifdef MP-WEIXIN -->
+        <demo-block :title="t('text.openTypeTitle')" :desc="t('text.openTypeDesc')" :code="codes.openType">
+            <view class="open-type-list">
+                <ux-text
+                    open-type="getUserInfo"
+                    lang="zh_CN"
+                    margin="0 0 16px"
+                    :text="t('text.openTypeText')"
+                    @getuserinfo="onGetUserInfo"
+                ></ux-text>
+                <ux-text
+                    open-type="contact"
+                    session-from="ux-text-demo"
+                    send-message-title="text-demo"
+                    margin="0 0 16px"
+                    :text="t('text.openTypeContactText')"
+                    @contact="onContact"
+                ></ux-text>
+                <ux-text
+                    open-type="getPhoneNumber"
+                    :text="t('text.openTypePhoneText')"
+                    @getphonenumber="onGetPhoneNumber"
+                ></ux-text>
+            </view>
+            <demo-result v-if="openTypeResult !== ''" :text="t('text.openTypeResultLabel') + ': ' + openTypeResult" />
+        </demo-block>
+        <!-- #endif -->
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+const { t } = useLocale('demo');
+
+// 时间戳示例（2026-08-05 12:00:00）
+const dateValue: number = 1783245600000;
+
+// 样式定制演示：图标与文字样式对象（键统一连字符）
+const iconCustomStyle: UTSJSONObject = { 'font-size': '16px' };
+const textCustomStyle: UTSJSONObject = { 'font-style': 'italic' };
+
+// 开放能力回调结果（仅微信小程序 openType 分支触发，展示 detail 原始内容）
+const openTypeResult = ref<string>('');
+
+/**
+ * 开放能力回调：格式化 detail 并写入结果区
+ * @param event 开放能力原生事件
+ */
+function updateOpenTypeResult(event: UniEvent) {
+    const detail = (event as unknown as UTSJSONObject)['detail'];
+    openTypeResult.value = detail == null ? '{}' : JSON.stringify(detail);
+}
+
+function onGetUserInfo(event: UniEvent) {
+    updateOpenTypeResult(event);
+    console.log('ux-text getUserInfo', (event as unknown as UTSJSONObject)['detail']);
+}
+
+function onContact(event: UniEvent) {
+    updateOpenTypeResult(event);
+    console.log('ux-text contact', (event as unknown as UTSJSONObject)['detail']);
+}
+
+function onGetPhoneNumber(event: UniEvent) {
+    updateOpenTypeResult(event);
+    console.log('ux-text getPhoneNumber', (event as unknown as UTSJSONObject)['detail']);
+}
+</script>
+
+<style lang="scss">
+/* 开放能力演示：纵向排列，避免三项横排挤在一起（仅微信小程序编译此块） */
+.open-type-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+</style>
+
+

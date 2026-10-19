@@ -1,0 +1,120 @@
+<template>
+    <demo-page :title="t('grid.title')" :subtitle="t('grid.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('grid.basicTitle')" :desc="t('grid.basicDesc')" :code="codes.basic">
+            <ux-grid :col="3" @click="onGridClick">
+                <ux-grid-item :index="0">
+                    <ux-icon name="photo" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemPhoto') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="1">
+                    <ux-icon name="lock" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemLock') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="2">
+                    <ux-icon name="hourglass" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemHourglass') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="3">
+                    <ux-icon name="home" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemHome') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="4">
+                    <ux-icon name="star" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemStar') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="5">
+                    <ux-icon name="volume-up" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemVolume') }}</text>
+                </ux-grid-item>
+            </ux-grid>
+        </demo-block>
+
+        <!-- 自定义列数 -->
+        <demo-block :title="t('grid.colTitle')" :desc="t('grid.colDesc')" :code="codes.col">
+            <ux-grid :col="4">
+                <ux-grid-item :index="0">
+                    <ux-icon name="integral" :size="20" />
+                    <text class="grid-text">{{ t('grid.itemIntegral') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="1">
+                    <ux-icon name="gift" :size="20" />
+                    <text class="grid-text">{{ t('grid.itemGift') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="2">
+                    <ux-icon name="scan" :size="20" />
+                    <text class="grid-text">{{ t('grid.itemScan') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="3">
+                    <ux-icon name="trash" :size="20" />
+                    <text class="grid-text">{{ t('grid.itemTrash') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="4">
+                    <ux-icon name="shopping-cart" :size="20" />
+                    <text class="grid-text">{{ t('grid.itemCart') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="5">
+                    <ux-icon name="rewind-right" :size="20" />
+                    <text class="grid-text">{{ t('grid.itemRewind') }}</text>
+                </ux-grid-item>
+            </ux-grid>
+        </demo-block>
+
+        <!-- 无边框 -->
+        <demo-block :title="t('grid.noBorderTitle')" :desc="t('grid.noBorderDesc')" :code="codes.noBorder">
+            <ux-grid :col="3" :border="false">
+                <ux-grid-item :index="0">
+                    <ux-icon name="photo" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemPhoto') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="1">
+                    <ux-icon name="lock" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemLock') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="2">
+                    <ux-icon name="home" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemHome') }}</text>
+                </ux-grid-item>
+            </ux-grid>
+        </demo-block>
+
+        <!-- 对齐方式 -->
+        <demo-block :title="t('grid.alignTitle')" :desc="t('grid.alignDesc')" :code="codes.align">
+            <ux-grid :col="3" align="center">
+                <ux-grid-item :index="0">
+                    <ux-icon name="star" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemStar') }}</text>
+                </ux-grid-item>
+                <ux-grid-item :index="1">
+                    <ux-icon name="home" :size="23" />
+                    <text class="grid-text">{{ t('grid.itemHome') }}</text>
+                </ux-grid-item>
+            </ux-grid>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+function onGridClick(index: string | number): void {
+    uni.showToast({
+        title: t('grid.clickTip') + (Number(index) + 1),
+        icon: 'none'
+    });
+}
+</script>
+
+<style lang="scss">
+
+.grid-text {
+    font-size: 14px;
+    margin-top: 2px;
+    color: $u-tips-color;
+}
+</style>

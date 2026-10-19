@@ -1,0 +1,184 @@
+/**
+ * skeleton 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-skeleton :loading="true" :rows="3" />
+</template>
+`;
+
+/** 段落行数 */
+const rows = `
+<template>
+    <ux-skeleton :loading="true" :rows="rows" />
+    <view class="btn-wrap">
+        <ux-button v-for="(item, index) in rowsList" :key="index" :type="rows === item.value ? 'primary' : 'default'" custom-class="btn-item" @click="rows = item.value">{{ item.label }}</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const rows = ref<number>(3);
+
+const rowsList = [
+    { value: 2, label: '2' },
+    { value: 3, label: '3' },
+    { value: 5, label: '5' }
+];
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+}
+.btn-item {
+    margin-right: 12px;
+}
+</style>
+`;
+
+/** 自定义宽度/高度 */
+const width = `
+<template>
+    <ux-skeleton :loading="true" :rows="3" :rows-width="['100%', '80%', '60%']" :rows-height="['25', '25', '25']" :title-width="'40%'" :title-height='30' />
+</template>
+`;
+
+/** 头像 */
+const avatar = `
+<template>
+    <ux-skeleton :loading="true" :rows="3" avatar :avatar-size="20" avatar-shape="circle" />
+</template>
+`;
+
+/** 动画开关 */
+const animate = `
+<template>
+    <ux-skeleton :loading="true" :rows="3" :animate="animate" />
+    <view class="btn-wrap">
+        <ux-button :type="animate ? 'primary' : 'default'" @click="animate = !animate">{{ animate ? '开启动画' : '关闭动画' }}</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const animate = ref<boolean>(true);
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+</style>
+`;
+
+/** 列表场景 */
+const scene = `
+<template>
+    <view class="list">
+        <ux-skeleton v-for="(item, index) in sceneList" :key="index" custom-class="list-item" avatar title :rows="3" :rows-width="['100%', '90%', '62%']" :rows-height="['16', '16', '16']" :title-width="'32%'" :title-height="'22'" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const sceneList = [1, 2, 3];
+</script>
+
+<style scoped>
+.list {
+    display: flex;
+    flex-direction: column;
+}
+.list-item {
+    margin-bottom: 12px;
+    padding: 14px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+</style>
+`;
+
+/** 加载完成（骨架与真实内容一一对应） */
+const loading = `
+<template>
+    <ux-skeleton :loading="loading" title avatar :rows="3" :rows-height="['18', '18', '40']" :title-height="'22'">
+        <view class="card">
+            <view class="card__avatar"></view>
+            <view class="card__body">
+                <text class="card__title">uView Pro 组件库</text>
+                <text class="card__line">丰富的组件覆盖开发过程各类需求，多端兼容，开箱即用。</text>
+                <text class="card__line">组件功能完善，样式与全局主题均支持自定义。</text>
+                <text class="card__line">示例代码一键复制，快速集成进你的项目。</text>
+            </view>
+        </view>
+    </ux-skeleton>
+    <view class="wrap">
+        <ux-button :type="loading ? 'primary' : 'default'" shape="round" @click="loading = !loading">{{ loading ? '切换加载中' : '加载完成' }}</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const loading = ref<boolean>(true);
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+.card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+.card__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2979ff;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+.card__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+.card__title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #323233;
+    margin-bottom: 8px;
+}
+.card__line {
+    font-size: 13px;
+    line-height: 20px;
+    color: #606266;
+    margin-bottom: 4px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    rows,
+    width,
+    avatar,
+    animate,
+    scene,
+    loading
+};

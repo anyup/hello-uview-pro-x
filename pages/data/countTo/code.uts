@@ -1,0 +1,141 @@
+/**
+ * countTo 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-count-to :end-val="965"></ux-count-to>
+</template>
+`;
+
+/** 自定义起止值 */
+const customRange = `
+<template>
+    <ux-count-to :start-val="100" :end-val="0"></ux-count-to>
+    <view class="gap"></view>
+    <ux-count-to :start-val="0" :end-val="9999"></ux-count-to>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 千位分隔符 */
+const separator = `
+<template>
+    <ux-count-to :end-val="233321.05" separator=","></ux-count-to>
+</template>
+`;
+
+/** 显示小数 */
+const decimal = `
+<template>
+    <ux-count-to :end-val="12345.678" :decimals="2"></ux-count-to>
+    <view class="gap"></view>
+    <ux-count-to :end-val="12345.678" :decimals="2" decimal="."></ux-count-to>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 自定义样式 */
+const customStyle = `
+<template>
+    <ux-count-to :end-val="8888" color="#2979ff" :font-size="30" :bold="true"></ux-count-to>
+    <view class="gap"></view>
+    <ux-count-to :end-val="8888" color="#fa3534"></ux-count-to>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 关闭缓动 */
+const noEasing = `
+<template>
+    <ux-count-to :end-val="5000" :use-easing="false"></ux-count-to>
+</template>
+`;
+
+/** 动画控制 */
+const control = `
+<template>
+    <ux-count-to ref="countToRef" :end-val="965" :duration="rollDuration" :autoplay="rollAutoPlay"></ux-count-to>
+    <view class="gap"></view>
+    <view class="btn-row">
+        <view class="btn" @click="startRoll"><text class="btn-text">开始</text></view>
+        <view class="btn" @click="toggleAutoPlay"><text class="btn-text">{{ rollAutoPlay ? '自动开' : '自动关' }}</text></view>
+        <view class="btn" @click="setDuration(500)"><text class="btn-text">500ms</text></view>
+        <view class="btn" @click="setDuration(2000)"><text class="btn-text">2000ms</text></view>
+        <view class="btn" @click="setDuration(5000)"><text class="btn-text">5000ms</text></view>
+    </view>
+</template>
+
+<script setup lang="uts">
+const countToRef = ref<any>();
+const rollDuration = ref<number>(2000);
+const rollAutoPlay = ref<boolean>(true);
+
+function startRoll(): void {
+    countToRef.value?.start();
+}
+
+function toggleAutoPlay(): void {
+    rollAutoPlay.value = !rollAutoPlay.value;
+}
+
+function setDuration(ms: number): void {
+    rollDuration.value = ms;
+    countToRef.value?.start();
+}
+</script>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+.btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background-color: #ecf5ff;
+}
+.btn-text {
+    font-size: 13px;
+    color: #2979ff;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    customRange,
+    separator,
+    decimal,
+    customStyle,
+    noEasing,
+    control
+};

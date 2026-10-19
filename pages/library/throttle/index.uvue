@@ -1,0 +1,93 @@
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+const clickCount = ref(0);
+const throttleCount = ref(0);
+const lastExecuteTime = ref('');
+
+// 普通点击
+const handleNormalClick = () => {
+    clickCount.value++;
+};
+
+// 创建节流函数（只创建一次）
+const throttledFn = $u.throttle(() => {
+    throttleCount.value++;
+    lastExecuteTime.value = new Date().toLocaleTimeString();
+}, 1000, true);
+
+// 节流点击
+const handleThrottleClick = () => {
+    handleNormalClick();
+    throttledFn();
+};
+
+// 延迟执行版本
+const delayCount = ref(0);
+const delayFn = $u.throttle(() => {
+    delayCount.value++;
+}, 1000, false);
+
+const handleDelayClick = () => {
+    handleNormalClick();
+    delayFn();
+};
+</script>
+
+<template>
+    <demo-page :title="t('throttle.title')" :subtitle="t('throttle.subtitle')">
+        <!-- 普通点击 -->
+        <demo-block :title="t('throttle.normalTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('throttle.clickCount') }}{{ clickCount }}</text>
+            </view>
+            <view class="demo-btn throttle-btn" @click="handleNormalClick">
+                <text>{{ t('throttle.normalBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 节流对比 -->
+        <demo-block :title="t('throttle.throttleTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('throttle.triggerCount') }}{{ clickCount }}</text>
+                <text class="demo-desc">{{ t('throttle.actualExec') }}{{ throttleCount }}</text>
+                <text class="demo-desc">{{ t('throttle.lastExec') }}{{ lastExecuteTime.length > 0 ? lastExecuteTime : '-' }}</text>
+            </view>
+            <view class="demo-btn throttle-btn" @click="handleThrottleClick">
+                <text>{{ t('throttle.throttleBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 延迟执行 -->
+        <demo-block :title="t('throttle.delayTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">{{ t('throttle.delayCount') }}{{ delayCount }}</text>
+            </view>
+            <view class="demo-btn throttle-btn" @click="handleDelayClick">
+                <text>{{ t('throttle.delayBtn') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 方法说明 -->
+        <demo-block :title="t('throttle.usageTitle')">
+            <view class="demo-item demo-item--last">
+                <text class="demo-desc">const fn = $u.throttle(func, wait, immediate)</text>
+                <text class="demo-desc">{{ t('throttle.usageFunc') }}</text>
+                <text class="demo-desc">{{ t('throttle.usageWait') }}</text>
+                <text class="demo-desc">{{ t('throttle.usageImmediate') }}</text>
+                <text class="demo-desc">{{ t('throttle.usageReturn') }}</text>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<style lang="scss">
+/* 使用全局 demo.scss 样式 */
+
+/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
+.throttle-btn {
+    margin-bottom: 0;
+}
+</style>

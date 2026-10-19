@@ -1,0 +1,123 @@
+/**
+ * tabbar 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 仅图标 */
+const icon = `
+<template>
+    <ux-tabbar :list="list" @change="onChange"></ux-tabbar>
+</template>
+
+<script setup lang="uts">
+import type { TabbarItem } from '@/uni_modules/uview-pro-x';
+
+const list: TabbarItem[] = [
+    { iconPath: 'home', selectedIconPath: 'home-fill' },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill' },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill' },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill' }
+];
+
+function onChange(index: number): void {
+    uni.showToast({ title: '切换到第' + (index + 1) + '个 tab', icon: 'none' });
+}
+</script>
+`;
+
+/** 图标 + 文字 */
+const iconText = `
+<template>
+    <ux-tabbar :list="list" @change="onChange"></ux-tabbar>
+</template>
+
+<script setup lang="uts">
+import type { TabbarItem } from '@/uni_modules/uview-pro-x';
+
+const list: TabbarItem[] = [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: '首页' },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: '购物' },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: '优惠券' },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: '我的' }
+];
+
+function onChange(index: number): void {
+    uni.showToast({ title: '切换到第' + (index + 1) + '个 tab', icon: 'none' });
+}
+</script>
+`;
+
+/** 凸起按钮 */
+const midButton = `
+<template>
+    <ux-tabbar mid-button border-top :list="list" @change="onChange"></ux-tabbar>
+</template>
+
+<script setup lang="uts">
+import type { TabbarItem } from '@/uni_modules/uview-pro-x';
+
+const list: TabbarItem[] = [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: '首页' },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: '购物' },
+    { iconPath: 'photo', selectedIconPath: 'photo', text: '发布', midButton: true },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: '优惠券' },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: '我的' }
+];
+
+function onChange(index: number): void {
+    uni.showToast({ title: '切换到第' + (index + 1) + '个 tab', icon: 'none' });
+}
+</script>
+`;
+
+/** 角标 */
+const badge = `
+<template>
+    <ux-tabbar :list="list" @change="onChange"></ux-tabbar>
+</template>
+
+<script setup lang="uts">
+import type { TabbarItem } from '@/uni_modules/uview-pro-x';
+
+const list: TabbarItem[] = [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: '首页', count: 5 },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: '购物', count: 99 },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: '优惠券', isDot: true },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: '我的' }
+];
+
+function onChange(index: number): void {
+    uni.showToast({ title: '切换到第' + (index + 1) + '个 tab', icon: 'none' });
+}
+</script>
+`;
+
+/** 自定义颜色 */
+const custom = `
+<template>
+    <ux-tabbar :border-top="false" active-color="#19be6b" inactive-color="#909399" :list="list" @change="onChange"></ux-tabbar>
+</template>
+
+<script setup lang="uts">
+import type { TabbarItem } from '@/uni_modules/uview-pro-x';
+
+const list: TabbarItem[] = [
+    { iconPath: 'home', selectedIconPath: 'home-fill', text: '首页' },
+    { iconPath: 'bag', selectedIconPath: 'bag-fill', text: '购物' },
+    { iconPath: 'coupon', selectedIconPath: 'coupon-fill', text: '优惠券' },
+    { iconPath: 'setting', selectedIconPath: 'setting-fill', text: '我的' }
+];
+
+function onChange(index: number): void {
+    uni.showToast({ title: '切换到第' + (index + 1) + '个 tab', icon: 'none' });
+}
+</script>
+`;
+
+export const codes = {
+    icon,
+    iconText,
+    midButton,
+    badge,
+    custom
+};

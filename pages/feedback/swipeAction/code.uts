@@ -1,0 +1,155 @@
+﻿/**
+ * swipeAction 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-swipe-action :options="options" @click="onBtnClick">
+        <view class="content">
+            <text>左滑试试</text>
+        </view>
+    </ux-swipe-action>
+</template>
+
+<script setup lang="uts">
+import type { SwipeActionOption } from '@/uni_modules/uview-pro-x';
+
+const options: SwipeActionOption[] = [
+    {
+        text: '删除',
+        style: { backgroundColor: '#fa3534' }
+    }
+];
+
+function onBtnClick(index: number | string, btnIndex: number): void {
+    uni.showToast({ title: '点击了第' + btnIndex + '个按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.content {
+    padding: 15px;
+    background-color: #ffffff;
+}
+</style>
+`;
+
+/** 多个按钮 */
+const multi = `
+<template>
+    <ux-swipe-action :options="options" @click="onBtnClick">
+        <view class="content">
+            <text>左滑出现多个按钮</text>
+        </view>
+    </ux-swipe-action>
+</template>
+
+<script setup lang="uts">
+import type { SwipeActionOption } from '@/uni_modules/uview-pro-x';
+
+const options: SwipeActionOption[] = [
+    {
+        text: '收藏',
+        style: { backgroundColor: '#ff9900' }
+    },
+    {
+        text: '删除',
+        style: { backgroundColor: '#fa3534' }
+    }
+];
+
+function onBtnClick(index: number | string, btnIndex: number): void {
+    uni.showToast({ title: '点击了第' + btnIndex + '个按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.content {
+    padding: 15px;
+    background-color: #ffffff;
+}
+</style>
+`;
+
+/** 禁用 */
+const disabled = `
+<template>
+    <ux-swipe-action :options="options" :disabled="true">
+        <view class="content">
+            <text>已禁用滑动</text>
+        </view>
+    </ux-swipe-action>
+</template>
+
+<script setup lang="uts">
+import type { SwipeActionOption } from '@/uni_modules/uview-pro-x';
+
+const options: SwipeActionOption[] = [
+    {
+        text: '删除',
+        style: { backgroundColor: '#fa3534' }
+    }
+];
+</script>
+
+<style scoped>
+.content {
+    padding: 15px;
+    background-color: #ffffff;
+}
+</style>
+`;
+
+/** 受控展开 */
+const control = `
+<template>
+    <ux-swipe-action ref="swipeRef" :options="options" :show="show" @open="onOpen" @close="onClose">
+        <view class="content">
+            <text>点击按钮展开/收起</text>
+        </view>
+    </ux-swipe-action>
+    <ux-button size="small" @click="toggle">{{ show ? '收起' : '展开' }}</ux-button>
+</template>
+
+<script setup lang="uts">
+import type { SwipeActionOption } from '@/uni_modules/uview-pro-x';
+
+const options: SwipeActionOption[] = [
+    {
+        text: '删除',
+        style: { backgroundColor: '#fa3534' }
+    }
+];
+
+const show = ref<boolean>(false);
+const swipeRef = ref<any>(null);
+
+function toggle(): void {
+    show.value = !show.value;
+}
+
+function onOpen(index: number | string): void {
+    console.log('open', index);
+}
+
+function onClose(index: number | string): void {
+    console.log('close', index);
+}
+</script>
+
+<style scoped>
+.content {
+    padding: 15px;
+    background-color: #ffffff;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    multi,
+    disabled,
+    control
+};

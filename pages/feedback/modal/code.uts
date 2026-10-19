@@ -1,0 +1,100 @@
+/**
+ * modal 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button type="primary" @click="show = true">打开弹窗</ux-button>
+    <ux-modal
+        v-model="show"
+        content="这是弹窗内容"
+        :show-cancel-button="true"
+        @confirm="onConfirm"
+        @cancel="onCancel"
+    />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+
+const onConfirm = () => {
+    show.value = false;
+    uni.showToast({ title: '点击了确定', icon: 'none' });
+};
+
+const onCancel = () => {
+    show.value = false;
+    uni.showToast({ title: '点击了取消', icon: 'none' });
+};
+</script>
+`;
+
+/** 自定义内容与按钮 */
+const custom = `
+<template>
+    <ux-button type="success" @click="show = true">打开弹窗</ux-button>
+    <ux-modal
+        v-model="show"
+        title="自定义弹窗"
+        content="自定义标题与按钮文案的弹窗"
+        :show-cancel-button="true"
+        confirm-text="好的"
+        cancel-text="不了"
+        @confirm="onConfirm"
+    />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+
+const onConfirm = () => {
+    show.value = false;
+    uni.showToast({ title: '点击了确定', icon: 'none' });
+};
+</script>
+`;
+
+/** 异步关闭 */
+const asyncClose = `
+<template>
+    <ux-button type="warning" @click="show = true">打开弹窗</ux-button>
+    <text v-if="loading" class="tip">正在处理...</text>
+    <ux-modal
+        v-model="show"
+        title="异步关闭"
+        content="点击确定后 2 秒自动关闭"
+        :async-close="true"
+        :show-cancel-button="true"
+        @confirm="onConfirm"
+    />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+const loading = ref<boolean>(false);
+
+const onConfirm = () => {
+    loading.value = true;
+    setTimeout(() => {
+        show.value = false;
+        loading.value = false;
+    }, 2000);
+};
+</script>
+
+<style scoped>
+.tip {
+    font-size: 12px;
+    color: #909399;
+    margin-top: 6px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    custom,
+    asyncClose
+};

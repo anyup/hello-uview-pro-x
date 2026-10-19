@@ -1,0 +1,120 @@
+/**
+ * alertTips 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-alert-tips title="这是一条警告提示" @click="onClick" />
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+
+const onClick = () => {
+    toastRef.value?.show?.({
+        title: '点击了提示内容',
+        type: 'success',
+        duration: 2000
+    });
+};
+</script>
+`;
+
+/** 主题 type */
+const theme = `
+<template>
+    <view class="alert-tips-list">
+        <ux-alert-tips custom-class="alert-tips-item" type="success" show-icon title="成功提示" />
+        <ux-alert-tips custom-class="alert-tips-item" type="warning" show-icon title="警告提示" />
+        <ux-alert-tips custom-class="alert-tips-item" type="info" show-icon title="信息提示" />
+        <ux-alert-tips custom-class="alert-tips-item" type="error" show-icon title="错误提示" />
+    </view>
+</template>
+
+<style scoped>
+.alert-tips-list {
+    display: flex;
+    flex-direction: column;
+}
+.alert-tips-item {
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 标题与描述 */
+const desc = `
+<template>
+    <ux-alert-tips
+        type="warning"
+        show-icon
+        title="升级提示"
+        description="新版本已发布，包含多项功能优化与问题修复，建议尽快升级。"
+    />
+</template>
+`;
+
+/** 可关闭 */
+const close = `
+<template>
+    <ux-alert-tips :show="closeShow" close-able close-text="知道了" title="文件已上传到临时目录，确认后将自动清理。" @close="onClose" />
+    <view v-if="!closeShow">
+        <ux-button type="primary" size="small" shape="round" text="重新显示" @click="onShowAgain" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const closeShow = ref(true);
+
+const onClose = () => {
+    closeShow.value = false;
+};
+
+const onShowAgain = () => {
+    closeShow.value = true;
+};
+</script>
+`;
+
+/** 自定义图标 */
+const icon = `
+<template>
+    <ux-alert-tips type="success" show-icon icon="checkmark-circle" :icon-style="iconStyle" title="自定义图标的提示" />
+</template>
+
+<script setup lang="uts">
+const iconStyle: UTSJSONObject = { 'color': '#19be6b' };
+</script>
+`;
+
+/** 自定义样式 */
+const style = `
+<template>
+    <ux-alert-tips
+        title="自定义样式的提示"
+        description="背景、边框与文字颜色均被覆盖，标题与描述样式单独定制。"
+        color="#7c3aed"
+        bg-color="#f3e8ff"
+        border-color="#c4b5fd"
+        :title-style="titleStyle"
+        :desc-style="descStyle"
+    />
+</template>
+
+<script setup lang="uts">
+const titleStyle: UTSJSONObject = { 'font-size': '15px' };
+const descStyle: UTSJSONObject = { 'font-size': '12px' };
+</script>
+`;
+
+export const codes = {
+    basic,
+    theme,
+    desc,
+    close,
+    icon,
+    style
+};

@@ -1,0 +1,217 @@
+/**
+ * text 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-text text="我用十年青春，赴你最后之约"></ux-text>
+</template>
+`;
+
+/** 主题色 */
+const type = `
+<template>
+    <ux-text type="primary" text="这是一段主题色文本"></ux-text>
+    <ux-text type="success" text="这是一段成功色文本"></ux-text>
+    <ux-text type="error" text="这是一段错误色文本"></ux-text>
+    <ux-text type="warning" text="这是一段警告色文本"></ux-text>
+</template>
+`;
+
+/** 自定义颜色与字号 */
+const colorSize = `
+<template>
+    <ux-text color="#2979ff" size="20" text="自定义颜色与字号"></ux-text>
+</template>
+`;
+
+/** 粗体与块状 */
+const boldBlock = `
+<template>
+    <ux-text bold text="这是一段加粗文本"></ux-text>
+    <ux-text block text="这是一段块状文本，独占一行展示"></ux-text>
+</template>
+`;
+
+/** 行数省略 */
+const lines = `
+<template>
+    <ux-text lines="1" text="这是一段超长的文本内容，用于演示单行省略的效果，超出部分将以省略号显示"></ux-text>
+    <ux-text lines="2" text="这是一段超长的文本内容，用于演示两行省略的效果，超出两行的部分将以省略号显示"></ux-text>
+</template>
+`;
+
+/** 价格模式 */
+const price = `
+<template>
+    <ux-text mode="price" text="12345.678" type="error"></ux-text>
+</template>
+`;
+
+/** 手机号模式 */
+const phone = `
+<template>
+    <ux-text mode="phone" format="encrypt" text="13812345678"></ux-text>
+    <ux-text mode="phone" call text="13812345678"></ux-text>
+</template>
+`;
+
+/** 姓名加密 */
+const name = `
+<template>
+    <ux-text mode="name" format="encrypt" text="张三丰"></ux-text>
+    <ux-text mode="name" format="encrypt" text="欧阳娜娜"></ux-text>
+</template>
+`;
+
+/** 日期格式化 */
+const date = `
+<template>
+    <ux-text mode="date" :text="dateValue"></ux-text>
+    <ux-text mode="date" format="yyyy-mm-dd hh:MM:ss" :text="dateValue"></ux-text>
+</template>
+
+<script setup lang="uts">
+// 时间戳示例（2026-08-05 12:00:00）
+const dateValue: number = 1783245600000;
+</script>
+`;
+
+/** 超链接 */
+const link = `
+<template>
+    <ux-text mode="link" href="https://uviewpro.cn" text="uView Pro 官网"></ux-text>
+</template>
+`;
+
+/** 前置/后置图标 */
+const icon = `
+<template>
+    <ux-text prefix-icon="home" text="前置图标文本"></ux-text>
+    <ux-text suffix-icon="arrow-right" text="后置图标文本"></ux-text>
+</template>
+`;
+
+/** 文字装饰 */
+const decoration = `
+<template>
+    <ux-text decoration="underline" color="#2979ff" text="这是一段带下划线的文本"></ux-text>
+    <ux-text decoration="line-through" color="#fa3534" text="这是一段带删除线的文本"></ux-text>
+</template>
+`;
+
+/** 外边距与行高 */
+const spacing = `
+<template>
+    <ux-text :margin="20" :line-height="30" text="这是一段设置外边距与行高的文本"></ux-text>
+    <ux-text :margin="20" :line-height="40" color="#2979ff" text="这是一段设置外边距与行高的文本"></ux-text>
+</template>
+`;
+
+/** 对齐与换行 */
+const layout = `
+<template>
+    <ux-text block align="center" word-wrap="break-word" text="这是一段很长的文本，用于演示 word-wrap=break-word 在超出容器宽度时的断行效果。"></ux-text>
+</template>
+`;
+
+/** 样式对象 */
+const styleObj = `
+<template>
+    <ux-text
+        prefix-icon="home"
+        :icon-style="iconCustomStyle"
+        :text-style="textCustomStyle"
+        text="自定义图标与文字样式"
+    ></ux-text>
+</template>
+
+<script setup lang="uts">
+const iconCustomStyle: UTSJSONObject = { 'font-size': '16px' };
+const textCustomStyle: UTSJSONObject = { 'font-style': 'italic' };
+</script>
+`;
+
+/** 开放能力（仅微信小程序） */
+const openType = `
+<!-- #ifdef MP-WEIXIN -->
+<template>
+    <view class="open-type-list">
+        <ux-text
+            open-type="getUserInfo"
+            lang="zh_CN"
+            margin="0 0 16px"
+            text="获取用户信息"
+            @getuserinfo="onGetUserInfo"
+        ></ux-text>
+        <ux-text
+            open-type="contact"
+            session-from="ux-text-demo"
+            send-message-title="text-demo"
+            margin="0 0 16px"
+            text="联系客服"
+            @contact="onContact"
+        ></ux-text>
+        <ux-text
+            open-type="getPhoneNumber"
+            text="获取手机号"
+            @getphonenumber="onGetPhoneNumber"
+        ></ux-text>
+    </view>
+    <demo-result v-if="openTypeResult !== ''" :text="'回调结果: ' + openTypeResult" />
+</template>
+
+<style lang="scss">
+.open-type-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+</style>
+
+<script setup lang="uts">
+const openTypeResult = ref<string>('');
+
+function updateOpenTypeResult(event: UniEvent) {
+    const detail = (event as unknown as UTSJSONObject)['detail'];
+    openTypeResult.value = detail == null ? '{}' : JSON.stringify(detail);
+}
+
+function onGetUserInfo(event: UniEvent) {
+    updateOpenTypeResult(event);
+    console.log('ux-text getUserInfo', (event as unknown as UTSJSONObject)['detail']);
+}
+
+function onContact(event: UniEvent) {
+    updateOpenTypeResult(event);
+    console.log('ux-text contact', (event as unknown as UTSJSONObject)['detail']);
+}
+
+function onGetPhoneNumber(event: UniEvent) {
+    updateOpenTypeResult(event);
+    console.log('ux-text getPhoneNumber', (event as unknown as UTSJSONObject)['detail']);
+}
+</script>
+<!-- #endif -->
+`;
+
+export const codes = {
+    basic,
+    type,
+    colorSize,
+    boldBlock,
+    lines,
+    price,
+    phone,
+    name,
+    date,
+    link,
+    icon,
+    decoration,
+    spacing,
+    layout,
+    styleObj,
+    openType
+};

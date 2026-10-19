@@ -1,0 +1,125 @@
+{
+    "name" : "hello-uview-pro-x",
+    "appid" : "__UNI__3E801E8",
+    "description" : "",
+    "versionName" : "1.0.0",
+    "versionCode" : "1",
+    "uni-app-x" : {
+        "vapor" : true,
+        "styleIsolationVersion" : "2",
+        "vapor-render-target" : "bytecode"
+    },
+    /* 快应用特有相关 */
+    "quickapp" : {},
+    /* 小程序特有相关 */
+    "mp-weixin" : {
+        "appid" : "wxd6ababc2fc84c9b6",
+        "setting" : {
+            "urlCheck" : false
+        },
+        "usingComponents" : true,
+        "darkmode" : true
+    },
+    "web" : {
+        "darkmode" : true,
+        "router" : {
+            "mode" : ""
+        },
+        "devServer" : {
+            "port" : 9000
+        }
+    },
+    "mp-alipay" : {
+        "usingComponents" : true
+    },
+    "mp-baidu" : {
+        "usingComponents" : true
+    },
+    "mp-toutiao" : {
+        "usingComponents" : true
+    },
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "vueVersion" : "3",
+    "app" : {
+        "distribute" : {
+            "icons" : {
+                "android" : {
+                    "hdpi" : "",
+                    "xhdpi" : "",
+                    "xxhdpi" : "",
+                    "xxxhdpi" : ""
+                }
+            }
+        }
+    },
+    "app-android" : {
+        "distribute" : {
+            "modules" : {},
+            "icons" : {
+                "hdpi" : "unpackage/res/icons/72x72.png",
+                "xhdpi" : "unpackage/res/icons/96x96.png",
+                "xxhdpi" : "unpackage/res/icons/144x144.png",
+                "xxxhdpi" : "unpackage/res/icons/192x192.png"
+            },
+            "splashScreens" : {
+                "default" : {}
+            }
+        }
+    },
+    "app-ios" : {
+        "distribute" : {
+            "modules" : {},
+            "icons" : {
+                "appstore" : "unpackage/res/icons/1024x1024.png"
+            },
+            "splashScreens" : {}
+        }
+    },
+    "app-harmony" : {
+        "darkmode" : true,
+        "safearea" : {
+            "background" : "#ffffff",
+            "backgroundDark" : "#2f0508",
+            "bottom" : {
+                "offset" : "none"
+            }
+        },
+        "distribute" : {
+            "bundleName" : "cn.anyup.uviewprox",
+            "icons" : {
+                "foreground" : "unpackage/res/icons/1024x1024.png",
+                "background" : "unpackage/res/icons/1024x1024.png"
+            },
+            "splashScreens" : {
+                "startWindowBackground" : "#FFFFFF",
+                "startWindowIcon" : "unpackage/res/icons/1024x1024.png"
+            },
+            "signingConfigs" : {
+                "default" : {
+                    "certpath" : "c:\\Users\\admin\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1779332101427.cer",
+                    "keyAlias" : "debugKey",
+                    "keyPassword" : "0000001B48EFEBC254AA9F73E27F2C1699BE1EFB8B45851575CECD07D2DBE82C0D76B7907E487F23F84D54",
+                    "profile" : "c:\\Users\\admin\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1779332101427.p7b",
+                    "signAlg" : "SHA256withECDSA",
+                    "storeFile" : "c:\\Users\\admin\\AppData\\Roaming\\HBuilder X\\extensions\\launcher\\agc-certs\\1762910225094.p12",
+                    "storePassword" : "0000001B48EFEBC254AA9F73E27F2C1699BE1EFB8B45851575CECD07D2DBE82C0D76B7907E487F23F84D54"
+                },
+                "release" : {
+                    "certpath" : "D:/workspace/anyup/uView-Pro/docs/uviewpro.cer",
+                    "keyAlias" : "uviewpro",
+                    "keyPassword" : "0000001E6691C890BDB30353B4C0D59375D5FFB9C11A3ED0CA390CAA12302677A354AB61C7795AD6D2BCD04DBBC6",
+                    "profile" : "D:/workspace/anyup/uView-Pro/docs/uviewpro_prodRelease.p7b",
+                    "signAlg" : "SHA256withECDSA",
+                    "storeFile" : "D:/workspace/anyup/uView-Pro/docs/uviewpro.p12",
+                    "storePassword" : "0000001E0E5E7477F66639990B845220FC4082AAEA6D6837F481E2E9A13ECA4F3376D378019C37B059E1A410F512"
+                }
+            },
+            "deviceTypes" : [ "phone" ],
+            "deviceArchs" : [ "arm64-v8a" ],
+            "compatibleSdkVersion" : "6.0.0(20)",
+            "targetSdkVersion" : "6.0.0(20)"
+        }
+    }
+}

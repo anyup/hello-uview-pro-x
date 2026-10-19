@@ -1,0 +1,57 @@
+<template>
+    <demo-page :title="t('safeBottom.title')" :subtitle="t('safeBottom.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('safeBottom.basicTitle')" :desc="t('safeBottom.basicDesc')" :code="codes.basic">
+            <view class="safe-bottom-demo">
+                <text class="safe-bottom-demo-text">{{ t('safeBottom.contentText') }}</text>
+            </view>
+            <ux-safe-bottom></ux-safe-bottom>
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block :title="t('safeBottom.customStyleTitle')" :desc="t('safeBottom.customStyleDesc')" :code="codes.customStyle">
+            <view class="safe-bottom-demo">
+                <text class="safe-bottom-demo-text">{{ t('safeBottom.contentText') }}</text>
+            </view>
+            <ux-safe-bottom :custom-style="{ backgroundColor: '#f56c6c' }"></ux-safe-bottom>
+        </demo-block>
+
+        <!-- 自定义类名 -->
+        <demo-block :title="t('safeBottom.customClassTitle')" :desc="t('safeBottom.customClassDesc')" :code="codes.customClass">
+            <view class="safe-bottom-demo">
+                <text class="safe-bottom-demo-text">{{ t('safeBottom.contentText') }}</text>
+            </view>
+            <ux-safe-bottom custom-class="custom-safe-bottom"></ux-safe-bottom>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+</script>
+
+<style lang="scss">
+    .safe-bottom-demo {
+        width: 100%;
+        height: 100px;
+        background-color: $u-bg-color;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .safe-bottom-demo-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+
+
+    .custom-safe-bottom {
+        background-color: $u-type-primary;
+    }
+</style>

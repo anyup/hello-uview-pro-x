@@ -1,0 +1,407 @@
+﻿<template>
+    <demo-page :title="t('input.title')" :subtitle="t('input.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('input.basicTitle')" :desc="t('input.basicDesc')" :code="codes.basic">
+            <view class="input-demo">
+                <ux-input v-model="basicValue" :placeholder="t('input.basicPlaceholder')" border />
+            </view>
+            <text class="input-status">{{ t('input.currentValue') }}: {{ basicValue }}</text>
+        </demo-block>
+
+        <!-- 输入框类型 -->
+        <demo-block :title="t('input.typeTitle')" :desc="t('input.typeDesc')" :code="codes.type">
+            <view class="input-demo">
+                <ux-input v-model="typeValue" :type="type" :placeholder="t('input.typePlaceholder')" border />
+            </view>
+            <view class="demo-subsection">
+                <ux-subsection :list="typeList" :current="typeIndex" @change="setType" />
+            </view>
+        </demo-block>
+
+        <!-- 对齐方式 -->
+        <demo-block :title="t('input.alignTitle')" :desc="t('input.alignDesc')" :code="codes.align">
+            <view class="input-demo">
+                <ux-input v-model="alignValue" :input-align="align" :placeholder="t('input.alignPlaceholder')" border />
+            </view>
+            <view class="demo-subsection">
+                <ux-subsection :list="alignList" :current="alignIndex" @change="setAlign" />
+            </view>
+        </demo-block>
+
+        <!-- 尺寸配置 -->
+        <demo-block :title="t('input.sizeTitle')" :desc="t('input.sizeDesc')" :code="codes.size">
+            <view class="input-demo">
+                <ux-input v-model="sizeValue" :size="size" :placeholder="t('input.sizePlaceholder')" border />
+            </view>
+            <view class="demo-subsection">
+                <ux-subsection :list="sizeList" :current="sizeIndex" @change="setSize" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义字号 -->
+        <demo-block :title="t('input.fontSizeTitle')" :desc="t('input.fontSizeDesc')" :code="codes.fontSize">
+            <view class="input-demo">
+                <ux-input v-model="fontSizeValue" :font-size="fontSize" :placeholder="t('input.fontSizePlaceholder')" border />
+            </view>
+            <view class="demo-subsection">
+                <ux-subsection :list="fontSizeList" :current="fontSizeIndex" @change="setFontSize" />
+            </view>
+        </demo-block>
+
+        <!-- 边框颜色 -->
+        <demo-block :title="t('input.borderTitle')" :desc="t('input.borderDesc')" :code="codes.border">
+            <view class="input-demo">
+                <ux-input v-model="borderValue" :placeholder="t('input.borderPlaceholder')" border :border-color="borderColor" />
+            </view>
+            <view class="demo-subsection">
+                <ux-subsection :list="borderColorList" :current="borderColorIndex" @change="setBorderColor" />
+            </view>
+        </demo-block>
+
+        <!-- 密码类型 -->
+        <demo-block :title="t('input.passwordTitle')" :desc="t('input.passwordDesc')" :code="codes.password">
+            <view class="input-demo">
+                <ux-input v-model="passwordValue" type="password" :password-icon="passwordIcon" :placeholder="t('input.passwordPlaceholder')" border />
+            </view>
+            <demo-actions>
+                <ux-button :type="passwordIcon ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="togglePasswordIcon" :text="t('input.passwordIconBtn')" />
+            </demo-actions>
+        </demo-block>
+
+        <!-- 清空 -->
+        <demo-block :title="t('input.clearTitle')" :desc="t('input.clearDesc')" :code="codes.clear">
+            <view class="input-demo">
+                <ux-input v-model="clearValue" :clearable="clearable" :placeholder="t('input.clearPlaceholder')" border />
+            </view>
+            <demo-actions>
+                <ux-button :type="clearable ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleClearable" :text="t('input.clearableBtn')" />
+            </demo-actions>
+        </demo-block>
+
+        <!-- 字数统计 -->
+        <demo-block :title="t('input.countTitle')" :desc="t('input.countDesc')" :code="codes.count">
+            <view class="input-demo">
+                <ux-input v-model="countValue" type="textarea" :count="true" :maxlength="100" :placeholder="t('input.countPlaceholder')" border />
+            </view>
+        </demo-block>
+
+        <!-- 禁用 / 只读 -->
+        <demo-block :title="t('input.stateTitle')" :desc="t('input.stateDesc')" :code="codes.state">
+            <view class="input-demo">
+                <ux-input v-model="disabledValue" :disabled="disabled" :placeholder="t('input.disabledPlaceholder')" border />
+            </view>
+            <view class="input-demo">
+                <ux-input v-model="readonlyValue" :readonly="readonly" :placeholder="t('input.readonlyPlaceholder')" border />
+            </view>
+            <demo-actions>
+                <ux-button :type="disabled ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleDisabled" :text="t('input.disabledBtn')" />
+                <ux-button :type="readonly ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleReadonly" :text="t('input.readonlyBtn')" />
+            </demo-actions>
+        </demo-block>
+
+        <!-- 自定义高度 -->
+        <demo-block :title="t('input.heightTitle')" :desc="t('input.heightDesc')" :code="codes.height">
+            <view class="input-demo">
+                <ux-input v-model="heightValue" :height="height" :placeholder="t('input.heightPlaceholder')" border />
+            </view>
+            <view class="demo-subsection">
+                <ux-subsection :list="heightList" :current="heightIndex" @change="setHeight" />
+            </view>
+        </demo-block>
+
+        <!-- 前置内容 -->
+        <demo-block :title="t('input.prefixTitle')" :desc="t('input.prefixDesc')" :code="codes.prefix">
+            <view class="input-demo">
+                <ux-input v-model="prefixValue" type="digit" :placeholder="t('input.prefixPlaceholder')" border>
+                    <template #prefix>
+                        <ux-icon name="rmb-circle" color="warning" :size="20" />
+                    </template>
+                </ux-input>
+            </view>
+        </demo-block>
+
+        <!-- 自动聚焦 -->
+        <demo-block :title="t('input.focusTitle')" :desc="t('input.focusDesc')" :code="codes.focus">
+            <view class="input-demo">
+                <ux-input v-model="focusValue" :focus="focus" :placeholder="t('input.focusPlaceholder')" border />
+            </view>
+            <demo-actions>
+                <ux-button :type="focus ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleFocus" :text="t('input.focusBtn')" />
+            </demo-actions>
+        </demo-block>
+
+        <!-- 自动增高 -->
+        <demo-block :title="t('input.autoHeightTitle')" :desc="t('input.autoHeightDesc')" :code="codes.autoHeight">
+            <view class="input-demo">
+                <ux-input v-model="autoHeightValue" type="textarea" :auto-height="autoHeight" :placeholder="t('input.autoHeightPlaceholder')" border />
+            </view>
+            <demo-actions>
+                <ux-button :type="autoHeight ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleAutoHeight" :text="t('input.autoHeightBtn')" />
+            </demo-actions>
+        </demo-block>
+
+        <!-- 去除两端空格 -->
+        <demo-block :title="t('input.trimTitle')" :desc="t('input.trimDesc')" :code="codes.trim">
+            <view class="input-demo">
+                <ux-input v-model="trimValue" :trim="trim" :placeholder="t('input.trimPlaceholder')" border />
+            </view>
+            <text class="input-status">{{ t('input.currentValue') }}: {{ trimValue }}</text>
+            <demo-actions>
+                <ux-button :type="trim ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleTrim" :text="t('input.trimBtn')" />
+            </demo-actions>
+        </demo-block>
+
+        <!-- 验证状态 -->
+        <demo-block :title="t('input.validateStateTitle')" :desc="t('input.validateStateDesc')" :code="codes.validateState">
+            <view class="input-demo">
+                <ux-input v-model="validateValue" :validate-state="validateState" :placeholder="t('input.validateStatePlaceholder')" border />
+            </view>
+            <demo-actions>
+                <ux-button :type="validateState ? 'primary' : 'default'" size="small" shape="round" custom-class="demo-actions-item" @click="toggleValidateState" :text="t('input.validateStateBtn')" />
+            </demo-actions>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, type SizeType } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type TypeItem = {
+        value: string;
+        name: string;
+    };
+
+    type AlignItem = {
+        value: string;
+        name: string;
+    };
+
+    type SizeItem = {
+        value: SizeType;
+        name: string;
+    };
+
+    type ColorItem = {
+        value: string;
+        name: string;
+    };
+
+    type HeightItem = {
+        value: string;
+        name: string;
+    };
+
+    type FontSizeItem = {
+        value: number;
+        name: string;
+    };
+
+    /** 基础用法值 */
+    const basicValue = ref('');
+    /** 类型演示值 */
+    const typeValue = ref('');
+    /** 对齐演示值 */
+    const alignValue = ref('');
+    /** 尺寸演示值 */
+    const sizeValue = ref('');
+    /** 自定义字号演示值 */
+    const fontSizeValue = ref('');
+    /** 边框颜色演示值 */
+    const borderValue = ref('');
+    /** 密码演示值 */
+    const passwordValue = ref('');
+    /** 清空演示值 */
+    const clearValue = ref('ux-input');
+    /** 字数统计演示值 */
+    const countValue = ref('');
+    /** 禁用演示值 */
+    const disabledValue = ref('禁用状态');
+    /** 只读演示值 */
+    const readonlyValue = ref('只读状态');
+    /** 高度演示值 */
+    const heightValue = ref('');
+    /** 前置内容演示值 */
+    const prefixValue = ref('');
+    /** 自动聚焦演示值 */
+    const focusValue = ref('');
+    /** 自动增高演示值 */
+    const autoHeightValue = ref('');
+    /** 去除两端空格演示值 */
+    const trimValue = ref('');
+    /** 验证状态演示值 */
+    const validateValue = ref('');
+
+    /** 输入框类型 */
+    const type = ref('text');
+    /** 对齐方式 */
+    const align = ref('left');
+    /** 尺寸 */
+    const size = ref<SizeType>('default');
+    /** 边框颜色 */
+    const borderColor = ref('');
+    /** 是否显示密码图标 */
+    const passwordIcon = ref(true);
+    /** 是否可清空 */
+    const clearable = ref(true);
+    /** 是否禁用 */
+    const disabled = ref(false);
+    /** 是否只读 */
+    const readonly = ref(false);
+    /** 高度 */
+    const height = ref('');
+    /** 自定义字号 */
+    const fontSize = ref(14);
+    /** 是否自动聚焦 */
+    const focus = ref(false);
+    /** 是否自动增高 */
+    const autoHeight = ref(true);
+    /** 是否去除两端空格 */
+    const trim = ref(true);
+    /** 是否验证错误状态 */
+    const validateState = ref(false);
+
+    const typeList: TypeItem[] = [
+        { value: 'text', name: 'text' },
+        { value: 'number', name: 'number' },
+        { value: 'password', name: 'password' },
+        { value: 'textarea', name: 'textarea' }
+    ];
+
+    const alignList: AlignItem[] = [
+        { value: 'left', name: 'left' },
+        { value: 'center', name: 'center' },
+        { value: 'right', name: 'right' }
+    ];
+
+    const sizeList: SizeItem[] = [
+        { value: 'small', name: 'small' },
+        { value: 'default', name: 'default' },
+        { value: 'large', name: 'large' }
+    ];
+
+    const borderColorList: ColorItem[] = [
+        { value: '', name: 'default' },
+        { value: '#fa3534', name: 'error' },
+        { value: '#19be6b', name: 'success' }
+    ];
+
+    const heightList: HeightItem[] = [
+        { value: '', name: 'auto' },
+        { value: '40', name: '40' },
+        { value: '50', name: '50' }
+    ];
+
+    const fontSizeList: FontSizeItem[] = [
+        { value: 14, name: '14' },
+        { value: 16, name: '16' },
+        { value: 18, name: '18' },
+        { value: 20, name: '20' }
+    ];
+
+    /** 当前选中项索引（ux-subsection 受控） */
+    const typeIndex = computed((): number => typeList.findIndex((item) => item.value === type.value));
+    const alignIndex = computed((): number => alignList.findIndex((item) => item.value === align.value));
+    const sizeIndex = computed((): number => sizeList.findIndex((item) => item.value === size.value));
+    const borderColorIndex = computed((): number => borderColorList.findIndex((item) => item.value === borderColor.value));
+    const heightIndex = computed((): number => heightList.findIndex((item) => item.value === height.value));
+    const fontSizeIndex = computed((): number => fontSizeList.findIndex((item) => item.value === fontSize.value));
+
+    /** 设置输入框类型 */
+    const setType = (index: number) => {
+        type.value = typeList[index].value;
+    };
+
+    /** 设置对齐方式 */
+    const setAlign = (index: number) => {
+        align.value = alignList[index].value;
+    };
+
+    /** 设置尺寸 */
+    const setSize = (index: number) => {
+        size.value = sizeList[index].value;
+    };
+
+    /** 设置边框颜色 */
+    const setBorderColor = (index: number) => {
+        borderColor.value = borderColorList[index].value;
+    };
+
+    /** 切换密码图标显示 */
+    const togglePasswordIcon = () => {
+        passwordIcon.value = !passwordIcon.value;
+    };
+
+    /** 切换是否可清空 */
+    const toggleClearable = () => {
+        clearable.value = !clearable.value;
+    };
+
+    /** 切换禁用状态 */
+    const toggleDisabled = () => {
+        disabled.value = !disabled.value;
+    };
+
+    /** 切换只读状态 */
+    const toggleReadonly = () => {
+        readonly.value = !readonly.value;
+    };
+
+    /** 设置高度 */
+    const setHeight = (index: number) => {
+        height.value = heightList[index].value;
+    };
+
+    /** 设置自定义字号 */
+    const setFontSize = (index: number) => {
+        fontSize.value = fontSizeList[index].value;
+    };
+
+    /** 切换自动聚焦 */
+    const toggleFocus = () => {
+        focus.value = !focus.value;
+    };
+
+    /** 切换自动增高 */
+    const toggleAutoHeight = () => {
+        autoHeight.value = !autoHeight.value;
+    };
+
+    /** 切换去除两端空格 */
+    const toggleTrim = () => {
+        trim.value = !trim.value;
+    };
+
+    /** 切换验证状态 */
+    const toggleValidateState = () => {
+        validateState.value = !validateState.value;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 输入框演示区 */
+    .input-demo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-height: 50px;
+        margin-bottom: 12px;
+    }
+
+    /* 状态文字 */
+    .input-status {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+
+    /* 选项切换区：整行撑满，避免折叠到内容宽度 */
+    .demo-subsection {
+        width: 100%;
+        margin-top: 4px;
+    }
+</style>

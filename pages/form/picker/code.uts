@@ -1,0 +1,188 @@
+﻿/**
+ * picker 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 单选选择器 */
+const selector = `
+<template>
+    <ux-button size="small" shape="round" @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-picker v-model="show" mode="selector" :columns="columns" :default-index="[2]" title="单选选择器" @confirm="onConfirm"></ux-picker>
+</template>
+
+<script setup lang="uts">
+import type { PickerOption } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const columns: PickerOption[][] = [
+    [
+        { text: '春眠不觉晓', value: 1 },
+        { text: '处处闻啼鸟', value: 2 },
+        { text: '夜来风雨声', value: 3 },
+        { text: '花落知多少', value: 4 }
+    ]
+];
+
+function onConfirm(event: UTSJSONObject): void {
+    const values = event['selectedValues'] as string[];
+    if (values == null) return;
+    result.value = values.join(' / ');
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 多列选择器 */
+const multi = `
+<template>
+    <ux-button size="small" shape="round" @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-picker v-model="show" mode="multiSelector" :columns="columns" :default-index="[0, 0, 1]" title="多列选择器" @confirm="onConfirm"></ux-picker>
+</template>
+
+<script setup lang="uts">
+import type { PickerOption } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const columns: PickerOption[][] = [
+    [
+        { text: '亚洲', value: 'asia' },
+        { text: '欧洲', value: 'europe' }
+    ],
+    [
+        { text: '中国', value: 'cn' },
+        { text: '日本', value: 'jp' }
+    ],
+    [
+        { text: '北京', value: 'bj' },
+        { text: '上海', value: 'sh' },
+        { text: '广州', value: 'gz' }
+    ]
+];
+
+function onConfirm(event: UTSJSONObject): void {
+    const values = event['selectedValues'] as string[];
+    if (values == null) return;
+    result.value = values.join(' / ');
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 级联选择器 */
+const cascade = `
+<template>
+    <ux-button size="small" shape="round" @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-picker v-model="show" mode="cascade" :columns="columns" :default-index="[0, 0, 0]" title="级联选择器" @confirm="onConfirm"></ux-picker>
+</template>
+
+<script setup lang="uts">
+import type { PickerOption } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const columns: PickerOption[][] = [
+    [
+        {
+            text: '山东省',
+            children: [
+                {
+                    text: '青岛市',
+                    children: [
+                        { text: '崂山区' },
+                        { text: '市南区' }
+                    ]
+                },
+                {
+                    text: '济南市',
+                    children: [
+                        { text: '历下区' },
+                        { text: '市中区' }
+                    ]
+                }
+            ]
+        }
+    ]
+];
+
+function onConfirm(event: UTSJSONObject): void {
+    const values = event['selectedValues'] as string[];
+    if (values == null) return;
+    result.value = values.join(' / ');
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 自定义样式 */
+const custom = `
+<template>
+    <ux-button size="small" shape="round" @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-picker v-model="show" mode="selector" :columns="columns" title="自定义颜色" cancel-color="#909399" confirm-color="#fa3534" @confirm="onConfirm"></ux-picker>
+</template>
+
+<script setup lang="uts">
+import type { PickerOption } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const columns: PickerOption[][] = [
+    [
+        { text: '红色', value: 'red' },
+        { text: '蓝色', value: 'blue' },
+        { text: '绿色', value: 'green' }
+    ]
+];
+
+function onConfirm(event: UTSJSONObject): void {
+    const values = event['selectedValues'] as string[];
+    if (values == null) return;
+    result.value = values.join(' / ');
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+export const codes = {
+    selector,
+    multi,
+    cascade,
+    custom
+};

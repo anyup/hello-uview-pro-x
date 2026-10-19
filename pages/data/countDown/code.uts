@@ -1,0 +1,155 @@
+/**
+ * countDown 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-count-down :timestamp="86399"></ux-count-down>
+</template>
+`;
+
+/** 中文分隔符 */
+const zhSep = `
+<template>
+    <ux-count-down :timestamp="86399" separator="zh"></ux-count-down>
+    <view class="gap"></view>
+    <ux-count-down :timestamp="86399" separator="zh" separator-color="#fa3534"></ux-count-down>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 隐藏天 */
+const hideDays = `
+<template>
+    <ux-count-down :timestamp="86400" :show-days="false"></ux-count-down>
+</template>
+`;
+
+/** 自定义样式 */
+const customStyle = `
+<template>
+    <ux-count-down :timestamp="3600" :font-size="20" color="#2979ff" :separator-size="15"></ux-count-down>
+</template>
+`;
+
+/** 数字边框 */
+const border = `
+<template>
+    <ux-count-down :timestamp="7200" :show-border="true" :height="32" bg-color="#ecf5ff" color="#fb7299"></ux-count-down>
+    <view class="gap"></view>
+    <ux-count-down :timestamp="7200" :show-border="true" :height="32" border-color="#19be6b" bg-color="#f0f9eb" color="#67c23a"></ux-count-down>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 显示单元控制 */
+const units = `
+<template>
+    <ux-count-down :timestamp="59" :show-days="false" :show-hours="false" :show-minutes="false"></ux-count-down>
+    <view class="gap"></view>
+    <ux-count-down :timestamp="7200" :show-seconds="false"></ux-count-down>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 隐藏零天 */
+const zeroDay = `
+<template>
+    <ux-count-down :timestamp="3599" :hide-zero-day="false"></ux-count-down>
+    <view class="gap"></view>
+    <ux-count-down :timestamp="3599" :hide-zero-day="true"></ux-count-down>
+</template>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+</style>
+`;
+
+/** 毫秒刷新 */
+const ms = `
+<template>
+    <ux-count-down :timestamp="5" :millisecond="true"></ux-count-down>
+</template>
+`;
+
+/** 手动控制 */
+const control = `
+<template>
+    <ux-count-down ref="countDownRef" :timestamp="10" :autoplay="false"></ux-count-down>
+    <view class="gap"></view>
+    <view class="btn-row">
+        <view class="btn" @click="startCountDown"><text class="btn-text">开始</text></view>
+        <view class="btn" @click="endCountDown"><text class="btn-text">结束</text></view>
+    </view>
+</template>
+
+<script setup lang="uts">
+const countDownRef = ref<any>();
+
+function startCountDown(): void {
+    countDownRef.value?.start();
+}
+
+function endCountDown(): void {
+    countDownRef.value?.end();
+}
+</script>
+
+<style scoped>
+.gap {
+    height: 20px;
+}
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+.btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background-color: #ecf5ff;
+}
+.btn-text {
+    font-size: 13px;
+    color: #2979ff;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    zhSep,
+    hideDays,
+    customStyle,
+    border,
+    units,
+    zeroDay,
+    ms,
+    control
+};

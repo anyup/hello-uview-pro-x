@@ -1,0 +1,325 @@
+/**
+ * checkbox 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-checkbox-group v-model="values" :max="3">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" />
+    </ux-checkbox-group>
+    <text class="result">已选: {{ values.join(',') }}</text>
+</template>
+
+<script setup lang="uts">
+type FruitItem = {
+    label: string;
+    value: string;
+    disabled: boolean;
+};
+
+const values = ref<string[]>(['荔枝']);
+
+const list: FruitItem[] = [
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+];
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 批量操作 */
+const batch = `
+<template>
+    <ux-checkbox-group v-model="values">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" />
+    </ux-checkbox-group>
+    <view class="btn-row">
+        <ux-button size="small" shape="round" @click="setAll(false)">全不选</ux-button>
+        <ux-button size="small" shape="round" type="primary" @click="setAll(true)">全选</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+type FruitItem = {
+    label: string;
+    value: string;
+    disabled: boolean;
+};
+
+const values = ref<string[]>([]);
+
+const list: FruitItem[] = [
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+];
+
+function setAll(checked: boolean): void {
+    values.value = checked ? list.map((item) => item.value) : [];
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+</style>
+`;
+
+/** 形状 */
+const shape = `
+<template>
+    <ux-checkbox-group v-model="values" :shape="shape">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" />
+    </ux-checkbox-group>
+    <ux-subsection :list="shapeList" :current="shapeIndex" @change="setShape" />
+</template>
+
+<script setup lang="uts">
+const values = ref<string[]>(['荔枝']);
+
+const list = [
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+];
+
+const shape = ref<string>('square');
+
+type ShapeOption = {
+    name: string;
+    value: string;
+};
+
+const shapeList: ShapeOption[] = [
+    { name: 'square', value: 'square' },
+    { name: 'circle', value: 'circle' }
+];
+
+const shapeIndex = computed((): number => shapeList.findIndex((item) => item.value === shape.value));
+
+function setShape(index: number): void {
+    shape.value = shapeList[index].value;
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+</style>
+`;
+
+/** 尺寸 */
+const size = `
+<template>
+    <ux-checkbox-group v-model="values" :size="size">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" />
+    </ux-checkbox-group>
+    <ux-subsection :list="sizeList" :current="sizeIndex" @change="setSize" />
+</template>
+
+<script setup lang="uts">
+const values = ref<string[]>(['荔枝']);
+
+const list = [
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+];
+
+const size = ref<string>('default');
+
+type SizeOption = {
+    name: string;
+    value: string;
+};
+
+const sizeList: SizeOption[] = [
+    { name: 'small', value: 'small' },
+    { name: 'default', value: 'default' },
+    { name: 'large', value: 'large' },
+    { name: '60', value: '60' }
+];
+
+const sizeIndex = computed((): number => sizeList.findIndex((item) => item.value === size.value));
+
+function setSize(index: number): void {
+    size.value = sizeList[index].value;
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+</style>
+`;
+
+/** 激活颜色 */
+const color = `
+<template>
+    <ux-checkbox-group v-model="values" :active-color="activeColor">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" />
+    </ux-checkbox-group>
+    <view class="btn-row">
+        <ux-button v-for="(item, index) in colorList" :key="index" size="small" shape="round" :type="activeColor === item.value ? 'primary' : 'default'" @click="activeColor = item.value">{{ item.label }}</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const values = ref<string[]>(['荔枝']);
+
+const list = [
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+];
+
+const activeColor = ref<string>('');
+
+type ColorOption = {
+    name: string;
+    value: string;
+};
+
+const colorList: ColorOption[] = [
+    { name: 'primary', value: '' },
+    { name: 'error', value: '#fa3534' },
+    { name: 'warning', value: '#ff9900' },
+    { name: 'success', value: '#19be6b' },
+    { name: 'info', value: '#909399' }
+];
+
+const colorIndex = computed((): number => colorList.findIndex((item) => item.value === activeColor.value));
+
+function setColor(index: number): void {
+    activeColor.value = colorList[index].value;
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+</style>
+`;
+
+/** 最大选择数量 */
+const max = `
+<template>
+    <ux-checkbox-group v-model="values" :max="max">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" />
+    </ux-checkbox-group>
+    <ux-subsection :list="maxList" :current="maxIndex" @change="setMax" />
+</template>
+
+<script setup lang="uts">
+const values = ref<string[]>([]);
+
+const list = [
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+];
+
+const max = ref<number>(2);
+
+type MaxOption = {
+    name: string;
+    value: number;
+};
+
+const maxList: MaxOption[] = [
+    { name: '1', value: 1 },
+    { name: '2', value: 2 },
+    { name: '3', value: 3 }
+];
+
+const maxIndex = computed((): number => maxList.findIndex((item) => item.value === max.value));
+
+function setMax(index: number): void {
+    max.value = maxList[index].value;
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+</style>
+`;
+
+/** 禁用 */
+const disabled = `
+<template>
+    <ux-checkbox-group v-model="values">
+        <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" :disabled="item.disabled" />
+    </ux-checkbox-group>
+    <ux-button size="small" shape="round" :type="disabledFirst ? 'primary' : 'default'" @click="toggleDisabled">{{ disabledFirst ? '恢复第一个' : '禁用第一个' }}</ux-button>
+</template>
+
+<script setup lang="uts">
+type FruitItem = {
+    label: string;
+    value: string;
+    disabled: boolean;
+};
+
+const values = ref<string[]>(['荔枝']);
+
+const list = ref<FruitItem[]>([
+    { label: '荔枝', value: '荔枝', disabled: false },
+    { label: '香蕉', value: '香蕉', disabled: false },
+    { label: '橙子', value: '橙子', disabled: false },
+    { label: '草莓', value: '草莓', disabled: false }
+]);
+
+const disabledFirst = ref<boolean>(false);
+
+function toggleDisabled(): void {
+    disabledFirst.value = !disabledFirst.value;
+    list.value[0].disabled = disabledFirst.value;
+}
+</script>
+`;
+
+export const codes = {
+    basic,
+    batch,
+    shape,
+    size,
+    color,
+    max,
+    disabled
+};

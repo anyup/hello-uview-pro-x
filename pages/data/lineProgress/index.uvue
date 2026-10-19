@@ -1,0 +1,74 @@
+<template>
+    <demo-page :title="t('lineProgress.title')" :subtitle="t('lineProgress.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('lineProgress.basicTitle')" :desc="t('lineProgress.basicDesc')" :code="codes.basic">
+            <ux-line-progress :percent="70"></ux-line-progress>
+        </demo-block>
+
+        <!-- 配置主题 -->
+        <demo-block :title="t('lineProgress.themeTitle')" :desc="t('lineProgress.themeDesc')" :code="codes.theme">
+            <ux-line-progress :percent="30" type="primary"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="60" type="error"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="80" type="warning"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="50" type="info"></ux-line-progress>
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('lineProgress.customColorTitle')" :desc="t('lineProgress.customColorDesc')" :code="codes.customColor">
+            <ux-line-progress :percent="40" active-color="#2979ff" inactive-color="#ecf5ff"></ux-line-progress>
+        </demo-block>
+
+        <!-- 自定义高度 -->
+        <demo-block :title="t('lineProgress.customHeightTitle')" :desc="t('lineProgress.customHeightDesc')" :code="codes.customHeight">
+            <ux-line-progress :percent="50" :height="6"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="50" :height="20"></ux-line-progress>
+        </demo-block>
+
+        <!-- 隐藏百分比 -->
+        <demo-block :title="t('lineProgress.hidePercentTitle')" :desc="t('lineProgress.hidePercentDesc')" :code="codes.hidePercent">
+            <ux-line-progress :percent="70" :show-percent="false"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="70">
+                <text class="demo-slot-text">{{ t('lineProgress.slotText') }}</text>
+            </ux-line-progress>
+        </demo-block>
+
+        <!-- 条纹动画 -->
+        <demo-block :title="t('lineProgress.stripedTitle')" :desc="t('lineProgress.stripedDesc')" :code="codes.striped">
+            <ux-line-progress :percent="60" :striped="true"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="60" :striped="true" :striped-active="true"></ux-line-progress>
+        </demo-block>
+
+        <!-- 形状两档 -->
+        <demo-block :title="t('lineProgress.roundTitle')" :desc="t('lineProgress.roundDesc')" :code="codes.round">
+            <ux-line-progress :percent="80" shape="round"></ux-line-progress>
+            <view class="demo-gap"></view>
+            <ux-line-progress :percent="80" shape="square"></ux-line-progress>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+</script>
+
+<style lang="scss">
+    .demo-gap {
+        height: 12px;
+    }
+
+    .demo-slot-text {
+        font-size: 10px;
+        color: $u-white-color;
+    }
+
+</style>

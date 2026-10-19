@@ -1,0 +1,217 @@
+/**
+ * transition 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-transition :show="show" name="fade" :duration="300">
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+    <ux-button text="切换显示" type="primary" shape="round" @click="show = !show" />
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+</script>
+`;
+
+/** 预设动画 */
+const preset = `
+<template>
+    <!-- name 可选 fade / slide-up / slide-down / slide-left / slide-right / zoom-in / zoom-out -->
+    <ux-transition :show="show" :name="current" :duration="300">
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+    <ux-button text="重播动画" type="primary" shape="round" @click="replay" />
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+const current = ref('slide-up');
+
+// 离场过渡结束后再进场，完成一次重播
+const replay = () => {
+    show.value = false;
+    setTimeout(() => {
+        show.value = true;
+    }, 450);
+};
+</script>
+`;
+
+/** 动画时长 */
+const duration = `
+<template>
+    <ux-transition :show="show" name="slide-up" :duration="duration">
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+    <ux-button text="重播动画" type="primary" shape="round" @click="replay" />
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+const duration = ref(300);
+
+const replay = () => {
+    show.value = false;
+    setTimeout(() => {
+        show.value = true;
+    }, duration.value + 150);
+};
+</script>
+`;
+
+/** 动画曲线 */
+const timing = `
+<template>
+    <ux-transition :show="show" name="zoom-in" :duration="500" :timing-function="timingFunction">
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+// 默认曲线（标准）；回弹曲线可取 cubic-bezier(0.175, 0.885, 0.32, 1.275)
+const timingFunction = ref('cubic-bezier(0.2, 0.8, 0.2, 1)');
+</script>
+`;
+
+/** 动画延迟 */
+const delay = `
+<template>
+    <view class="row">
+        <text>延迟 (ms)</text>
+        <ux-number-box v-model="delay" :step="100" :min="0" :max="600" />
+    </view>
+    <ux-transition :show="show" name="slide-left" :duration="300" :delay="delay">
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+const delay = ref(0);
+</script>
+`;
+
+/** 首次渲染动画 appear */
+const appear = `
+<template>
+    <view class="row">
+        <text>首次渲染播放进场动画</text>
+        <ux-switch v-model="appear" />
+    </view>
+    <!-- 外层 v-if 重挂：appear 只在组件首次挂载时生效，重新挂载才能复现 -->
+    <view v-if="mounted">
+        <ux-transition :show="true" name="zoom-out" :duration="500" :appear="appear">
+            <view class="card">
+                <text>过渡内容</text>
+            </view>
+        </ux-transition>
+    </view>
+    <ux-button text="重新挂载" type="primary" shape="round" @click="remount" />
+</template>
+
+<script setup lang="uts">
+const appear = ref(true);
+const mounted = ref(true);
+
+const remount = () => {
+    mounted.value = false;
+    setTimeout(() => {
+        mounted.value = true;
+    }, 50);
+};
+</script>
+`;
+
+/** 事件回调 */
+const events = `
+<template>
+    <ux-transition
+        :show="show"
+        name="slide-up"
+        :duration="400"
+        @before-enter="logEvent('before-enter')"
+        @enter="logEvent('enter')"
+        @after-enter="logEvent('after-enter')"
+        @enter-cancelled="logEvent('enter-cancelled')"
+        @before-leave="logEvent('before-leave')"
+        @leave="logEvent('leave')"
+        @after-leave="logEvent('after-leave')"
+        @leave-cancelled="logEvent('leave-cancelled')"
+    >
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+    <ux-button text="切换显示" type="primary" shape="round" @click="show = !show" />
+    <view class="log">
+        <text v-for="(item, index) in logs" :key="index">{{ item }}</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+const logs = ref<string[]>([]);
+
+const logEvent = (name: string) => {
+    logs.value = ([name] as string[]).concat(logs.value.slice(0, 7));
+};
+</script>
+`;
+
+/** 自定义样式 */
+const custom = `
+<template>
+    <ux-transition
+        custom-class="my-transition"
+        :custom-style="customStyle"
+        :show="show"
+        name="fade"
+        :duration="400"
+    >
+        <view class="card">
+            <text>过渡内容</text>
+        </view>
+    </ux-transition>
+</template>
+
+<script setup lang="uts">
+const show = ref(true);
+const customStyle = ref<UTSJSONObject>({
+    'background-color': '#edf4ff',
+    'border-radius': '8px'
+});
+</script>
+
+<style scoped>
+/* custom-class 外部类：为过渡根节点补充内边距 */
+.my-transition {
+    padding: 12px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    preset,
+    duration,
+    timing,
+    delay,
+    appear,
+    events,
+    custom
+};

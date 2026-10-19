@@ -1,0 +1,148 @@
+/**
+ * toast 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button type="primary" @click="showToast">成功提示</ux-button>
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+
+const showToast = () => {
+    toastRef.value?.show?.({
+        title: '操作成功',
+        type: 'success',
+        duration: 2000
+    });
+};
+</script>
+`;
+
+/** 提示类型 */
+const type = `
+<template>
+    <view class="toast-row">
+        <ux-button custom-class="toast-item" type="primary" size="small" @click="showType('primary')">primary</ux-button>
+        <ux-button custom-class="toast-item" type="success" size="small" @click="showType('success')">success</ux-button>
+        <ux-button custom-class="toast-item" type="error" size="small" @click="showType('error')">error</ux-button>
+        <ux-button custom-class="toast-item" type="warning" size="small" @click="showType('warning')">warning</ux-button>
+    </view>
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+
+const showType = (type: string) => {
+    toastRef.value?.show?.({
+        title: '类型: ' + type,
+        type,
+        duration: 2000
+    });
+};
+</script>
+
+<style scoped>
+.toast-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.toast-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 显示位置 */
+const position = `
+<template>
+    <view class="toast-row">
+        <ux-button custom-class="toast-item" type="success" size="small" @click="showPosition('top')">顶部</ux-button>
+        <ux-button custom-class="toast-item" type="success" size="small" @click="showPosition('center')">居中</ux-button>
+        <ux-button custom-class="toast-item" type="success" size="small" @click="showPosition('bottom')">底部</ux-button>
+    </view>
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+
+const showPosition = (position: string) => {
+    toastRef.value?.show?.({
+        title: '提示内容',
+        position,
+        type: 'success',
+        duration: 2000
+    });
+};
+</script>
+
+<style scoped>
+.toast-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.toast-item {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 不显示图标 */
+const noIcon = `
+<template>
+    <ux-button type="warning" size="small" @click="showNoIcon">不显示图标</ux-button>
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+
+const showNoIcon = () => {
+    toastRef.value?.show?.({
+        title: '无图标提示',
+        type: 'warning',
+        icon: false,
+        duration: 2000
+    });
+};
+</script>
+`;
+
+/** 加载提示 */
+const loading = `
+<template>
+    <ux-button type="info" size="small" @click="showLoading">加载提示</ux-button>
+    <ux-toast ref="toastRef" />
+</template>
+
+<script setup lang="uts">
+const toastRef = ref<any>();
+
+const showLoading = () => {
+    toastRef.value?.show?.({
+        title: '加载中...',
+        type: 'default',
+        duration: 2000,
+        loading: true
+    });
+};
+</script>
+`;
+
+export const codes = {
+    basic,
+    type,
+    position,
+    noIcon,
+    loading
+};

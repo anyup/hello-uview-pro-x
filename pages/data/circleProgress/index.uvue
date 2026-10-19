@@ -1,0 +1,221 @@
+﻿<template>
+    <demo-page :title="t('title')" :subtitle="t('subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('basicTitle')" :desc="t('basicDesc')" :code="codes.basic">
+            <view class="circle-wrap">
+                <ux-circle-progress :percent="65" type="primary">
+                    <text class="circle-percent">65%</text>
+                </ux-circle-progress>
+            </view>
+        </demo-block>
+
+        <!-- 主题颜色 -->
+        <demo-block :title="t('typeTitle')" :desc="t('typeDesc')" :code="codes.type">
+            <view class="row-wrap">
+                <view class="circle-item">
+                    <ux-circle-progress :percent="70" type="primary" :width="80">
+                        <text class="circle-percent-small">70%</text>
+                    </ux-circle-progress>
+                </view>
+                <view class="circle-item">
+                    <ux-circle-progress :percent="70" type="success" :width="80">
+                        <text class="circle-percent-small">70%</text>
+                    </ux-circle-progress>
+                </view>
+                <view class="circle-item">
+                    <ux-circle-progress :percent="70" type="warning" :width="80">
+                        <text class="circle-percent-small">70%</text>
+                    </ux-circle-progress>
+                </view>
+                <view class="circle-item">
+                    <ux-circle-progress :percent="70" type="error" :width="80">
+                        <text class="circle-percent-small">70%</text>
+                    </ux-circle-progress>
+                </view>
+                <view class="circle-item">
+                    <ux-circle-progress :percent="70" type="info" :width="80">
+                        <text class="circle-percent-small">70%</text>
+                    </ux-circle-progress>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 尺寸与线宽 -->
+        <demo-block :title="t('sizeTitle')" :desc="t('sizeDesc')" :code="codes.size">
+            <view class="row-wrap">
+                <view class="circle-item">
+                    <ux-circle-progress :percent="60" type="primary" :width="70" :border-width="4">
+                        <text class="circle-percent-small">60%</text>
+                    </ux-circle-progress>
+                    <text class="size-label">140</text>
+                </view>
+                <view class="circle-item">
+                    <ux-circle-progress :percent="60" type="primary" :width="100" :border-width="7">
+                        <text class="circle-percent">60%</text>
+                    </ux-circle-progress>
+                    <text class="size-label">200</text>
+                </view>
+                <view class="circle-item">
+                    <ux-circle-progress :percent="60" type="primary" :width="120" :border-width="12">
+                        <text class="circle-percent-small">60%</text>
+                    </ux-circle-progress>
+                    <text class="size-label">240</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 动态进度 -->
+        <demo-block :title="t('dynamicTitle')" :desc="t('dynamicDesc')" :code="codes.dynamic">
+            <view class="circle-wrap">
+                <ux-circle-progress :percent="percent" type="success">
+                    <text class="circle-percent">{{ percent + '%' }}</text>
+                </ux-circle-progress>
+            </view>
+            <view class="btn-row">
+                <view class="btn" @click="reduce">
+                    <text class="btn-text">-</text>
+                </view>
+                <text class="btn-value">{{ percent + '%' }}</text>
+                <view class="btn" @click="add">
+                    <text class="btn-text">+</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block :title="t('customTitle')" :desc="t('customDesc')" :code="codes.custom">
+            <view class="circle-wrap">
+                <ux-circle-progress
+                    :percent="customPercent"
+                    :active-color="activeColor"
+                    :inactive-color="inactiveColor"
+                    :bg-color="bgColor"
+                    :duration="duration"
+                >
+                    <text class="circle-percent">{{ customPercent + '%' }}</text>
+                </ux-circle-progress>
+            </view>
+            <view class="btn-row">
+                <view class="btn" @click="reduceCustom">
+                    <text class="btn-text">-</text>
+                </view>
+                <text class="btn-value">{{ customPercent + '%' }}</text>
+                <view class="btn" @click="addCustom">
+                    <text class="btn-text">+</text>
+                </view>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('circleProgress');
+
+const percent = ref(65);
+
+const customPercent = ref(80);
+const activeColor = '#19be6b';
+const inactiveColor = '#ebeef5';
+const bgColor = '#f4f6f8';
+const duration = 2000;
+
+function add(): void {
+    percent.value = Math.min(percent.value + 10, 100);
+}
+
+function reduce(): void {
+    percent.value = Math.max(percent.value - 10, 0);
+}
+
+function addCustom(): void {
+    customPercent.value = Math.min(customPercent.value + 10, 100);
+}
+
+function reduceCustom(): void {
+    customPercent.value = Math.max(customPercent.value - 10, 0);
+}
+</script>
+
+<style lang="scss">
+
+.circle-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.circle-percent {
+    font-size: 20px;
+    font-weight: bold;
+    color: $u-main-color;
+}
+
+.circle-percent-small {
+    font-size: 13px;
+    font-weight: bold;
+    color: $u-main-color;
+}
+
+.row-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px 0 5px;
+}
+
+.circle-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 12px;
+}
+
+.size-label {
+    margin-top: 6px;
+    font-size: 12px;
+    color: $u-tips-color;
+}
+
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background-color: $u-type-primary;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-text {
+    font-size: 22px;
+    color: $u-white-color;
+    line-height: 22px;
+}
+
+.btn-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: $u-main-color;
+    margin: 0 20px;
+    min-width: 60px;
+    text-align: center;
+}
+</style>

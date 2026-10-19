@@ -1,0 +1,164 @@
+<template>
+    <demo-page :title="t('demoHome.title')" :subtitle="t('demoHome.subtitle')">
+        <view class="demo-home-section">
+            <text class="demo-home-section-title">{{ t('demoHome.sectionTool') }}</text>
+            <view class="demo-home-list">
+                <view class="demo-home-item" @click="navigate('library/addUnit/index')">
+                    <text class="demo-home-item-title">addUnit</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.addUnitDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/test/index')">
+                    <text class="demo-home-item-title">test</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.testDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/toStyle/index')">
+                    <text class="demo-home-item-title">toStyle</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.toStyleDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/color/index')">
+                    <text class="demo-home-item-title">color</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.colorDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/trim/index')">
+                    <text class="demo-home-item-title">trim</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.trimDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/debounce/index')">
+                    <text class="demo-home-item-title">debounce</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.debounceDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/throttle/index')">
+                    <text class="demo-home-item-title">throttle</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.throttleDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('library/deepClone/index')">
+                    <text class="demo-home-item-title">deepClone</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.deepCloneDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item demo-home-item--last" @click="navigate('library/deepMerge/index')">
+                    <text class="demo-home-item-title">deepMerge</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.deepMergeDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+            </view>
+        </view>
+
+        <view class="demo-home-section">
+            <text class="demo-home-section-title">{{ t('demoHome.sectionHooks') }}</text>
+            <view class="demo-home-list">
+                <view class="demo-home-item" @click="navigate('hooks/useDebounce/index')">
+                    <text class="demo-home-item-title">useDebounce</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.useDebounceDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item" @click="navigate('hooks/useThrottle/index')">
+                    <text class="demo-home-item-title">useThrottle</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.useThrottleDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+                <view class="demo-home-item demo-home-item--last" @click="navigate('hooks/useLocale/index')">
+                    <text class="demo-home-item-title">useLocale</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.useLocaleDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+            </view>
+        </view>
+
+        <view class="demo-home-section">
+            <text class="demo-home-section-title">{{ t('demoHome.sectionComponent') }}</text>
+            <view class="demo-home-list">
+                <view class="demo-home-item demo-home-item--last" @click="navigate('basic/icon/index')">
+                    <text class="demo-home-item-title">Icon</text>
+                    <text class="demo-home-item-desc">{{ t('demoHome.iconDesc') }}</text>
+                    <text class="demo-home-item-arrow">></text>
+                </view>
+            </view>
+        </view>
+
+        <view class="demo-home-footer">
+            <text class="demo-home-footer-text">uView Pro X v1.0.0</text>
+        </view>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+function navigate(path: string): void {
+    uni.navigateTo({
+        url: '/pages/' + path,
+    });
+}
+</script>
+
+<style lang="scss">
+.demo-home-section {
+    margin-bottom: 20px;
+}
+
+.demo-home-section-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: $u-content-color;
+    margin-bottom: 10px;
+}
+
+.demo-home-list {
+    background-color: $u-bg-white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.demo-home-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 10px;
+    border-bottom: 1px solid $u-border-color;
+}
+
+.demo-home-item--last {
+    border-bottom: none;
+}
+
+.demo-home-item-title {
+    font-size: 14px;
+    color: $u-main-color;
+    font-weight: bold;
+    width: 70px;
+}
+
+.demo-home-item-desc {
+    font-size: 13px;
+    color: $u-tips-color;
+    flex: 1;
+}
+
+.demo-home-item-arrow {
+    font-size: 14px;
+    color: $u-light-color;
+}
+
+.demo-home-footer {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.demo-home-footer-text {
+    font-size: 12px;
+    color: $u-light-color;
+}
+</style>

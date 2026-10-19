@@ -1,0 +1,333 @@
+<template>
+    <demo-page :title="t('icon.title')" :subtitle="t('icon.subtitle')">
+        <!-- 尺寸与颜色 -->
+        <demo-block :title="t('icon.customTitle')" :desc="t('icon.customDesc')" :code="codes.custom">
+            <view class="icon-custom-row">
+                <ux-icon name="home" size="15" color="#2979ff" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="home" size="20" color="#2979ff" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="home" size="25" color="#2979ff" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="home" size="30" color="#2979ff" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 加粗 -->
+        <demo-block :title="t('icon.boldTitle')" :desc="t('icon.boldDesc')" :code="codes.bold">
+            <view class="icon-custom-row">
+                <ux-icon name="home" bold size="20" color="#2979ff" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="home" size="20" color="#2979ff" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 主题色 -->
+        <demo-block :title="t('icon.typeTitle')" :desc="t('icon.typeDesc')" :code="codes.type">
+            <view class="icon-custom-row">
+                <ux-icon name="star-fill" size="20" type="primary" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="heart-fill" size="20" type="success" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="bell-fill" size="20" type="error" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="setting-fill" size="20" type="warning" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="info-circle" size="20" type="info" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 自定义前缀 -->
+        <demo-block :title="t('icon.prefixTitle')" :desc="t('icon.prefixDesc')" :code="codes.prefix">
+            <view class="icon-custom-row">
+                <ux-icon name="gift" size="20" custom-prefix="custom-icon" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 垂直微调 -->
+        <demo-block :title="t('icon.topTitle')" :desc="t('icon.topDesc')" :code="codes.top">
+            <view class="icon-custom-row">
+                <ux-icon name="star-fill" size="20" type="primary" top="4" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon name="heart-fill" size="20" color="#fa3534" top="0" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 图片图标 -->
+        <demo-block :title="t('icon.imgTitle')" :desc="t('icon.imgDesc')" :code="codes.img">
+            <view class="icon-custom-row">
+                <ux-icon :name="imageUrl" width="100" height="100" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon :name="imageUrl" img-mode="aspectFit" width="150" height="150" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 图标列表 -->
+        <demo-block :title="t('icon.gridTitle')" :desc="t('icon.gridDesc')" :code="codes.grid">
+            <view class="icon-grid">
+                <view
+                    @click="selectIcon(item.name)"
+                    class="icon-item"
+                    v-for="(item, index) in iconList"
+                    :key="index"
+                >
+                    <ux-icon :name="item.name" size="20" color="#909399"></ux-icon>
+                    <text class="icon-name">{{ item.name }}</text>
+                </view>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+const { t } = useLocale('demo');
+type IconItem = {
+    name: string;
+};
+
+const imageUrl: string = '/static/logo.png';
+
+const iconList: IconItem[] = [
+    { name: 'level' },
+    { name: 'woman' },
+    { name: 'man' },
+    { name: 'arrow-left-double' },
+    { name: 'arrow-right-double' },
+    { name: 'chat' },
+    { name: 'chat-fill' },
+    { name: 'red-packet' },
+    { name: 'red-packet-fill' },
+    { name: 'order' },
+    { name: 'checkbox-mark' },
+    { name: 'arrow-up-fill' },
+    { name: 'arrow-down-fill' },
+    { name: 'backspace' },
+    { name: 'photo' },
+    { name: 'photo-fill' },
+    { name: 'lock' },
+    { name: 'lock-fill' },
+    { name: 'lock-open' },
+    { name: 'lock-opened-fill' },
+    { name: 'hourglass' },
+    { name: 'hourglass-half-fill' },
+    { name: 'home' },
+    { name: 'home-fill' },
+    { name: 'fingerprint' },
+    { name: 'cut' },
+    { name: 'star' },
+    { name: 'star-fill' },
+    { name: 'share' },
+    { name: 'share-fill' },
+    { name: 'volume-up' },
+    { name: 'volume-up-fill' },
+    { name: 'volume-off' },
+    { name: 'volume-off-fill' },
+    { name: 'trash' },
+    { name: 'trash-fill' },
+    { name: 'rewind-right' },
+    { name: 'rewind-right-fill' },
+    { name: 'rewind-left' },
+    { name: 'rewind-left-fill' },
+    { name: 'shopping-cart' },
+    { name: 'shopping-cart-fill' },
+    { name: 'question' },
+    { name: 'question-circle' },
+    { name: 'question-circle-fill' },
+    { name: 'plus' },
+    { name: 'plus-circle' },
+    { name: 'plus-circle-fill' },
+    { name: 'tags' },
+    { name: 'tags-fill' },
+    { name: 'pause' },
+    { name: 'pause-circle' },
+    { name: 'pause-circle-fill' },
+    { name: 'play-circle' },
+    { name: 'play-circle-fill' },
+    { name: 'map' },
+    { name: 'map-fill' },
+    { name: 'phone' },
+    { name: 'phone-fill' },
+    { name: 'list' },
+    { name: 'list-dot' },
+    { name: 'man-delete' },
+    { name: 'man-add' },
+    { name: 'man-add-fill' },
+    { name: 'person-delete-fill' },
+    { name: 'info' },
+    { name: 'info-circle' },
+    { name: 'info-circle-fill' },
+    { name: 'minus' },
+    { name: 'minus-circle' },
+    { name: 'minus-circle-fill' },
+    { name: 'mic' },
+    { name: 'mic-off' },
+    { name: 'grid' },
+    { name: 'grid-fill' },
+    { name: 'eye' },
+    { name: 'eye-fill' },
+    { name: 'eye-off' },
+    { name: 'file-text' },
+    { name: 'file-text-fill' },
+    { name: 'edit-pen' },
+    { name: 'edit-pen-fill' },
+    { name: 'email' },
+    { name: 'email-fill' },
+    { name: 'download' },
+    { name: 'checkmark' },
+    { name: 'checkmark-circle' },
+    { name: 'checkmark-circle-fill' },
+    { name: 'clock' },
+    { name: 'clock-fill' },
+    { name: 'close' },
+    { name: 'close-circle' },
+    { name: 'close-circle-fill' },
+    { name: 'calendar' },
+    { name: 'calendar-fill' },
+    { name: 'car' },
+    { name: 'car-fill' },
+    { name: 'bell' },
+    { name: 'bell-fill' },
+    { name: 'bookmark' },
+    { name: 'bookmark-fill' },
+    { name: 'attach' },
+    { name: 'play-right' },
+    { name: 'play-right-fill' },
+    { name: 'play-left' },
+    { name: 'play-left-fill' },
+    { name: 'error' },
+    { name: 'error-circle' },
+    { name: 'error-circle-fill' },
+    { name: 'wifi' },
+    { name: 'wifi-off' },
+    { name: 'skip-back-left' },
+    { name: 'skip-forward-right' },
+    { name: 'search' },
+    { name: 'setting' },
+    { name: 'setting-fill' },
+    { name: 'volume' },
+    { name: 'volume-fill' },
+    { name: 'more-dot-fill' },
+    { name: 'more-circle' },
+    { name: 'more-circle-fill' },
+    { name: 'bag' },
+    { name: 'bag-fill' },
+    { name: 'arrow-upward' },
+    { name: 'arrow-downward' },
+    { name: 'arrow-leftward' },
+    { name: 'arrow-rightward' },
+    { name: 'arrow-up' },
+    { name: 'arrow-down' },
+    { name: 'arrow-left' },
+    { name: 'arrow-right' },
+    { name: 'rmb' },
+    { name: 'rmb-circle' },
+    { name: 'rmb-circle-fill' },
+    { name: 'thumb-up' },
+    { name: 'thumb-up-fill' },
+    { name: 'thumb-down' },
+    { name: 'thumb-down-fill' },
+    { name: 'coupon' },
+    { name: 'coupon-fill' },
+    { name: 'kefu-ermai' },
+    { name: 'server-fill' },
+    { name: 'server-man' },
+    { name: 'scan' },
+    { name: 'warning' },
+    { name: 'warning-fill' },
+    { name: 'google' },
+    { name: 'google-circle-fill' },
+    { name: 'chrome-circle-fill' },
+    { name: 'ie' },
+    { name: 'IE-circle-fill' },
+    { name: 'github-circle-fill' },
+    { name: 'android-fill' },
+    { name: 'android-circle-fill' },
+    { name: 'apple-fill' },
+    { name: 'camera' },
+    { name: 'camera-fill' },
+    { name: 'pushpin' },
+    { name: 'pushpin-fill' },
+    { name: 'minus-square-fill' },
+    { name: 'plus-square-fill' },
+    { name: 'heart' },
+    { name: 'heart-fill' },
+    { name: 'reload' },
+    { name: 'account' },
+    { name: 'account-fill' },
+    { name: 'minus-people-fill' },
+    { name: 'plus-people-fill' },
+    { name: 'integral' },
+    { name: 'integral-fill' },
+    { name: 'zhihu' },
+    { name: 'zhihu-circle-fill' },
+    { name: 'gift' },
+    { name: 'gift-fill' },
+    { name: 'zhifubao' },
+    { name: 'zhifubao-circle-fill' },
+    { name: 'weixin-fill' },
+    { name: 'weixin-circle-fill' },
+    { name: 'twitter' },
+    { name: 'twitter-circle-fill' },
+    { name: 'taobao' },
+    { name: 'taobao-circle-fill' },
+    { name: 'weibo' },
+    { name: 'weibo-circle-fill' },
+    { name: 'qq-fill' },
+    { name: 'qq-circle-fill' },
+    { name: 'moments' },
+    { name: 'moments-circel-fill' },
+    { name: 'qzone' },
+    { name: 'qzone-circle-fill' },
+    { name: 'facebook' },
+    { name: 'facebook-circle-fill' },
+    { name: 'baidu' },
+    { name: 'baidu-circle-fill' },
+    { name: 'zhuanfa' }
+];
+
+const selectIcon = (name: string) => {
+    uni.setClipboardData({
+        data: name,
+        success: () => {
+            uni.showToast({
+                title: t('icon.toastTitle'),
+                icon: 'none'
+            });
+        }
+    });
+};
+</script>
+
+<style lang="scss">
+.icon-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-top: 1px solid $u-border-color;
+    border-left: 1px solid $u-border-color;
+}
+
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 95px;
+    flex: 0 0 33.33333333%;
+    justify-content: center;
+    overflow: hidden;
+    border-right: 1px solid $u-border-color;
+    border-bottom: 1px solid $u-border-color;
+}
+
+.icon-name {
+    color: $u-tips-color;
+    margin-top: 8px;
+    font-size: 13px;
+    padding: 0 7px;
+    text-align: center;
+}
+
+.icon-custom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.icon-custom-item {
+    margin-right: 20px;
+    margin-bottom: 12px;
+}
+</style>

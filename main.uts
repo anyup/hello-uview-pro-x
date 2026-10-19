@@ -1,0 +1,27 @@
+﻿import App from './App.uvue'
+import uViewProX, { frFR } from './uni_modules/uview-pro-x'
+import { zhCN, enUS } from './locales'
+import themes from './theme.uts'
+import { createSSRApp } from 'vue'
+
+// 如果开启了样式隔离2.0策略 H5端 需在 main.uts 引入基础样式文件
+// #ifdef WEB
+import './style/reset.scss'
+// #endif
+
+
+export function createApp() {
+	const app = createSSRApp(App)
+	app.use(uViewProX, {
+		locale: {
+			locales: [zhCN, enUS],
+			defaultLocale: 'zh-CN',
+			isForce: false
+		},
+		// 多主题：theme.uts 的 4 套自定义主题与内置官方蓝合并为 5 套
+		theme: themes
+	})
+	return {
+		app
+	}
+}

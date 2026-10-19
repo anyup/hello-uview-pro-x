@@ -1,0 +1,103 @@
+<template>
+    <demo-page :title="t('topTips.title')" :subtitle="t('topTips.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('topTips.basicTitle')" :desc="t('topTips.basicDesc')" :code="codes.basic">
+            <ux-button type="primary" shape="round" :text="t('topTips.basicBtn')" @click="showBasic" />
+        </demo-block>
+
+        <!-- 主题 type -->
+        <demo-block :title="t('topTips.themeTitle')" :desc="t('topTips.themeDesc')" :code="codes.theme">
+            <view class="top-tips-row">
+                <ux-button custom-class="top-tips-item" type="primary" size="small" shape="round" :text="t('topTips.btnPrimary')" @click="showType('primary')" />
+                <ux-button custom-class="top-tips-item" type="success" size="small" shape="round" :text="t('topTips.btnSuccess')" @click="showType('success')" />
+                <ux-button custom-class="top-tips-item" type="warning" size="small" shape="round" :text="t('topTips.btnWarning')" @click="showType('warning')" />
+                <ux-button custom-class="top-tips-item" type="error" size="small" shape="round" :text="t('topTips.btnError')" @click="showType('error')" />
+                <ux-button custom-class="top-tips-item" type="info" size="small" shape="round" :text="t('topTips.btnInfo')" @click="showType('info')" />
+            </view>
+        </demo-block>
+
+        <!-- 显示时长 duration -->
+        <demo-block :title="t('topTips.durationTitle')" :desc="t('topTips.durationDesc')" :code="codes.duration">
+            <view class="top-tips-row">
+                <ux-button custom-class="top-tips-item" type="primary" size="small" shape="round" :text="t('topTips.btnShort')" @click="showDuration(1000)" />
+                <ux-button custom-class="top-tips-item" type="primary" size="small" shape="round" :text="t('topTips.btnLong')" @click="showDuration(3000)" />
+            </view>
+        </demo-block>
+
+        <!-- 导航栏高度与层级 -->
+        <demo-block :title="t('topTips.navTitle')" :desc="t('topTips.navDesc')" :code="codes.nav">
+            <ux-button type="warning" shape="round" :text="t('topTips.navBtn')" @click="showNav" />
+        </demo-block>
+
+        <!-- top-tips 组件实例 -->
+        <ux-top-tips ref="tipsRef" :navbar-height="navBarHeight" :z-index="9999" />
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, useWindowInfo, useDeviceInfo } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+    const { statusBarHeight } = useWindowInfo();
+    const { platform } = useDeviceInfo();
+
+    /** top-tips 组件实例 */
+    const tipsRef = ref<any>();
+
+    /** navbar-height 传顶部避让总高度：状态栏 + 自绘导航栏本体（与 demo-page 里 ux-navbar 的默认高度取法一致） */
+    const navBarHeight = computed((): number => {
+        let body = 44;
+        // #ifdef MP
+        body = platform.value == 'ios' ? 44 : 48;
+        // #endif
+        return statusBarHeight.value + body;
+    });
+
+    /** 基础用法 */
+    const showBasic = () => {
+        tipsRef.value?.show?.({
+            title: t('topTips.basicText')
+        });
+    };
+
+    /** 按主题弹出 */
+    const showType = (type: string) => {
+        tipsRef.value?.show?.({
+            title: t('topTips.basicText'),
+            type
+        });
+    };
+
+    /** 按时长弹出 */
+    const showDuration = (duration: number) => {
+        tipsRef.value?.show?.({
+            title: t('topTips.basicText'),
+            duration
+        });
+    };
+
+    /** 从导航栏下方弹出（组件已按 navbar-height 避让状态栏+导航栏，弹出位置贴导航栏下沿） */
+    const showNav = () => {
+        tipsRef.value?.show?.({
+            title: t('topTips.navText'),
+            duration: 3000
+        });
+    };
+</script>
+
+<style lang="scss">
+
+    .top-tips-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .top-tips-item {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+</style>

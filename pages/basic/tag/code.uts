@@ -1,0 +1,201 @@
+/**
+ * tag 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="primary" type="primary" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="success" type="success" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="warning" type="warning" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="error" type="error" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="info" type="info" custom-class="tag-spacing"></ux-tag>
+    </view>
+</template>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.tag-spacing {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 设置标签的模式 */
+const mode = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="深色" mode="dark" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="浅色" mode="light" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="镂空" mode="plain" custom-class="tag-spacing"></ux-tag>
+    </view>
+</template>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.tag-spacing {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 设置标签的形状 */
+const shape = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="小圆角" shape="square" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="胶囊" shape="round" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="左圆角" shape="roundLeft" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="右圆角" shape="roundRight" custom-class="tag-spacing"></ux-tag>
+    </view>
+</template>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.tag-spacing {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 设置标签的大小 */
+const size = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="默认大小" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="迷你大小" size="mini" custom-class="tag-spacing"></ux-tag>
+    </view>
+</template>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.tag-spacing {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="自定义文字" color="#ff00ff" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="自定义背景" bg-color="#2979ff" color="#ffffff" custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="自定义边框" mode="plain" color="#fa3534" border-color="#fa3534" custom-class="tag-spacing"></ux-tag>
+    </view>
+</template>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.tag-spacing {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 可关闭标签 */
+const closeable = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="可关闭标签" closeable close-color="#fa3534" :show="show" @close="onClose"></ux-tag>
+        <ux-tag text="深色可关闭" closeable mode="dark" :show="show2" @close="onClose2"></ux-tag>
+    </view>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(true);
+const show2 = ref<boolean>(true);
+
+function onClose(): void {
+    show.value = false;
+}
+
+function onClose2(): void {
+    show2.value = false;
+}
+</script>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+</style>
+`;
+
+/** 禁用标签 */
+const disabled = `
+<template>
+    <view class="tag-row">
+        <ux-tag text="禁用标签" disabled custom-class="tag-spacing"></ux-tag>
+        <ux-tag text="禁用深色" disabled mode="dark" custom-class="tag-spacing"></ux-tag>
+    </view>
+</template>
+
+<style scoped>
+.tag-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.tag-spacing {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+</style>
+`;
+
+/** 自定义插槽 */
+const slot = `
+<template>
+    <ux-tag type="success">
+        <text style="font-size: 11px; font-weight: bold;">自定义内容</text>
+    </ux-tag>
+</template>
+`;
+
+export const codes = {
+    basic,
+    mode,
+    shape,
+    size,
+    color,
+    closeable,
+    disabled,
+    slot
+};

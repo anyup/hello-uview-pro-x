@@ -1,0 +1,92 @@
+<template>
+    <demo-page :title="t('backTop.title')" :subtitle="t('backTop.subtitle')" @scroll="onScroll">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('backTop.basicTitle')" :desc="t('backTop.basicDesc')" :code="codes.basic">
+            <ux-back-top :scroll-top="scrollTop" :top="200" parent-id="demo-page-scroll"></ux-back-top>
+        </demo-block>
+
+        <!-- 自定义形状 -->
+        <demo-block :title="t('backTop.shapeTitle')" :desc="t('backTop.shapeDesc')" :code="codes.shape">
+            <!-- 两档形状全演示：square 小圆角(4px，默认) / circle 正圆；
+                 组件自身 position:fixed，靠 bottom/right 错开并排摆放，否则两者会重叠；
+                 square 文案超宽时按钮随 tips 加宽，right 间距按最宽文案留足 -->
+            <ux-back-top :scroll-top="scrollTop" :top="200" shape="square" :tips="t('backTop.shapeSquare')" :bottom="210" :right="20" parent-id="demo-page-scroll"></ux-back-top>
+            <ux-back-top :scroll-top="scrollTop" :top="200" shape="circle" :tips="t('backTop.shapeCircle')" :bottom="210" :right="90" parent-id="demo-page-scroll"></ux-back-top>
+        </demo-block>
+
+        <!-- 自定义提示文字 -->
+        <demo-block :title="t('backTop.tipsTitle')" :desc="t('backTop.tipsDesc')" :code="codes.tips">
+            <ux-back-top :scroll-top="scrollTop" :top="200" :tips="t('backTop.tipsText')" :bottom="150" :right="50" parent-id="demo-page-scroll"></ux-back-top>
+        </demo-block>
+
+        <!-- 自定义位置 -->
+        <demo-block :title="t('backTop.positionTitle')" :desc="t('backTop.positionDesc')" :code="codes.position">
+            <ux-back-top :scroll-top="scrollTop" :top="200" :bottom="150" :right="100" parent-id="demo-page-scroll"></ux-back-top>
+        </demo-block>
+
+        <!-- 自定义图标样式 -->
+        <demo-block :title="t('backTop.iconStyleTitle')" :desc="t('backTop.iconStyleDesc')" :code="codes.iconStyle">
+            <ux-back-top
+                :scroll-top="scrollTop"
+                :top="200"
+                :bottom="150"
+                :right="150"
+                :icon-style="{ color: '#2979ff', fontSize: '21px' }"
+                parent-id="demo-page-scroll"
+            ></ux-back-top>
+        </demo-block>
+
+        <!-- 滚动测试区域 -->
+        <demo-block :title="t('backTop.scrollTestTitle')" :desc="t('backTop.scrollTestDesc')">
+            <view v-for="(item, index) in testItems" :key="index" class="test-item">
+                <text class="test-item-text">{{ t('backTop.scrollItemText') }} {{ index + 1 }}</text>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    const scrollTop = ref(0);
+
+    const testItems = ref<string[]>([]);
+    for (let i = 0; i < 20; i++) {
+        testItems.value.push(`item_${i}`);
+    }
+
+    const onScroll = (e: UniScrollEvent) => {
+        scrollTop.value = e.detail.scrollTop;
+    };
+
+    // 小程序自定义组件不支持页面 onPageScroll，需在页面层监听滚动，手动传给 ux-back-top
+    // #ifdef MP
+    onPageScroll((e) => {
+        scrollTop.value = e.scrollTop;
+    });
+    // #endif
+</script>
+
+<style lang="scss">
+
+    .test-item {
+        width: 100%;
+        height: 60px;
+        background-color: $u-bg-color;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    .test-item-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

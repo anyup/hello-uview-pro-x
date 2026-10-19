@@ -1,0 +1,189 @@
+<template>
+	<demo-page :title="demo('useLocale.title')" :subtitle="demo('useLocale.subtitle')">
+
+		<demo-block :title="demo('useLocale.currentTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.currentLang') }}{{ currentLocale?.label }} ({{ currentLocale?.name }})</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.localeLabel') }}{{ currentLocale?.locale }}</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.switchTitle')">
+			<view class="demo-item">
+				<view class="demo-btn-group">
+					<view
+						class="demo-btn"
+						:class="{ 'demo-btn--active': currentLocale?.name === 'zh-CN' }"
+						@click="switchLocale('zh-CN')"
+					>
+						<text class="demo-btn-text" :class="{ 'demo-btn-text--active': currentLocale?.name === 'zh-CN' }">{{ demo('useLocale.zhBtn') }}</text>
+					</view>
+					<view
+						class="demo-btn demo-btn--split"
+						:class="{ 'demo-btn--active': currentLocale?.name === 'en-US' }"
+						@click="switchLocale('en-US')"
+					>
+						<text class="demo-btn-text" :class="{ 'demo-btn-text--active': currentLocale?.name === 'en-US' }">English</text>
+					</view>
+					<view
+						class="demo-btn demo-btn--split"
+						:class="{ 'demo-btn--active': currentLocale?.name === 'fr-FR' }"
+						@click="switchLocale('fr-FR')"
+					>
+						<text class="demo-btn-text" :class="{ 'demo-btn-text--active': currentLocale?.name === 'fr-FR' }">Français</text>
+					</view>
+				</view>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.translateTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.modalTitle') }}</text>
+				<text class="demo-result">{{ t('uModal.title') }}</text>
+			</view>
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.modalConfirm') }}</text>
+				<text class="demo-result">{{ t('uModal.confirmText') }}</text>
+			</view>
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.searchPlaceholder') }}</text>
+				<text class="demo-result">{{ t('uSearch.placeholder') }}</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.uploadText') }}</text>
+				<text class="demo-result">{{ t('uUpload.uploadText') }}</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.placeholderTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.originalText') }}</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.replacedText') }}</text>
+				<text class="demo-result">{{ t('uUpload.notAllowedExt', { ext: 'pdf' }) }}</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.namespaceTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.uploadTextLabel') }}</text>
+				<text class="demo-result">{{ uploadT('uploadText') }}</text>
+			</view>
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.uploadImageLabel') }}</text>
+				<text class="demo-result">{{ uploadT('uploadImage') }}</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.retryLabel') }}</text>
+				<text class="demo-result">{{ uploadT('retry') }}</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.localesTitle')">
+			<view v-for="(item, index) in locales" :key="index" class="demo-item" :class="index === locales.length - 1 ? 'demo-item--last' : ''">
+				<text class="demo-desc">{{ index + 1 }}. {{ item.label }} ({{ item.name }})</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.mergeTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.enSectionSubTitle') }}</text>
+				<text class="demo-result">{{ t('uSection.subTitle', null, 'en-US') }}</text>
+			</view>
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.enEmptyData') }}</text>
+				<text class="demo-result">{{ t('uEmpty.data', null, 'en-US') }}</text>
+			</view>
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.enModalTitle') }}</text>
+				<text class="demo-result">{{ t('uModal.title', null, 'en-US') }}</text>
+			</view>
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.frEmptySearch') }}</text>
+				<text class="demo-result">{{ t('uEmpty.search', null, 'fr-FR') }}</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.frSectionSubTitle') }}</text>
+				<text class="demo-result">{{ t('uSection.subTitle', null, 'fr-FR') }}</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.calendarTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.weekLabel') }}</text>
+				<text class="demo-result">{{ t('uCalendar.sun') }} {{ t('uCalendar.mon') }} {{ t('uCalendar.tue') }} {{ t('uCalendar.wed') }}</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.yearMonthLabel') }}</text>
+				<text class="demo-result">{{ t('uCalendar.year') }} {{ t('uCalendar.month') }}</text>
+			</view>
+		</demo-block>
+
+		<demo-block :title="demo('useLocale.emptyTitle')">
+			<view class="demo-item">
+				<text class="demo-desc">{{ demo('useLocale.carLabel') }}</text>
+				<text class="demo-result">{{ t('uEmpty.car') }}</text>
+			</view>
+			<view class="demo-item demo-item--last">
+				<text class="demo-desc">{{ demo('useLocale.searchLabel') }}</text>
+				<text class="demo-result">{{ t('uEmpty.search') }}</text>
+			</view>
+		</demo-block>
+	</demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x'
+
+// 使用全局 useLocale - 解构方式
+const { t, currentLocale, locales, setLocale } = useLocale()
+
+// 页面自身文案使用 demo 命名空间
+const { t: demo } = useLocale('demo')
+
+// 使用命名空间 useLocale (uUpload) - 解构方式
+const { t: uploadT } = useLocale('uUpload')
+
+// 切换语言
+const switchLocale = (name: string) => {
+	setLocale(name)
+}
+</script>
+
+<style lang="scss">
+/* 分段切换按钮（覆盖全局 demo-btn 样式，撑满整行） */
+.demo-btn-group {
+	display: flex;
+	flex-direction: row;
+}
+
+.demo-btn {
+	flex: 1;
+	background-color: $u-bg-gray-light;
+	padding: 10px 0;
+	border-radius: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.demo-btn--split {
+	margin-left: 10px;
+}
+
+.demo-btn--active {
+	background-color: $u-type-primary;
+}
+
+.demo-btn-text {
+	font-size: 14px;
+	color: $u-main-color;
+}
+
+.demo-btn-text--active {
+	color: $u-white-color;
+}
+</style>

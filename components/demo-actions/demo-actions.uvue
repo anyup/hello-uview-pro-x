@@ -1,0 +1,29 @@
+<template>
+    <view class="demo-actions">
+        <slot />
+    </view>
+</template>
+
+<script setup lang="uts">
+    defineOptions({
+        name: 'demo-actions',
+        styleIsolation: 'app-and-page'
+    });
+</script>
+
+<style lang="scss" scoped>
+    @import '@/uni_modules/uview-pro-x/theme.scss';
+
+    /**
+     * 操作按钮行容器
+     * - 水平排列 + 自动换行
+     * - 按钮间距由全局 .demo-actions-item 控制（见 style/demo.scss）
+     */
+    .demo-actions {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 4px;
+    }
+</style>

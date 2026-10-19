@@ -1,0 +1,472 @@
+<template>
+    <demo-page :title="t('transition.title')" :subtitle="t('transition.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('transition.basicTitle')" :desc="t('transition.basicDesc')" :code="codes.basic">
+            <view class="transition-area">
+                <!-- 占位文案放底层（DOM 顺序靠前=层级更低），卡片显示时由不透明背景盖住 -->
+                <view v-if="!show" class="transition-placeholder">
+                    <text class="transition-placeholder-text">{{ t('transition.hiddenText') }}</text>
+                </view>
+                <ux-transition :show="show" name="fade" :duration="300">
+                    <view class="transition-card">
+                        <text class="transition-card-title">{{ t('transition.cardTitle') }}</text>
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <ux-button :text="t('transition.toggleBtn')" type="primary" shape="round" @click="toggleShow" />
+        </demo-block>
+
+        <!-- 预设动画 -->
+        <demo-block :title="t('transition.presetTitle')" :desc="t('transition.presetDesc')" :code="codes.preset">
+            <view class="transition-chips">
+                <view
+                    class="transition-chip"
+                    v-for="(item, index) in presets"
+                    :key="index"
+                    :class="presetIndex == index ? 'transition-chip--active' : ''"
+                    @click="selectPreset(index)"
+                >
+                    <text class="transition-chip-text" :class="presetIndex == index ? 'transition-chip-text--active' : ''">{{ item }}</text>
+                </view>
+            </view>
+            <view class="transition-area">
+                <ux-transition :show="presetShow" :name="presets[presetIndex]" :duration="300">
+                    <view class="transition-card">
+                        <text class="transition-card-title">{{ presets[presetIndex] }}</text>
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <ux-button :text="t('transition.replayBtn')" type="primary" shape="round" @click="replayPreset" />
+        </demo-block>
+
+        <!-- 动画时长 -->
+        <demo-block :title="t('transition.durationTitle')" :desc="t('transition.durationDesc')" :code="codes.duration">
+            <view class="transition-chips">
+                <view
+                    class="transition-chip"
+                    v-for="(item, index) in durationList"
+                    :key="index"
+                    :class="duration == item ? 'transition-chip--active' : ''"
+                    @click="setDuration(item)"
+                >
+                    <text class="transition-chip-text" :class="duration == item ? 'transition-chip-text--active' : ''">{{ item }}ms</text>
+                </view>
+            </view>
+            <view class="transition-area">
+                <ux-transition :show="durationShow" name="slide-up" :duration="duration">
+                    <view class="transition-card">
+                        <text class="transition-card-title">{{ duration }}ms</text>
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <ux-button :text="t('transition.replayBtn')" type="primary" shape="round" @click="replayDuration" />
+        </demo-block>
+
+        <!-- 动画曲线 -->
+        <demo-block :title="t('transition.timingTitle')" :desc="t('transition.timingDesc')" :code="codes.timing">
+            <view class="transition-chips">
+                <view
+                    class="transition-chip"
+                    v-for="(item, index) in timingLabels"
+                    :key="index"
+                    :class="timingIndex == index ? 'transition-chip--active' : ''"
+                    @click="selectTiming(index)"
+                >
+                    <text class="transition-chip-text" :class="timingIndex == index ? 'transition-chip-text--active' : ''">{{ item }}</text>
+                </view>
+            </view>
+            <view class="transition-area">
+                <ux-transition :show="timingShow" name="zoom-in" :duration="500" :timing-function="timingValues[timingIndex]">
+                    <view class="transition-card">
+                        <text class="transition-card-title">{{ timingLabels[timingIndex] }}</text>
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <ux-button :text="t('transition.replayBtn')" type="primary" shape="round" @click="replayTiming" />
+        </demo-block>
+
+        <!-- 动画延迟 -->
+        <demo-block :title="t('transition.delayTitle')" :desc="t('transition.delayDesc')" :code="codes.delay">
+            <view class="transition-row">
+                <text class="transition-row-label">{{ t('transition.delayLabel') }}</text>
+                <ux-number-box v-model="delay" :step="100" :min="0" :max="600" />
+            </view>
+            <view class="transition-area">
+                <ux-transition :show="delayShow" name="slide-left" :duration="300" :delay="delay">
+                    <view class="transition-card">
+                        <text class="transition-card-title">{{ delay }}ms</text>
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <ux-button :text="t('transition.replayBtn')" type="primary" shape="round" @click="replayDelay" />
+        </demo-block>
+
+        <!-- 首次渲染动画 appear -->
+        <demo-block :title="t('transition.appearTitle')" :desc="t('transition.appearDesc')" :code="codes.appear">
+            <view class="transition-row">
+                <text class="transition-row-label">{{ t('transition.appearLabel') }}</text>
+                <ux-switch v-model="appear" />
+            </view>
+            <view class="transition-area">
+                <!-- 外层 v-if 重挂：appear 只在组件首次挂载时生效，重新挂载才能复现 -->
+                <view v-if="appearMounted">
+                    <ux-transition :show="true" name="zoom-out" :duration="500" :appear="appear">
+                        <view class="transition-card">
+                            <text class="transition-card-title">{{ t('transition.appearTitle') }}</text>
+                            <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                        </view>
+                    </ux-transition>
+                </view>
+            </view>
+            <ux-button :text="t('transition.remountBtn')" type="primary" shape="round" @click="remountAppear" />
+        </demo-block>
+
+        <!-- 事件回调 -->
+        <demo-block :title="t('transition.eventTitle')" :desc="t('transition.eventDesc')" :code="codes.events">
+            <view class="transition-area">
+                <ux-transition
+                    :show="eventShow"
+                    name="slide-up"
+                    :duration="400"
+                    @before-enter="logEvent('before-enter')"
+                    @enter="logEvent('enter')"
+                    @after-enter="logEvent('after-enter')"
+                    @enter-cancelled="logEvent('enter-cancelled')"
+                    @before-leave="logEvent('before-leave')"
+                    @leave="logEvent('leave')"
+                    @after-leave="logEvent('after-leave')"
+                    @leave-cancelled="logEvent('leave-cancelled')"
+                >
+                    <view class="transition-card">
+                        <text class="transition-card-title">{{ t('transition.eventTitle') }}</text>
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <view class="transition-chips-row">
+                <ux-button custom-class="transition-btn-item" :text="t('transition.toggleBtn')" type="primary" shape="round" @click="toggleEvent" />
+                <ux-button custom-class="transition-btn-item" :text="t('transition.clearBtn')" shape="round" @click="eventLogs = ([] as string[])" />
+            </view>
+            <view class="transition-log">
+                <text v-if="eventLogs.length == 0" class="transition-log-empty">{{ t('transition.eventEmpty') }}</text>
+                <text v-for="(item, index) in eventLogs" :key="index" class="transition-log-item">{{ item }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block :title="t('transition.customTitle')" :desc="t('transition.customDesc')" :code="codes.custom">
+            <view class="transition-area">
+                <ux-transition
+                    custom-class="transition-custom"
+                    :custom-style="customStyle"
+                    :show="customShow"
+                    name="fade"
+                    :duration="400"
+                >
+                    <view class="transition-card transition-card--plain">
+                        <text class="transition-card-text">{{ t('transition.cardText') }}</text>
+                    </view>
+                </ux-transition>
+            </view>
+            <ux-button :text="t('transition.toggleBtn')" type="primary" shape="round" @click="toggleCustom" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 基础演示显隐 */
+    const show = ref(true);
+
+    /** 预设动画列表（与组件白名单一致） */
+    const presets: string[] = ['fade', 'slide-up', 'slide-down', 'slide-left', 'slide-right', 'zoom-in', 'zoom-out'];
+    /** 当前预设索引 */
+    const presetIndex = ref(0);
+    /** 预设演示显隐 */
+    const presetShow = ref(true);
+
+    /** 时长档位 */
+    const durationList: number[] = [100, 300, 600, 1000];
+    /** 当前时长（ms） */
+    const duration = ref(300);
+    /** 时长演示显隐 */
+    const durationShow = ref(true);
+
+    /** 曲线名称 */
+    const timingLabels: string[] = [
+        t('transition.timingStandard'),
+        t('transition.timingLinear'),
+        t('transition.timingEaseInOut'),
+        t('transition.timingBounce')
+    ];
+    /** 曲线取值 */
+    const timingValues: string[] = [
+        'cubic-bezier(0.2, 0.8, 0.2, 1)',
+        'linear',
+        'ease-in-out',
+        'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+    ];
+    /** 当前曲线索引 */
+    const timingIndex = ref(0);
+    /** 曲线演示显隐 */
+    const timingShow = ref(true);
+
+    /** 延迟（ms） */
+    const delay = ref(0);
+    /** 延迟演示显隐 */
+    const delayShow = ref(true);
+
+    /** 首次渲染动画开关 */
+    const appear = ref(true);
+    /** appear 演示的外层重挂开关 */
+    const appearMounted = ref(true);
+
+    /** 事件演示显隐 */
+    const eventShow = ref(true);
+    /** 事件日志（保留最近 8 条） */
+    const eventLogs = ref<string[]>([]);
+
+    /** 自定义样式演示显隐 */
+    const customShow = ref(true);
+    /** 自定义根节点样式 */
+    const customStyle = ref<UTSJSONObject>({
+        'background-color': '#edf4ff',
+        'border-radius': '8px'
+    });
+
+    /** 切换基础演示显隐 */
+    function toggleShow(): void {
+        show.value = !show.value;
+    }
+
+    /** 选择预设并立即重播 */
+    function selectPreset(index: number): void {
+        presetIndex.value = index;
+        replayPreset();
+    }
+
+    /** 重播预设演示：离场上一次过渡结束后再进场 */
+    function replayPreset(): void {
+        presetShow.value = false;
+        setTimeout((): void => {
+            presetShow.value = true;
+        }, 450);
+    }
+
+    /** 切换时长档位 */
+    function setDuration(value: number): void {
+        duration.value = value;
+        replayDuration();
+    }
+
+    /** 重播时长演示 */
+    function replayDuration(): void {
+        durationShow.value = false;
+        setTimeout((): void => {
+            durationShow.value = true;
+        }, duration.value + 150);
+    }
+
+    /** 选择曲线并重播 */
+    function selectTiming(index: number): void {
+        timingIndex.value = index;
+        replayTiming();
+    }
+
+    /** 重播曲线演示 */
+    function replayTiming(): void {
+        timingShow.value = false;
+        setTimeout((): void => {
+            timingShow.value = true;
+        }, 650);
+    }
+
+    /** 重播延迟演示 */
+    function replayDelay(): void {
+        delayShow.value = false;
+        setTimeout((): void => {
+            delayShow.value = true;
+        }, delay.value + 450);
+    }
+
+    /** 重新挂载 appear 演示区（appear 只在首挂生效） */
+    function remountAppear(): void {
+        appearMounted.value = false;
+        setTimeout((): void => {
+            appearMounted.value = true;
+        }, 50);
+    }
+
+    /** 切换事件演示显隐 */
+    function toggleEvent(): void {
+        eventShow.value = !eventShow.value;
+    }
+
+    /** 记录一条事件日志（时间 · 事件名），保留最近 8 条 */
+    function logEvent(name: string): void {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const s = now.getSeconds();
+        const ts = (h < 10 ? '0' : '') + h.toString() + ':' + (m < 10 ? '0' : '') + m.toString() + ':' + (s < 10 ? '0' : '') + s.toString();
+        eventLogs.value = ([ts + ' · ' + name] as string[]).concat(eventLogs.value.slice(0, 7));
+    }
+
+    /** 切换自定义样式演示显隐 */
+    function toggleCustom(): void {
+        customShow.value = !customShow.value;
+    }
+</script>
+
+<style lang="scss">
+    .transition-area {
+        width: 100%;
+        /* 定高锁定：内容随 v-if 挂载卸载时区域高度不变，避免页面抖动 */
+        height: 160px;
+        position: relative;
+        margin-bottom: 12px;
+        padding: 16px;
+        border: 1px dashed $u-border-color;
+        border-radius: 8px;
+        background-color: $u-bg-white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .transition-card {
+        width: 100%;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid $u-border-color;
+        background-color: $u-bg-white;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .transition-card--plain {
+        border: none;
+        align-items: center;
+    }
+
+    .transition-card-title {
+        font-size: 15px;
+        font-weight: bold;
+        color: $u-main-color;
+        margin-bottom: 6px;
+    }
+
+    .transition-card-text {
+        font-size: 13px;
+        color: $u-tips-color;
+    }
+
+    /* 绝对定位垫在卡片下方：淡入淡出时与卡片交叉渐变，不参与流布局、不顶高区域 */
+    .transition-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .transition-placeholder-text {
+        font-size: 13px;
+        color: $u-tips-color;
+    }
+
+    .transition-chips {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .transition-chips-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .transition-chip {
+        padding: 6px 10px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        border-radius: 999px;
+        border: 1px solid $u-border-color;
+        background-color: $u-bg-white;
+    }
+
+    .transition-chip--active {
+        border-color: $u-type-primary;
+        background-color: rgba(22, 93, 255, 0.08);
+    }
+
+    .transition-chip-text {
+        font-size: 12px;
+        color: $u-content-color;
+    }
+
+    .transition-chip-text--active {
+        color: $u-type-primary;
+    }
+
+    .transition-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .transition-row-label {
+        font-size: 14px;
+        color: $u-main-color;
+    }
+
+    .transition-btn-item {
+        margin-right: 8px;
+    }
+
+    .transition-log {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background-color: $u-bg-color;
+    }
+
+    .transition-log-empty {
+        font-size: 13px;
+        color: $u-tips-color;
+        text-align: center;
+        padding: 8px 0;
+    }
+
+    .transition-log-item {
+        font-size: 12px;
+        color: $u-content-color;
+        padding: 4px 0;
+    }
+
+    /* custom-class 外部类：为过渡根节点补充内边距（背景色走 custom-style） */
+    .transition-custom {
+        padding: 12px;
+    }
+</style>

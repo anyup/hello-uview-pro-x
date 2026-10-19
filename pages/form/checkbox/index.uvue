@@ -1,0 +1,180 @@
+<template>
+    <demo-page :title="t('checkbox.title')" :subtitle="t('checkbox.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('checkbox.basicTitle')" :desc="t('checkbox.basicDesc')" :code="codes.basic">
+            <ux-checkbox-group v-model="checkboxValues" :max="max" :active-color="activeColor" :shape="shape" :size="size" :width="width" :wrap="wrap" @change="onGroupChange">
+                <ux-checkbox v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" :disabled="item.disabled" />
+            </ux-checkbox-group>
+            <demo-result :text="t('checkbox.resultLabel') + ': ' + checkboxValues.join(',')" />
+        </demo-block>
+
+        <!-- 批量操作 -->
+        <demo-block :title="t('checkbox.batchTitle')" :desc="t('checkbox.batchDesc')" :code="codes.batch">
+            <demo-actions>
+                <ux-button size="small" shape="round" custom-class="demo-actions-item" @click="setAll(false)">{{ t('checkbox.unselectAll') }}</ux-button>
+                <ux-button size="small" shape="round" custom-class="demo-actions-item" @click="setAll(true)">{{ t('checkbox.selectAll') }}</ux-button>
+            </demo-actions>
+        </demo-block>
+
+        <!-- 形状 -->
+        <demo-block :title="t('checkbox.shapeTitle')" :desc="t('checkbox.shapeDesc')" :code="codes.shape">
+            <ux-subsection :list="shapeList" :current="shapeIndex" @change="setShape" />
+        </demo-block>
+
+        <!-- 尺寸 -->
+        <demo-block :title="t('checkbox.sizeTitle')" :desc="t('checkbox.sizeDesc')" :code="codes.size">
+            <ux-subsection :list="sizeList" :current="sizeIndex" @change="setSize" />
+        </demo-block>
+
+        <!-- 激活颜色 -->
+        <demo-block :title="t('checkbox.colorTitle')" :desc="t('checkbox.colorDesc')" :code="codes.color">
+            <ux-subsection :list="colorList" :current="colorIndex" @change="setColor" />
+        </demo-block>
+
+        <!-- 最大选择数量 -->
+        <demo-block :title="t('checkbox.maxTitle')" :desc="t('checkbox.maxDesc')" :code="codes.max">
+            <ux-subsection :list="maxList" :current="maxIndex" @change="setMax" />
+        </demo-block>
+
+        <!-- 禁用 -->
+        <demo-block :title="t('checkbox.disabledTitle')" :desc="t('checkbox.disabledDesc')" :code="codes.disabled">
+            <demo-actions>
+                <ux-button size="small" shape="round" :type="disabledFirst ? 'primary' : 'default'" custom-class="demo-actions-item" @click="toggleDisabled">{{ t('checkbox.disabledBtn') }}</ux-button>
+            </demo-actions>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type FruitItem = {
+        label: string;
+        value: string;
+        disabled: boolean;
+    };
+
+    type ShapeItem = {
+        value: string;
+        name: string;
+    };
+
+    type SizeItem = {
+        value: string;
+        name: string;
+    };
+
+    type ColorItem = {
+        value: string;
+        name: string;
+    };
+
+    type MaxItem = {
+        value: number;
+        name: string;
+    };
+
+    /** 选中的值 */
+    const checkboxValues = ref<string[]>(['荔枝']);
+    /** 选项列表 */
+    const list = ref<FruitItem[]>([
+        { label: '荔枝', value: '荔枝', disabled: false },
+        { label: '香蕉', value: '香蕉', disabled: false },
+        { label: '橙子', value: '橙子', disabled: false },
+        { label: '草莓', value: '草莓', disabled: false }
+    ]);
+    /** 形状 */
+    const shape = ref<string>('square');
+    /** 最大选择数量 */
+    const max = ref<number>(3);
+    /** 激活颜色 */
+    const activeColor = ref<string>('');
+    /** 尺寸 */
+    const size = ref<string>('default');
+    /** 是否换行 */
+    const wrap = ref<boolean>(false);
+    /** 每个 checkbox 宽度 */
+    const width = ref<string>('auto');
+    /** 是否禁用第一个 */
+    const disabledFirst = ref<boolean>(false);
+
+    const shapeList: ShapeItem[] = [
+        { value: 'square', name: 'square' },
+        { value: 'circle', name: 'circle' }
+    ];
+
+    const sizeList: SizeItem[] = [
+        { value: 'small', name: 'small' },
+        { value: 'default', name: 'default' },
+        { value: 'large', name: 'large' },
+        { value: '30', name: '30' }
+    ];
+
+    const colorList: ColorItem[] = [
+        { value: '', name: 'primary' },
+        { value: '#fa3534', name: 'error' },
+        { value: '#ff9900', name: 'warning' },
+        { value: '#19be6b', name: 'success' },
+        { value: '#909399', name: 'info' }
+    ];
+
+    const maxList: MaxItem[] = [
+        { value: 1, name: '1' },
+        { value: 2, name: '2' },
+        { value: 3, name: '3' }
+    ];
+
+    /** 当前选中项索引（ux-subsection 受控） */
+    const shapeIndex = computed((): number => shapeList.findIndex((item) => item.value === shape.value));
+    const sizeIndex = computed((): number => sizeList.findIndex((item) => item.value === size.value));
+    const colorIndex = computed((): number => colorList.findIndex((item) => item.value === activeColor.value));
+    const maxIndex = computed((): number => maxList.findIndex((item) => item.value === max.value));
+
+    /** 设置形状 */
+    const setShape = (index: number) => {
+        shape.value = shapeList[index].value;
+    };
+
+    /** 设置尺寸 */
+    const setSize = (index: number) => {
+        size.value = sizeList[index].value;
+    };
+
+    /** 设置激活颜色 */
+    const setColor = (index: number) => {
+        // 切换颜色时若未选中任何项，默认选中第一个让用户看到效果
+        if (checkboxValues.value.length === 0) {
+            checkboxValues.value = ['荔枝'];
+        }
+        activeColor.value = colorList[index].value;
+    };
+
+    /** 设置最大选择数量 */
+    const setMax = (index: number) => {
+        max.value = maxList[index].value;
+    };
+
+    /** 全选/全不选 */
+    const setAll = (checked: boolean) => {
+        checkboxValues.value = checked ? list.value.map((item) => item.value) : [];
+    };
+
+    /** 切换禁用第一个 */
+    const toggleDisabled = () => {
+        disabledFirst.value = !disabledFirst.value;
+        list.value[0].disabled = disabledFirst.value;
+    };
+
+    /** group change 事件 */
+    const onGroupChange = (values: (string | number)[]) => {
+        console.log('checkboxGroupChange', values);
+    };
+</script>
+
+<style lang="scss">
+</style>

@@ -1,0 +1,203 @@
+<template>
+    <demo-page :title="t('cell.title')" :subtitle="t('cell.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('cell.basicTitle')" :desc="t('cell.basicDesc')" :code="codes.basic">
+            <ux-cell-group>
+                <ux-cell-item title="用户信息" value="内容"></ux-cell-item>
+                <ux-cell-item title="会员等级" value="新版本"></ux-cell-item>
+                <ux-cell-item title="收货地址" value="北京"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 分组标题 -->
+        <demo-block :title="t('cell.groupTitle')" :desc="t('cell.groupDesc')" :code="codes.group">
+            <ux-cell-group title="分组标题" :title-style="groupTitleStyle">
+                <ux-cell-item title="用户信息" value="内容"></ux-cell-item>
+                <ux-cell-item title="会员等级" value="新版本"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 图标 -->
+        <demo-block :title="t('cell.iconTitle')" :desc="t('cell.iconDesc')" :code="codes.icon">
+            <ux-cell-group>
+                <ux-cell-item icon="setting" icon-size="22" :icon-style="iconStyle" title="设置"></ux-cell-item>
+                <ux-cell-item icon="star" title="收藏"></ux-cell-item>
+                <ux-cell-item icon="integral" title="积分"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 描述信息 -->
+        <demo-block :title="t('cell.labelTitle')" :desc="t('cell.labelDesc')" :code="codes.label">
+            <ux-cell-group>
+                <ux-cell-item icon="file-text" title="用户协议" label="点击查看协议详情"></ux-cell-item>
+                <ux-cell-item icon="lock" title="隐私政策" label="点击查看隐私政策详情"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 必填 -->
+        <demo-block :title="t('cell.requiredTitle')" :desc="t('cell.requiredDesc')" :code="codes.required">
+            <ux-cell-group>
+                <ux-cell-item title="姓名" required value="张三"></ux-cell-item>
+                <ux-cell-item title="手机号" required value="138****8888"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 箭头方向 -->
+        <demo-block :title="t('cell.arrowTitle')" :desc="t('cell.arrowDesc')" :code="codes.arrow">
+            <ux-cell-group>
+                <ux-cell-item title="箭头向右" arrow-direction="right"></ux-cell-item>
+                <ux-cell-item title="箭头向上" arrow-direction="up"></ux-cell-item>
+                <ux-cell-item title="箭头向下" arrow-direction="down"></ux-cell-item>
+                <ux-cell-item title="无箭头" :arrow="false"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 自定义标题宽度 -->
+        <demo-block :title="t('cell.widthTitle')" :desc="t('cell.widthDesc')" :code="codes.width">
+            <ux-cell-group>
+                <ux-cell-item title="标题" title-width="100" :title-style="titleWidthBg" value="内容"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 边框控制 -->
+        <demo-block :title="t('cell.borderTitle')" :desc="t('cell.borderDesc')" :code="codes.border">
+            <ux-cell-group :border="false">
+                <ux-cell-item title="无分组外边框" border-top value="border-top"></ux-cell-item>
+                <ux-cell-item title="无下边框" :border-bottom="false" value="border-bottom=false"></ux-cell-item>
+                <ux-cell-item title="默认下边框" value="默认"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 外观定制 -->
+        <demo-block :title="t('cell.customTitle')" :desc="t('cell.customDesc')" :code="codes.custom">
+            <ux-cell-group>
+                <ux-cell-item
+                    title="自定义样式"
+                    label="描述文字"
+                    value="内容"
+                    center
+                    bg-color="#f7f8fa"
+                    :title-style="titleStyle"
+                    :value-style="valueStyle"
+                    :label-style="labelStyle"
+                    hover-class="none"
+                ></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 点击事件 -->
+        <demo-block :title="t('cell.clickTitle')" :desc="t('cell.clickDesc')" :code="codes.click">
+            <ux-cell-group>
+                <ux-cell-item title="点击我" @click="cellClick('1')"></ux-cell-item>
+                <ux-cell-item title="点击我" @click="cellClick('2')"></ux-cell-item>
+            </ux-cell-group>
+            <text class="cell-status">{{ t('cell.clickResult') }}: {{ clickResult }}</text>
+        </demo-block>
+
+        <!-- 自定义 hoverClass -->
+        <demo-block :title="t('cell.hoverTitle')" :desc="t('cell.hoverDesc')" :code="codes.hover">
+            <ux-cell-group>
+                <ux-cell-item hover-class="custom-hover" title="自定义按压背景" value="点击试试"></ux-cell-item>
+                <ux-cell-item hover-class="none" title="无按压反馈" value="hover-class=none"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 自定义内容 -->
+        <demo-block :title="t('cell.slotTitle')" :desc="t('cell.slotDesc')" :code="codes.slot">
+            <ux-cell-group>
+                <ux-cell-item title="自定义右侧">
+                    <text class="cell-slot-text">自定义内容</text>
+                </ux-cell-item>
+                <ux-cell-item title="自定义图标">
+                    <template #icon>
+                        <ux-icon name="star" size="17" color="#fa3534" />
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, createStyle } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 分组标题样式：加粗深色，演示 title-style 覆盖 */
+    const groupTitleStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['color'] = '#303133';
+        style['font-weight'] = 'bold';
+        return style;
+    });
+
+    /** 标题宽度区域背景（演示 title-width 固定宽度效果） */
+    const titleWidthBg = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['background-color'] = '#f5f5f5';
+        return style;
+    });
+
+    /** 左侧图标样式 */
+    const iconStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['color'] = '#2979ff';
+        return style;
+    });
+
+    /** 标题样式 */
+    const titleStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['color'] = '#2979ff';
+        return style;
+    });
+
+    /** 右侧内容样式 */
+    const valueStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['color'] = '#fa3534';
+        return style;
+    });
+
+    /** 描述文字样式 */
+    const labelStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['fontSize'] = '12px';
+        return style;
+    });
+
+    /** 点击结果 */
+    const clickResult = ref('');
+
+    /** 点击 cell 事件：带参时区分来源，无参时仅作点击反馈占位 */
+    const cellClick = (index: string = '') => {
+        clickResult.value = index;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 状态文字 */
+    .cell-status {
+        display: flex;
+        flex-direction: row;
+        margin-top: 12px;
+        font-size: 14px;
+        color: $u-content-color;
+    }
+
+    /* 自定义右侧内容 */
+    .cell-slot-text {
+        font-size: 13px;
+        color: $u-type-primary;
+    }
+
+    /* 自定义 hoverClass 反馈类：须定义在使用方（页面/全局非 scoped 位置），
+       且带 !important 覆盖根节点内联背景（bgColor 默认 transparent） */
+    .custom-hover {
+        background-color: $u-type-primary-light !important;
+    }
+</style>

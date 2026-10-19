@@ -1,0 +1,218 @@
+/**
+ * overlay 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button type="primary" @click="show = true">弹出遮罩</ux-button>
+    <ux-overlay v-model:show="show" @opened="onOpened" @closed="onClosed" />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+
+function onOpened(): void {
+    console.log('overlay opened');
+}
+
+function onClosed(): void {
+    console.log('overlay closed');
+}
+</script>
+`;
+
+/** 动画时长 */
+const duration = `
+<template>
+    <view class="btn-wrap">
+        <ux-button v-for="(item, index) in durationList" :key="index" :type="duration == item.value ? 'primary' : 'default'" custom-class="btn-item" @click="openWith(item.value)">{{ item.label }}</ux-button>
+    </view>
+    <ux-overlay v-model:show="show" :duration="duration" />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+const duration = ref<number>(300);
+
+const durationList = [
+    { value: 100, label: '100ms' },
+    { value: 300, label: '300ms' },
+    { value: 800, label: '800ms' }
+];
+
+function openWith(val: number): void {
+    duration.value = val;
+    show.value = true;
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 背景色与层级 */
+const custom = `
+<template>
+    <ux-button type="primary" @click="show = true">弹出蓝色遮罩</ux-button>
+    <!-- 受控写法：close-on-click-overlay=false 时组件不回写，关闭动作完全由页面决定 -->
+    <ux-overlay :show="show" :bg-color="bgColor" :close-on-click-overlay="false" :z-index="10000" @click="close" />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+const bgColor = 'rgba(24, 144, 255, 0.5)';
+
+function close(): void {
+    show.value = false;
+}
+</script>
+`;
+
+/** 点击不关闭 */
+const clickable = `
+<template>
+    <ux-button type="primary" @click="show = true">弹出不可点击关闭的遮罩</ux-button>
+    <ux-overlay v-model:show="show" :close-on-click-overlay="false">
+        <view class="wrap">
+            <view class="rect" @click.stop>
+                <text class="rect-text">点击遮罩不会关闭</text>
+                <ux-button size="small" type="primary" @click="show = false">关闭</ux-button>
+            </view>
+        </view>
+    </ux-overlay>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.rect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    height: 240px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+.rect-text {
+    font-size: 14px;
+    color: #606266;
+    margin-bottom: 16px;
+}
+</style>
+`;
+
+/** 内容填充 */
+const content = `
+<template>
+    <ux-button type="primary" @click="show = true">弹出带内容的遮罩</ux-button>
+    <ux-overlay v-model:show="show">
+        <view class="wrap">
+            <view class="rect" @click.stop>
+                <text class="rect-text">遮罩内容区域</text>
+            </view>
+        </view>
+    </ux-overlay>
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.rect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    height: 240px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+.rect-text {
+    font-size: 14px;
+    color: #606266;
+}
+</style>
+`;
+
+/** 连续开关压力测试 */
+const stress = `
+<template>
+    <ux-button type="error" @click="toggleStress">{{ left > 0 ? '中止压测' : '开始压测（6 次）' }}</ux-button>
+    <ux-overlay v-model:show="show" :duration="200" @opened="onOpened" @closed="onClosed" />
+</template>
+
+<script setup lang="uts">
+const show = ref<boolean>(false);
+/** 剩余轮次，>0 表示压测进行中 */
+const left = ref<number>(0);
+
+/** 开关翻转一次，500ms 后进入下一轮；剩余归零即停 */
+function step(): void {
+    if (left.value <= 0) return;
+    left.value = left.value - 1;
+    show.value = !show.value;
+    setTimeout((): void => {
+        step();
+    }, 500);
+}
+
+function toggleStress(): void {
+    if (left.value > 0) {
+        left.value = 0;
+        show.value = false;
+        return;
+    }
+    left.value = 6;
+    step();
+}
+
+function onOpened(): void {
+    console.log('stress opened');
+}
+
+function onClosed(): void {
+    console.log('stress closed');
+}
+</script>
+`;
+
+export const codes = {
+    basic,
+    duration,
+    custom,
+    clickable,
+    content,
+    stress
+};

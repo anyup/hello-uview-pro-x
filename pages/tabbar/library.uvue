@@ -1,0 +1,47 @@
+<template>
+    <demo-page :title="t('tabbarLibrary.title')" :subtitle="t('tabbarLibrary.subtitle')" showTabbar>
+        <!-- 分类列表（页面标题与副标题由 demo-page 头部统一展示） -->
+        <view class="tab-section" v-for="(cat, catIdx) in categories" :key="catIdx">
+            <view class="tab-section-header">
+                <view class="tab-section-bar" :style="'background-color:' + $u.color.primary"></view>
+                <text class="tab-section-name">{{ t(cat.name) }}</text>
+                <view class="tab-section-badge" :style="'background-color:' + $u.color.primary">
+                    <text class="tab-section-badge-text">{{ cat.items.length }}</text>
+                </view>
+            </view>
+            <view class="tab-list">
+                <view
+                    class="tab-item"
+                    v-for="(item, itemIdx) in cat.items"
+                    :key="itemIdx"
+                    @click="navigate(item.path)"
+                >
+                    <view class="tab-icon" :style="'background-color:' + $u.color.primary">
+                        <text class="tab-icon-text">{{ item.icon }}</text>
+                    </view>
+                    <view class="tab-item-body">
+                        <text class="tab-item-name">{{ item.name }}</text>
+                        <text class="tab-item-desc">{{ t(item.desc) }}</text>
+                    </view>
+                    <text class="tab-arrow">›</text>
+                </view>
+            </view>
+        </view>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+import { libraryCategories } from './config';
+
+const { t } = useLocale('demo');
+const categories = libraryCategories;
+
+function navigate(path: string): void {
+    uni.navigateTo({ url: '/pages/' + path });
+}
+</script>
+
+<style lang="scss">
+@import './tabbar.scss';
+</style>

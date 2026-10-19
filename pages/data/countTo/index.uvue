@@ -1,0 +1,116 @@
+<template>
+    <demo-page :title="t('countTo.title')" :subtitle="t('countTo.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('countTo.basicTitle')" :desc="t('countTo.basicDesc')" :code="codes.basic">
+            <ux-count-to :end-val="965"></ux-count-to>
+        </demo-block>
+
+        <!-- 自定义起止值 -->
+        <demo-block :title="t('countTo.customRangeTitle')" :desc="t('countTo.customRangeDesc')" :code="codes.customRange">
+            <ux-count-to :start-val="100" :end-val="0"></ux-count-to>
+            <view class="demo-gap"></view>
+            <ux-count-to :start-val="0" :end-val="9999"></ux-count-to>
+        </demo-block>
+
+        <!-- 千位分隔符 -->
+        <demo-block :title="t('countTo.separatorTitle')" :desc="t('countTo.separatorDesc')" :code="codes.separator">
+            <ux-count-to :end-val="233321.05" separator=","></ux-count-to>
+        </demo-block>
+
+        <!-- 显示小数 -->
+        <demo-block :title="t('countTo.decimalTitle')" :desc="t('countTo.decimalDesc')" :code="codes.decimal">
+            <ux-count-to :end-val="12345.678" :decimals="2"></ux-count-to>
+            <view class="demo-gap"></view>
+            <ux-count-to :end-val="12345.678" :decimals="2" decimal="."></ux-count-to>
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block :title="t('countTo.customStyleTitle')" :desc="t('countTo.customStyleDesc')" :code="codes.customStyle">
+            <ux-count-to :end-val="8888" color="#2979ff" :font-size="30" :bold="true"></ux-count-to>
+            <view class="demo-gap"></view>
+            <ux-count-to :end-val="8888" color="#fa3534"></ux-count-to>
+        </demo-block>
+
+        <!-- 关闭缓动 -->
+        <demo-block :title="t('countTo.noEasingTitle')" :desc="t('countTo.noEasingDesc')" :code="codes.noEasing">
+            <ux-count-to :end-val="5000" :use-easing="false"></ux-count-to>
+        </demo-block>
+
+        <!-- 动画控制 -->
+        <demo-block :title="t('countTo.controlTitle')" :desc="t('countTo.controlDesc')" :code="codes.control">
+            <ux-count-to ref="countToRef" :end-val="965" :duration="rollDuration" :autoplay="rollAutoPlay"></ux-count-to>
+            <view class="demo-gap"></view>
+            <view class="demo-btn-row">
+                <view class="demo-btn" @click="startRoll"><text class="demo-btn-text">{{ t('countTo.startBtn') }}</text></view>
+                <view class="demo-btn" @click="toggleAutoPlay"><text class="demo-btn-text">{{ rollAutoPlay ? t('countTo.autoPlayOn') : t('countTo.autoPlayOff') }}</text></view>
+                <view class="demo-btn" @click="setDuration(500)"><text class="demo-btn-text">500ms</text></view>
+                <view class="demo-btn" @click="setDuration(2000)"><text class="demo-btn-text">2000ms</text></view>
+                <view class="demo-btn" @click="setDuration(5000)"><text class="demo-btn-text">5000ms</text></view>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+
+    /** countTo 组件实例 */
+    const countToRef = ref<any>();
+
+    /** 滚动时长（ms） */
+    const rollDuration = ref<number>(2000);
+
+    /** 是否自动开始滚动 */
+    const rollAutoPlay = ref<boolean>(true);
+
+    /** 手动开始滚动 */
+    const startRoll = () => {
+        countToRef.value?.start();
+    };
+
+    /** 切换自动开始 */
+    const toggleAutoPlay = () => {
+        rollAutoPlay.value = !rollAutoPlay.value;
+    };
+
+    /** 设置滚动时长并重新滚动 */
+    const setDuration = (ms: number) => {
+        rollDuration.value = ms;
+        countToRef.value?.start();
+    };
+</script>
+
+<style lang="scss">
+    .demo-gap {
+        height: 20px;
+    }
+
+    .demo-btn-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .demo-btn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 12px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        background-color: #ecf5ff;
+    }
+
+    .demo-btn-text {
+        font-size: 13px;
+        color: #2979ff;
+    }
+
+</style>

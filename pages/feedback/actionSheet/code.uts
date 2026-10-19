@@ -1,0 +1,130 @@
+﻿/**
+ * actionSheet 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button @click="show = true">打开操作菜单</ux-button>
+    <ux-action-sheet v-model="show" :list="list" @click="onItemClick"></ux-action-sheet>
+</template>
+
+<script setup lang="uts">
+import type { ActionSheetItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+
+const list: ActionSheetItem[] = [
+    { text: '拍照' },
+    { text: '从相册选择' },
+    { text: '取消' }
+];
+
+function onItemClick(index: number): void {
+    uni.showToast({ title: '点击了: ' + index, icon: 'none' });
+}
+</script>
+`;
+
+/** 提示信息 */
+const tips = `
+<template>
+    <ux-button @click="show = true">打开操作菜单</ux-button>
+    <ux-action-sheet v-model="show" :list="list" :tips="{ text: '选择操作方式' }" @click="onItemClick"></ux-action-sheet>
+</template>
+
+<script setup lang="uts">
+import type { ActionSheetItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+
+const list: ActionSheetItem[] = [
+    { text: '拍照' },
+    { text: '从相册选择' },
+    { text: '取消' }
+];
+
+function onItemClick(index: number): void {
+    uni.showToast({ title: '点击了: ' + index, icon: 'none' });
+}
+</script>
+`;
+
+/** 辅助文字 */
+const subText = `
+<template>
+    <ux-button @click="show = true">打开操作菜单</ux-button>
+    <ux-action-sheet v-model="show" :list="list" @click="onItemClick"></ux-action-sheet>
+</template>
+
+<script setup lang="uts">
+import type { ActionSheetItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+
+const list: ActionSheetItem[] = [
+    { text: '拍照', subText: '拍摄一张新照片' },
+    { text: '从相册选择', subText: '从手机相册中选择' }
+];
+
+function onItemClick(index: number): void {
+    uni.showToast({ title: '点击了: ' + index, icon: 'none' });
+}
+</script>
+`;
+
+/** 禁用选项 */
+const disabled = `
+<template>
+    <ux-button @click="show = true">打开操作菜单</ux-button>
+    <ux-action-sheet v-model="show" :list="list" @click="onItemClick"></ux-action-sheet>
+</template>
+
+<script setup lang="uts">
+import type { ActionSheetItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+
+const list: ActionSheetItem[] = [
+    { text: '编辑' },
+    { text: '删除', disabled: true },
+    { text: '分享' }
+];
+
+function onItemClick(index: number): void {
+    uni.showToast({ title: '点击了: ' + index, icon: 'none' });
+}
+</script>
+`;
+
+/** 隐藏取消按钮 */
+const noCancel = `
+<template>
+    <ux-button @click="show = true">打开操作菜单</ux-button>
+    <ux-action-sheet v-model="show" :list="list" :cancel-btn="false" @click="onItemClick"></ux-action-sheet>
+</template>
+
+<script setup lang="uts">
+import type { ActionSheetItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+
+const list: ActionSheetItem[] = [
+    { text: '拍照' },
+    { text: '从相册选择' }
+];
+
+function onItemClick(index: number): void {
+    uni.showToast({ title: '点击了: ' + index, icon: 'none' });
+}
+</script>
+`;
+
+export const codes = {
+    basic,
+    tips,
+    subText,
+    disabled,
+    noCancel
+};

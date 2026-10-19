@@ -1,0 +1,58 @@
+<template>
+    <demo-page :title="t('slider.title')" :subtitle="t('slider.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('slider.basicTitle')" :desc="t('slider.basicDesc')" :code="codes.basic">
+            <ux-slider v-model="val1" />
+        </demo-block>
+
+        <!-- 自定义范围 -->
+        <demo-block :title="t('slider.rangeTitle')" :desc="t('slider.rangeDesc')" :code="codes.range">
+            <ux-slider v-model="val2" :start="-50" :end="50" :step="5" />
+        </demo-block>
+
+        <!-- 显示数值 -->
+        <demo-block :title="t('slider.valueTitle')" :desc="t('slider.valueDesc')" :code="codes.showValue">
+            <ux-slider v-model="val3" :show-value="true" />
+        </demo-block>
+
+        <!-- 数值位置与边界数值 -->
+        <demo-block :title="t('slider.positionTitle')" :desc="t('slider.positionDesc')" :code="codes.position">
+            <ux-slider v-model="val6" :show-value="true" value-position="bottom" />
+            <ux-slider v-model="val7" custom-class="slider-gap" :show-value="true" :show-edge-value="true" edge-value-position="top" />
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('slider.colorTitle')" :desc="t('slider.colorDesc')" :code="codes.color">
+            <ux-slider v-model="val4" active-color="#fa3534" inactive-color="#e4e7ed" />
+        </demo-block>
+
+        <!-- 禁用状态 -->
+        <demo-block :title="t('slider.disabledTitle')" :desc="t('slider.disabledDesc')" :code="codes.disabled">
+            <ux-slider v-model="val5" :disabled="true" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const val1 = ref<number>(30);
+const val2 = ref<number>(0);
+const val3 = ref<number>(50);
+const val4 = ref<number>(40);
+const val5 = ref<number>(60);
+const val6 = ref<number>(35);
+const val7 = ref<number>(70);
+</script>
+
+<style lang="scss">
+/* 同一块内两个滑块拉开间距，避开各自预留的上下空间 */
+.slider-gap {
+    margin-top: 20px;
+}
+</style>

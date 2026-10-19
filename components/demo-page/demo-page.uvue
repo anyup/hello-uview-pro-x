@@ -1,0 +1,174 @@
+﻿<template>
+    <!-- App：原生容器滚动，scroll-view 作为最外层 -->
+    <!-- #ifdef APP -->
+    <scroll-view
+        id="demo-page-scroll"
+        class="demo-page"
+        direction="vertical"
+        :scroll-with-animation="true"
+        :show-scrollbar="false"
+        :style="cssVarsStyle"
+        @scroll="onScroll"
+    >
+        <!-- 统一自定义导航栏：覆盖原生导航栏（globalStyle.navigationStyle=custom），背景为主题主色渐变（随主题与暗黑模式联动） -->
+        <ux-navbar
+            v-if="!props.hideNavbar"
+            :title="zhName"
+            :is-back="!props.showTabbar"
+            :background="navBackground"
+            :border-bottom="false"
+            :title-color="$u.color.whiteColor"
+            :back-icon-color="$u.color.whiteColor"
+        ></ux-navbar>
+        <view class="demo-header" v-if="!props.hideHeader">
+            <!-- 主题色装饰条 -->
+            <view class="demo-header-accent"></view>
+            <view class="demo-header-title-row">
+                <text v-if="enName !== ''" class="demo-header-en">{{ enName }}</text>
+                <text class="demo-header-title">{{ zhName }}</text>
+            </view>
+            <text v-if="props.subtitle !== ''" class="demo-header-subtitle">{{ subtitle }}</text>
+        </view>
+        <slot />
+        <!-- 底部标签栏 -->
+        <ux-tabbar v-if="showTabbar" v-model="current" :list="tabbarList"
+            :active-color="$u.color.primary"></ux-tabbar>
+    </scroll-view>
+    <!-- #endif -->
+
+    <!-- 非 App：页面原生滚动，普通 view -->
+    <!-- #ifndef APP -->
+    <view class="demo-page" :style="cssVarsStyle">
+        <!-- 统一自定义导航栏（非 App 端） -->
+        <ux-navbar
+            v-if="!props.hideNavbar"
+            :title="zhName"
+            :is-back="!props.showTabbar"
+            :background="navBackground"
+            :border-bottom="false"
+            :title-color="$u.color.whiteColor"
+            :back-icon-color="$u.color.whiteColor"
+        ></ux-navbar>
+        <view class="demo-header" v-if="!props.hideHeader">
+            <!-- 主题色装饰条 -->
+            <view class="demo-header-accent"></view>
+            <view class="demo-header-title-row">
+                <text v-if="enName !== ''" class="demo-header-en">{{ enName }}</text>
+                <text class="demo-header-title">{{ zhName }}</text>
+            </view>
+            <text v-if="props.subtitle !== ''" class="demo-header-subtitle">{{ subtitle }}</text>
+        </view>
+        <slot />
+        <!-- 底部标签栏 -->
+        <ux-tabbar v-if="showTabbar" v-model="current" :list="tabbarList"
+            :active-color="$u.color.primary"></ux-tabbar>
+    </view>
+    <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import { $u, useLocale, useTheme, type TabbarItem } from '@/uni_modules/uview-pro-x'
+
+	defineOptions({
+		name: 'demo-page',
+		styleIsolation: 'app'
+	});
+
+	const props = defineProps<{
+		title: string;
+		subtitle: string;
+		showTabbar?: boolean;
+		hideHeader?: boolean;
+		hideNavbar?: boolean;
+	}>();
+	const emit = defineEmits(['scroll']);
+	const current = ref<number>(0);
+	const { t } = useLocale('demo');
+
+	// 头部标题拆分：title 为「英文名 中文名…」格式（首段英文字母开头、次段以中文字符开头）时，
+	// 首段作为主题色英文标签，其余部分作为中文大标题；否则整体显示（英文环境、纯中文标题、首页等）
+	const titleParts = computed<string[]>(() => props.title.split(' '));
+	const hasEnTag = computed<boolean>(() => {
+		const p = titleParts.value;
+		if (p.length < 2 || p[0].length === 0 || p[1].length === 0) {
+			return false;
+		}
+		// 首段须为英文字母开头
+		const c0 = p[0].charCodeAt(0);
+		const isEnStart = (c0 >= 65 && c0 <= 90) || (c0 >= 97 && c0 <= 122);
+		if (!isEnStart) {
+			return false;
+		}
+		// 次段须以中文字符开头（U+4E00 ~ U+9FFF）
+		const c1 = p[1].charCodeAt(0);
+		return c1 >= 0x4E00 && c1 <= 0x9FFF;
+	});
+	const enName = computed<string>(() => (hasEnTag.value ? titleParts.value[0] : ''));
+	const zhName = computed<string>(() => (hasEnTag.value ? titleParts.value.slice(1).join(' ') : props.title));
+
+	// 当前主题 CSS 变量，注入到根元素使全页 SCSS/CSS 变量随主题/暗黑模式联动
+	const { cssVars } = useTheme();
+	const cssVarsStyle = computed(() => $u.toStyle(cssVars.value));
+
+	// 导航栏背景：主题主色左→右渐变（primary → 与黑色 50% 混合的加深色），随主题/暗黑模式联动，标题置白字
+	const navBackground = computed<UTSJSONObject>(() => {
+		const style = new UTSJSONObject();
+		const end = $u.mixColor($u.color.primary, '#000000', 0.5);
+		style['background-image'] = 'linear-gradient(90deg, ' + $u.color.primary + ' 0%, ' + end + ' 100%)';
+		return style;
+	});
+
+	// App：scroll-view 容器滚动
+	// #ifdef APP
+	const onScroll = (e: UniScrollEvent) => {
+		emit('scroll', e);
+	};
+	// #endif
+
+	// 非 App：页面原生滚动
+	// #ifndef APP
+	// 小程序自定义组件不支持页面 onPageScroll，需由父级手动传 scrollTop
+	// #ifndef MP
+	onPageScroll((e) => {
+		// 统一事件结构为 { detail: { scrollTop } }，与 App scroll-view 的 @scroll 一致
+		emit('scroll', { detail: { scrollTop: e.scrollTop } });
+	});
+	// #endif
+	// #endif
+
+	// 定义响应式数据
+	const tabbarList = computed<TabbarItem[]>(() => {
+		return [
+			{
+				text: t('tabbarComponents.title'),
+				iconPath: 'home',
+				selectedIconPath: 'home-fill',
+				pagePath: '/pages/tabbar/components',
+				customIcon: true
+			},
+			{
+				text: t('tabbarLibrary.title'),
+				iconPath: 'bag',
+				selectedIconPath: 'bag-fill',
+				pagePath: '/pages/tabbar/library',
+				customIcon: true
+			},
+			{
+				text: t('tabbarAbout.title'),
+				iconPath: 'setting',
+				selectedIconPath: 'setting-fill',
+				pagePath: '/pages/tabbar/about',
+				customIcon: true
+			}
+		];
+	});
+</script>
+
+<style lang="scss">
+@import '@/uni_modules/uview-pro-x/theme.scss';
+
+// 页面根容器：背景随主题/暗黑模式联动（CSS 变量注入在本根元素上，覆盖 page 默认背景）
+.demo-page {
+    background-color: $u-bg-color;
+}
+</style>

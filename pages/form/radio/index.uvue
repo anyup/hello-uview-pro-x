@@ -1,0 +1,161 @@
+<template>
+    <demo-page :title="t('radio.title')" :subtitle="t('radio.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('radio.basicTitle')" :desc="t('radio.basicDesc')" :code="codes.basic">
+            <ux-radio-group v-model="radioValue" :active-color="activeColor" :shape="shape" :size="size" :width="width" :wrap="wrap" @change="onGroupChange">
+                <ux-radio v-for="(item, index) in list" :key="index" :label="item.label" :name="item.value" :disabled="item.disabled" />
+            </ux-radio-group>
+            <text class="radio-result">{{ t('radio.resultLabel') }}: {{ radioValue }}</text>
+        </demo-block>
+
+        <!-- 形状 -->
+        <demo-block :title="t('radio.shapeTitle')" :desc="t('radio.shapeDesc')" :code="codes.shape">
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in shapeList" :key="index" size="small" shape="round" :type="shape === item.value ? 'primary' : 'default'" custom-class="btn-item" @click="setShape(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 尺寸 -->
+        <demo-block :title="t('radio.sizeTitle')" :desc="t('radio.sizeDesc')" :code="codes.size">
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in sizeList" :key="index" size="small" shape="round" :type="size.toString() === item.value ? 'primary' : 'default'" custom-class="btn-item" @click="setSize(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 激活颜色 -->
+        <demo-block :title="t('radio.colorTitle')" :desc="t('radio.colorDesc')" :code="codes.color">
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in colorList" :key="index" size="small" shape="round" :type="activeColor === item.value ? 'primary' : 'default'" custom-class="btn-item" @click="setColor(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 禁用 -->
+        <demo-block :title="t('radio.disabledTitle')" :desc="t('radio.disabledDesc')" :code="codes.disabled">
+            <view class="btn-wrap">
+                <ux-button shape="round" :type="disabledFirst ? 'primary' : 'default'" custom-class="btn-item" size="small" @click="toggleDisabled">{{ t('radio.disabledBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type FruitItem = {
+        label: string;
+        value: string;
+        disabled: boolean;
+    };
+
+    type ShapeItem = {
+        value: string;
+        label: string;
+    };
+
+    type SizeItem = {
+        value: string;
+        label: string;
+    };
+
+    type ColorItem = {
+        value: string;
+        label: string;
+    };
+
+    /** 选中的值 */
+    const radioValue = ref<string>('荔枝');
+    /** 选项列表 */
+    const list = ref<FruitItem[]>([
+        { label: '荔枝', value: '荔枝', disabled: false },
+        { label: '香蕉', value: '香蕉', disabled: false },
+        { label: '橙子', value: '橙子', disabled: false },
+        { label: '草莓', value: '草莓', disabled: false }
+    ]);
+    /** 形状 */
+    const shape = ref<string>('circle');
+    /** 激活颜色 */
+    const activeColor = ref<string>('');
+    /** 尺寸 */
+    const size = ref<string>('default');
+    /** 是否换行 */
+    const wrap = ref<boolean>(false);
+    /** 每个 radio 宽度 */
+    const width = ref<string>('auto');
+    /** 是否禁用第一个 */
+    const disabledFirst = ref<boolean>(false);
+
+    const shapeList: ShapeItem[] = [
+        { value: 'circle', label: 'circle' },
+        { value: 'square', label: 'square' }
+    ];
+
+    const sizeList: SizeItem[] = [
+        { value: 'small', label: 'small' },
+        { value: 'default', label: 'default' },
+        { value: 'large', label: 'large' },
+        { value: '30', label: '30' }
+    ];
+
+    const colorList: ColorItem[] = [
+        { value: '', label: 'primary' },
+        { value: '#fa3534', label: 'error' },
+        { value: '#ff9900', label: 'warning' },
+        { value: '#19be6b', label: 'success' },
+        { value: '#909399', label: 'info' }
+    ];
+
+    /** 设置形状 */
+    const setShape = (val: string) => {
+        shape.value = val;
+    };
+
+    /** 设置尺寸 */
+    const setSize = (val: string) => {
+        size.value = val;
+    };
+
+    /** 设置激活颜色 */
+    const setColor = (val: string) => {
+        activeColor.value = val;
+    };
+
+    /** 切换禁用第一个 */
+    const toggleDisabled = () => {
+        disabledFirst.value = !disabledFirst.value;
+        list.value[0].disabled = disabledFirst.value;
+    };
+
+    /** group change 事件 */
+    const onGroupChange = (val: string | number) => {
+        console.log('radioGroupChange', val);
+    };
+</script>
+
+<style lang="scss">
+
+    /* 按钮容器：水平排列 + 自动换行 */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 按钮间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 选中结果文字 */
+    .radio-result {
+        margin-top: 12px;
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

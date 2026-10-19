@@ -1,0 +1,106 @@
+<template>
+    <demo-page :title="t('image.title')" :subtitle="t('image.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('image.basicTitle')" :desc="t('image.basicDesc')" :code="codes.basic">
+            <view class="img-row">
+                <ux-image :src="src" width="100" height="100" />
+                <ux-image custom-class="img-gap" :src="srcLg" width="200" height="200" />
+            </view>
+        </demo-block>
+
+        <!-- 圆角与形状 -->
+        <demo-block :title="t('image.radiusTitle')" :desc="t('image.radiusDesc')" :code="codes.radius">
+            <!-- shape 两档全演示：square 小圆角(4px，默认) / circle 正圆 -->
+            <view class="img-row">
+                <ux-image :src="src" width="100" height="100" shape="square" />
+                <ux-image custom-class="img-gap" :src="src" width="100" height="100" shape="circle" />
+            </view>
+            <!-- border-radius 一经传入即优先于 shape 预设，传 0 即真直角 -->
+            <view class="img-row">
+                <ux-image :src="src" width="100" height="100" :border-radius="10" />
+                <ux-image custom-class="img-gap" :src="src" width="100" height="100" :border-radius="0" />
+            </view>
+        </demo-block>
+
+        <!-- 加载失败状态 -->
+        <demo-block :title="t('image.errorTitle')" :desc="t('image.errorDesc')" :code="codes.error">
+            <ux-image src="https://invalid.example.com/not-found.png" error-icon="close-circle" width="100" height="100" />
+        </demo-block>
+
+        <!-- 裁剪模式 -->
+        <demo-block :title="t('image.modeTitle')" :desc="t('image.modeDesc')" :code="codes.mode">
+            <view class="img-row">
+                <ux-image :src="wideSrc" width="100" height="100" mode="aspectFit" />
+                <ux-image custom-class="img-gap" :src="wideSrc" width="100" height="100" mode="aspectFill" />
+            </view>
+        </demo-block>
+
+        <!-- 淡入动画 -->
+        <demo-block :title="t('image.fadeTitle')" :desc="t('image.fadeDesc')" :code="codes.fade">
+            <view class="img-row">
+                <ux-image :src="src" width="100" height="100" :fade="false" :lazy-load="false" />
+                <ux-image custom-class="img-gap" :src="src" width="100" height="100" :fade="true" :duration="500" />
+            </view>
+        </demo-block>
+
+        <!-- 背景色占位 -->
+        <demo-block :title="t('image.bgTitle')" :desc="t('image.bgDesc')" :code="codes.bg">
+            <view class="img-row">
+                <ux-image :src="bgFailSrc" width="100" height="100" />
+                <ux-image custom-class="img-gap" :src="bgFailSrc" width="100" height="100" :bg-color="'#f5222d'" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义插槽 -->
+        <demo-block :title="t('image.slotTitle')" :desc="t('image.slotDesc')" :code="codes.slot">
+            <view class="img-row">
+                <ux-image :src="slotFailSrc" width="100" height="100">
+                    <template #error>
+                        <view :style="{ display: 'flex', flexDirection: 'column', alignItems: 'center' }">
+                            <ux-icon name="info-circle" color="#f5222d" size="20" />
+                            <text :style="{ fontSize: '10px', color: '#f5222d', marginTop: '4px' }">自定义失败</text>
+                        </view>
+                    </template>
+                </ux-image>
+                <ux-image custom-class="img-gap" :src="slowSrc" width="100" height="100" loading-icon="star" :show-loading="true" :show-error="false" />
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 示例图片地址（placehold.co 占位图） */
+    const src = 'https://placehold.co/100x100.png';
+    /** 大尺寸占位图地址（200px 放大图，与默认 100px 形成尺寸对比） */
+    const srcLg = 'https://placehold.co/200x200.png';
+    /** 宽幅图地址（用于对比裁剪模式 aspectFit / aspectFill） */
+    const wideSrc = 'https://placehold.co/600x200.png';
+    /** 慢加载图片地址（用于 loading 态演示） */
+    const slowSrc = 'https://placehold.co/100x100.png?delay=3000';
+    /** 加载失败图片地址（让背景色占位效果常驻可见，对应 bg 演示） */
+    const bgFailSrc = 'https://invalid.example.com/bg-not-found.png';
+    /** 加载失败图片地址（用于 error 插槽演示） */
+    const slotFailSrc = 'https://invalid.example.com/slot-not-found.png';
+</script>
+
+<style lang="scss">
+
+    .img-row {
+        display: flex;
+        flex-direction: row;
+        /* 窄屏下同行图片总宽（如 100 + 12 间距 + 200）超出内容区时换行，避免横向撑出屏幕 */
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 8px;
+    }
+
+    .img-gap {
+        margin-left: 12px;
+    }
+</style>

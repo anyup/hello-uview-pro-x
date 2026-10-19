@@ -1,0 +1,275 @@
+/**
+ * noticeBar 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 横向 - 基础用法 */
+const hBasic = `
+<template>
+    <ux-notice-bar :list="list" @click="onClick"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+
+function onClick(): void {
+    uni.showToast({ title: '点击了通知', icon: 'none' });
+}
+</script>
+`;
+
+/** 横向 - 配置主题 */
+const hTheme = `
+<template>
+    <ux-notice-bar type="primary" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar type="success" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar type="error" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar type="info" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar type="none" :list="list"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+</script>
+
+<style scoped>
+.gap {
+    height: 12px;
+}
+</style>
+`;
+
+/** 横向 - 图标配置 */
+const hIcon = `
+<template>
+    <ux-notice-bar :volume-icon="false" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar :more-icon="true" :list="list" @get-more="onGetMore"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar :close-icon="true" :list="list" @close="onClose"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+
+function onGetMore(): void {
+    uni.showToast({ title: '点击了更多', icon: 'none' });
+}
+
+function onClose(): void {
+    uni.showToast({ title: '关闭了通知', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.gap {
+    height: 12px;
+}
+</style>
+`;
+
+/** 横向 - 自定义颜色 */
+const hColor = `
+<template>
+    <ux-notice-bar color="#2979ff" bg-color="#ecf5ff" :list="list"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+</script>
+`;
+
+/** 横向 - 播放控制 */
+const hControl = `
+<template>
+    <ux-notice-bar :speed="200" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar :play-state="playState" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <view class="btn" @click="onToggle">
+        <text class="btn-text">{{ playing ? '暂停' : '播放' }}</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+
+const playing = ref<boolean>(true);
+const playState = ref<string>('play');
+
+function onToggle(): void {
+    playing.value = !playing.value;
+    playState.value = playing.value ? 'play' : 'paused';
+}
+</script>
+
+<style scoped>
+.gap {
+    height: 12px;
+}
+.btn {
+    background-color: #2979ff;
+    border-radius: 4px;
+    padding-top: 8px;
+    padding-right: 16px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.btn-text {
+    font-size: 14px;
+    color: #ffffff;
+}
+</style>
+`;
+
+/** 垂直 - 基础用法 */
+const vBasic = `
+<template>
+    <ux-notice-bar mode="vertical" :list="list" @click="onClick"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+
+function onClick(): void {
+    uni.showToast({ title: '点击了通知', icon: 'none' });
+}
+</script>
+`;
+
+/** 垂直 - 配置主题 */
+const vTheme = `
+<template>
+    <ux-notice-bar mode="vertical" type="primary" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" type="success" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" type="info" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" type="none" :list="list"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+</script>
+
+<style scoped>
+.gap {
+    height: 12px;
+}
+</style>
+`;
+
+/** 垂直 - 图标配置 */
+const vIcon = `
+<template>
+    <ux-notice-bar mode="vertical" :volume-icon="false" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" :more-icon="true" :list="list" @get-more="onGetMore"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" :close-icon="true" :list="list" @close="onClose"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+
+function onGetMore(): void {
+    uni.showToast({ title: '点击了更多', icon: 'none' });
+}
+
+function onClose(): void {
+    uni.showToast({ title: '关闭了通知', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.gap {
+    height: 12px;
+}
+</style>
+`;
+
+/** 垂直 - 自定义颜色 */
+const vColor = `
+<template>
+    <ux-notice-bar mode="vertical" color="#2979ff" bg-color="#ecf5ff" :list="list"></ux-notice-bar>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+</script>
+`;
+
+/** 垂直 - 播放控制 */
+const vControl = `
+<template>
+    <ux-notice-bar mode="vertical" :play-state="playState" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" :duration="4000" :list="list"></ux-notice-bar>
+    <view class="gap"></view>
+    <ux-notice-bar mode="vertical" :disable-touch="false" :list="list" @end="onEnd"></ux-notice-bar>
+    <view class="gap"></view>
+    <view class="btn" @click="onToggle">
+        <text class="btn-text">{{ playing ? '暂停' : '播放' }}</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+const list = ['这是一条重要的公告消息', '今天下午三点召开项目评审会议', '系统将于本周六凌晨进行升级维护', '新版本组件库已发布，欢迎体验'];
+
+const playing = ref<boolean>(true);
+const playState = ref<string>('play');
+
+function onToggle(): void {
+    playing.value = !playing.value;
+    playState.value = playing.value ? 'play' : 'paused';
+}
+
+function onEnd(): void {
+    uni.showToast({ title: '轮播结束', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.gap {
+    height: 12px;
+}
+.btn {
+    background-color: #2979ff;
+    border-radius: 4px;
+    padding-top: 8px;
+    padding-right: 16px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.btn-text {
+    font-size: 14px;
+    color: #ffffff;
+}
+</style>
+`;
+
+export const codes = {
+    hBasic,
+    hTheme,
+    hIcon,
+    hColor,
+    hControl,
+    vBasic,
+    vTheme,
+    vIcon,
+    vColor,
+    vControl
+};

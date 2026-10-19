@@ -1,0 +1,118 @@
+<template>
+    <demo-page :title="t('toast.title')" :subtitle="t('toast.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('toast.basicTitle')" :desc="t('toast.basicDesc')" :code="codes.basic">
+            <ux-button :text="t('toast.basicText')" type="primary" shape="round" @click="showSuccess" />
+        </demo-block>
+
+        <!-- 提示类型 -->
+        <demo-block :title="t('toast.typeTitle')" :desc="t('toast.typeDesc')" :code="codes.type">
+            <view class="toast-row">
+                <ux-button custom-class="toast-item" :text="types[0]" type="primary" size="small" shape="round" @click="showType('primary')" />
+                <ux-button custom-class="toast-item" :text="types[1]" type="success" size="small" shape="round" @click="showType('success')" />
+                <ux-button custom-class="toast-item" :text="types[2]" type="error" size="small" shape="round" @click="showType('error')" />
+                <ux-button custom-class="toast-item" :text="types[3]" type="warning" size="small" shape="round" @click="showType('warning')" />
+            </view>
+        </demo-block>
+
+        <!-- 显示位置 -->
+        <demo-block :title="t('toast.positionTitle')" :desc="t('toast.positionDesc')" :code="codes.position">
+            <view class="toast-row">
+                <ux-button custom-class="toast-item" :text="t('toast.top')" type="success" size="small" shape="round" @click="showPosition('top')" />
+                <ux-button custom-class="toast-item" :text="t('toast.center')" type="success" size="small" shape="round" @click="showPosition('center')" />
+                <ux-button custom-class="toast-item" :text="t('toast.bottom')" type="success" size="small" shape="round" @click="showPosition('bottom')" />
+            </view>
+        </demo-block>
+
+        <!-- 图标开关 -->
+        <demo-block :title="t('toast.iconTitle')" :desc="t('toast.iconDesc')" :code="codes.noIcon">
+            <ux-button :text="t('toast.openNoIcon')" type="warning" shape="round" @click="showNoIcon" />
+        </demo-block>
+
+        <!-- 加载提示 -->
+        <demo-block :title="t('toast.loadingTitle')" :desc="t('toast.loadingDesc')" :code="codes.loading">
+            <ux-button :text="t('toast.openLoading')" type="info" shape="round" @click="showLoading" />
+        </demo-block>
+
+        <!-- toast 组件实例 -->
+        <ux-toast ref="toastRef" />
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 提示类型列表 */
+    const types = ['primary', 'success', 'error', 'warning'];
+
+    /** toast 组件实例 */
+    const toastRef = ref<any>();
+
+    /** 基础用法：成功提示 */
+    const showSuccess = () => {
+        toastRef.value?.show?.({
+            title: t('toast.successText'),
+            type: 'success',
+            duration: 2000
+        });
+    };
+
+    /** 按类型提示 */
+    const showType = (type: string) => {
+        toastRef.value?.show?.({
+            title: t('toast.typeText') + type,
+            type,
+            duration: 2000
+        });
+    };
+
+    /** 按位置提示 */
+    const showPosition = (position: string) => {
+        toastRef.value?.show?.({
+            title: t('toast.positionText'),
+            position,
+            type: 'success',
+            duration: 2000
+        });
+    };
+
+    /** 不显示图标 */
+    const showNoIcon = () => {
+        toastRef.value?.show?.({
+            title: t('toast.noIconText'),
+            type: 'warning',
+            icon: false,
+            duration: 2000
+        });
+    };
+
+    /** 加载提示：2 秒后自动关闭 */
+    const showLoading = () => {
+        toastRef.value?.show?.({
+            title: t('toast.loadingText'),
+            type: 'default',
+            duration: 2000,
+            loading: true
+        });
+    };
+</script>
+
+<style lang="scss">
+
+    .toast-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .toast-item {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+</style>

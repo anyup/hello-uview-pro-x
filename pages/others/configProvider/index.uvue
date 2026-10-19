@@ -1,0 +1,140 @@
+<template>
+    <demo-page :title="t('configProvider.title')" :subtitle="t('configProvider.subtitle')">
+
+        <ux-config-provider
+            :current-theme="currentTheme"
+            :dark-mode="currentMode"
+            :current-locale="currentLocale"
+            @theme-change="onThemeChange"
+            @mode-change="onModeChange"
+        >
+
+            <!-- 基础用法 -->
+            <demo-block :title="t('configProvider.basicTitle')" :desc="t('configProvider.basicDesc')" :code="codes.basic">
+                <view class="config-provider-banner">
+                    <text class="config-provider-banner-text">{{ t('configProvider.basicText') }}</text>
+                </view>
+            </demo-block>
+
+            <!-- 主题注入 -->
+            <demo-block :title="t('configProvider.themeTitle')" :desc="t('configProvider.themeDesc')" :code="codes.theme">
+                <view class="config-provider-row">
+                    <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" :text="t('configProvider.btnDefault')" @click="switchTheme('purple')" />
+                    <ux-button custom-class="config-provider-item" type="success" size="small" shape="round" :text="t('configProvider.btnGreen')" @click="switchTheme('green')" />
+                    <ux-button custom-class="config-provider-item" type="warning" size="small" shape="round" :text="t('configProvider.btnOrange')" @click="switchTheme('orange')" />
+                </view>
+            </demo-block>
+
+            <!-- 暗黑模式 -->
+            <demo-block :title="t('configProvider.darkTitle')" :desc="t('configProvider.darkDesc')" :code="codes.dark">
+                <view class="config-provider-row">
+                    <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" :text="t('configProvider.btnLight')" @click="switchMode('light')" />
+                    <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" :text="t('configProvider.btnDark')" @click="switchMode('dark')" />
+                    <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" :text="t('configProvider.btnAuto')" @click="switchMode('auto')" />
+                </view>
+            </demo-block>
+
+            <!-- 国际化 -->
+            <demo-block :title="t('configProvider.localeTitle')" :desc="t('configProvider.localeDesc')" :code="codes.locale">
+                <view class="config-provider-row">
+                    <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" :text="t('configProvider.btnZh')" @click="switchLocale('zh-CN')" />
+                    <ux-button custom-class="config-provider-item" type="primary" size="small" shape="round" :text="t('configProvider.btnEn')" @click="switchLocale('en-US')" />
+                </view>
+            </demo-block>
+
+            <!-- 事件回调 -->
+            <demo-block :title="t('configProvider.eventTitle')" :desc="t('configProvider.eventDesc')" :code="codes.events">
+                <view class="config-provider-events">
+                    <text class="config-provider-event-line">{{ t('configProvider.stateTheme') }}{{ currentTheme }}</text>
+                    <text class="config-provider-event-line">{{ t('configProvider.stateMode') }}{{ currentMode }}</text>
+                    <text class="config-provider-event-line">{{ eventText }}</text>
+                </view>
+            </demo-block>
+
+        </ux-config-provider>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, useTheme } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t, getCurrentLocale } = useLocale('demo');
+    const { getCurrentTheme, getDarkMode } = useTheme();
+
+    /** 当前主题名（初始读全局主题，之后由 prop 变化驱动切换） */
+    const themeInfo = getCurrentTheme();
+    const currentTheme = ref(themeInfo != null ? themeInfo.name : '');
+
+    /** 当前暗黑模式（初始读全局模式） */
+    const currentMode = ref<string>(getDarkMode());
+
+    /** 当前语言名（初始读全局语言） */
+    const localeInfo = getCurrentLocale();
+    const currentLocale = ref(localeInfo != null ? localeInfo.name : '');
+
+    /** 最近一次事件记录 */
+    const eventText = ref(t('configProvider.eventNo'));
+
+    /** 切换主题：更新绑定值，由组件 watch 触发全局 setTheme */
+    const switchTheme = (name: string) => {
+        currentTheme.value = name;
+    };
+
+    /** 切换暗黑模式 */
+    const switchMode = (mode: string) => {
+        currentMode.value = mode;
+    };
+
+    /** 切换语言 */
+    const switchLocale = (name: string) => {
+        currentLocale.value = name;
+    };
+
+    /** 主题变化事件 */
+    const onThemeChange = (name: string) => {
+        eventText.value = t('configProvider.eventTheme') + name;
+    };
+
+    /** 暗黑模式变化事件 */
+    const onModeChange = (mode: string) => {
+        eventText.value = t('configProvider.eventMode') + mode;
+    };
+</script>
+
+<style lang="scss">
+
+    .config-provider-banner {
+        padding: 12px 15px;
+        border-radius: 6px;
+        background-color: var(--u-type-primary-light, #ecf5ff);
+    }
+
+    .config-provider-banner-text {
+        font-size: 13px;
+        color: var(--u-type-primary, #2979ff);
+    }
+
+    .config-provider-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .config-provider-item {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+
+    .config-provider-events {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .config-provider-event-line {
+        font-size: 13px;
+        color: #606266;
+        line-height: 1.8;
+    }
+</style>

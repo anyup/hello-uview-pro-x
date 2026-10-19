@@ -1,0 +1,305 @@
+/**
+ * circleProgress 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="wrap">
+        <ux-circle-progress :percent="65" type="primary">
+            <text class="percent">65%</text>
+        </ux-circle-progress>
+    </view>
+</template>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+.percent {
+    font-size: 20px;
+    font-weight: bold;
+    color: #303133;
+}
+</style>
+`;
+
+/** 主题颜色 */
+const type = `
+<template>
+    <view class="row">
+        <view class="item" v-for="(item, index) in typeList" :key="index">
+            <ux-circle-progress :percent="70" :type="item.type" :width="80">
+                <text class="percent-small">70%</text>
+            </ux-circle-progress>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+const typeList = [
+    { type: 'primary', label: 'primary' },
+    { type: 'success', label: 'success' },
+    { type: 'warning', label: 'warning' },
+    { type: 'error', label: 'error' },
+    { type: 'info', label: 'info' }
+];
+</script>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px 0 5px;
+}
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 12px;
+}
+.percent-small {
+    font-size: 13px;
+    font-weight: bold;
+    color: #303133;
+}
+</style>
+`;
+
+/** 尺寸与线宽 */
+const size = `
+<template>
+    <view class="row">
+        <view class="item">
+            <ux-circle-progress :percent="60" type="primary" :width="70" :border-width="4">
+                <text class="percent-small">60%</text>
+            </ux-circle-progress>
+            <text class="label">140</text>
+        </view>
+        <view class="item">
+            <ux-circle-progress :percent="60" type="primary" :width="100" :border-width="7">
+                <text class="percent">60%</text>
+            </ux-circle-progress>
+            <text class="label">200</text>
+        </view>
+        <view class="item">
+            <ux-circle-progress :percent="60" type="primary" :width="120" :border-width="12">
+                <text class="percent-small">60%</text>
+            </ux-circle-progress>
+            <text class="label">240</text>
+        </view>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px 0 5px;
+}
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 12px;
+}
+.percent {
+    font-size: 20px;
+    font-weight: bold;
+    color: #303133;
+}
+.percent-small {
+    font-size: 13px;
+    font-weight: bold;
+    color: #303133;
+}
+.label {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #c0c4cc;
+}
+</style>
+`;
+
+/** 动态进度 */
+const dynamic = `
+<template>
+    <view class="wrap">
+        <ux-circle-progress :percent="percent" type="success">
+            <text class="percent">{{ percent + '%' }}</text>
+        </ux-circle-progress>
+    </view>
+    <view class="btn-row">
+        <view class="btn" @click="reduce">
+            <text class="btn-text">-</text>
+        </view>
+        <text class="btn-value">{{ percent + '%' }}</text>
+        <view class="btn" @click="add">
+            <text class="btn-text">+</text>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+const percent = ref<number>(65);
+
+function add(): void {
+    percent.value = Math.min(percent.value + 10, 100);
+}
+
+function reduce(): void {
+    percent.value = Math.max(percent.value - 10, 0);
+}
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+.percent {
+    font-size: 20px;
+    font-weight: bold;
+    color: #303133;
+}
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+.btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background-color: #2979ff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.btn-text {
+    font-size: 22px;
+    color: #ffffff;
+    line-height: 22px;
+}
+.btn-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #303133;
+    margin: 0 20px;
+    min-width: 60px;
+    text-align: center;
+}
+</style>
+`;
+
+/** 自定义样式 */
+const custom = `
+<template>
+    <view class="wrap">
+        <ux-circle-progress
+            :percent="percent"
+            :active-color="activeColor"
+            :inactive-color="inactiveColor"
+            :bg-color="bgColor"
+            :duration="duration"
+        >
+            <text class="percent">{{ percent + '%' }}</text>
+        </ux-circle-progress>
+    </view>
+    <view class="btn-row">
+        <view class="btn" @click="reduce">
+            <text class="btn-text">-</text>
+        </view>
+        <text class="btn-value">{{ percent + '%' }}</text>
+        <view class="btn" @click="add">
+            <text class="btn-text">+</text>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+const percent = ref<number>(80);
+const activeColor = '#19be6b';
+const inactiveColor = '#ebeef5';
+const bgColor = '#f4f6f8';
+const duration = 2000;
+
+function add(): void {
+    percent.value = Math.min(percent.value + 10, 100);
+}
+
+function reduce(): void {
+    percent.value = Math.max(percent.value - 10, 0);
+}
+</script>
+
+<style scoped>
+.wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+.percent {
+    font-size: 20px;
+    font-weight: bold;
+    color: #303133;
+}
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+.btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background-color: #19be6b;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.btn-text {
+    font-size: 22px;
+    color: #ffffff;
+    line-height: 22px;
+}
+.btn-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #303133;
+    margin: 0 20px;
+    min-width: 60px;
+    text-align: center;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    type,
+    size,
+    dynamic,
+    custom
+};

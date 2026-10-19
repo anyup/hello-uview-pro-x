@@ -1,0 +1,28 @@
+<template>
+    <demo-page :title="t('trim.title')" :subtitle="t('trim.subtitle')">
+        <!-- 基础用法 -->
+        <demo-block :title="t('trim.basicTitle')">
+            <view class="demo-item" :class="index === baseList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in baseList" :key="index">
+                <text class="demo-desc">{{ item.desc }}</text>
+                <text class="demo-result">{{ item.result }}</text>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+const baseList = [
+    { desc: '$u.trim(" hello ")', result: `"${$u.trim(' hello ')}"` },
+    { desc: '$u.trim(" hello ", "left")', result: `"${$u.trim(' hello ', 'left')}"` },
+    { desc: '$u.trim(" hello ", "right")', result: `"${$u.trim(' hello ', 'right')}"` },
+    { desc: '$u.trim(" h e l l o ", "all")', result: `"${$u.trim(' h e l l o ', 'all')}"` },
+];
+</script>
+
+<style lang="scss">
+/* 使用全局 demo.scss 样式 */
+</style>

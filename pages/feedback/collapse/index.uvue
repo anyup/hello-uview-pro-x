@@ -1,0 +1,210 @@
+<template>
+    <demo-page
+        :subtitle="t('collapse.subtitle')"
+        :title="t('collapse.title')"
+    >
+
+        <!-- 基础用法（非手风琴模式） -->
+        <demo-block
+            :code="codes.basic"
+            :desc="t('collapse.basicDesc')"
+            :title="t('collapse.basicTitle')"
+        >
+            <ux-collapse :accordion="false">
+                <ux-collapse-item :title="t('collapse.basicItem1Head')">
+                    <text class="collapse-body-text">{{ t('collapse.basicItem1Body') }}</text>
+                </ux-collapse-item>
+                <ux-collapse-item :title="t('collapse.basicItem2Head')">
+                    <text class="collapse-body-text">{{ t('collapse.basicItem2Body') }}</text>
+                </ux-collapse-item>
+                <ux-collapse-item :title="t('collapse.basicItem3Head')">
+                    <text class="collapse-body-text">{{ t('collapse.basicItem3Body') }}</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+        <!-- 手风琴模式 -->
+        <demo-block
+            :code="codes.accordion"
+            :desc="t('collapse.accordionDesc')"
+            :title="t('collapse.accordionTitle')"
+        >
+            <ux-collapse accordion>
+                <ux-collapse-item :title="t('collapse.accordionItem1Head')">
+                    <text class="collapse-body-text">{{ t('collapse.accordionItem1Body') }}</text>
+                </ux-collapse-item>
+                <ux-collapse-item :title="t('collapse.accordionItem2Head')">
+                    <text class="collapse-body-text">{{ t('collapse.accordionItem2Body') }}</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+        <!-- 初始展开 -->
+        <demo-block
+            :code="codes.initial"
+            :desc="t('collapse.initialDesc')"
+            :title="t('collapse.initialTitle')"
+        >
+            <ux-collapse>
+                <ux-collapse-item
+                    open
+                    :title="t('collapse.initialItem1Head')"
+                >
+                    <text class="collapse-body-text">{{ t('collapse.initialItem1Body') }}</text>
+                </ux-collapse-item>
+                <ux-collapse-item :title="t('collapse.initialItem2Head')">
+                    <text class="collapse-body-text">{{ t('collapse.initialItem2Body') }}</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+        <!-- 自定义标题 -->
+        <demo-block
+            :code="codes.custom"
+            :desc="t('collapse.customDesc')"
+            :title="t('collapse.customTitle')"
+        >
+            <ux-collapse>
+                <ux-collapse-item>
+                    <template #title>
+                        <view class="collapse-custom-head">
+                            <ux-icon
+                                color="#fa3534"
+                                name="star"
+                                size="15"
+                            />
+                            <text class="collapse-custom-head-text">{{ t('collapse.customHead') }}</text>
+                        </view>
+                    </template>
+                    <text class="collapse-body-text">{{ t('collapse.customBody') }}</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+        <!-- 自定义样式 -->
+        <demo-block
+            :code="codes.customStyle"
+            :desc="t('collapse.customStyleDesc')"
+            :title="t('collapse.customStyleTitle')"
+        >
+            <ux-collapse
+                arrow-color="#2979ff"
+                :body-style="customBodyStyle"
+                :head-style="customHeadStyle"
+                :item-style="customItemStyle"
+            >
+                <ux-collapse-item :title="t('collapse.customStyleItem1Head')">
+                    <text class="collapse-body-text">{{ t('collapse.customStyleItem1Body') }}</text>
+                </ux-collapse-item>
+                <ux-collapse-item :title="t('collapse.customStyleItem2Head')">
+                    <text class="collapse-body-text">{{ t('collapse.customStyleItem2Body') }}</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+        <!-- 禁用状态 -->
+        <demo-block
+            :code="codes.disabled"
+            :desc="t('collapse.disabledDesc')"
+            :title="t('collapse.disabledTitle')"
+        >
+            <ux-collapse>
+                <ux-collapse-item
+                    disabled
+                    :title="t('collapse.disabledHead')"
+                >
+                    <text class="collapse-body-text">{{ t('collapse.disabledBody') }}</text>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+        <!-- 嵌套折叠 -->
+        <demo-block
+            :code="codes.nested"
+            :desc="t('collapse.nestedDesc')"
+            :title="t('collapse.nestedTitle')"
+        >
+            <ux-collapse>
+                <ux-collapse-item
+                    open
+                    :title="t('collapse.nestedOuterHead')"
+                >
+                    <text class="collapse-body-text">{{ t('collapse.nestedOuterBody') }}</text>
+                    <ux-collapse :item-style="nestedItemStyle">
+                        <ux-collapse-item :title="t('collapse.nestedInnerHead1')">
+                            <text class="collapse-body-text">{{ t('collapse.nestedInnerBody1') }}</text>
+                        </ux-collapse-item>
+                        <ux-collapse-item
+                            open
+                            :title="t('collapse.nestedInnerHead2')"
+                        >
+                            <text class="collapse-body-text">{{ t('collapse.nestedInnerBody2') }}</text>
+                        </ux-collapse-item>
+                    </ux-collapse>
+                </ux-collapse-item>
+            </ux-collapse>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+// 自定义样式演示：itemStyle / headStyle / bodyStyle（键统一连字符）
+const customItemStyle: UTSJSONObject = {
+    'border-width': '1px',
+    'border-style': 'solid',
+    'border-color': '#ebeef5',
+    'border-radius': '8px',
+    'margin-top': '12px',
+    'overflow': 'hidden'
+};
+
+const customHeadStyle: UTSJSONObject = {
+    'background-color': '#f8f9fb',
+    'padding-left': '12px',
+    'padding-right': '12px'
+};
+
+const customBodyStyle: UTSJSONObject = {
+    'padding-left': '12px',
+    'padding-right': '12px'
+};
+
+// 嵌套演示：内层面板样式（浅色边框与背景区分层级）
+const nestedItemStyle: UTSJSONObject = {
+    'border-width': '1px',
+    'border-style': 'solid',
+    'border-color': '#ebeef5',
+    'border-radius': '6px',
+    'margin-top': '8px',
+    'padding-left': '12px',
+    'padding-right': '12px',
+    'background-color': '#fafafa',
+    'overflow': 'hidden'
+};</script>
+
+<style lang="scss">
+
+.collapse-body-text {
+    font-size: 14px;
+    color: $u-tips-color;
+    line-height: 1.6;
+}
+
+.collapse-custom-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.collapse-custom-head-text {
+    font-size: 15px;
+    color: $u-main-color;
+    margin-left: 4px;
+}
+</style>

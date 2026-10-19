@@ -1,0 +1,166 @@
+﻿<template>
+    <demo-page :title="t('select.title')" :subtitle="t('select.subtitle')">
+
+        <!-- 单列模式 -->
+        <demo-block :title="t('select.singleTitle')" :desc="t('select.singleDesc')" :code="codes.single">
+            <ux-button shape="round" @click="show1 = true">{{ t('select.openBtn') }}</ux-button>
+            <text v-if="result1 !== ''" class="demo-result">{{ t('select.result') }}: {{ result1 }}</text>
+        </demo-block>
+
+        <!-- 多列模式 -->
+        <demo-block :title="t('select.multiTitle')" :desc="t('select.multiDesc')" :code="codes.multi">
+            <ux-button shape="round" @click="show2 = true">{{ t('select.openBtn') }}</ux-button>
+            <text v-if="result2 !== ''" class="demo-result">{{ t('select.result') }}: {{ result2 }}</text>
+        </demo-block>
+
+        <!-- 多列联动 -->
+        <demo-block :title="t('select.cascadeTitle')" :desc="t('select.cascadeDesc')" :code="codes.cascade">
+            <ux-button shape="round" @click="show3 = true">{{ t('select.openBtn') }}</ux-button>
+            <text v-if="result3 !== ''" class="demo-result">{{ t('select.result') }}: {{ result3 }}</text>
+        </demo-block>
+
+        <ux-select
+            v-model="show1"
+            mode="single-column"
+            :list="list1"
+            :default-value="[2]"
+            :title="t('select.singleTitle')"
+            @confirm="onConfirm1"
+        ></ux-select>
+
+        <ux-select
+            v-model="show2"
+            mode="mutil-column"
+            :list="list2"
+            :default-value="[0, 0, 1]"
+            :title="t('select.multiTitle')"
+            @confirm="onConfirm2"
+        ></ux-select>
+
+        <ux-select
+            v-model="show3"
+            mode="mutil-column-auto"
+            :list="list3"
+            :default-value="[0, 0, 0]"
+            :title="t('select.cascadeTitle')"
+            @confirm="onConfirm3"
+        ></ux-select>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale, type SelectListItem } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const show1 = ref<boolean>(false);
+const show2 = ref<boolean>(false);
+const show3 = ref<boolean>(false);
+
+const result1 = ref<string>('');
+const result2 = ref<string>('');
+const result3 = ref<string>('');
+
+const list1: SelectListItem[] = [
+    { label: t('select.poem1'), value: 1 },
+    { label: t('select.poem2'), value: 2 },
+    { label: t('select.poem3'), value: 3 },
+    { label: t('select.poem4'), value: 4 },
+    { label: t('select.poem5'), value: 5 },
+    { label: t('select.poem6'), value: 6 },
+    { label: t('select.poem7'), value: 7 }
+];
+
+const list2: SelectListItem[][] = [
+    [
+        { label: t('select.asia'), value: 'asia' },
+        { label: t('select.europe'), value: 'europe' }
+    ],
+    [
+        { label: t('select.china'), value: 'cn' },
+        { label: t('select.japan'), value: 'jp' }
+    ],
+    [
+        { label: t('select.beijing'), value: 'bj' },
+        { label: t('select.shanghai'), value: 'sh' },
+        { label: t('select.guangzhou'), value: 'gz' }
+    ]
+];
+
+const list3: SelectListItem[] = [
+    {
+        label: t('select.shandong'),
+        value: 'sd',
+        children: [
+            {
+                label: t('select.qingdao'),
+                value: 'qd',
+                children: [
+                    { label: t('select.laoshan'), value: 'ls' },
+                    { label: t('select.shinan'), value: 'sn' }
+                ]
+            },
+            {
+                label: t('select.jinan'),
+                value: 'jn',
+                children: [
+                    { label: t('select.lixia'), value: 'lx' },
+                    { label: t('select.shizhong'), value: 'sz' }
+                ]
+            }
+        ]
+    },
+    {
+        label: t('select.hainan'),
+        value: 'hn',
+        children: [
+            {
+                label: t('select.sanya'),
+                value: 'sy',
+                children: [
+                    { label: t('select.haitang'), value: 'ht' },
+                    { label: t('select.jiyang'), value: 'jy' }
+                ]
+            }
+        ]
+    }
+];
+
+function joinLabels(value: UTSJSONObject[]): string {
+    if (value == null) return '';
+    const labels: string[] = [];
+    for (let i = 0; i < value.length; i++) {
+        const item = value[i];
+        if (item != null) {
+            const label = item['label'] as string;
+            if (label != null && label !== '') {
+                labels.push(label);
+            }
+        }
+    }
+    return labels.join(' / ');
+}
+
+function onConfirm1(value: UTSJSONObject[]): void {
+    result1.value = joinLabels(value);
+}
+
+function onConfirm2(value: UTSJSONObject[]): void {
+    result2.value = joinLabels(value);
+}
+
+function onConfirm3(value: UTSJSONObject[]): void {
+    result3.value = joinLabels(value);
+}
+</script>
+
+<style lang="scss">
+
+.demo-result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: $u-tips-color;
+}
+</style>

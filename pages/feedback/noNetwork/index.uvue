@@ -1,0 +1,20 @@
+<template>
+    <demo-page :title="t('noNetwork.title')" :subtitle="t('noNetwork.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('noNetwork.basicTitle')" :desc="t('noNetwork.basicDesc')" :code="codes.basic">
+            <ux-no-network></ux-no-network>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+</script>
+
+<style lang="scss">
+</style>

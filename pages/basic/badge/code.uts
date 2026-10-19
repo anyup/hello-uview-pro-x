@@ -1,0 +1,529 @@
+/**
+ * badge 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ * 覆盖说明：包裹用法把内容放进默认插槽，组件自带定位锚点（relative + overflow:visible），
+ * 无需再手动加 position:relative 的宿主容器，App/H5/小程序三端通用。
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="row">
+        <ux-badge :count="5" custom-class="badge-item">
+            <view class="box"><text class="text">消息</text></view>
+        </ux-badge>
+        <ux-badge :count="99" custom-class="badge-item">
+            <view class="box"><text class="text">消息</text></view>
+        </ux-badge>
+        <ux-badge :count="200" custom-class="badge-item">
+            <view class="box"><text class="text">消息</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 预设类型 */
+const type = `
+<template>
+    <view class="row">
+        <ux-badge
+            v-for="(item, index) in typeList"
+            :key="index"
+            :type="item.type"
+            :count="8"
+            custom-class="badge-item"
+        >
+            <view class="box"><text class="text">{{ item.label }}</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<script setup lang="uts">
+const typeList = [
+    { type: 'error', label: 'error' },
+    { type: 'primary', label: 'primary' },
+    { type: 'success', label: 'success' },
+    { type: 'warning', label: 'warning' },
+    { type: 'info', label: 'info' }
+];
+</script>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 圆点模式 */
+const dot = `
+<template>
+    <view class="row">
+        <ux-badge :is-dot="true" is-center custom-class="badge-item">
+            <view class="box"><text class="text">消息</text></view>
+        </ux-badge>
+        <ux-badge :is-dot="true" type="primary" is-center custom-class="badge-item">
+            <view class="box"><text class="text">通知</text></view>
+        </ux-badge>
+        <ux-badge :is-dot="true" type="warning" is-center custom-class="badge-item">
+            <view class="box"><text class="text">提醒</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 迷你尺寸 */
+const mini = `
+<template>
+    <view class="row">
+        <ux-badge :count="5" custom-class="badge-item">
+            <view class="box"><text class="text">默认</text></view>
+        </ux-badge>
+        <ux-badge :count="5" size="mini" custom-class="badge-item">
+            <view class="box"><text class="text">mini</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 封顶值 */
+const overflow = `
+<template>
+    <view class="row">
+        <ux-badge :count="100" :overflow-count="99" custom-class="badge-item">
+            <view class="box"><text class="text">99+</text></view>
+        </ux-badge>
+        <ux-badge :count="10" :overflow-count="9" custom-class="badge-item">
+            <view class="box"><text class="text">9+</text></view>
+        </ux-badge>
+        <ux-badge :count="1000" :overflow-count="999" custom-class="badge-item">
+            <view class="box"><text class="text">999+</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 显示0 */
+const showZero = `
+<template>
+    <view class="row">
+        <ux-badge :count="0" :show-zero="false" custom-class="badge-item">
+            <view class="box"><text class="text">隐藏0</text></view>
+        </ux-badge>
+        <ux-badge :count="0" :show-zero="true" custom-class="badge-item">
+            <view class="box"><text class="text">显示0</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 自定义颜色 */
+const customColor = `
+<template>
+    <view class="row">
+        <ux-badge :count="8" bg-color="#7232dd" color="#ffffff" custom-class="badge-item">
+            <view class="box"><text class="text">自定义</text></view>
+        </ux-badge>
+        <ux-badge :count="16" bg-color="#19be6b" color="#ffffff" custom-class="badge-item">
+            <view class="box"><text class="text">自定义</text></view>
+        </ux-badge>
+        <ux-badge :count="3" bg-color="#ff9900" color="#ffffff" font-size="16" custom-class="badge-item">
+            <view class="box"><text class="text">自定义</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 位置偏移 */
+const offset = `
+<template>
+    <view class="row">
+        <view class="demo">
+            <ux-badge :count="5" :offset="[0, 0]">
+                <view class="box"><text class="text">基准</text></view>
+            </ux-badge>
+            <text class="label">[0, 0]</text>
+        </view>
+        <view class="demo">
+            <ux-badge :count="5" :offset="[-5, -5]">
+                <view class="box"><text class="text">凸出</text></view>
+            </ux-badge>
+            <text class="label">[-10, -10]</text>
+        </view>
+        <view class="demo">
+            <ux-badge :count="5" :offset="[8, 15]">
+                <view class="box"><text class="text">向内</text></view>
+            </ux-badge>
+            <text class="label">[15, 30]</text>
+        </view>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 25px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+    overflow: visible;
+}
+.label {
+    font-size: 11px;
+    color: #c8c9cc;
+    margin-top: 10px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+    white-space: nowrap;
+}
+</style>
+`;
+
+/** 中心点重合 */
+const center = `
+<template>
+    <view class="row">
+        <ux-badge :count="5" :offset="[-5, -5]" custom-class="badge-item">
+            <view class="box"><text class="text">普通</text></view>
+        </ux-badge>
+        <ux-badge :count="5" :is-center="true" custom-class="badge-item">
+            <view class="box"><text class="text">居中</text></view>
+        </ux-badge>
+        <ux-badge :is-dot="true" :is-center="true" type="primary" custom-class="badge-item">
+            <view class="box"><text class="text">圆点</text></view>
+        </ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.badge-item {
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 双模式：包裹 / 单用 */
+const dual = `
+<template>
+    <view class="dual">
+        <view class="card">
+            <text class="mode">包裹模式</text>
+            <ux-badge :count="3" :offset="[-5, -5]">
+                <view class="box"><text class="text">消息</text></view>
+            </ux-badge>
+            <text class="desc">内容放默认插槽，组件自带定位锚点，角标自动置于右上角，宿主零配置</text>
+        </view>
+        <view class="card">
+            <text class="mode">单用模式</text>
+            <view class="host">
+                <view class="box"><text class="text">消息</text></view>
+                <ux-badge :count="3" :offset="[-5, -5]"></ux-badge>
+            </view>
+            <text class="desc">不传内容，作为独立角标叠加到宿主的相对定位右上角</text>
+        </view>
+    </view>
+</template>
+
+<style scoped>
+.dual {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 25px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+    overflow: visible;
+}
+.mode {
+    font-size: 12px;
+    color: #606266;
+    margin-bottom: 8px;
+}
+.desc {
+    font-size: 11px;
+    color: #c8c9cc;
+    margin-top: 8px;
+}
+.box {
+    width: 60px;
+    height: 60px;
+    background-color: #f7f8fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.text {
+    font-size: 13px;
+    color: #909399;
+    white-space: nowrap;
+}
+.host {
+    /* 单用模式需宿主自行提供定位锚点 */
+    position: relative;
+    overflow: visible;
+}
+</style>
+`;
+
+/** 非绝对定位（独立角标，不包裹内容） */
+const absolute = `
+<template>
+    <view class="inline-row">
+        <text>未读消息</text>
+        <ux-badge :count="12" :absolute="false" custom-class="badge-inline"></ux-badge>
+    </view>
+    <view class="inline-row">
+        <text>新通知</text>
+        <ux-badge :is-dot="true" :absolute="false" type="success" custom-class="badge-inline"></ux-badge>
+    </view>
+</template>
+
+<style scoped>
+.inline-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.badge-inline {
+    margin-left: 8px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    type,
+    dot,
+    mini,
+    overflow,
+    showZero,
+    customColor,
+    offset,
+    center,
+    dual,
+    absolute
+};

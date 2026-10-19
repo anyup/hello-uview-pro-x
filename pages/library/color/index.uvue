@@ -1,0 +1,162 @@
+<template>
+    <demo-page :title="t('color.title')" :subtitle="t('color.subtitle')">
+        <!-- 主色 -->
+        <demo-block :title="t('color.primaryTitle')">
+            <view class="demo-color-row" :class="index === primaryColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in primaryColors" :key="index">
+                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
+                <view class="demo-color-info">
+                    <text class="demo-color-name">{{ item.name }}</text>
+                    <text class="demo-color-value">{{ item.value }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 成功色 -->
+        <demo-block :title="t('color.successTitle')">
+            <view class="demo-color-row" :class="index === successColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in successColors" :key="index">
+                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
+                <view class="demo-color-info">
+                    <text class="demo-color-name">{{ item.name }}</text>
+                    <text class="demo-color-value">{{ item.value }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 警告色 -->
+        <demo-block :title="t('color.warningTitle')">
+            <view class="demo-color-row" :class="index === warningColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in warningColors" :key="index">
+                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
+                <view class="demo-color-info">
+                    <text class="demo-color-name">{{ item.name }}</text>
+                    <text class="demo-color-value">{{ item.value }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 错误色 -->
+        <demo-block :title="t('color.errorTitle')">
+            <view class="demo-color-row" :class="index === errorColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in errorColors" :key="index">
+                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
+                <view class="demo-color-info">
+                    <text class="demo-color-name">{{ item.name }}</text>
+                    <text class="demo-color-value">{{ item.value }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 信息色 -->
+        <demo-block :title="t('color.infoTitle')">
+            <view class="demo-color-row" v-for="(item, index) in infoColors" :key="index">
+                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
+                <view class="demo-color-info">
+                    <text class="demo-color-name">{{ item.name }}</text>
+                    <text class="demo-color-value">{{ item.value }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 文字色 -->
+        <demo-block :title="t('color.textTitle')">
+            <view class="demo-color-row" :class="index === textColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in textColors" :key="index">
+                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
+                <view class="demo-color-info">
+                    <text class="demo-color-name">{{ item.name }}</text>
+                    <text class="demo-color-value">{{ item.value }}</text>
+                </view>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+
+const { t } = useLocale('demo');
+
+type ColorItem = {
+    name: string;
+    value: string | null | undefined;
+};
+
+const primaryColors: ColorItem[] = [
+    { name: 'primary', value: $u.color.primary },
+    { name: 'primaryDisabled', value: $u.color.primaryDisabled },
+    { name: 'primaryDark', value: $u.color.primaryDark },
+    { name: 'primaryLight', value: $u.color.primaryLight },
+];
+
+const successColors: ColorItem[] = [
+    { name: 'success', value: $u.color.success },
+    { name: 'successDisabled', value: $u.color.successDisabled },
+    { name: 'successDark', value: $u.color.successDark },
+    { name: 'successLight', value: $u.color.successLight },
+];
+
+const warningColors: ColorItem[] = [
+    { name: 'warning', value: $u.color.warning },
+    { name: 'warningDisabled', value: $u.color.warningDisabled },
+    { name: 'warningDark', value: $u.color.warningDark },
+    { name: 'warningLight', value: $u.color.warningLight },
+];
+
+const errorColors: ColorItem[] = [
+    { name: 'error', value: $u.color.error },
+    { name: 'errorDisabled', value: $u.color.errorDisabled },
+    { name: 'errorDark', value: $u.color.errorDark },
+    { name: 'errorLight', value: $u.color.errorLight },
+];
+
+const infoColors: ColorItem[] = [
+    { name: 'info', value: $u.color.info },
+    { name: 'infoDisabled', value: $u.color.infoDisabled },
+    { name: 'infoDark', value: $u.color.infoDark },
+    { name: 'infoLight', value: $u.color.infoLight },
+];
+
+const textColors: ColorItem[] = [
+    { name: 'mainColor', value: $u.color.mainColor },
+    { name: 'contentColor', value: $u.color.contentColor },
+    { name: 'tipsColor', value: $u.color.tipsColor },
+    { name: 'lightColor', value: $u.color.lightColor },
+];
+</script>
+
+<style lang="scss">
+/* 使用全局 demo.scss 样式 */
+.demo-color-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid $u-divider-color;
+}
+
+.demo-color-row--last {
+    border-bottom: none;
+}
+
+.demo-color-block {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    margin-right: 10px;
+    border: 1px solid $u-border-color;
+}
+
+.demo-color-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.demo-color-name {
+    font-size: 14px;
+    color: $u-main-color;
+}
+
+.demo-color-value {
+    font-size: 13px;
+    color: $u-tips-color;
+}
+</style>

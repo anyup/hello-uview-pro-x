@@ -1,0 +1,129 @@
+<template>
+    <demo-page :title="t('tag.title')" :subtitle="t('tag.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('tag.basicTitle')" :desc="t('tag.basicDesc')" :code="codes.basic">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" :text="t('tag.tag1Text')" type="primary"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.tag2Text')" type="success"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.tag3Text')" type="warning"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.tag4Text')" type="error"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.tag5Text')" type="info"></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 设置标签的模式 -->
+        <demo-block :title="t('tag.modeTitle')" :desc="t('tag.modeDesc')" :code="codes.mode">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" :text="t('tag.darkText')" mode="dark"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.lightText')" mode="light"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.plainText')" mode="plain"></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 设置标签的形状 -->
+        <demo-block :title="t('tag.shapeTitle')" :desc="t('tag.shapeDesc')" :code="codes.shape">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" :text="t('tag.squareText')" shape="square"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.roundText')" shape="round"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.roundLeftText')" shape="roundLeft"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.roundRightText')" shape="roundRight"></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 设置标签的大小 -->
+        <demo-block :title="t('tag.sizeTitle')" :desc="t('tag.sizeDesc')" :code="codes.size">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" :text="t('tag.defaultSizeText')"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.miniSizeText')" size="mini"></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 自定义颜色 -->
+        <demo-block :title="t('tag.colorTitle')" :desc="t('tag.colorDesc')" :code="codes.color">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" :text="t('tag.customTextText')" color="#ff00ff"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.customBgText')" bg-color="#2979ff" color="#ffffff"></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.customBorderText')" mode="plain" color="#fa3534" border-color="#fa3534"></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 可关闭标签 -->
+        <demo-block :title="t('tag.closeableTitle')" :desc="t('tag.closeableDesc')" :code="codes.closeable">
+            <view class="tag-demo-row">
+                <ux-tag
+                    custom-class="tag-spacing"
+                    :text="t('tag.closeableText')"
+                    closeable
+                    close-color="#fa3534"
+                    :show="tagShow"
+                    @close="tagClose"
+                ></ux-tag>
+                <ux-tag
+                    custom-class="tag-spacing"
+                    :text="t('tag.darkCloseableText')"
+                    closeable
+                    mode="dark"
+                    :show="tagShow2"
+                    @close="tagClose2"
+                ></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 禁用标签 -->
+        <demo-block :title="t('tag.disabledTitle')" :desc="t('tag.disabledDesc')" :code="codes.disabled">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" :text="t('tag.disabledText')" disabled></ux-tag>
+                <ux-tag custom-class="tag-spacing" :text="t('tag.disabledDarkText')" disabled mode="dark"></ux-tag>
+            </view>
+        </demo-block>
+
+        <!-- 自定义插槽 -->
+        <demo-block :title="t('tag.slotTitle')" :desc="t('tag.slotDesc')" :code="codes.slot">
+            <view class="tag-demo-row">
+                <ux-tag custom-class="tag-spacing" type="success">
+                    <text class="ux-tag-slot">{{ t('tag.slotContent') }}</text>
+                </ux-tag>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+    const tagShow = ref(true);
+    const tagShow2 = ref(true);
+
+    const tagClose = () => {
+        tagShow.value = false;
+    };
+
+    const tagClose2 = () => {
+        tagShow2.value = false;
+    };
+</script>
+
+<style lang="scss">
+    .tag-demo-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .tag-spacing {
+        margin-right: 10px;
+        margin-bottom: 8px;
+    }
+
+    .ux-tag-slot {
+        font-size: 11px;
+        color: $u-type-success;
+        font-weight: bold;
+    }
+
+</style>

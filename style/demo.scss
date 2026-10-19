@@ -1,0 +1,275 @@
+/* ============================================
+   演示页面公共样式 - uView Pro X
+   ============================================ */
+
+/* ============================================
+   页面容器
+   ============================================ */
+
+/**
+ * 演示页面根容器
+ * - App：scroll-view 容器，flex:1 撑满，产生内部滚动
+ * - 非 App：普通 view，页面原生滚动，内容自然撑开、页面滚动
+ */
+.demo-page {
+	padding: 10px 7px;
+	background-color: $u-bg-color;
+	/* #ifdef WEB */
+	min-height: 100%;
+	/* #endif */
+}
+
+/* ============================================
+   页面头部
+   ============================================ */
+
+/**
+ * 页面头部容器
+ * - 白色背景卡片
+ * - 圆角与阴影与 demo-block 卡片统一
+ */
+.demo-header {
+	margin-bottom: 15px;
+	padding: 18px 16px;
+	background-color: $u-bg-white;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/**
+ * 顶部主题色装饰条
+ * - 与 demo-block 标题竖条同语言，随主题/暗黑联动
+ */
+.demo-header-accent {
+	width: 24px;
+	height: 4px;
+	border-radius: 2px;
+	background-color: $u-type-primary;
+	margin-bottom: 12px;
+}
+
+/**
+ * 标题行：英文标签 + 中文大标题
+ */
+.demo-header-title-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+/**
+ * 英文名标签（主题色）
+ */
+.demo-header-en {
+	font-size: 12px;
+	font-weight: bold;
+	color: $u-type-primary;
+	margin-right: 8px;
+}
+
+/**
+ * 中文大标题
+ */
+.demo-header-title {
+	font-size: 20px;
+	font-weight: bold;
+	color: $u-main-color;
+}
+
+/**
+ * 页面副标题
+ * - 提示色调，与标题保持间距
+ */
+.demo-header-subtitle {
+	font-size: 14px;
+	color: $u-tips-color;
+	line-height: 1.5;
+	margin-top: 8px;
+}
+
+/* ============================================
+   卡片容器
+   ============================================ */
+
+/**
+ * 演示卡片容器
+ * - 白色背景
+ * - 圆角设计
+ * - 轻阴影（精致化）
+ * - 底部间距
+ */
+.demo-card {
+	margin-bottom: 10px;
+	padding: 10px;
+	background-color: $u-bg-white;
+	border-radius: 6px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/**
+ * 卡片标题
+ * - 带底部边框分隔
+ */
+.demo-card-title {
+	font-size: 16px;
+	font-weight: bold;
+	color: $u-main-color;
+	margin-bottom: 10px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid $u-border-color;
+}
+
+/* ============================================
+   列表项
+   ============================================ */
+
+/**
+ * 演示列表项
+ * - 垂直内边距
+ * - 底部边框分隔
+ * - 注：UCSS 不支持 :last-child，如需末项无边框请给末项加 demo-item--last 类
+ */
+.demo-item {
+	padding: 8px 0;
+	border-bottom: 1px solid $u-border-color;
+}
+
+/* 末项无边框（UCSS 不支持 :last-child，通过显式类实现） */
+.demo-item--last {
+	border-bottom: none;
+}
+
+/* ============================================
+   布局工具类
+   ============================================ */
+
+/**
+ * 行内水平排列容器（内容区常用）
+ * - 水平排列 + 自动换行
+ * - 子项间距由页面自行控制
+ */
+.demo-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+/* ============================================
+   操作按钮区
+   ============================================ */
+
+/**
+ * 操作按钮项（配合 demo-actions 组件使用）
+ * - 统一按钮间距
+ */
+.demo-actions-item {
+	margin-right: 6px;
+	margin-bottom: 6px;
+}
+
+/* ============================================
+   描述文本
+   ============================================ */
+
+/**
+ * 描述文本
+ * - 内容色调
+ * - 底部间距
+ */
+.demo-desc {
+	font-size: 14px;
+	color: $u-content-color;
+	margin-bottom: 4px;
+}
+
+/* ============================================
+   结果展示
+   ============================================ */
+
+/**
+ * 结果展示文本
+ * - 主色调
+ * - 背景色填充
+ * - 圆角设计
+ */
+.demo-result {
+	font-size: 14px;
+	color: $u-type-primary;
+	font-weight: 500;
+	padding: 5px;
+	background-color: $u-bg-color;
+	border-radius: 4px;
+}
+
+/**
+ * 成功状态结果
+ */
+.demo-result-success {
+	color: $u-type-success;
+	background-color: $u-type-success-light;
+}
+
+/**
+ * 错误状态结果
+ */
+.demo-result-error {
+	color: $u-type-error;
+	background-color: $u-type-error-light;
+}
+
+/**
+ * 警告状态结果
+ */
+.demo-result-warning {
+	color: $u-type-warning;
+	background-color: $u-type-warning-light;
+}
+
+/* ============================================
+   按钮样式
+   ============================================ */
+
+/**
+ * 演示按钮
+ * - App端使用 flex 布局
+ * - 非App端使用 inline-flex
+ * - 主色调背景
+ * - 注意：color/font-size 仅设置在 <text class="demo-btn-text"> 上，不在 <view> 上设置
+ */
+.demo-btn {
+	/* #ifdef APP */
+	display: flex;
+	/* #endif */
+	/* #ifndef APP */
+	display: inline-flex;
+	/* #endif */
+	align-items: center;
+	justify-content: center;
+	padding: 8px 16px;
+	background-color: $u-type-primary;
+	border-radius: 4px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+/**
+ * 成功按钮
+ */
+.demo-btn-success {
+	background-color: $u-type-success;
+}
+
+/**
+ * 错误按钮
+ */
+.demo-btn-error {
+	background-color: $u-type-error;
+}
+
+/**
+ * 警告按钮
+ */
+.demo-btn-warning {
+	background-color: $u-type-warning;
+}

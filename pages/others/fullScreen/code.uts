@@ -1,0 +1,41 @@
+/**
+ * fullScreen 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-button type="primary" shape="round" text="触发升级弹窗" @click="open" />
+    <ux-full-screen v-if="visible" :show="false" content="本次更新优化了启动速度，修复了若干已知问题。" />
+</template>
+
+<script setup lang="uts">
+const visible = ref(false);
+
+const open = () => {
+    visible.value = true;
+};
+</script>
+`;
+
+/** 自定义标题 */
+const custom = `
+<template>
+    <ux-button type="warning" shape="round" text="自定义标题弹窗" @click="open" />
+    <ux-full-screen v-if="visible" title="重要更新" content="v1.1.0 新增多主题与暗黑模式支持，优化了大数据量渲染性能。" />
+</template>
+
+<script setup lang="uts">
+const visible = ref(false);
+
+const open = () => {
+    visible.value = true;
+};
+</script>
+`;
+
+export const codes = {
+    basic,
+    custom
+};

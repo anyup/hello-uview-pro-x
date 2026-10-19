@@ -1,0 +1,102 @@
+<template>
+    <demo-page :title="t('tabbarAbout.title')" :subtitle="t('tabbarAbout.subtitle')" showTabbar>
+        <!-- 品牌头部 -->
+        <view class="tab-header">
+            <image class="tab-logo" src="/static/logo.png" mode="aspectFit" />
+            <text class="tab-brand-name">uView Pro X</text>
+            <text class="tab-item-desc">{{ t('tabbarAbout.tagline') }}</text>
+            <view class="tab-platforms">
+                <text class="tab-platform-tag">App</text>
+                <text class="tab-platform-tag">H5</text>
+                <text class="tab-platform-tag">{{ t('tabbarAbout.platformMiniProgram') }}</text>
+                <text class="tab-platform-tag">HarmonyOS</text>
+            </view>
+        </view>
+
+        <!-- 版本信息 -->
+        <view class="tab-section">
+            <view class="tab-section-header">
+                <view class="tab-section-bar" :style="'background-color:' + $u.color.primary"></view>
+                <text class="tab-section-name">{{ t('tabbarAbout.sectionVersion') }}</text>
+            </view>
+            <view class="tab-list">
+                <view class="tab-item" v-for="(row, idx) in versionRows" :key="idx">
+                    <text class="tab-info-label">{{ t(row.name) }}</text>
+                    <text class="tab-info-value">{{ t(row.value) }}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 组件规模：数量随菜单配置自动变化 -->
+        <view class="tab-section">
+            <view class="tab-section-header">
+                <view class="tab-section-bar" :style="'background-color:' + $u.color.primary"></view>
+                <text class="tab-section-name">{{ t('tabbarAbout.sectionScale') }}</text>
+            </view>
+            <view class="tab-list">
+                <view class="tab-item" v-for="(row, idx) in scaleRows" :key="idx">
+                    <text class="tab-info-label">{{ t(row.name) }}</text>
+                    <text class="tab-info-value">{{ row.value }}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 能力特性 -->
+        <view class="tab-section">
+            <view class="tab-section-header">
+                <view class="tab-section-bar" :style="'background-color:' + $u.color.primary"></view>
+                <text class="tab-section-name">{{ t('tabbarAbout.sectionFeature') }}</text>
+            </view>
+            <view class="tab-list">
+                <view class="tab-item" v-for="(row, idx) in featureRows" :key="idx">
+                    <view class="tab-item-body">
+                        <text class="tab-item-name">{{ t(row.name) }}</text>
+                        <text class="tab-item-desc">{{ t(row.desc) }}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 底部信息 -->
+        <view class="tab-footer">
+            <text class="tab-footer-text">{{ t('tabbarAbout.footerName') }} {{ t('tabbarAbout.versionValue') }}</text>
+        </view>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+import {
+    componentCategories,
+    toolItems,
+    hookItems,
+    aboutVersionRows,
+    aboutFeatureRows,
+    type InfoRow,
+    type MenuCategory
+} from './config';
+
+const { t } = useLocale('demo');
+const versionRows = aboutVersionRows;
+const featureRows = aboutFeatureRows;
+
+// 统计各分类下的菜单项总数
+function countItems(categories: MenuCategory[]): number {
+    let total = 0;
+    for (let i = 0; i < categories.length; i++) {
+        total += categories[i].items.length;
+    }
+    return total;
+}
+
+// 组件规模行：数值来自菜单配置，无需手工维护
+const scaleRows: InfoRow[] = [
+    { name: 'tabbarAbout.componentLabel', value: countItems(componentCategories).toString(), desc: '' },
+    { name: 'tabbarAbout.toolLabel', value: toolItems.length.toString(), desc: '' },
+    { name: 'tabbarAbout.hookLabel', value: hookItems.length.toString(), desc: '' }
+];
+</script>
+
+<style lang="scss">
+@import './tabbar.scss';
+</style>

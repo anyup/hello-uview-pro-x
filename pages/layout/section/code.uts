@@ -1,0 +1,95 @@
+/**
+ * section 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-section title="章节标题" @click="onClick" />
+</template>
+
+<script setup lang="uts">
+const onClick = () => {
+    uni.showToast({ title: '点击了更多', icon: 'none' });
+};
+</script>
+`;
+
+/** 隐藏竖条 */
+const showLine = `
+<template>
+    <ux-section title="章节标题" :show-line="false" />
+</template>
+`;
+
+/** 隐藏箭头 */
+const arrow = `
+<template>
+    <ux-section title="章节标题" :arrow="false" />
+</template>
+`;
+
+/** 自定义副标题 */
+const subTitle = `
+<template>
+    <ux-section title="章节标题" sub-title="副标题文字" />
+</template>
+`;
+
+/** 隐藏右侧 */
+const right = `
+<template>
+    <ux-section title="章节标题" :right="false" />
+</template>
+`;
+
+/** 右侧插槽 */
+const rightSlot = `
+<template>
+    <ux-section title="章节标题">
+        <template #right>
+            <text class="slot-text">自定义右侧</text>
+        </template>
+    </ux-section>
+</template>
+
+<style scoped>
+.slot-text {
+    color: #2979ff;
+}
+</style>
+`;
+
+/** 自定义字号 */
+const fontSize = `
+<template>
+    <ux-section title="章节标题" :font-size="20" />
+</template>
+`;
+
+/** 不加粗 */
+const bold = `
+<template>
+    <ux-section title="章节标题" :bold="false" />
+</template>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <ux-section title="章节标题" color="#2979ff" sub-color="#19be6b" line-color="#f56c6c" />
+</template>
+`;
+
+export const codes = {
+    basic,
+    showLine,
+    arrow,
+    subTitle,
+    right,
+    rightSlot,
+    fontSize,
+    bold,
+    color
+};

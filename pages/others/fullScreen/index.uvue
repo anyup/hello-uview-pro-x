@@ -1,0 +1,60 @@
+<template>
+    <demo-page :title="t('fullScreen.title')" :subtitle="t('fullScreen.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('fullScreen.basicTitle')" :desc="t('fullScreen.basicDesc')" :code="codes.basic">
+            <ux-button type="primary" shape="round" :text="t('fullScreen.basicBtn')" @click="openBasic" />
+            <ux-full-screen v-if="basicVisible" :show="false" :content="t('fullScreen.basicContent')" />
+        </demo-block>
+
+        <!-- 自定义标题 -->
+        <demo-block :title="t('fullScreen.customTitle')" :desc="t('fullScreen.customDesc')" :code="codes.custom">
+            <ux-button type="warning" shape="round" :text="t('fullScreen.customBtn')" @click="openCustom" />
+            <ux-full-screen v-if="customVisible" :title="t('fullScreen.customTitleText')" :content="t('fullScreen.customContent')" />
+        </demo-block>
+
+        <!-- 行为说明 -->
+        <view class="full-screen-note">
+            <text class="full-screen-note-text">{{ t('fullScreen.noteDesc') }}</text>
+        </view>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 基础用法弹窗挂载状态（挂载后组件自动弹起） */
+    const basicVisible = ref(false);
+
+    /** 自定义标题弹窗挂载状态 */
+    const customVisible = ref(false);
+
+    /** 触发基础用法：动态挂载组件 */
+    const openBasic = () => {
+        basicVisible.value = true;
+    };
+
+    /** 触发自定义标题弹窗 */
+    const openCustom = () => {
+        customVisible.value = true;
+    };
+</script>
+
+<style lang="scss">
+
+    .full-screen-note {
+        padding: 12px 15px;
+        background-color: #f4f4f5;
+        border-radius: 6px;
+    }
+
+    .full-screen-note-text {
+        font-size: 12px;
+        color: #909399;
+        line-height: 1.6;
+    }
+</style>

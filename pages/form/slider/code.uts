@@ -1,0 +1,87 @@
+/**
+ * slider 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-slider v-model="value" />
+</template>
+
+<script setup lang="uts">
+const value = ref<number>(30);
+</script>
+`;
+
+/** 自定义范围 */
+const range = `
+<template>
+    <ux-slider v-model="value" :start="-50" :end="50" :step="5" />
+</template>
+
+<script setup lang="uts">
+const value = ref<number>(0);
+</script>
+`;
+
+/** 显示数值 */
+const showValue = `
+<template>
+    <ux-slider v-model="value" :show-value="true" />
+</template>
+
+<script setup lang="uts">
+const value = ref<number>(50);
+</script>
+`;
+
+/** 数值位置与边界数值 */
+const position = `
+<template>
+    <ux-slider v-model="value1" :show-value="true" value-position="bottom" />
+    <ux-slider v-model="value2" custom-class="slider-gap" :show-value="true" :show-edge-value="true" edge-value-position="top" />
+</template>
+
+<script setup lang="uts">
+const value1 = ref<number>(35);
+const value2 = ref<number>(70);
+</script>
+
+<style lang="scss">
+.slider-gap {
+    margin-top: 20px;
+}
+</style>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <ux-slider v-model="value" active-color="#fa3534" inactive-color="#e4e7ed" />
+</template>
+
+<script setup lang="uts">
+const value = ref<number>(40);
+</script>
+`;
+
+/** 禁用状态 */
+const disabled = `
+<template>
+    <ux-slider v-model="value" :disabled="true" />
+</template>
+
+<script setup lang="uts">
+const value = ref<number>(60);
+</script>
+`;
+
+export const codes = {
+    basic,
+    range,
+    showValue,
+    position,
+    color,
+    disabled
+};

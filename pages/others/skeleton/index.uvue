@@ -1,0 +1,243 @@
+<template>
+    <demo-page :title="t('skeleton.title')" :subtitle="t('skeleton.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('skeleton.basicTitle')" :desc="t('skeleton.basicDesc')" :code="codes.basic">
+            <view class="skeleton-demo">
+                <ux-skeleton :loading="true" :rows="3" />
+            </view>
+        </demo-block>
+
+        <!-- 段落行数 -->
+        <demo-block :title="t('skeleton.rowsTitle')" :desc="t('skeleton.rowsDesc')" :code="codes.rows">
+            <view class="skeleton-demo">
+                <ux-skeleton :loading="true" :rows="rows" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in rowsList" :key="index" :type="rows === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setRows(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 自定义宽度/高度 -->
+        <demo-block :title="t('skeleton.widthTitle')" :desc="t('skeleton.widthDesc')" :code="codes.width">
+            <view class="skeleton-demo">
+                <ux-skeleton :loading="true" :rows="3" :rows-width="rowsWidth" :rows-height="rowsHeight" :title-width="titleWidth" :title-height="titleHeight" />
+            </view>
+        </demo-block>
+
+        <!-- 头像 -->
+        <demo-block :title="t('skeleton.avatarTitle')" :desc="t('skeleton.avatarDesc')" :code="codes.avatar">
+            <view class="skeleton-demo">
+                <ux-skeleton :loading="true" :rows="3" avatar :avatar-size="avatarSize" :avatar-shape="avatarShape" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button v-for="(item, index) in shapeList" :key="index" :type="avatarShape === item.value ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="setShape(item.value)">{{ item.label }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 动画开关 -->
+        <demo-block :title="t('skeleton.animateTitle')" :desc="t('skeleton.animateDesc')" :code="codes.animate">
+            <view class="skeleton-demo">
+                <ux-skeleton :loading="true" :rows="3" :animate="animate" />
+            </view>
+            <view class="btn-wrap">
+                <ux-button :type="animate ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="toggleAnimate">{{ animate ? t('skeleton.animateOnBtn') : t('skeleton.animateOffBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+        <!-- 列表场景 -->
+        <demo-block :title="t('skeleton.sceneTitle')" :desc="t('skeleton.sceneDesc')" :code="codes.scene">
+            <view class="skeleton-list">
+                <ux-skeleton
+                    v-for="(item, index) in sceneList"
+                    :key="index"
+                    custom-class="skeleton-list-item"
+                    avatar
+                    title
+                    :rows="3"
+                    :rows-width="['100%', '90%', '62%']"
+                    :rows-height="['16', '16', '16']"
+                    :title-width="'32%'"
+                    :title-height="'22'"
+                />
+            </view>
+        </demo-block>
+
+        <!-- 加载完成：骨架与真实内容一一对应，loading 切换后原位替换 -->
+        <demo-block :title="t('skeleton.loadingTitle')" :desc="t('skeleton.loadingDesc')" :code="codes.loading">
+            <view class="skeleton-demo">
+                <ux-skeleton :loading="loading" title avatar :rows="3" :rows-height="['18', '18', '40']" :title-height="'22'">
+                    <view class="card-demo">
+                        <view class="card-demo__avatar"></view>
+                        <view class="card-demo__body">
+                            <text class="card-demo__title">{{ t('skeleton.titleText') }}</text>
+                            <text class="card-demo__line" v-for="(line, index) in bodyList" :key="index">{{ line }}</text>
+                        </view>
+                    </view>
+                </ux-skeleton>
+            </view>
+            <view class="btn-wrap">
+                <ux-button :type="loading ? 'primary' : 'default'" custom-class="btn-item" size="small" shape="round" @click="toggleLoading">{{ loading ? t('skeleton.loadingBtn') : t('skeleton.loadedBtn') }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type RowsItem = {
+        value: number;
+        label: string;
+    };
+
+    type ShapeItem = {
+        value: string;
+        label: string;
+    };
+
+    /** 段落行数 */
+    const rows = ref(3);
+    /** 段落宽度数组 */
+    const rowsWidth = ref<string[]>(['100%', '80%', '60%']);
+    /** 段落高度数组 */
+    const rowsHeight = ref<string[]>(['25', '25', '25']);
+    /** 标题宽度 */
+    const titleWidth = ref('40%');
+    /** 标题高度 */
+    const titleHeight = ref('30');
+    /** 头像大小 */
+    const avatarSize = ref(40);
+    /** 头像形状 */
+    const avatarShape = ref('circle');
+    /** 是否开启动画 */
+    const animate = ref(true);
+    /** 是否加载中 */
+    const loading = ref(true);
+
+    /** 列表场景卡片数 */
+    const sceneList = [1, 2, 3];
+
+    /** 加载完成后展示的真实内容行（与骨架 3 行一一对应） */
+    const bodyList = computed((): string[] => [
+        t('skeleton.loadingLine1'),
+        t('skeleton.loadingLine2'),
+        t('skeleton.loadingLine3')
+    ]);
+
+    const rowsList: RowsItem[] = [
+        { value: 2, label: '2' },
+        { value: 3, label: '3' },
+        { value: 5, label: '5' }
+    ];
+
+    const shapeList: ShapeItem[] = [
+        { value: 'circle', label: 'circle' },
+        { value: 'square', label: 'square' }
+    ];
+
+    /** 设置段落行数 */
+    const setRows = (val: number) => {
+        rows.value = val;
+    };
+
+    /** 设置头像形状 */
+    const setShape = (val: string) => {
+        avatarShape.value = val;
+    };
+
+    /** 切换加载状态 */
+    const toggleLoading = () => {
+        loading.value = !loading.value;
+    };
+
+    /** 切换动画开关 */
+    const toggleAnimate = () => {
+        animate.value = !animate.value;
+    };
+</script>
+
+<style lang="scss">
+
+    /* 按钮容器：水平排列 + 自动换行 */
+    .btn-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 按钮间距 */
+    .btn-item {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 骨架屏演示区 */
+    .skeleton-demo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-height: 50px;
+        margin-bottom: 12px;
+    }
+
+    /* 加载完成后真实内容：与骨架（头像+标题+3行）一一对应 */
+    .card-demo {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+        padding: 12px;
+        background-color: $u-bg-white;
+        border-radius: 8px;
+    }
+
+    .card-demo__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: $u-type-primary;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    .card-demo__body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+    }
+
+    .card-demo__title {
+        font-size: 16px;
+        font-weight: bold;
+        color: $u-main-color;
+        margin-bottom: 8px;
+    }
+
+    .card-demo__line {
+        font-size: 13px;
+        line-height: 20px;
+        color: $u-content-color;
+        margin-bottom: 4px;
+    }
+
+    /* 列表场景：多卡片堆叠，模拟真实列表 */
+    .skeleton-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 每张骨架卡：白底圆角 + 间距 */
+    .skeleton-list-item {
+        margin-bottom: 12px;
+        padding: 14px;
+        background-color: $u-bg-white;
+        border-radius: 8px;
+    }
+</style>

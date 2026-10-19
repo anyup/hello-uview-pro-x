@@ -1,0 +1,530 @@
+/**
+ * button 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <view class="btn-wrap">
+        <!-- 纯文字用 text 属性传入，组件自动着色（App 端也可正常显示） -->
+        <ux-button text="普通按钮" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+/* 按钮默认在块级容器中全宽居中，如需收缩靠左排列用 flex 容器包裹 */
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+</style>
+`;
+
+/** 主题类型 */
+const type = `
+<template>
+    <view class="btn-grid">
+        <ux-button v-for="(item, index) in typeList" :key="index" :type="item.type" :text="item.label" custom-class="btn-grid-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const typeList = [
+    { type: 'default', label: 'default' },
+    { type: 'primary', label: 'primary' },
+    { type: 'success', label: 'success' },
+    { type: 'error', label: 'error' },
+    { type: 'warning', label: 'warning' },
+    { type: 'info', label: 'info' }
+];
+
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.btn-grid-item {
+    width: 30%;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 尺寸大小 */
+const size = `
+<template>
+    <view class="btn-stack">
+        <ux-button v-for="(item, index) in sizeList" :key="index" :size="item.size" type="primary" :text="item.label" custom-class="btn-stack-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const sizeList = [
+    { size: 'large', label: 'large' },
+    { size: 'default', label: 'default' },
+    { size: 'small', label: 'small' }
+];
+
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.btn-stack-item {
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 按钮形状 */
+const shape = `
+<template>
+    <view class="btn-wrap">
+        <ux-button shape="square" type="primary" text="小圆角" custom-class="btn-item" @click="onClick" />
+        <ux-button shape="round" type="primary" text="胶囊" custom-class="btn-item" @click="onClick" />
+        <!-- circle 为正圆（需宽高相等），故只放图标；带文字会撑成椭圆 -->
+        <ux-button shape="circle" type="primary" icon="star" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 镂空 */
+const plain = `
+<template>
+    <view class="btn-grid">
+        <ux-button v-for="(item, index) in typeList" :key="index" :type="item.type" :text="item.label" plain custom-class="btn-grid-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const typeList = [
+    { type: 'default', label: 'default' },
+    { type: 'primary', label: 'primary' },
+    { type: 'success', label: 'success' },
+    { type: 'error', label: 'error' },
+    { type: 'warning', label: 'warning' },
+    { type: 'info', label: 'info' }
+];
+
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.btn-grid-item {
+    width: 30%;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 自定义圆角 */
+const radius = `
+<template>
+    <view class="btn-wrap">
+        <!-- border-radius（单位px）优先级高于 shape 预设，可定制任意圆角；传 0 即为真直角 -->
+        <ux-button shape="square" :border-radius="0" type="primary" text="直角 0" custom-class="btn-item" @click="onClick" />
+        <ux-button :border-radius="4" type="primary" text="圆角 4" custom-class="btn-item" @click="onClick" />
+        <ux-button :border-radius="12" type="error" plain text="圆角 12" custom-class="btn-item" @click="onClick" />
+        <ux-button :border-radius="24" type="success" text="圆角 24" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 水波纹 */
+const ripple = `
+<template>
+    <view class="btn-wrap">
+        <ux-button ripple type="primary" text="水波纹" custom-class="btn-item" @click="onClick" />
+        <ux-button ripple ripple-bg-color="rgba(255, 255, 255, 0.3)" type="error" text="水波纹" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 细边框 */
+const hairLine = `
+<template>
+    <view class="btn-wrap">
+        <ux-button type="default" text="细边框" custom-class="btn-item" @click="onClick" />
+        <ux-button :hair-line="false" type="default" text="粗边框" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 加载中 */
+const loading = `
+<template>
+    <view class="btn-wrap">
+        <ux-button loading type="primary" text="默认文案" loading-text="加载中" custom-class="btn-item" />
+        <ux-button loading type="success" text="默认文案" loading-text="加载中" custom-class="btn-item" />
+    </view>
+    <!-- 加载图标大小 loading-size（单位px，默认按按钮尺寸自动匹配） -->
+    <view class="btn-wrap">
+        <ux-button loading type="warning" text="默认文案" loading-text="加载中" loading-size="20" custom-class="btn-item" />
+    </view>
+</template>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 禁用 */
+const disabled = `
+<template>
+    <view class="btn-wrap">
+        <ux-button disabled type="primary" text="禁用按钮" custom-class="btn-item" />
+        <ux-button disabled plain type="primary" text="禁用镂空" custom-class="btn-item" />
+    </view>
+    <!-- 彩色实心（primary/success/error/warning）禁用时隐藏边框；default/info/镂空保留细边框 -->
+    <view class="btn-wrap">
+        <ux-button disabled type="default" text="禁用按钮" custom-class="btn-item" />
+        <ux-button disabled type="info" text="禁用按钮" custom-class="btn-item" />
+        <ux-button disabled plain type="success" text="禁用镂空" custom-class="btn-item" />
+    </view>
+</template>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 图标按钮 */
+const icon = `
+<template>
+    <view class="btn-wrap">
+        <ux-button type="primary" icon="star" text="图标按钮" custom-class="btn-item" @click="onClick" />
+        <ux-button type="error" plain icon="heart" text="图标按钮" custom-class="btn-item" @click="onClick" />
+        <ux-button type="default" icon="account" icon-color="#2979ff" text="自定义图标色" custom-class="btn-item" @click="onClick" />
+    </view>
+    <!-- 仅图标：不传插槽内容则只显示图标，可配合 shape 组成各形态 -->
+    <view class="btn-wrap btn-icon-row">
+        <ux-button shape="round" icon="star" type="primary" custom-class="btn-item" @click="onClick" />
+        <ux-button shape="round" plain icon="heart" type="error" custom-class="btn-item" @click="onClick" />
+        <ux-button icon="search" type="success" custom-class="btn-item" @click="onClick" />
+        <ux-button plain icon="close" type="default" custom-class="btn-item" @click="onClick" />
+    </view>
+    <!-- 图标大小 icon-size 与垂直偏移 icon-top（单位px，正数向上） -->
+    <view class="btn-wrap btn-icon-row">
+        <ux-button type="primary" icon="star" icon-size="20" text="大号图标" custom-class="btn-item" @click="onClick" />
+        <ux-button type="primary" icon="star" icon-size="26" :icon-top="2" text="大号图标" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+.btn-icon-row {
+    margin-top: 8px;
+}
+</style>
+`;
+
+/** 占满一行 */
+const block = `
+<template>
+    <view class="btn-stack">
+        <ux-button block type="primary" icon="star" text="占满一行的按钮" custom-class="btn-stack-item" @click="onClick" />
+        <ux-button block type="success" plain text="占满一行的按钮" custom-class="btn-stack-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-stack {
+    display: flex;
+    flex-direction: column;
+}
+.btn-stack-item {
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 自定义样式 */
+const customStyle = `
+<template>
+    <view class="btn-wrap">
+        <!-- 完全自定义场景（黑底白字）组件无法自动推断文字色，用时须在插槽内层显式设 color -->
+        <ux-button type="default" :custom-style="customStyle" custom-class="btn-item" @click="onClick">
+            <text :style="slotTextStyle">自定义样式</text>
+        </ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+import { createStyle } from '@/uni_modules/uview-pro-x';
+
+const customStyle = computed((): UTSJSONObject => {
+    const style = createStyle();
+    style['backgroundColor'] = '#000000';
+    style['color'] = '#ffffff';
+    return style;
+});
+
+const slotTextStyle = computed((): UTSJSONObject => {
+    const style = createStyle();
+    style['color'] = '#ffffff';
+    return style;
+});
+
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+</style>
+`;
+
+/** 自定义内容 slot */
+const slot = `
+<template>
+    <view class="btn-wrap">
+        <!-- text 属性：纯文字，组件自动着色 -->
+        <ux-button type="primary" text="text 属性" custom-class="btn-item" @click="onClick" />
+        <!-- 特色示例：content 插槽富拼装（保留 icon/loading）—— 促销售价"大号加粗价格 + 白底省 ¥100 徽标"，
+             展示纯文字传达不了的混排能力；页面自定义 class 设色 -->
+        <ux-button type="error" custom-class="btn-item" @click="onClick">
+            <template #content>
+                <text class="slot-price">¥299</text>
+                <text class="slot-badge">省 ¥100</text>
+            </template>
+        </ux-button>
+    </view>
+</template>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+/* 特色插槽：促销售价——大号加粗白字价格 */
+.slot-price {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+}
+/* 特色插槽：促销徽标——白底半透明胶囊 + 深红字 */
+.slot-badge {
+    margin-left: 8px;
+    padding: 0 8px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.92);
+    color: #ee4d38;
+    font-size: 12px;
+    line-height: 20px;
+}
+</style>
+`;
+
+/** 节流 */
+const throttle = `
+<template>
+    <view class="btn-wrap">
+        <!-- throttle-time=毫秒：不到该间隔的连击只生效一次，右侧按钮在快速连点时会明显丢次数 -->
+        <ux-button type="primary" text="无节流" custom-class="btn-item" @click="onNormalTap" />
+        <ux-button type="error" throttle-time="1000" text="节流 1s" custom-class="btn-item" @click="onTap" />
+    </view>
+</template>
+
+<script setup lang="uts">
+const normalCount = ref(0);
+const throttledCount = ref(0);
+
+function onNormalTap(): void {
+    normalCount.value++;
+    uni.showToast({ title: \`未节流：\${normalCount.value} 次\`, icon: 'none' });
+}
+
+function onTap(): void {
+    throttledCount.value++;
+    uni.showToast({ title: \`节流 1s：\${throttledCount.value} 次\`, icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+export const codes = {
+    basic,
+    type,
+    plain,
+    size,
+    shape,
+    radius,
+    ripple,
+    hairLine,
+    loading,
+    disabled,
+    icon,
+    slot,
+    block,
+    customStyle,
+    throttle
+};

@@ -1,0 +1,95 @@
+<template>
+    <demo-page :title="t('avatar.title')" :subtitle="t('avatar.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('avatar.basicTitle')" :desc="t('avatar.basicDesc')" :code="codes.basic">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" :src="avatarUrl" @click="onClick" />
+                <ux-avatar custom-class="avatar-item" size="large" :src="avatarUrl" />
+                <ux-avatar custom-class="avatar-item" size="small" :src="avatarUrl" />
+            </view>
+        </demo-block>
+
+        <!-- 文字头像 -->
+        <demo-block :title="t('avatar.textTitle')" :desc="t('avatar.textDesc')" :code="codes.text">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" text="A" bg-color="#2979ff" />
+                <ux-avatar custom-class="avatar-item" text="B" bg-color="#19be6b" size="large" />
+                <ux-avatar custom-class="avatar-item" text="C" bg-color="#fa3534" size="small" />
+            </view>
+        </demo-block>
+
+        <!-- 形状两档 -->
+        <demo-block :title="t('avatar.squareTitle')" :desc="t('avatar.squareDesc')" :code="codes.square">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" :src="avatarUrl" shape="circle" />
+                <ux-avatar custom-class="avatar-item" :src="avatarUrl" shape="square" />
+                <ux-avatar custom-class="avatar-item" text="A" bg-color="#2979ff" shape="circle" size="large" />
+                <ux-avatar custom-class="avatar-item" text="B" bg-color="#19be6b" shape="square" size="large" />
+            </view>
+        </demo-block>
+
+        <!-- 性别角标 -->
+        <demo-block :title="t('avatar.sexTitle')" :desc="t('avatar.sexDesc')" :code="codes.sex">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" text="A" bg-color="#2979ff" show-sex sex-icon="man" />
+                <ux-avatar custom-class="avatar-item" text="B" bg-color="#fa3534" show-sex sex-icon="woman" />
+            </view>
+        </demo-block>
+
+        <!-- 等级图标 -->
+        <demo-block :title="t('avatar.levelTitle')" :desc="t('avatar.levelDesc')" :code="codes.level">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" text="A" bg-color="#2979ff" show-level />
+                <ux-avatar custom-class="avatar-item" text="B" bg-color="#fa3534" show-level level-bg-color="#ff9900" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义角标颜色 -->
+        <demo-block :title="t('avatar.badgeColorTitle')" :desc="t('avatar.badgeColorDesc')" :code="codes.badgeColor">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" text="A" bg-color="#2979ff" show-sex sex-icon="man" sex-bg-color="#19be6b" />
+                <ux-avatar custom-class="avatar-item" text="B" bg-color="#fa3534" show-level level-bg-color="#2979ff" />
+            </view>
+        </demo-block>
+
+        <!-- 图片裁剪模式 -->
+        <demo-block :title="t('avatar.imgModeTitle')" :desc="t('avatar.imgModeDesc')" :code="codes.imgMode">
+            <view class="avatar-row">
+                <ux-avatar custom-class="avatar-item" :src="avatarUrl" img-mode="aspectFill" />
+                <ux-avatar custom-class="avatar-item" :src="avatarUrl" img-mode="scaleToFill" size="large" />
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 头像图片地址 */
+    const avatarUrl = 'https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png';
+
+    /** 点击头像 */
+    const onClick = (index: string | number) => {
+        uni.showToast({ title: t('avatar.clickToast') + index, icon: 'none' });
+    };
+</script>
+
+<style lang="scss">
+
+    .avatar-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .avatar-item {
+        margin-right: 16px;
+        margin-bottom: 12px;
+    }
+</style>

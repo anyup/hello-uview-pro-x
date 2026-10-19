@@ -1,0 +1,103 @@
+﻿<template>
+    <demo-page :title="t('swipeAction.title')" :subtitle="t('swipeAction.subtitle')">
+
+        <demo-block :title="t('swipeAction.basicTitle')" :desc="t('swipeAction.basicDesc')" :code="codes.basic">
+            <ux-swipe-action :options="options1" :index="1" @click="onBtnClick">
+                <view class="swipe-content">
+                    <text class="swipe-content-text">{{ t('swipeAction.item1') }}</text>
+                </view>
+            </ux-swipe-action>
+        </demo-block>
+
+        <demo-block :title="t('swipeAction.multiTitle')" :desc="t('swipeAction.multiDesc')" :code="codes.multi">
+            <ux-swipe-action :options="options2" :index="2" @click="onBtnClick">
+                <view class="swipe-content">
+                    <text class="swipe-content-text">{{ t('swipeAction.item2') }}</text>
+                </view>
+            </ux-swipe-action>
+        </demo-block>
+
+        <demo-block :title="t('swipeAction.disabledTitle')" :desc="t('swipeAction.disabledDesc')" :code="codes.disabled">
+            <ux-swipe-action :options="options1" :index="3" :disabled="true">
+                <view class="swipe-content">
+                    <text class="swipe-content-text">{{ t('swipeAction.item3') }}</text>
+                </view>
+            </ux-swipe-action>
+        </demo-block>
+
+        <demo-block :title="t('swipeAction.controlTitle')" :desc="t('swipeAction.controlDesc')" :code="codes.control">
+            <ux-swipe-action ref="swipeRef" :options="options1" :index="4" :show="showSwipe" @click="onBtnClick" @open="onOpen" @close="onClose">
+                <view class="swipe-content">
+                    <text class="swipe-content-text">{{ t('swipeAction.item4') }}</text>
+                </view>
+            </ux-swipe-action>
+            <view class="demo-btn-row">
+                <ux-button shape="round" @click="toggleSwipe">{{ showSwipe ? t('swipeAction.close') : t('swipeAction.open') }}</ux-button>
+            </view>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale, type SwipeActionOption } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const options1: SwipeActionOption[] = [
+    {
+        text: t('swipeAction.delete'),
+        style: { backgroundColor: '#fa3534' }
+    }
+];
+
+const options2: SwipeActionOption[] = [
+    {
+        text: t('swipeAction.favorite'),
+        style: { backgroundColor: '#ff9900' }
+    },
+    {
+        text: t('swipeAction.delete'),
+        style: { backgroundColor: '#fa3534' }
+    }
+];
+
+const showSwipe = ref<boolean>(false);
+const swipeRef = ref<any>(null);
+
+function toggleSwipe(): void {
+    showSwipe.value = !showSwipe.value;
+}
+
+function onBtnClick(index: number | string, btnIndex: number): void {
+    uni.showToast({ title: t('swipeAction.clickTip') + ': ' + btnIndex, icon: 'none' });
+}
+
+function onOpen(index: number | string): void {
+    console.log('open', index);
+}
+
+function onClose(index: number | string): void {
+    console.log('close', index);
+}
+</script>
+
+<style lang="scss">
+
+.swipe-content {
+    padding: 15px;
+    background-color: $u-bg-white;
+}
+
+.swipe-content-text {
+    font-size: 14px;
+    color: $u-main-color;
+}
+
+.demo-btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+</style>

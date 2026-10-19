@@ -1,0 +1,59 @@
+<template>
+    <demo-page :title="t('textarea.title')" :subtitle="t('textarea.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('textarea.basicTitle')" :desc="t('textarea.basicDesc')" :code="codes.basic">
+            <ux-textarea v-model="value1" :placeholder="t('textarea.placeholder')"></ux-textarea>
+        </demo-block>
+
+        <!-- 字数统计 -->
+        <demo-block :title="t('textarea.countTitle')" :desc="t('textarea.countDesc')" :code="codes.count">
+            <ux-textarea v-model="value2" :count="true" :maxlength="100" :placeholder="t('textarea.placeholder')"></ux-textarea>
+        </demo-block>
+
+        <!-- 自动高度 -->
+        <demo-block :title="t('textarea.autoTitle')" :desc="t('textarea.autoDesc')" :code="codes.autoHeight">
+            <ux-textarea v-model="value3" :auto-height="true" :count="true" :placeholder="t('textarea.placeholder')"></ux-textarea>
+        </demo-block>
+
+        <!-- 禁用状态 -->
+        <demo-block :title="t('textarea.disabledTitle')" :desc="t('textarea.disabledDesc')" :code="codes.disabled">
+            <ux-textarea v-model="value4" :disabled="true"></ux-textarea>
+        </demo-block>
+
+        <!-- 底部边框 -->
+        <demo-block :title="t('textarea.borderTitle')" :desc="t('textarea.borderDesc')" :code="codes.border">
+            <ux-textarea v-model="value5" border="bottom" :placeholder="t('textarea.placeholder')"></ux-textarea>
+        </demo-block>
+
+        <!-- 不同尺寸 -->
+        <demo-block :title="t('textarea.sizeTitle')" :desc="t('textarea.sizeDesc')" :code="codes.size">
+            <ux-textarea v-model="value6" size="small" :placeholder="t('textarea.smallPh')"></ux-textarea>
+            <view class="demo-gap"></view>
+            <ux-textarea v-model="value7" size="large" :placeholder="t('textarea.largePh')"></ux-textarea>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+const value1 = ref<string>('');
+const value2 = ref<string>('');
+const value3 = ref<string>('');
+const value4 = ref<string>('Disabled content');
+const value5 = ref<string>('');
+const value6 = ref<string>('');
+const value7 = ref<string>('');
+</script>
+
+<style lang="scss">
+
+.demo-gap {
+    height: 10px;
+}
+</style>

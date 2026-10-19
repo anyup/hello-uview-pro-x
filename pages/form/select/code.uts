@@ -1,0 +1,198 @@
+﻿/**
+ * select 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 单列模式 */
+const single = `
+<template>
+    <ux-button @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-select
+        v-model="show"
+        mode="single-column"
+        :list="list"
+        :default-value="[2]"
+        title="单选选择器"
+        @confirm="onConfirm"
+    />
+</template>
+
+<script setup lang="uts">
+import type { SelectListItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const list: SelectListItem[] = [
+    { label: '选项一', value: 1 },
+    { label: '选项二', value: 2 },
+    { label: '选项三', value: 3 },
+    { label: '选项四', value: 4 }
+];
+
+function onConfirm(value: UTSJSONObject[]): void {
+    if (value != null && value.length > 0) {
+        result.value = value[0]['label'] as string;
+    }
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 多列模式 */
+const multi = `
+<template>
+    <ux-button @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-select
+        v-model="show"
+        mode="mutil-column"
+        :list="list"
+        :default-value="[0, 0]"
+        title="多列选择器"
+        @confirm="onConfirm"
+    />
+</template>
+
+<script setup lang="uts">
+import type { SelectListItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const list: SelectListItem[][] = [
+    [
+        { label: '亚洲', value: 'asia' },
+        { label: '欧洲', value: 'europe' }
+    ],
+    [
+        { label: '中国', value: 'cn' },
+        { label: '日本', value: 'jp' }
+    ]
+];
+
+function joinLabels(value: UTSJSONObject[]): string {
+    if (value == null) return '';
+    const labels: string[] = [];
+    for (let i = 0; i < value.length; i++) {
+        const label = value[i]['label'] as string;
+        if (label != null && label !== '') {
+            labels.push(label);
+        }
+    }
+    return labels.join(' / ');
+}
+
+function onConfirm(value: UTSJSONObject[]): void {
+    result.value = joinLabels(value);
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+/** 多列联动 */
+const cascade = `
+<template>
+    <ux-button @click="show = true">打开选择器</ux-button>
+    <text v-if="result !== ''" class="result">选择结果: {{ result }}</text>
+    <ux-select
+        v-model="show"
+        mode="mutil-column-auto"
+        :list="list"
+        :default-value="[0, 0, 0]"
+        title="级联选择器"
+        @confirm="onConfirm"
+    />
+</template>
+
+<script setup lang="uts">
+import type { SelectListItem } from '@/uni_modules/uview-pro-x';
+
+const show = ref<boolean>(false);
+const result = ref<string>('');
+
+const list: SelectListItem[] = [
+    {
+        label: '山东省',
+        value: 'sd',
+        children: [
+            {
+                label: '青岛市',
+                value: 'qd',
+                children: [
+                    { label: '崂山区', value: 'ls' },
+                    { label: '市南区', value: 'sn' }
+                ]
+            },
+            {
+                label: '济南市',
+                value: 'jn',
+                children: [
+                    { label: '历下区', value: 'lx' },
+                    { label: '市中区', value: 'sz' }
+                ]
+            }
+        ]
+    },
+    {
+        label: '海南省',
+        value: 'hn',
+        children: [
+            {
+                label: '三亚市',
+                value: 'sy',
+                children: [
+                    { label: '海棠区', value: 'ht' },
+                    { label: '吉阳区', value: 'jy' }
+                ]
+            }
+        ]
+    }
+];
+
+function joinLabels(value: UTSJSONObject[]): string {
+    if (value == null) return '';
+    const labels: string[] = [];
+    for (let i = 0; i < value.length; i++) {
+        const label = value[i]['label'] as string;
+        if (label != null && label !== '') {
+            labels.push(label);
+        }
+    }
+    return labels.join(' / ');
+}
+
+function onConfirm(value: UTSJSONObject[]): void {
+    result.value = joinLabels(value);
+}
+</script>
+
+<style scoped>
+.result {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #909399;
+}
+</style>
+`;
+
+export const codes = {
+    single,
+    multi,
+    cascade
+};

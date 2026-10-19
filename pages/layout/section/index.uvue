@@ -1,0 +1,72 @@
+﻿<template>
+    <demo-page :title="t('section.title')" :subtitle="t('section.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('section.basicTitle')" :code="codes.basic">
+            <ux-section :title="t('section.sectionTitle')" @click="handleClick"></ux-section>
+        </demo-block>
+
+        <!-- 隐藏竖条 show-line -->
+        <demo-block :title="t('section.showLineTitle')" :code="codes.showLine">
+            <ux-section :title="t('section.sectionTitle')" :show-line="false"></ux-section>
+        </demo-block>
+
+        <!-- 隐藏箭头 arrow -->
+        <demo-block :title="t('section.arrowTitle')" :code="codes.arrow">
+            <ux-section :title="t('section.sectionTitle')" :arrow="false"></ux-section>
+        </demo-block>
+
+        <!-- 自定义副标题 sub-title -->
+        <demo-block :title="t('section.subTitleTitle')" :code="codes.subTitle">
+            <ux-section :title="t('section.sectionTitle')" :sub-title="t('section.subTitleText')"></ux-section>
+        </demo-block>
+
+        <!-- 隐藏右侧 right -->
+        <demo-block :title="t('section.rightTitle')" :code="codes.right">
+            <ux-section :title="t('section.sectionTitle')" :right="false"></ux-section>
+        </demo-block>
+
+        <!-- 右侧插槽 right slot -->
+        <demo-block :title="t('section.rightSlotTitle')" :code="codes.rightSlot">
+            <ux-section :title="t('section.sectionTitle')">
+                <template #right>
+                    <text class="demo-slot-text">{{ t('section.slotText') }}</text>
+                </template>
+            </ux-section>
+        </demo-block>
+
+        <!-- 自定义字号 font-size -->
+        <demo-block :title="t('section.fontSizeTitle')" :code="codes.fontSize">
+            <ux-section :title="t('section.sectionTitle')" :font-size="20"></ux-section>
+        </demo-block>
+
+        <!-- 不加粗 bold -->
+        <demo-block :title="t('section.boldTitle')" :code="codes.bold">
+            <ux-section :title="t('section.sectionTitle')" :bold="false"></ux-section>
+        </demo-block>
+
+        <!-- 自定义颜色 color / sub-color / line-color -->
+        <demo-block :title="t('section.colorTitle')" :code="codes.color">
+            <ux-section :title="t('section.sectionTitle')" color="#2979ff" sub-color="#19be6b" line-color="#f56c6c"></ux-section>
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+    const { t } = useLocale('demo');
+
+    function handleClick() {
+        uni.showToast({
+            title: t('section.toastMore')
+        });
+    }
+</script>
+
+<style lang="scss">
+    .demo-slot-text {
+        color: $u-type-primary;
+    }
+</style>

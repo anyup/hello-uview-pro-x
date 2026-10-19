@@ -1,0 +1,273 @@
+<template>
+    <demo-page :title="t('overlay.title')" :subtitle="t('overlay.subtitle')">
+
+        <!-- 事件计数：原双标源日志降级为两个计数器（本轮验证只关心「事件来没来」，不再看时间戳）。
+             打开 = 组件 opened（淡入播完），关闭 = 组件 closed（淡出播完、节点卸载）；
+             计数在涨但遮罩看不见 ⇒ 事件通道通、显隐通道断 -->
+        <demo-block :title="t('overlay.countTitle')" :desc="t('overlay.countDesc')">
+            <ux-cell-group>
+                <ux-cell-item :title="t('overlay.countOpen')" :value="openCount" :arrow="false"></ux-cell-item>
+                <ux-cell-item :title="t('overlay.countClose')" :value="closeCount" :arrow="false"></ux-cell-item>
+                <ux-cell-item :title="t('overlay.durationTitle')" :value="durationText" :arrow="false"></ux-cell-item>
+                <ux-cell-item :title="t('overlay.countReset')" :arrow="false" :border-bottom="false" @click="resetCount()"></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('overlay.basicTitle')" :desc="t('overlay.basicDesc')" :code="codes.basic">
+            <ux-cell-item :title="t('overlay.showBtn')" :border-bottom="false" @click="openBasic()"></ux-cell-item>
+        </demo-block>
+
+        <!-- 动画时长：点档位即按该时长弹一次遮罩 -->
+        <demo-block :title="t('overlay.durationTitle')" :desc="t('overlay.durationDesc')" :code="codes.duration">
+            <ux-cell-group>
+                <ux-cell-item
+                    v-for="(item, index) in durationList"
+                    :key="index"
+                    :title="item.label"
+                    :value="duration == item.value ? durationText : ''"
+                    :border-bottom="index != durationList.length - 1"
+                    @click="openWithDuration(item.value)"
+                ></ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 背景色与层级 -->
+        <demo-block :title="t('overlay.customTitle')" :desc="t('overlay.customDesc')" :code="codes.custom">
+            <ux-cell-item :title="t('overlay.openCustom')" :border-bottom="false" @click="openCustom()"></ux-cell-item>
+        </demo-block>
+
+        <!-- 内容填充 -->
+        <demo-block :title="t('overlay.contentTitle')" :desc="t('overlay.contentDesc')" :code="codes.content">
+            <ux-cell-item :title="t('overlay.contentBtn')" :border-bottom="false" @click="openWithContent()"></ux-cell-item>
+        </demo-block>
+
+        <!-- 点击遮罩不关闭：事件照常来（toast 佐证），但不回写 show -->
+        <demo-block :title="t('overlay.clickableTitle')" :desc="t('overlay.clickableDesc')" :code="codes.clickable">
+            <ux-cell-item :title="t('overlay.clickableBtn')" :border-bottom="false" @click="openNoClick()"></ux-cell-item>
+        </demo-block>
+
+        <!-- 连续开关压力测试：复现「偶发只出遮罩不出内容 / 遮罩透明」的最小组合，轮次看计数器是否漏加 -->
+        <demo-block :title="t('overlay.stressTitle')" :desc="t('overlay.stressDesc')" :code="codes.stress">
+            <ux-cell-item
+                :title="stressLeft > 0 ? t('overlay.stressStop') : t('overlay.stressStart')"
+                :value="stressLeft > 0 ? stressLeft.toString() : ''"
+                :border-bottom="false"
+                @click="toggleStress()"
+            ></ux-cell-item>
+        </demo-block>
+
+        <!-- 遮罩实例（基础 / 时长 / 背景色 / 内容共用） -->
+        <ux-overlay
+            v-model:show="show"
+            :bg-color="bgColor"
+            :duration="duration"
+            :z-index="zIndex"
+            @closed="countClosed()"
+            @opened="countOpened()"
+        >
+            <view v-if="content" class="overlay-content">
+                <view class="overlay-rect" @click.stop>
+                    <text class="overlay-rect-text">{{ t('overlay.contentText') }}</text>
+                </view>
+            </view>
+        </ux-overlay>
+
+        <!-- 遮罩实例（点击不关闭：受控 :show + close-on-click-overlay=false） -->
+        <ux-overlay
+            :close-on-click-overlay="false"
+            :show="noClickShow"
+            @click="onNoClick()"
+            @closed="countClosed()"
+            @opened="countOpened()"
+        >
+            <view class="overlay-content">
+                <view class="overlay-rect" @click.stop>
+                    <text class="overlay-rect-text">{{ t('overlay.clickableText') }}</text>
+                    <ux-cell-item :title="t('overlay.closeBtn')" :arrow="false" :border-bottom="false" @click="closeNoClick()"></ux-cell-item>
+                </view>
+            </view>
+        </ux-overlay>
+
+        <!-- 遮罩实例（压力测试专用） -->
+        <ux-overlay
+            v-model:show="stressShow"
+            :duration="200"
+            @closed="countClosed()"
+            @opened="countOpened()"
+        ></ux-overlay>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 时长档位选项 */
+    type DurationItem = {
+        value: number;
+        label: string;
+    };
+
+    /** 压测总轮次 */
+    const stressTotal = 6;
+
+    /** 遮罩显示状态（共用实例） */
+    const show = ref(false);
+    /** 淡入淡出时长（ms） */
+    const duration = ref(300);
+    /** 遮罩背景色，空串走组件默认半透明黑 */
+    const bgColor = ref('');
+    /** 遮罩层级，空串取 $u.zIndex.mask */
+    const zIndex = ref<string | number>('');
+    /** 是否显示遮罩内容 */
+    const content = ref(false);
+    /** 不可点击关闭实例的显隐 */
+    const noClickShow = ref(false);
+    /** 压测实例的显隐 */
+    const stressShow = ref(false);
+    /** 压测剩余轮次（>0 表示进行中） */
+    const stressLeft = ref(0);
+    /** 压测当前是开还是关 */
+    let stressOn = false;
+
+    /** 打开计数器：累加组件 opened 事件（三个实例共用一组计数） */
+    const openCount = ref(0);
+    /** 关闭计数器：累加组件 closed 事件 */
+    const closeCount = ref(0);
+
+    const durationList: DurationItem[] = [
+        { value: 100, label: '100ms' },
+        { value: 300, label: '300ms' },
+        { value: 800, label: '800ms' }
+    ];
+
+    /** 当前时长档位文本，计数区与档位行的选中标记共用 */
+    const durationText = computed((): string => duration.value.toString() + 'ms');
+
+    /** opened → 打开计数 +1 */
+    function countOpened(): void {
+        openCount.value = openCount.value + 1;
+    }
+
+    /** closed → 关闭计数 +1 */
+    function countClosed(): void {
+        closeCount.value = closeCount.value + 1;
+    }
+
+    /** 清零两个计数器 */
+    function resetCount(): void {
+        openCount.value = 0;
+        closeCount.value = 0;
+    }
+
+    /** 复位共用实例的样式参数 */
+    function resetShared(): void {
+        bgColor.value = '';
+        zIndex.value = '';
+        duration.value = 300;
+        content.value = false;
+    }
+
+    /** 基础用法 */
+    function openBasic(): void {
+        resetShared();
+        show.value = true;
+    }
+
+    /** 指定时长打开 */
+    function openWithDuration(val: number): void {
+        resetShared();
+        duration.value = val;
+        show.value = true;
+    }
+
+    /** 自定义背景色与层级 */
+    function openCustom(): void {
+        resetShared();
+        bgColor.value = 'rgba(24, 144, 255, 0.5)';
+        zIndex.value = 10000;
+        show.value = true;
+    }
+
+    /** 带内容打开 */
+    function openWithContent(): void {
+        resetShared();
+        content.value = true;
+        show.value = true;
+    }
+
+    /** 点击不关闭实例 */
+    function openNoClick(): void {
+        noClickShow.value = true;
+    }
+
+    /** 不关闭实例的遮罩点击：组件不回写，toast 佐证 click 事件确实派发了 */
+    function onNoClick(): void {
+        uni.showToast({
+            title: t('overlay.clickableText'),
+            icon: 'none'
+        });
+    }
+
+    /** 内容区单元格关闭 */
+    function closeNoClick(): void {
+        noClickShow.value = false;
+    }
+
+    /** 压测单轮：翻转一次显隐，500ms 后进入下一轮 */
+    function stepStress(): void {
+        if (stressLeft.value <= 0) return;
+        stressLeft.value = stressLeft.value - 1;
+        stressOn = !stressOn;
+        stressShow.value = stressOn;
+        setTimeout((): void => {
+            stepStress();
+        }, 500);
+    }
+
+    /** 开始 / 中止压测 */
+    function toggleStress(): void {
+        if (stressLeft.value > 0) {
+            stressLeft.value = 0;
+            stressOn = false;
+            stressShow.value = false;
+            return;
+        }
+        stressLeft.value = stressTotal;
+        stepStress();
+    }
+</script>
+
+<style lang="scss">
+    @import '@/uni_modules/uview-pro-x/theme.scss';
+
+    /* 遮罩内容：撑满遮罩并居中白色方块 */
+    .overlay-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .overlay-rect {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 240px;
+        background-color: $u-bg-white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .overlay-rect-text {
+        font-size: 14px;
+        color: $u-content-color;
+        text-align: center;
+        padding: 16px 16px 4px 16px;
+    }
+</style>
