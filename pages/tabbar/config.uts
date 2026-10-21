@@ -79,7 +79,6 @@ const feedbackComponentItems: MenuItem[] = [
     { name: 'SwipeAction', zhName: '滑动单元格', desc: 'tabbarMenu.swipeActionDesc', icon: 'S', path: 'feedback/swipeAction/index' },
     { name: 'Modal', zhName: '弹窗', desc: 'tabbarMenu.modalDesc', icon: 'M', path: 'feedback/modal/index' },
     { name: 'Mask', zhName: '遮罩层', desc: 'tabbarMenu.maskDesc', icon: 'M', path: 'feedback/mask/index' },
-    { name: 'Overlay', zhName: '遮罩层(新)', desc: 'tabbarMenu.overlayDesc', icon: 'O', path: 'feedback/overlay/index' },
     { name: 'Loading', zhName: '加载', desc: 'tabbarMenu.loadingDesc', icon: 'L', path: 'feedback/loading/index' },
     { name: 'Loadmore', zhName: '加载更多', desc: 'tabbarMenu.loadmoreDesc', icon: 'L', path: 'feedback/loadmore/index' },
     { name: 'Empty', zhName: '内容为空', desc: 'tabbarMenu.emptyDesc', icon: 'E', path: 'feedback/empty/index' },

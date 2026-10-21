@@ -370,12 +370,6 @@
           }
         },
         {
-          "path": "overlay/index",
-          "style": {
-            "navigationBarTitleText": "Overlay 遮罩层"
-          }
-        },
-        {
           "path": "loading/index",
           "style": {
             "navigationBarTitleText": "Loading 加载"

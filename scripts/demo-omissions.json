@@ -54,6 +54,11 @@
     "appParameter": "open-type=launchApp 参数，H5/App 无效，有意省略",
     "formType": "需配 <form> 场景，演示页未覆盖，有意省略"
   },
+  "steps": {
+    "list": "演示页统一采用 ux-step 子元素写法，list 数据驱动写法未展示，有意省略",
+    "type": "组件内部未消费该主题类型，保留接口占位，有意省略",
+    "icon": "默认 checkmark 即演示外观，有意省略"
+  },
   "input": {
     "cursorColor": "原生光标颜色透传，演示页未覆盖，有意省略",
     "cursorSpacing": "光标与键盘间距，平台原生行为，演示页未覆盖，有意省略",
