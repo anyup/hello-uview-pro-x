@@ -29,3 +29,5 @@ node_modules
 .npmrc
 
 .agents/
+sync-split.mjs
+sync-split.config.json

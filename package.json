@@ -1,0 +1,17 @@
+{
+    "name": "hello-uview-pro-x",
+    "version": "1.0.0",
+    "description": "uView Pro X 演示工程（uni-app x）",
+    "scripts": {
+        "changelog:release": "node scripts/generate-changelog.js --emoji --current --no-unreleased --no-links --exclude-types=build,chore,ci,docs,revert,test",
+        "changelog:all": "node scripts/generate-changelog.js --emoji --all --no-unreleased --no-links",
+        "release:patch": "node scripts/release.js patch",
+        "release:minor": "node scripts/release.js minor",
+        "release:major": "node scripts/release.js major",
+        "release:beta": "node scripts/release.js prerelease beta",
+        "release:alpha": "node scripts/release.js prerelease alpha",
+        "release:rc": "node scripts/release.js prerelease rc",
+        "release:push": "node scripts/release.js push",
+        "release:undo": "node scripts/release.js undo"
+    }
+}

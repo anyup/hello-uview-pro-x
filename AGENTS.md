@@ -61,12 +61,26 @@
   ```powershell
   & "D:\Program Files\HBuilderX\cli.exe" launch web --project "<本仓库绝对路径>"
   ```
-  约 5 秒编译完成（输出 `Local: http://localhost:9000/`）；本仓库无 package.json，不能用 `npm run dev`。
+  约 5 秒编译完成（输出 `Local: http://localhost:9000/`）；本仓库 `package.json` 仅承载发布与 changelog 脚本（无 `dev` 脚本），开发服务器仍由 HBuilderX 启动。
 - **一键验证**：项目根执行 `node scripts/verify-h5.mjs <route> --timeout 120000 [--json]`（route 形如 `feedback/mask`，脚本自动补 `pages/` 与 `/index`；只收集 console/page 错误，不截图）。**勿写临时 playwright 脚本**。
 - **门禁脚本**：`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.uts 一一对应、prop 完整性）。
 - **验证职责划分**：AI 只验证 H5（复用常驻 dev server）；**App 端编译验证（UTS 语法最终校验）由用户在 HBuilderX 执行**，AI 不跑 App 构建。
 - **编译报错先查** `.agents/skills/migrate-component/references/error-patterns/README.md` 命中表，命中即按表修，不盲试。
 - **一次性探针脚本用完即清**：只跑一次的临时脚本（`_probe_*.mjs`、临时导出改本）用完立即删除，不留工作区。
+
+## 发布与更新日志
+
+| 命令 | 说明 |
+|---|---|
+| `npm run release:patch` / `release:minor` / `release:major` | 升版本 → 生成 changelog → 提交 → 打 `vX.Y.Z` 标签（默认不推送） |
+| `npm run release:beta` / `release:alpha` / `release:rc` | 预览版本（`x.y.z-beta.0` 递增） |
+| `npm run release:push` | 推送上次未推送的发布（提交 + 标签） |
+| `npm run release:undo` | 撤销未推送的本地发布（删标签、回退提交） |
+| `npm run changelog*` | 单独生成 `CHANGELOG.md`（`current` / `last` / `all`，带或不带 emoji） |
+
+- 版本号写入本仓库 `package.json`，并同步 `uni_modules/uview-pro-x/package.json`；**每次生成 changelog 都会同时写根 `CHANGELOG.md` 与 `uni_modules/uview-pro-x/changelog.md`，两份内容完全一致**。该目录是独立仓库，**需在私有库内自行提交**。
+- 发布提交只包含 `package.json` 与 `CHANGELOG.md`，不会带上工作区其他改动（嵌套仓库、历史未提交改动均不进提交）。
+- 提交信息遵循 Conventional Commits（`feat` / `fix` / `perf` / `refactor` 等），changelog 按类型分组并链接到 `anyup/hello-uview-pro-x` 对应 commit。
 
 ## 技能与文档
 
