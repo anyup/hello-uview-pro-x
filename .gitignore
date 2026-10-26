@@ -31,3 +31,4 @@ node_modules
 .agents/
 sync-split.mjs
 sync-split.config.json
+uview-pro-x-doc/
