@@ -1,0 +1,16 @@
+{
+  "git.repositoryScanMaxDepth": 3,
+  "git.scanRepositories": [
+    ".agents",
+    "uview-pro-x-doc",
+    "uni_modules/uview-pro-x"
+  ],
+  "search.useIgnoreFiles": false,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/unpackage": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/*.zip": true
+  }
+}

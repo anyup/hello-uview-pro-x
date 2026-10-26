@@ -45,7 +45,7 @@
 - 分类分包：`basic` / `form` / `data` / `feedback` / `layout` / `navigation` / `others`，另有 `library`（工具）与 `hooks` 两个子包。
 - 新增示例页四件事：建页 → `pages.json` 注册子包路由 → `pages/tabbar/config.uts` 追加菜单项 → 新增整个分类时同步 `scripts/verify-demo-examples.mjs` 的 `DEMO_GROUP_RE` 目录白名单（漏改会让新目录页面默默不入门禁）。
 - 公共样式 `style/demo.scss`（`App.uvue` 中全局引入）。预定义类名：`.demo-page` / `.demo-header` / `.demo-title` / `.demo-card` / `.demo-card-title` / `.demo-item` / `.demo-desc` / `.demo-result` / `.demo-result-success|error|warning` / `.demo-btn`。
-- 页面写法（消费侧规范）：`.agents/skills/ux-writer/references/`。
+- 页面写法（消费侧规范）：`.agents/skills/uview-pro-x/references/`。
 
 ## 验证（默认不跑自动验证）
 
@@ -88,8 +88,8 @@
 |---|---|
 | `.agents/skills/component-writer/` | **ux-* 组件编写**（新增 / 整改 / 优化）唯一权威：`references/spec` + `recipes` + `samples`（样板 ux-button / ux-navbar）；`scripts/verify-script-order.mjs` 校验 |
 | `.agents/skills/migrate-component/` | 存量组件从 uView Pro 版本搬过来时的流程与配方（已很少用，按需）：`references/` 含 `error-patterns` 命中表、`recipes` 配方索引 |
-| `.agents/skills/ux-writer/` | 消费侧：在外部 uni-app x 项目用 uview-pro-x 写页面的自包含规范（随技能发货 API 卡片，本仓库示例页同样遵循） |
-| `.agents/skills/u-writer/` | 消费侧：普通 uni-app（非 x，`u-*` + TS）项目的同类规范，服务兄弟项目 |
+| `.agents/skills/uview-pro-x/`（技能名 `uview-pro-x`） | 消费侧：在外部 uni-app x 项目用 uview-pro-x 写页面的自包含规范（随技能发货 API 卡片，本仓库示例页同样遵循） |
+| `.agents/skills/uview-pro/`（技能名 `uview-pro`） | 消费侧：普通 uni-app（非 x，`u-*` + TS）项目用 uview-pro 写页面的同类规范，服务兄弟项目 |
 | `.agents/skills/uniappx-crash-triage/` | App 端（安卓真机）原生崩溃排查流程：日志取证 → dump 指纹比对 → 隔离实验 |
 | `.agents/plan.md` | 一期计划唯一权威：覆盖度（源库→x 库迁移进度）、演示入口批次、阶段与执行机制 |
 | `README.md` / `README.en.md` | 对外介绍（安装 / 使用 / 快速开始） |
