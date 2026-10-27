@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.2 - 2026-10-27
+
+### 文档
+
+- 文档站新增[「AI 技能」指南](https://x.uviewpro.cn/zh/guide/skills.html)，中英文同步上线，说明技能安装、使用流程、目录结构与手动校验方式
+- 技能包同步开源在 [uview-pro/skills](https://github.com/uview-pro/skills)，命令行安装失败时可直接下载使用
+
+### 生态
+
+- 发布配套 Agent Skills 技能包 `uview-pro-x`：AI 编程助手可据此按本库规范编写页面，写组件前查 API 卡片，写完运行 `verify-ux-usage.mjs` 校验 `ux-*` 用法
+
+## 1.0.1 - 2026-10-26
+
+- 优化 README.md，添加组件说明
+- 添加官方文档链接
+- 添加示例演示入口
+
 ## 1.0.0 - 2026-10-26
 
 首个正式版本，作为后续迭代的功能基线。

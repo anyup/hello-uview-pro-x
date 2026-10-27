@@ -1,8 +1,12 @@
 {
     "name": "hello-uview-pro-x",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "uView Pro X 演示工程（uni-app x）",
     "scripts": {
+        "sync": "node scripts/sync-split.mjs",
+        "sync:demo": "node scripts/sync-split.mjs --part demo",
+        "sync:lib": "node scripts/sync-split.mjs --part lib",
+        "sync:dry": "node scripts/sync-split.mjs --dry-run",
         "changelog:release": "node scripts/generate-changelog.js --emoji --current --no-unreleased --no-links --exclude-types=build,chore,ci,docs,revert,test",
         "changelog:all": "node scripts/generate-changelog.js --emoji --all --no-unreleased --no-links",
         "release:patch": "node scripts/release.js patch",
