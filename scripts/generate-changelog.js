@@ -14,11 +14,18 @@
  *   --all              按所有 git 标签重建版本区块
  *   --no-unreleased    不保留 Unreleased 区块（发布时使用）
  *   --no-links         提交 hash 不生成超链接（只保留短 hash）
+ *   --no-hash          日志条目不显示提交 hash（发布日志使用）
+ *   --no-date          版本标题不带日期（文档库更新日志使用）
  *   --exclude-types=a,b  排除指定提交类型
+ *   --repo <dir>       生成来源仓库（git 历史、标签、package.json 均取自该仓库；默认当前仓库根）
+ *   --merge-repo <dir> 额外合并该仓库「最近标签..HEAD」的提交到当前区块（用于多仓库共用同一份日志）
+ *   --output <file>    输出文件（默认 CHANGELOG.md，相对当前工作目录）
+ *   --repo-url <url>   主仓库提交链接前缀（默认演示仓库）
+ *   --merge-repo-url <url> 合并仓库提交链接前缀（默认演示仓库）
  *
- * 产物（每次生成都写两份，内容完全一致）:
- *   - CHANGELOG.md（演示工程仓库根）
- *   - uni_modules/uview-pro-x/changelog.md（组件库工作副本；目录不存在时跳过）
+ * 产物:
+ *   - 默认写本仓库根 CHANGELOG.md
+ *   - 指定 --repo/--output 时写到对应位置（如组件库 changelog.md、文档库更新日志），不再自动同步其他日志
  */
 
 const { execSync } = require('child_process');
@@ -27,8 +34,6 @@ const path = require('path');
 
 // 提交链接指向的仓库（演示仓库）
 const REPO_URL = 'https://github.com/anyup/hello-uview-pro-x';
-// 组件库（私有库工作副本）的更新日志路径
-const COMPONENT_CHANGELOG_PATH = path.join('uni_modules', 'uview-pro-x', 'changelog.md');
 
 // 解析命令行参数
 const args = process.argv.slice(2);
@@ -40,6 +45,32 @@ const generateAll = args.includes('--all') || args.includes('--by-tags');
 const noUnreleased = args.includes('--no-unreleased');
 // 关闭提交链接：只输出短 hash，不生成 markdown 超链接
 const noLinks = args.includes('--no-links');
+// 日志条目不显示提交 hash
+const noHash = args.includes('--no-hash');
+// 版本标题不带日期（文档库更新日志沿用 `## x.y.z` 的既有风格）
+const noDate = args.includes('--no-date');
+
+// 读取 --name value / --name=value 形式的选项值
+function optionValue(name) {
+    const eqArg = args.find(a => a.startsWith(`${name}=`));
+    if (eqArg) return eqArg.slice(name.length + 1);
+    const idx = args.indexOf(name);
+    if (idx !== -1 && args[idx + 1] && !args[idx + 1].startsWith('--')) return args[idx + 1];
+    return '';
+}
+
+// 主仓库：git 历史 / 标签 / package.json 来源
+const repoArg = optionValue('--repo') || '.';
+const repoDir = path.resolve(repoArg);
+// 合并仓库：其「最近标签..HEAD」提交会追加进当前版本区块
+const mergeRepoArg = optionValue('--merge-repo');
+const mergeRepoDir = mergeRepoArg ? path.resolve(mergeRepoArg) : '';
+// 输出文件（相对当前工作目录）
+const outputArg = optionValue('--output') || 'CHANGELOG.md';
+const outputPath = path.resolve(outputArg);
+// 提交链接前缀
+const repoUrl = optionValue('--repo-url') || REPO_URL;
+const mergeRepoUrl = optionValue('--merge-repo-url') || REPO_URL;
 
 // 需要排除的提交类型（例如：--exclude-types=chore,ci,docs）
 let excludeTypes = [];
@@ -102,30 +133,31 @@ const typeNamesPlain = {
 
 const typeNames = shouldUseEmoji ? typeNamesWithEmoji : typeNamesPlain;
 
-function safeExec(cmd) {
+function safeExec(cmd, cwd = process.cwd()) {
     try {
         // 忽略 stderr：标签不存在等探测失败属正常分支，不向控制台喷错
-        return execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+        return execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], cwd }).trim();
     } catch (e) {
         return '';
     }
 }
 
-function resolveRange() {
+function resolveRange(dir) {
     // --current: 以 package.json 的 version 为标签 vX.Y.Z，取「上一个标签..当前标签」
     if (onlyCurrent) {
-        const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+        const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
         const currentTag = `v${pkg.version}`;
         // 发布流程中标签尚未创建，此处会回退到「最近标签..HEAD」
-        const prevTag = safeExec(`git describe --tags --abbrev=0 ${currentTag}^`);
+        // 注意：Windows cmd 会把 `^` 当转义符吞掉，这里用 `~1` 表示父提交
+        const prevTag = safeExec(`git describe --tags --abbrev=0 ${currentTag}~1`, dir);
         if (prevTag) return `${prevTag}..${currentTag}`;
-        const lastTag = safeExec('git describe --tags --abbrev=0');
+        const lastTag = safeExec('git describe --tags --abbrev=0', dir);
         if (lastTag) return `${lastTag}..HEAD`;
         return '';
     }
     // --last: 最近一个标签..HEAD
     if (sinceLastTag) {
-        const lastTag = safeExec('git describe --tags --abbrev=0');
+        const lastTag = safeExec('git describe --tags --abbrev=0', dir);
         if (lastTag) return `${lastTag}..HEAD`;
         return '';
     }
@@ -133,9 +165,15 @@ function resolveRange() {
     return '';
 }
 
-// 版本区块标题：日期用中文全角括号包裹，形如 `## 1.0.0（2026-10-26）`
+// 合并仓库固定取「最近标签..HEAD」，与 --current/--last 无关
+function lastTagRange(dir) {
+    const lastTag = safeExec('git describe --tags --abbrev=0', dir);
+    return lastTag ? `${lastTag}..HEAD` : '';
+}
+
+// 版本区块标题：日期用中文全角括号包裹，形如 `## 1.0.0（2026-10-26）`；--no-date 时只保留版本号
 function buildSectionHeader({ version, date }) {
-    return `## ${version}（${date}）`;
+    return noDate || !date ? `## ${version}` : `## ${version}（${date}）`;
 }
 
 function todayStr() {
@@ -146,15 +184,30 @@ function todayStr() {
     return `${yyyy}-${mm}-${dd}`;
 }
 
-function collectCommits(range) {
+function collectCommits(range, dir = process.cwd(), url = REPO_URL) {
     const rangeArg = range ? ` ${range}` : '';
-    const lines = execSync(`git log${rangeArg} --pretty=format:"%H|%s|%an|%ae" --reverse`, { encoding: 'utf8' })
+    const lines = safeExec(`git log${rangeArg} --pretty=format:"%H|%s|%an|%ae|%ct" --reverse`, dir)
         .split('\n')
         .filter(line => line.trim());
     return lines.map(line => {
-        const [hash, subject, authorName, authorEmail] = line.split('|');
-        return { hash, subject, authorName, authorEmail };
+        const [hash, subject, authorName, authorEmail, timestamp] = line.split('|');
+        return {
+            hash,
+            subject,
+            authorName,
+            authorEmail,
+            // 提交链接归属仓库：合并日志时主仓库与附加仓库各自指向自己的提交页
+            repoUrl: url,
+            timestamp: Number(timestamp) || 0
+        };
     });
+}
+
+// 追加仓库提交按时间并入来源仓库提交，保证日志条目仍按提交先后排列
+// 同一秒的提交用 hash 兜底排序，确保不同仓库生成的日志顺序完全一致
+function mergeCommits(primary, extra) {
+    if (!extra || extra.length === 0) return primary;
+    return [...primary, ...extra].sort((a, b) => a.timestamp - b.timestamp || a.hash.localeCompare(b.hash));
 }
 
 function groupCommitsByType(commits, exclude) {
@@ -239,8 +292,13 @@ function renderBodyFromGroups(commitsByType, contributors = null) {
         commitsByType[type].forEach(commit => {
             const scope = commit.scope ? `**${commit.scope}:** ` : '';
             const shortHash = commit.hash.substring(0, 7);
-            const hashRef = noLinks ? `${shortHash}` : `[${shortHash}](${REPO_URL}/commit/${commit.hash})`;
-            body += `- ${scope}${commit.description} (${hashRef})\n`;
+            // --no-hash 时不输出 `(xxxxxxx)`；否则按 --no-links 决定是否带超链接
+            const hashRef = noHash
+                ? ''
+                : noLinks
+                ? `${shortHash}`
+                : `[${shortHash}](${commit.repoUrl || REPO_URL}/commit/${commit.hash})`;
+            body += `- ${scope}${commit.description}${hashRef ? ` (${hashRef})` : ''}\n`;
         });
         body += '\n';
     });
@@ -258,17 +316,26 @@ function renderFallbackBody() {
 
 function generateChangelog() {
     try {
-        const range = resolveRange();
+        const range = resolveRange(repoDir);
+        // 合并仓库固定取「最近标签..HEAD」，与 --current/--last 无关；--all 按标签重建时不合并
+        // 目录不是 git 仓库时跳过；仓库还没有任何标签时取全量，避免首次发布漏掉历史提交
+        const mergeRepoUsable = Boolean(mergeRepoDir) && !generateAll && fs.existsSync(path.join(mergeRepoDir, '.git'));
+        const mergeRange = mergeRepoUsable ? lastTagRange(mergeRepoDir) : '';
         console.log(
-            `🔄 生成 changelog... ${shouldUseEmoji ? '带 emoji' : '不带 emoji'}${range ? `（范围: ${range}）` : ''}`
+            `🔄 生成 changelog... ${shouldUseEmoji ? '带 emoji' : '不带 emoji'}（来源: ${repoDir}${
+                range ? `，范围: ${range}` : ''
+            }${mergeRepoUsable ? `；合并: ${mergeRepoDir}${mergeRange ? `（${mergeRange}）` : '（全量）'}` : ''}）`
         );
 
-        const commits = collectCommits(range);
+        const commits = mergeCommits(
+            collectCommits(range, repoDir, repoUrl),
+            mergeRepoUsable ? collectCommits(mergeRange, mergeRepoDir, mergeRepoUrl) : []
+        );
         const commitsByType = groupCommitsByType(commits, excludeTypes);
         const contributors = collectContributors(commits);
 
-        const hasExisting = fs.existsSync('CHANGELOG.md');
-        const existingContent = hasExisting ? fs.readFileSync('CHANGELOG.md', 'utf8') : '';
+        const hasExisting = fs.existsSync(outputPath);
+        const existingContent = hasExisting ? fs.readFileSync(outputPath, 'utf8') : '';
 
         const baseHeader = `# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n`;
         const standardHeader = noUnreleased ? baseHeader : baseHeader + '## [Unreleased]\n\n';
@@ -281,13 +348,13 @@ function generateChangelog() {
         let finalContent = '';
         if (generateAll) {
             // 基于标签重建所有版本区块
-            const tagsOutput = safeExec('git tag --list --sort=-v:refname');
+            const tagsOutput = safeExec('git tag --list --sort=-v:refname', repoDir);
             const tags = tagsOutput ? tagsOutput.split('\n').filter(Boolean) : [];
 
             let sections = '';
             if (tags.length === 0) {
                 // 仓库还没有任何标签：按当前版本 + 全量提交生成单个区块，避免输出空日志
-                const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+                const pkg = JSON.parse(fs.readFileSync(path.join(repoDir, 'package.json'), 'utf8'));
                 const body = changelogBody || renderFallbackBody();
                 sections = `${buildSectionHeader({ version: pkg.version, date: todayStr() })}\n\n${body}`;
             }
@@ -295,9 +362,9 @@ function generateChangelog() {
                 const tag = tags[i];
                 const prev = tags[i + 1];
                 // 用 git log 取标签指向提交的日期，避免注解标签输出 tag 对象信息
-                const tagDate = safeExec(`git log -1 --format=%ad --date=format:%Y-%m-%d ${tag}`) || '';
+                const tagDate = safeExec(`git log -1 --format=%ad --date=format:%Y-%m-%d ${tag}`, repoDir) || '';
                 const rangeExp = prev ? `${prev}..${tag}` : `${tag}`;
-                const tagCommits = collectCommits(rangeExp);
+                const tagCommits = collectCommits(rangeExp, repoDir, repoUrl);
                 const groups = groupCommitsByType(tagCommits, excludeTypes);
                 const tagContributors = collectContributors(tagCommits);
                 let body = renderBodyFromGroups(groups, tagContributors);
@@ -313,7 +380,7 @@ function generateChangelog() {
             finalContent = base + '\n' + sections.trim() + '\n';
         } else if (onlyCurrent) {
             // 生成当前版本区块，插入到版本列表最前（Unreleased 之后）
-            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const pkg = JSON.parse(fs.readFileSync(path.join(repoDir, 'package.json'), 'utf8'));
             const version = pkg.version;
             const today = new Date();
             const yyyy = today.getFullYear();
@@ -416,20 +483,8 @@ function generateChangelog() {
             finalContent = finalContent.replace(/\n+$/, '\n');
         }
 
-        fs.writeFileSync('CHANGELOG.md', finalContent);
-        console.log(`✅ CHANGELOG.md 生成成功（${shouldUseEmoji ? '带 emoji' : '不带 emoji'}）`);
-
-        // 同步组件库更新日志：内容与根 CHANGELOG.md 完全一致（组件库目录不存在时跳过）
-        try {
-            if (!fs.existsSync(path.dirname(COMPONENT_CHANGELOG_PATH))) {
-                console.log(`ℹ️  未找到组件库目录，跳过 ${COMPONENT_CHANGELOG_PATH}`);
-            } else {
-                fs.writeFileSync(COMPONENT_CHANGELOG_PATH, finalContent);
-                console.log(`✅ 组件库更新日志已同步: ${COMPONENT_CHANGELOG_PATH}`);
-            }
-        } catch (error) {
-            console.log(`⚠️  组件库更新日志同步失败: ${error.message}`);
-        }
+        fs.writeFileSync(outputPath, finalContent);
+        console.log(`✅ ${outputArg} 生成成功（${shouldUseEmoji ? '带 emoji' : '不带 emoji'}）`);
 
         // 统计信息
         Object.keys(commitsByType).forEach(type => {

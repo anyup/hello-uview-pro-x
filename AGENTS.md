@@ -72,16 +72,17 @@
 
 | 命令 | 说明 |
 |---|---|
-| `npm run release:patch` / `release:minor` / `release:major` | 升版本 → 生成 changelog → 主仓库与组件库仓库各自提交 → 各自打 `vX.Y.Z` 标签（默认不推送） |
+| `npm run release:patch` / `release:minor` / `release:major` | 升版本 → 同步文档库版本与日志 → 生成同源日志 → 主仓库与组件库仓库各自提交 → 各自打 `vX.Y.Z` 标签（默认不推送；文档库只改文件） |
 | `npm run release:beta` / `release:alpha` / `release:rc` | 预览版本（`x.y.z-beta.0` 递增） |
 | `npm run release:push` | 推送上次未推送的发布（主仓库与组件库仓库的提交 + 标签） |
-| `npm run release:undo` | 撤销未推送的本地发布（两个仓库都删标签、回退提交） |
-| `npm run changelog*` | 单独生成 `CHANGELOG.md`（`current` / `last` / `all`，带或不带 emoji） |
+| `npm run release:undo` | 撤销未推送的本地发布：删除两仓标签并把发布提交退回暂存区（不回退文件内容） |
+| `npm run changelog*` | 单独生成日志（`current` / `last` / `all`，带或不带 emoji）；`changelog:release` 写根 `CHANGELOG.md`、`changelog:lib` 写组件库、`changelog:docs` 写文档库，三者同源 |
 
-- 版本号写入本仓库 `package.json`，并同步 `uni_modules/uview-pro-x/package.json`；**每次生成 changelog 都会同时写根 `CHANGELOG.md` 与 `uni_modules/uview-pro-x/changelog.md`，两份内容完全一致**；版本标题统一为 `## x.y.z（YYYY-MM-DD）`（中文全角括号包裹日期）。
+- 版本号写入本仓库 `package.json`，并同步组件库 `uni_modules/uview-pro-x/package.json` 与文档库 `uview-pro-x-doc/package.json`；**三份日志同源、内容一致**：均由 `组件库最近标签..HEAD` + `主仓库最近标签..HEAD` 合并生成（`changelog:release` / `changelog:lib` / `changelog:docs`）；主仓库与组件库标题为 `## x.y.z（YYYY-MM-DD）`（中文全角括号包裹日期），文档库沿用 `## x.y.z`（无日期）；生成的日志条目**不带提交 hash**。
+- 文档库只同步版本号与 `docs/zh/components/changelog.md`，**不提交、不打标签**，`release:undo` 也不回退文档库改动。
 - 发布时组件库作为独立仓库**自动提交并打同名标签**（`--push` 时跟随主仓库推送，默认不推送）；组件库提交限定为 `package.json` + `changelog.md`，不带上组件库工作区其他改动。
 - 主仓库发布提交只包含 `package.json` 与 `CHANGELOG.md`，不会带上工作区其他改动（嵌套仓库、历史未提交改动均不进提交）。
-- 提交信息遵循 Conventional Commits（`feat` / `fix` / `perf` / `refactor` 等），changelog 按类型分组并链接到 `anyup/hello-uview-pro-x` 对应 commit。
+- 提交信息遵循 Conventional Commits（`feat` / `fix` / `perf` / `refactor` 等），changelog 按类型分组，条目只保留描述，不带提交 hash 与链接。
 
 ## 技能与文档
 
