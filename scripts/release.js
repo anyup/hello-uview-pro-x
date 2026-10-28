@@ -13,8 +13,11 @@
  * 涉及文件:
  *   - package.json                          版本号（本仓库）
  *   - CHANGELOG.md                          更新日志（本仓库，随发布提交）
- *   - uni_modules/uview-pro-x/package.json  组件库版本号（私有库工作副本，需在私有库自行提交）
+ *   - uni_modules/uview-pro-x/package.json  组件库版本号（独立仓库，随发布在同仓库提交并打同名标签）
  *   - uni_modules/uview-pro-x/changelog.md  组件库更新日志（同上）
+ *
+ * 组件库（uni_modules/uview-pro-x）是嵌套的独立 git 仓库：发布时与主仓库一样
+ * 「提交 + 打 vX.Y.Z 标签」，默认不推送；传 --push 时两个仓库一起推送。
  */
 
 const { execSync } = require('child_process');
@@ -25,11 +28,33 @@ const path = require('path');
 const LIB_DIR = path.join('uni_modules', 'uview-pro-x');
 const LIB_PACKAGE_PATH = path.join(LIB_DIR, 'package.json');
 const LIB_CHANGELOG_PATH = path.join(LIB_DIR, 'changelog.md');
+// 组件库中随发布提交的产物文件（在组件库仓库内单独提交）
+const LIB_RELEASE_FILES = [LIB_PACKAGE_PATH, LIB_CHANGELOG_PATH];
 // 发布提交仅包含的产物文件（不包含工作区其他改动与嵌套仓库）
 const RELEASE_FILES = ['package.json', 'CHANGELOG.md'];
 // 发布前文件备份目录（放在 git 元数据内，不进入工作区；供 undo 精确回退未被版本库跟踪的文件）
 const BACKUP_DIR = path.join('.git', 'uview-release-backup');
 const COMMIT_PREFIX = 'chore(release): bump version to';
+
+// 组件库目录是否为独立的 git 仓库
+function libRepoExists() {
+    return fs.existsSync(path.join(LIB_DIR, '.git'));
+}
+
+// 在组件库仓库内执行 git 命令
+function libGit(command, options = {}) {
+    return execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], cwd: LIB_DIR, ...options });
+}
+
+// 组件库仓库内是否存在指定标签
+function libHasTag(tagName) {
+    try {
+        libGit(`git rev-parse --verify --quiet refs/tags/${tagName}`);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 
 const args = process.argv.slice(2);
 
@@ -51,9 +76,22 @@ if (args[0] === 'push') {
         console.log(`📤 推送标签 v${version}...`);
         execSync(`git push origin "v${version}"`, { stdio: 'inherit' });
         console.log(`✅ 版本 ${version} 推送成功！`);
-        if (fs.existsSync(LIB_PACKAGE_PATH)) {
+        if (libRepoExists()) {
             console.log('');
-            console.log('⚠️  组件库（uni_modules/uview-pro-x）是独立仓库，版本号与更新日志需在其目录内自行提交推送');
+            console.log('📤 推送组件库（uni_modules/uview-pro-x）提交...');
+            try {
+                libGit('git push origin HEAD', { stdio: 'inherit' });
+                if (libHasTag(`v${version}`)) {
+                    console.log(`📤 推送组件库标签 v${version}...`);
+                    libGit(`git push origin "v${version}"`, { stdio: 'inherit' });
+                } else {
+                    console.log(`⚠️  组件库未找到标签 v${version}，跳过标签推送`);
+                }
+                console.log('✅ 组件库推送完成！');
+            } catch (error) {
+                console.warn(`⚠️  组件库推送失败: ${error.message}`);
+                console.warn('💡 请在 uni_modules/uview-pro-x 目录内手动推送');
+            }
         }
         process.exit(0);
     } catch (error) {
@@ -138,6 +176,47 @@ if (args[0] === 'undo') {
             }
         });
 
+        // 组件库（独立仓库）：删除同名标签并按发布前备份回退提交
+        let libUndone = false;
+        if (libRepoExists()) {
+            console.log('');
+            console.log('📦 撤销组件库（uni_modules/uview-pro-x）发布...');
+            let libLastCommitMsg = '';
+            try {
+                libLastCommitMsg = libGit('git log -1 --pretty=%B').trim();
+            } catch (e) {}
+
+            if (!libLastCommitMsg.includes(COMMIT_PREFIX)) {
+                console.log('⚠️  组件库最后一次提交不是发布提交，跳过撤销（标签与提交均未改动）');
+            } else {
+                if (libHasTag(tagName)) {
+                    console.log(`🗑️  删除组件库标签 ${tagName}...`);
+                    libGit(`git tag -d ${tagName}`, { stdio: 'inherit' });
+                } else {
+                    console.log(`⚠️  组件库标签 ${tagName} 不存在，跳过`);
+                }
+
+                console.log('↩️  撤销组件库发布提交...');
+                libGit('git reset --soft HEAD~1', { stdio: 'inherit' });
+                LIB_RELEASE_FILES.forEach(file => {
+                    const relFile = path.relative(LIB_DIR, file);
+                    const backupFile = path.join(BACKUP_DIR, file);
+                    try {
+                        if (fs.existsSync(backupFile)) {
+                            fs.copyFileSync(backupFile, file);
+                            libGit(`git reset -q HEAD -- ${relFile}`, { stdio: 'pipe' });
+                            console.log(`↩️  已按发布前备份恢复 ${file}`);
+                            return;
+                        }
+                        libGit(`git checkout HEAD -- ${relFile}`, { stdio: 'inherit' });
+                    } catch (e) {
+                        console.log(`⚠️  组件库 ${file} 未能自动恢复，请手动检查`);
+                    }
+                });
+                libUndone = true;
+            }
+        }
+
         // 撤销完成后清理备份，避免影响下一次发布
         fs.rmSync(BACKUP_DIR, { recursive: true, force: true });
 
@@ -147,9 +226,13 @@ if (args[0] === 'undo') {
         console.log('📋 当前状态：');
         console.log(`   • 标签 ${tagName} 已删除`);
         console.log('   • 提交已撤销，package.json 与 CHANGELOG.md 已恢复');
-        if (fs.existsSync(LIB_PACKAGE_PATH)) {
+        if (libRepoExists()) {
             console.log('');
-            console.log('⚠️  组件库（uni_modules/uview-pro-x）未自动恢复：其 package.json 版本与 changelog.md 需在私有库内手动回退');
+            console.log(
+                libUndone
+                    ? '   • 组件库（uni_modules/uview-pro-x）发布标签与提交已同步撤销'
+                    : '   • 组件库（uni_modules/uview-pro-x）未改动'
+            );
         }
         console.log('');
         console.log('💡 如需重新发布，运行: npm run release:patch（或其他版本类型）');
@@ -284,8 +367,13 @@ function continueRelease() {
         // 备份发布前的产物文件，供 undo 精确回退（未被版本库跟踪的新增文件也能还原）
         fs.rmSync(BACKUP_DIR, { recursive: true, force: true });
         fs.mkdirSync(BACKUP_DIR, { recursive: true });
-        RELEASE_FILES.forEach(file => {
-            if (fs.existsSync(file)) fs.copyFileSync(file, path.join(BACKUP_DIR, file));
+        // 组件库是嵌套独立仓库，其版本产物也一并备份，undo 时同步回退
+        const backupFiles = libRepoExists() ? [...RELEASE_FILES, ...LIB_RELEASE_FILES] : RELEASE_FILES;
+        backupFiles.forEach(file => {
+            if (!fs.existsSync(file)) return;
+            const backupFile = path.join(BACKUP_DIR, file);
+            fs.mkdirSync(path.dirname(backupFile), { recursive: true });
+            fs.copyFileSync(file, backupFile);
         });
 
         const currentVersion = readJson('package.json').version;
@@ -298,14 +386,14 @@ function continueRelease() {
         writeJson('package.json', packageJson);
         console.log(`✨ 新版本: ${newVersion}`);
 
-        // 同步组件库版本号（私有库工作副本，随私有库提交）
+        // 同步组件库版本号（独立仓库，随发布在组件库内提交）
         if (fs.existsSync(LIB_PACKAGE_PATH)) {
             console.log('📦 同步组件库版本号...');
             const libPackage = readJson(LIB_PACKAGE_PATH);
             libPackage.version = newVersion;
             if (libPackage.uni_app) libPackage.uni_app.version = newVersion;
             writeJson(LIB_PACKAGE_PATH, libPackage);
-            console.log(`✅ 组件库版本已同步为: ${newVersion}（需在私有库目录自行提交）`);
+            console.log(`✅ 组件库版本已同步为: ${newVersion}（随发布在组件库仓库提交）`);
         } else {
             console.warn('⚠️  未找到组件库 package.json，跳过版本同步');
         }
@@ -330,17 +418,64 @@ function continueRelease() {
         console.log(`🏷️  创建标签 v${newVersion}...`);
         execCommand(`git tag -a "v${newVersion}" -m "Release version ${newVersion}"`);
 
+        // 组件库是嵌套的独立仓库：与主仓库一致，提交版本产物并打同名标签（默认不推送）
+        if (libRepoExists()) {
+            console.log('');
+            console.log('📦 提交组件库（uni_modules/uview-pro-x 独立仓库）...');
+            const libFiles = LIB_RELEASE_FILES.filter(file => fs.existsSync(file));
+            if (libFiles.length === 0) {
+                console.log('ℹ️  组件库无版本产物文件，跳过提交');
+            } else {
+                const libRelFiles = libFiles.map(file => path.relative(LIB_DIR, file));
+                libGit(`git add -- ${libRelFiles.join(' ')}`, { stdio: 'inherit' });
+                const staged = libGit(`git diff --cached --name-only -- ${libRelFiles.join(' ')}`).trim();
+                if (staged) {
+                    // 路径限定提交：只提交版本产物，不带上组件库工作区其他改动
+                    libGit(
+                        `git commit -m "${COMMIT_PREFIX} ${newVersion}" -m "- Update package.json version
+- Sync changelog for ${newVersion}" -- ${libRelFiles.join(' ')}`,
+                        { stdio: 'inherit' }
+                    );
+                    console.log('✅ 组件库发布提交完成');
+                } else {
+                    console.log('ℹ️  组件库无待提交变更，跳过提交');
+                }
+            }
+
+            const libTagName = `v${newVersion}`;
+            if (libHasTag(libTagName)) {
+                console.log(`ℹ️  组件库标签 ${libTagName} 已存在，跳过创建`);
+            } else {
+                console.log(`🏷️  创建组件库标签 ${libTagName}...`);
+                libGit(`git tag -a "${libTagName}" -m "Release version ${newVersion}"`, { stdio: 'inherit' });
+            }
+        }
+
         if (shouldPush) {
             console.log('🚀 推送更改和标签...');
             execCommand('git push origin HEAD');
             execCommand(`git push origin "v${newVersion}"`);
+            if (libRepoExists()) {
+                try {
+                    console.log('🚀 推送组件库提交与标签...');
+                    libGit('git push origin HEAD', { stdio: 'inherit' });
+                    if (libHasTag(`v${newVersion}`)) {
+                        libGit(`git push origin "v${newVersion}"`, { stdio: 'inherit' });
+                    }
+                } catch (error) {
+                    console.warn(`⚠️  组件库推送失败: ${error.message}`);
+                    console.warn('💡 请在 uni_modules/uview-pro-x 目录内手动推送');
+                }
+            }
         }
 
         console.log(`${isPrerelease ? '🎉 预览版本' : '✅ 版本'} ${newVersion} 发布成功!`);
         console.log(`🏷️  标签 v${newVersion} ${shouldPush ? '已创建并推送' : '已创建（未推送）'}`);
-        if (fs.existsSync(LIB_PACKAGE_PATH)) {
+        if (libRepoExists()) {
             console.log('');
-            console.log('⚠️  组件库（uni_modules/uview-pro-x）是独立仓库：其版本号与 changelog.md 需在私有库内自行提交推送');
+            console.log(
+                `📦 组件库（uni_modules/uview-pro-x）已提交并打标签 v${newVersion}${shouldPush ? '，已推送' : '（未推送）'}`
+            );
         }
         if (!shouldPush) {
             console.log('💡 如需推送，运行: npm run release:push');

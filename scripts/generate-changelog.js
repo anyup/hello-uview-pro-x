@@ -133,8 +133,9 @@ function resolveRange() {
     return '';
 }
 
+// 版本区块标题：日期用中文全角括号包裹，形如 `## 1.0.0（2026-10-26）`
 function buildSectionHeader({ version, date }) {
-    return `## ${version} - ${date}`;
+    return `## ${version}（${date}）`;
 }
 
 function todayStr() {
