@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.4（2026-10-28）
+
+### ♻️ Code Refactoring | 代码重构
+
+- **plugin:** 修改插件导出方式适配加密编译场景
+- 调整uViewProX的导入方式
+
+### 👥 Contributors
+
+<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
+
 ## 1.0.3（2026-10-28）
 
 ### ✨ Features | 新功能
