@@ -76,7 +76,8 @@ Registering the plugin unlocks i18n, theming and more; every option is optional 
 
 ```ts
 import App from './App.uvue'
-import uViewProX, { zhCN, enUS } from './uni_modules/uview-pro-x'
+// Named import is required: the encrypted build's entry does not forward the default export
+import { uViewProX, zhCN, enUS } from '@/uni_modules/uview-pro-x'
 import { createSSRApp } from 'vue'
 
 export function createApp() {
@@ -92,7 +93,11 @@ export function createApp() {
 }
 ```
 
-### 3. Start building
+### 3. Import theme styles (uni.scss)
+
+The encrypted build cannot `@import` the library's `theme.scss`; copy the `$u-*` variable block from `theme.scss` into your `uni.scss`. With the source version you can use `@import '@/uni_modules/uview-pro-x/theme.scss';` directly. See [Quick Start](https://x.uviewpro.cn/en/guide/quickstart) for the full block.
+
+### 4. Start building
 
 ```vue
 <template>

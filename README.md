@@ -118,7 +118,8 @@ pnpx skills add uview-pro/skills
 
 ```ts
 import App from './App.uvue'
-import uViewProX, { zhCN, enUS } from './uni_modules/uview-pro-x'
+// 必须使用命名导入：加密版入口不转发 default
+import { uViewProX, zhCN, enUS } from '@/uni_modules/uview-pro-x'
 import { createSSRApp } from 'vue'
 
 export function createApp() {
@@ -134,7 +135,11 @@ export function createApp() {
 }
 ```
 
-### 3. 开始使用
+### 3. 引入主题样式（uni.scss）
+
+加密版插件无法 `@import` 组件库的 `theme.scss`，需把 `theme.scss` 中的 `$u-*` 变量块复制到项目 `uni.scss` 末尾；源码版可直接 `@import '@/uni_modules/uview-pro-x/theme.scss';`。完整变量块见[快速开始](https://x.uviewpro.cn/zh/guide/quickstart)。
+
+### 4. 开始使用
 
 ```vue
 <template>
