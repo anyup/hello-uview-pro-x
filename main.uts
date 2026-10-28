@@ -1,5 +1,5 @@
 ﻿import App from './App.uvue'
-import uViewProX, { frFR } from './uni_modules/uview-pro-x'
+import { uViewProX, frFR } from './uni_modules/uview-pro-x'
 import { zhCN, enUS } from './locales'
 import themes from './theme.uts'
 import { createSSRApp } from 'vue'
