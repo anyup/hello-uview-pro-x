@@ -136,29 +136,26 @@
 	// #endif
 	// #endif
 
-	// 定义响应式数据
+	// 底部标签栏图标名取自组件库内置图标库，故不设置 customIcon（设置了会走自定义字体图标库检索）
 	const tabbarList = computed<TabbarItem[]>(() => {
 		return [
 			{
 				text: t('tabbarComponents.title'),
 				iconPath: 'home',
 				selectedIconPath: 'home-fill',
-				pagePath: '/pages/tabbar/components',
-				customIcon: true
+				pagePath: '/pages/tabbar/components'
 			},
 			{
 				text: t('tabbarLibrary.title'),
 				iconPath: 'bag',
 				selectedIconPath: 'bag-fill',
-				pagePath: '/pages/tabbar/library',
-				customIcon: true
+				pagePath: '/pages/tabbar/library'
 			},
 			{
 				text: t('tabbarAbout.title'),
 				iconPath: 'setting',
 				selectedIconPath: 'setting-fill',
-				pagePath: '/pages/tabbar/about',
-				customIcon: true
+				pagePath: '/pages/tabbar/about'
 			}
 		];
 	});

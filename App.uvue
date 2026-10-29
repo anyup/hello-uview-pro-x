@@ -1,10 +1,15 @@
 <script setup lang="uts">
+	import { $u } from '@/uni_modules/uview-pro-x'
+	import { customIconFont } from './iconfont.uts'
+
 	// #ifdef APP-ANDROID || APP-HARMONY
 	let firstBackTime = 0
 	// #endif
 
 	onLaunch(() => {
 		console.log('App Launch')
+		// 自定义字体图标：登记「前缀 → 码点表」，与下方 @font-face 的 font-family 同名（ux-icon 按 custom-prefix 检索）
+		$u.registerIconFont('custom-icon', customIconFont)
 	})
 
 	onAppShow(() => {
@@ -44,6 +49,15 @@
 	/* 引入演示页面公共样式 */
 	@import '@/style/demo.scss';
 	@import '@/style/reset.scss';
+
+	/* 演示用自定义图标字体：字体文件必须放在 static 目录，否则打包时不会被带进去 */
+	/* 该字体族名需与 $u.registerIconFont 的前缀、以及码点表的类名前缀三者一致 */
+	@font-face {
+		font-family: 'custom-icon';
+		src: url('/static/iconfont.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	}
 
 	.uni-row {
 		flex-direction: row;

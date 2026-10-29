@@ -98,8 +98,8 @@ const bold = `
 const img = `
 <template>
     <view class="icon-row">
-        <ux-icon name="/static/logo.png" width="30" height="30" custom-class="icon-spacing"></ux-icon>
-        <ux-icon name="/static/logo.png" img-mode="aspectFit" width="30" height="30" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png" width="30" height="30" custom-class="icon-spacing"></ux-icon>
+        <ux-icon name="https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png" img-mode="aspectFit" width="30" height="30" custom-class="icon-spacing"></ux-icon>
     </view>
 </template>
 
@@ -143,28 +143,6 @@ const type = `
 </style>
 `;
 
-/** 自定义前缀 */
-const prefix = `
-<template>
-    <view class="icon-row">
-        <ux-icon name="gift" size="20" custom-prefix="custom-icon" custom-class="icon-spacing"></ux-icon>
-    </view>
-</template>
-
-<style scoped>
-.icon-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.icon-spacing {
-    margin-right: 16px;
-    margin-bottom: 12px;
-}
-</style>
-`;
-
 /** 垂直微调 */
 const top = `
 <template>
@@ -188,12 +166,79 @@ const top = `
 </style>
 `;
 
+/** 自定义前缀 */
+const prefix = `
+<!-- 接入分两步（都在应用侧完成，组件库不内置自定义字体）：
+     1. 全局样式（App.uvue）声明字体，字体文件须放在 static 目录：
+        @font-face {
+            font-family: 'custom-icon';
+            src: url('/static/iconfont.ttf') format('truetype');
+        }
+     2. 启动时（App.uvue 的 onLaunch）登记「前缀 → 码点表」，前缀须与上面的 font-family 同名：
+        import { \$u } from '@/uni_modules/uview-pro-x'
+        import { customIconFont } from '@/iconfont.uts'
+
+        \$u.registerIconFont('custom-icon', customIconFont)
+     码点表形如：export const customIconFont: UTSJSONObject = { 'sun': 'e712', 'eye': 'e68e' };
+     之后即可用 custom-prefix 指定前缀，图标名取码点表的键。 -->
+<template>
+    <view class="icon-grid">
+        <view
+            @click="selectIcon(item)"
+            class="icon-item"
+            v-for="(item, index) in customIconList"
+            :key="index"
+        >
+            <ux-icon :name="item" size="20" color="#2979ff" custom-prefix="custom-icon"></ux-icon>
+            <text class="icon-name">{{ item }}</text>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { customIconFont } from '@/iconfont.uts'
+
+    // 直接取已登记码点表的键，避免演示清单与登记表脱节（取键只能用静态方法 UTSJSONObject.keys）
+    const customIconList: string[] = UTSJSONObject.keys(customIconFont);
+
+    function selectIcon(name: string): void {
+        uni.setClipboardData({
+            data: name,
+            success: () => {
+                uni.showToast({ title: '已复制图标名称', icon: 'none' })
+            }
+        })
+    }
+</script>
+
+<style scoped>
+.icon-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    padding: 10px 0;
+}
+.icon-name {
+    font-size: 11px;
+    color: #909399;
+    margin-top: 6px;
+}
+</style>
+`;
+
 export const codes = {
     custom,
     bold,
     type,
-    prefix,
     top,
+    prefix,
     img,
     grid
 };

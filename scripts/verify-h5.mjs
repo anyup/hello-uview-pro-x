@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// H5 示例页快速验证：打开 uView-Pro-x dev server 指定路由，只收集 console/page 错误，不截图（秒级完成）。
+// H5 示例页快速验证：打开 uView-Pro-x dev server 指定路由，收集 console/page 错误与白屏，不截图（秒级完成）。
 // App 端效果由真机验证，本脚本仅做 H5 侧「页面能否正常挂载、有无运行时报错」的轻量门禁。
 // 用法：
 //   node scripts/verify-h5.mjs <route>         # route 如 feedback/mask（必填）
@@ -48,6 +48,11 @@ try {
   const page = await browser.newPage({ viewport: { width: 420, height: 900 } });
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push(`[console.${m.type()}] ${m.text()}`);
+    // setup/render 抛出的异常被 Vue 内部吞掉后只以 warn 输出（[Vue warn]: Unhandled error ...），
+    // 不并入错误则整页白屏也会被判为通过，故单独拾取这类致命 warn。
+    if (m.type() === 'warning' && /Unhandled error during execution/.test(m.text())) {
+      errors.push(`[console.${m.type()}] ${m.text()}`);
+    }
   });
   page.on('pageerror', (e) => errors.push(`[pageerror] ${e.message}`));
   // 常驻 dev server（Vite HMR websocket 持续有网络活动），networkidle 永不满足必然超时；
@@ -55,6 +60,14 @@ try {
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUT });
   await page.waitForSelector('uni-page-body', { timeout: TIMEOUT });
   await page.waitForTimeout(300);
+  // 正文节点存在但不一定有内容：组件挂载失败时 uni-page-body 会只剩一个注释节点，额外校内容长度以拦截白屏。
+  const bodyLen = await page.evaluate(() => {
+    const body = document.querySelector('uni-page-body');
+    return body ? body.innerHTML.length : 0;
+  });
+  if (bodyLen < 20) {
+    errors.push(`[blank] uni-page-body 内容为空（长度 ${bodyLen}），页面未渲染出任何组件，需看上方错误定位`);
+  }
 } catch (e) {
   errors.push(`[open] ${e.message}`);
 } finally {

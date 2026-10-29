@@ -9,7 +9,7 @@
         "sync:dry": "node scripts/sync-split.mjs --dry-run",
         "changelog:release": "node scripts/generate-changelog.js --emoji --current --no-unreleased --no-hash --exclude-types=build,chore,ci,docs,revert,test --merge-repo=uni_modules/uview-pro-x",
         "changelog:lib": "node scripts/generate-changelog.js --emoji --current --no-unreleased --no-hash --exclude-types=build,chore,ci,docs,revert,test --repo=uni_modules/uview-pro-x --output=uni_modules/uview-pro-x/changelog.md --merge-repo=.",
-        "changelog:docs": "node scripts/generate-changelog.js --emoji --current --no-unreleased --no-hash --no-date --exclude-types=build,chore,ci,docs,revert,test --repo=uni_modules/uview-pro-x --output=uview-pro-x-doc/docs/zh/components/changelog.md --merge-repo=.",
+        "changelog:docs": "node scripts/generate-changelog.js --emoji --current --no-unreleased --no-hash --exclude-types=build,chore,ci,docs,revert,test --repo=uni_modules/uview-pro-x --output=uview-pro-x-doc/docs/zh/components/changelog.md --merge-repo=.",
         "changelog:all": "node scripts/generate-changelog.js --emoji --all --no-unreleased --no-hash",
         "release:patch": "node scripts/release.js patch",
         "release:minor": "node scripts/release.js minor",

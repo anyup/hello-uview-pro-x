@@ -15,7 +15,7 @@
  *   --no-unreleased    不保留 Unreleased 区块（发布时使用）
  *   --no-links         提交 hash 不生成超链接（只保留短 hash）
  *   --no-hash          日志条目不显示提交 hash（发布日志使用）
- *   --no-date          版本标题不带日期（文档库更新日志使用）
+ *   --no-date          版本标题不带日期（默认标题带日期）
  *   --exclude-types=a,b  排除指定提交类型
  *   --repo <dir>       生成来源仓库（git 历史、标签、package.json 均取自该仓库；默认当前仓库根）
  *   --merge-repo <dir> 额外合并该仓库「最近标签..HEAD」的提交到当前区块（用于多仓库共用同一份日志）
@@ -47,7 +47,7 @@ const noUnreleased = args.includes('--no-unreleased');
 const noLinks = args.includes('--no-links');
 // 日志条目不显示提交 hash
 const noHash = args.includes('--no-hash');
-// 版本标题不带日期（文档库更新日志沿用 `## x.y.z` 的既有风格）
+// 版本标题不带日期（可选；默认按 `## x.y.z（YYYY-MM-DD）` 输出）
 const noDate = args.includes('--no-date');
 
 // 读取 --name value / --name=value 形式的选项值
@@ -335,7 +335,8 @@ function generateChangelog() {
         const contributors = collectContributors(commits);
 
         const hasExisting = fs.existsSync(outputPath);
-        const existingContent = hasExisting ? fs.readFileSync(outputPath, 'utf8') : '';
+        // 统一按 LF 处理既存内容：Windows 工作区可能为 CRLF，直接按 `\n\n## ` 查找/去重会失配
+        const existingContent = hasExisting ? fs.readFileSync(outputPath, 'utf8').replace(/\r\n?/g, '\n') : '';
 
         const baseHeader = `# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n`;
         const standardHeader = noUnreleased ? baseHeader : baseHeader + '## [Unreleased]\n\n';
@@ -442,7 +443,8 @@ function generateChangelog() {
         }
 
         // 清理重复内容（仅在基于既有内容拼接的 --current / --all 模式下需要，防止多次运行产生重复）
-        if ((onlyCurrent || generateAll) && finalContent.includes('# Changelog')) {
+        // 以任意一级标题判定为「已有日志文件」，兼容文档库 `# 更新日志` 等非标准头部
+        if ((onlyCurrent || generateAll) && /^# /m.test(finalContent)) {
             const headerEndIndex = finalContent.indexOf('\n\n## ');
             if (headerEndIndex !== -1) {
                 const header = finalContent.slice(0, headerEndIndex);
