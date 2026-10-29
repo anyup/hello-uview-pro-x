@@ -1,5 +1,9 @@
 node_modules/
-unpackage/
+# 构建产物：忽略 unpackage，仅保留 res/icons（应用图标需入库）
+unpackage/*
+!unpackage/res/
+unpackage/res/*
+!unpackage/res/icons/
 .hbuilderx/
 .DS_Store
 dist
