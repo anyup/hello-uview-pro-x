@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.6（2026-10-29）
+
+### ✨ Features | 新功能
+
+- **ux-alert-tips:** 新增图标大小可配置属性 iconSize
+- **ux-cell-item:** 优化单元格布局与插槽图标适配
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-tag:** 修复标签在高行高容器中高度虚高的问题
+
+### 👥 Contributors
+
+<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
+
 ## 1.0.5（2026-10-29）
 
 ### ♻️ Code Refactoring | 代码重构
