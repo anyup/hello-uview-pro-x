@@ -1,4 +1,6 @@
 ﻿import App from './App.uvue'
+// 插件对象用命名导入：加密版插件的云端入口为 `export * from './index'`，不转发 default；
+// 命名导出在源码版 / 加密版均可用，故不写 `import uViewProX from ...`
 import { uViewProX, frFR } from './uni_modules/uview-pro-x'
 import { zhCN, enUS } from './locales'
 import themes from './theme.uts'
