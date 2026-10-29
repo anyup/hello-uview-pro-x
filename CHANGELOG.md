@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.7（2026-10-29）
+
+### ✨ Features | 新功能
+
+- 新增自定义字体图标库演示示例
+- **icon:** 新增自定义字体图标支持能力，新增 registerIconFont 方法用于注册自定义图标字体库
+
+### 👥 Contributors
+
+<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
+
 ## 1.0.6（2026-10-29）
 
 ### ✨ Features | 新功能
