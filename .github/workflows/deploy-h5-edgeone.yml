@@ -1,6 +1,6 @@
 name: deploy-h5-edgeone
 
-# 触发：手动（workflow_dispatch，可指定组件库 ref）+ push 到 master
+# 触发：仅手动执行（workflow_dispatch，可指定组件库 ref）
 on:
   workflow_dispatch:
     inputs:
@@ -8,9 +8,6 @@ on:
         description: 'uview-pro-x 组件库的分支或标签（默认 master）'
         required: false
         default: master
-  push:
-    branches:
-      - master
 
 jobs:
   build-and-deploy:
