@@ -11,7 +11,7 @@
 | `anyup/uview-pro-x` | 私有 | 组件库源码：`package.json` + `components/ux-*` + `libs/` + `locale/` + `types/` + `static/` + `theme.scss`/`index.scss`/`index.uts` | `uni_modules/uview-pro-x/` |
 
 - **`uni_modules/uview-pro-x/` 是一个独立的 git 仓库**（私有库的工作副本），不被本仓库跟踪：改组件库源码后要**在私有库提交推送**，别 `git add` 到本仓库。
-- **打包发布**：两个仓库各自带一份 `.github/workflows/deploy-h5-edgeone.yml`，互相拉取对方仓库→装配编译→发布到同一个 EdgeOne Pages 项目 `h5-uview-pro-x`。任一仓库 push `master` 都会重新发布（互为补充）。
+- **打包发布**：两个仓库各自带一份 `.github/workflows/deploy-h5-edgeone.yml`，互相拉取对方仓库→装配编译→发布到同一个 EdgeOne Pages 项目 `h5-uviewpro-x`（自定义域名 `h5-x.uviewpro.cn`，勿写成带连字符的 `h5-uview-pro-x`，否则会新建第二个项目）。组件库仓库在推送 tag（`v*`，随发布打标签）或手动触发时发布，普通提交不触发；公开仓库仅手动触发（互为补充）。
   - 本仓库产物流程需要 secrets：`UVIEW_PRO_X_TOKEN`（读私有库，可换成只读 Deploy Key）、`DCLOUD_USERNAME` / `DCLOUD_PASSWORD`、`EDGEONE_API_TOKEN`。
 - **无 `src/` 前缀**：源码路径直接是 `pages/...`、`uni_modules/...`，不要臆造 `src/` 前缀。
 

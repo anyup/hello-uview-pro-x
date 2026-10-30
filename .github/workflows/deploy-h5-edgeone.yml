@@ -21,7 +21,7 @@ jobs:
       # EdgeOne Pages 产物目录（checkout 后仓库根即项目根，cli publish web 输出到 unpackage/dist/build/web）
       BUILD_DIR: unpackage/dist/build/web
       # EdgeOne Pages 项目名
-      EO_PROJECT: h5-uview-pro-x
+      EO_PROJECT: h5-uviewpro-x
 
     steps:
       - uses: actions/checkout@v4

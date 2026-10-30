@@ -10,7 +10,7 @@
 //   node scripts/verify-demo-examples.mjs --baseline <json>           # 指定存量豁免基线（默认 scripts/demo-baseline.json）
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { createInterface } from 'node:readline';
-import { join, basename } from 'node:path';
+import { join, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = join(fileURLToPath(import.meta.url), '..');
@@ -426,14 +426,17 @@ const customClassCap = buildCustomClassCapability();
 /**
  * 组件演示分包目录白名单（与 pages.json 的 subPackages 及 pages/tabbar/config.uts 的分类一一对应）。
  * 旧无语义分包 componentsA|B|C 已废弃；新增分类必须同步更新此表，否则新页会默默不入门禁。
+ * library / hooks 是 libs（utils / hooks）演示页，无 ux-* 主体组件，prop 完整性一项跳过。
  */
 const DEMO_GROUP_RE = /^(basic|form|data|feedback|layout|navigation|others)$/;
+const LIB_GROUP_RE = /^(library|hooks)$/;
+const ALL_DEMO_GROUP_RE = /^(basic|form|data|feedback|layout|navigation|others|library|hooks)$/;
 
 function collectDemoDirs(specs) {
     const dirs = [];
     if (specs.length) {
         for (const p of readdirSync(pagesBase)) {
-            if (!DEMO_GROUP_RE.test(p)) continue;
+            if (!ALL_DEMO_GROUP_RE.test(p)) continue;
             const base = join(pagesBase, p);
             for (const d of readdirSync(base)) {
                 if (specs.includes(d) && existsSync(join(base, d, 'index.uvue'))) dirs.push(join(base, d));
@@ -441,7 +444,7 @@ function collectDemoDirs(specs) {
         }
     } else {
         for (const p of readdirSync(pagesBase)) {
-            if (!DEMO_GROUP_RE.test(p)) continue;
+            if (!ALL_DEMO_GROUP_RE.test(p)) continue;
             const base = join(pagesBase, p);
             for (const d of readdirSync(base)) {
                 const dir = join(base, d);
@@ -472,6 +475,9 @@ async function main() {
     let totalFail = 0, totalFixed = 0;
     for (const dir of dirs) {
         const name = basename(dir);
+        // 库页（library / hooks）= utils / hooks 演示，无 ux-* 主体组件可裁定 prop 完整性
+        const group = basename(dirname(dir));
+        const isLibDemo = LIB_GROUP_RE.test(group);
         let indexSrc = read(join(dir, 'index.uvue'));
         let codeUts = read(join(dir, 'code.uts'));
         const hasCodeUts = existsSync(join(dir, 'code.uts'));
@@ -488,7 +494,7 @@ async function main() {
                 codeUts = fixedCode; totalFixed++;
             }
         }
-        if (ask) {
+        if (ask && !isLibDemo) {
             const r = await askResolveProps(indexSrc, hasCodeUts ? codeUts : '', registry);
             if (r.registry !== registry) { registry = r.registry; saveRegistry(registry); }
         }
@@ -497,7 +503,7 @@ async function main() {
         const checks = [
             { label: 'custom-class', issues: checkCustomClass(indexSrc).concat(hasCodeUts ? checkCustomClass(codeUts) : []) },
             { label: 'code-archive', issues: checkCodeArchive(indexSrc, codeUts, hasCodeUts) },
-            { label: 'props',        issues: checkPropsCompleteness(indexSrc, hasCodeUts ? codeUts : '', registry, name) },
+            ...(isLibDemo ? [] : [{ label: 'props', issues: checkPropsCompleteness(indexSrc, hasCodeUts ? codeUts : '', registry, name) }]),
             { label: 'detail',       issues: checkDetailAccess(indexSrc).concat(hasCodeUts ? checkDetailAccess(codeUts) : []) }
         ];
         let failed = false;

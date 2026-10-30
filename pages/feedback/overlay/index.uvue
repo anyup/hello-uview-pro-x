@@ -243,8 +243,6 @@
 </script>
 
 <style lang="scss">
-    @import '@/uni_modules/uview-pro-x/theme.scss';
-
     /* 遮罩内容：撑满遮罩并居中白色方块 */
     .overlay-content {
         display: flex;

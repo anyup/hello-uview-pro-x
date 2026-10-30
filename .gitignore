@@ -33,6 +33,7 @@ node_modules
 .npmrc
 
 .agents/
+.trae/
 sync-split.mjs
 sync-split.config.json
 uview-pro-x-doc/

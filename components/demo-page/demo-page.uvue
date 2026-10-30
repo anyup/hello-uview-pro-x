@@ -162,9 +162,6 @@
 </script>
 
 <style lang="scss">
-@import '@/uni_modules/uview-pro-x/theme.scss';
-
-// 页面根容器：背景随主题/暗黑模式联动（CSS 变量注入在本根元素上，覆盖 page 默认背景）
 .demo-page {
     background-color: $u-bg-color;
 }
