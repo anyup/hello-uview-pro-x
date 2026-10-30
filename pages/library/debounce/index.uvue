@@ -1,96 +1,95 @@
-<script setup lang="uts">
-import { $u, useLocale } from '@/uni_modules/uview-pro-x';
-
-const { t } = useLocale('demo');
-
-const clickCount = ref(0);
-const debounceCount = ref(0);
-const lastClickTime = ref('');
-const lastExecuteTime = ref('');
-
-// 普通点击
-const handleNormalClick = () => {
-    clickCount.value++;
-    lastClickTime.value = new Date().toLocaleTimeString();
-};
-
-// 创建防抖函数（只创建一次）
-const debouncedFn = $u.debounce(() => {
-    debounceCount.value++;
-    lastExecuteTime.value = new Date().toLocaleTimeString();
-}, 500, false);
-
-// 防抖点击
-const handleDebounceClick = () => {
-    handleNormalClick();
-    debouncedFn();
-};
-
-// 立即执行版本
-const immediateCount = ref(0);
-const immediateFn = $u.debounce(() => {
-    immediateCount.value++;
-}, 500, true);
-
-const handleImmediateClick = () => {
-    handleNormalClick();
-    immediateFn();
-};
-</script>
-
 <template>
     <demo-page :title="t('debounce.title')" :subtitle="t('debounce.subtitle')">
         <!-- 普通点击 -->
-        <demo-block :title="t('debounce.normalTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">{{ t('debounce.normalClickCount') }}{{ clickCount }}</text>
-                <text class="demo-desc">{{ t('debounce.normalLastClick') }}{{ lastClickTime.length > 0 ? lastClickTime : '-' }}</text>
-            </view>
-            <view class="demo-btn debounce-btn" @click="handleNormalClick">
-                <text>{{ t('debounce.normalBtn') }}</text>
-            </view>
+        <demo-block :title="t('debounce.normalTitle')" :code="codes.normal">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('debounce.normalClickCount')" :value="clickCount" :arrow="false" />
+                <ux-cell-item :title="t('debounce.normalLastClick')" :value="lastClickTime.length > 0 ? lastClickTime : '-'" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('debounce.normalBtn')" @click="handleNormalClick()" />
         </demo-block>
 
         <!-- 防抖对比 -->
-        <demo-block :title="t('debounce.debounceTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">{{ t('debounce.debounceTriggerCount') }}{{ clickCount }}</text>
-                <text class="demo-desc">{{ t('debounce.debounceActualExec') }}{{ debounceCount }}</text>
-                <text class="demo-desc">{{ t('debounce.debounceLastExec') }}{{ lastExecuteTime.length > 0 ? lastExecuteTime : '-' }}</text>
-            </view>
-            <view class="demo-btn debounce-btn" @click="handleDebounceClick">
-                <text>{{ t('debounce.debounceBtn') }}</text>
-            </view>
+        <demo-block :title="t('debounce.debounceTitle')" :code="codes.debounce">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('debounce.debounceTriggerCount')" :value="clickCount" :arrow="false" />
+                <ux-cell-item :title="t('debounce.debounceActualExec')" :value="debounceCount" :arrow="false" />
+                <ux-cell-item :title="t('debounce.debounceLastExec')" :value="lastExecuteTime.length > 0 ? lastExecuteTime : '-'" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('debounce.debounceBtn')" @click="handleDebounceClick()" />
         </demo-block>
 
         <!-- 立即执行 -->
-        <demo-block :title="t('debounce.immediateTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">{{ t('debounce.immediateCount') }}{{ immediateCount }}</text>
-            </view>
-            <view class="demo-btn debounce-btn" @click="handleImmediateClick">
-                <text>{{ t('debounce.immediateBtn') }}</text>
-            </view>
+        <demo-block :title="t('debounce.immediateTitle')" :code="codes.immediate">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('debounce.immediateCount')" :value="immediateCount" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('debounce.immediateBtn')" @click="handleImmediateClick()" />
         </demo-block>
 
-        <!-- 方法说明 -->
+        <!-- 使用说明 -->
         <demo-block :title="t('debounce.usageTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">const fn = $u.debounce(func, wait, immediate)</text>
-                <text class="demo-desc">{{ t('debounce.usageFunc') }}</text>
-                <text class="demo-desc">{{ t('debounce.usageWait') }}</text>
-                <text class="demo-desc">{{ t('debounce.usageImmediate') }}</text>
-                <text class="demo-desc">{{ t('debounce.usageReturn') }}</text>
-            </view>
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('debounce.usageFunc')" description="const fn = $u.debounce(func, wait, immediate)" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('debounce.usageWait')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('debounce.usageImmediate')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('debounce.usageReturn')" />
         </demo-block>
     </demo-page>
 </template>
 
-<style lang="scss">
-/* 使用全局 demo.scss 样式 */
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
-.debounce-btn {
-    margin-bottom: 0;
-}
+    const { t } = useLocale('demo');
+
+    const clickCount = ref(0);
+    const debounceCount = ref(0);
+    const lastClickTime = ref('');
+    const lastExecuteTime = ref('');
+    const immediateCount = ref(0);
+
+    /** 记录一次普通点击 */
+    function recordClick(): void {
+        clickCount.value++;
+        lastClickTime.value = new Date().toLocaleTimeString();
+    }
+
+    /** 500ms 延迟执行的防抖函数（只创建一次，跨点击复用） */
+    const debouncedFn = $u.debounce((): void => {
+        debounceCount.value++;
+        lastExecuteTime.value = new Date().toLocaleTimeString();
+    }, 500, false);
+
+    /** 500ms 立即执行的防抖函数 */
+    const immediateFn = $u.debounce((): void => {
+        immediateCount.value++;
+    }, 500, true);
+
+    /** 普通点击：不防抖，每次都计数 */
+    function handleNormalClick(): void {
+        recordClick();
+    }
+
+    /** 防抖点击：连点时只有最后一次在 500ms 后执行 */
+    function handleDebounceClick(): void {
+        recordClick();
+        debouncedFn();
+    }
+
+    /** 立即执行：首次点击立刻执行，500ms 内的后续点击被忽略 */
+    function handleImmediateClick(): void {
+        recordClick();
+        immediateFn();
+    }
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
 </style>

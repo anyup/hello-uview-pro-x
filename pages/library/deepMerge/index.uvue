@@ -1,135 +1,135 @@
-<script setup lang="uts">
-	import { $u, useLocale } from '@/uni_modules/uview-pro-x';
-
-	const { t } = useLocale('demo');
-
-	const targetObj = ref<UTSJSONObject>({
-		name: t('deepMerge.dataName'),
-		age: 25,
-		address: {
-			city: t('deepMerge.dataCity'),
-			district: t('deepMerge.dataDistrict')
-		}
-	});
-
-	const sourceObj = ref<UTSJSONObject>({
-		age: 30,
-		email: 'zhangsan@example.com',
-		address: {
-			city: t('deepMerge.dataSourceCity'),
-			street: t('deepMerge.dataStreet')
-		}
-	});
-
-	const mergedObj = ref<UTSJSONObject | null>(null);
-
-	const handleMerge = () => {
-		mergedObj.value = $u.deepMerge(targetObj.value, sourceObj.value);
-	};
-
-	const targetArr = ref<UTSJSONObject>({ items: [1, 2] });
-	const sourceArr = ref<UTSJSONObject>({ items: [3, 4] });
-	const mergedArr = ref<UTSJSONObject | null>(null);
-
-	const handleMergeArray = () => {
-		mergedArr.value = $u.deepMerge(targetArr.value, sourceArr.value);
-	};
-
-	const complexTarget = ref<UTSJSONObject>({
-		user: {
-			profile: {
-				name: t('deepMerge.dataComplexName'),
-				settings: {
-					theme: 'light'
-				}
-			}
-		}
-	});
-
-	const complexSource = ref<UTSJSONObject>({
-		user: {
-			profile: {
-				settings: {
-					language: 'zh-CN'
-				}
-			}
-		}
-	});
-
-	const complexMerged = ref<UTSJSONObject | null>(null);
-
-	const handleComplexMerge = () => {
-		complexMerged.value = $u.deepMerge(complexTarget.value, complexSource.value);
-	};
-</script>
-
 <template>
-	<demo-page :title="t('deepMerge.title')" :subtitle="t('deepMerge.subtitle')">
-		<!-- 基本合并 -->
-		<demo-block :title="t('deepMerge.basicTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ t('deepMerge.targetObj') }}</text>
-				<text class="demo-result">{{ JSON.stringify(targetObj) }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ t('deepMerge.sourceObj') }}</text>
-				<text class="demo-result">{{ JSON.stringify(sourceObj) }}</text>
-			</view>
-			<view class="demo-btn deepmerge-btn" @click="handleMerge">
-				<text>{{ t('deepMerge.mergeBtn') }}</text>
-			</view>
-			<view class="demo-item demo-item--last" v-if="mergedObj != null">
-				<text class="demo-desc">{{ t('deepMerge.mergeResult') }}</text>
-				<text class="demo-result">{{ JSON.stringify(mergedObj) }}</text>
-			</view>
-		</demo-block>
+    <demo-page :title="t('deepMerge.title')" :subtitle="t('deepMerge.subtitle')">
+        <!-- 基本合并 -->
+        <demo-block :title="t('deepMerge.basicTitle')" :code="codes.basic">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('deepMerge.targetObj')" :label="JSON.stringify(targetObj)" :arrow="false" />
+                <ux-cell-item :title="t('deepMerge.sourceObj')" :label="JSON.stringify(sourceObj)" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('deepMerge.mergeBtn')" @click="handleMerge()" />
+            <template v-if="mergedObj != null">
+                <ux-gap :height="8" />
+                <ux-cell-group :border="false">
+                    <ux-cell-item :title="t('deepMerge.mergeResult')" :label="JSON.stringify(mergedObj)" :arrow="false" :border-bottom="false" />
+                </ux-cell-group>
+            </template>
+        </demo-block>
 
-		<!-- 数组合并 -->
-		<demo-block :title="t('deepMerge.arrayTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ t('deepMerge.targetLabel') }}{{ JSON.stringify(targetArr) }}</text>
-				<text class="demo-desc">{{ t('deepMerge.sourceLabel') }}{{ JSON.stringify(sourceArr) }}</text>
-			</view>
-			<view class="demo-btn deepmerge-btn" @click="handleMergeArray">
-				<text>{{ t('deepMerge.mergeArrayBtn') }}</text>
-			</view>
-			<view class="demo-item demo-item--last" v-if="mergedArr != null">
-				<text class="demo-desc">{{ t('deepMerge.resultLabel') }}{{ JSON.stringify(mergedArr) }}</text>
-			</view>
-		</demo-block>
+        <!-- 数组合并 -->
+        <demo-block :title="t('deepMerge.arrayTitle')" :code="codes.array">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('deepMerge.targetLabel')" :value="JSON.stringify(targetArr)" :arrow="false" />
+                <ux-cell-item :title="t('deepMerge.sourceLabel')" :value="JSON.stringify(sourceArr)" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('deepMerge.mergeArrayBtn')" @click="handleMergeArray()" />
+            <template v-if="mergedArr != null">
+                <ux-gap :height="8" />
+                <ux-cell-group :border="false">
+                    <ux-cell-item :title="t('deepMerge.resultLabel')" :value="JSON.stringify(mergedArr)" :arrow="false" :border-bottom="false" />
+                </ux-cell-group>
+            </template>
+        </demo-block>
 
-		<!-- 嵌套对象合并 -->
-		<demo-block :title="t('deepMerge.nestedTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ t('deepMerge.targetLabel') }}{{ JSON.stringify(complexTarget) }}</text>
-				<text class="demo-desc">{{ t('deepMerge.sourceLabel') }}{{ JSON.stringify(complexSource) }}</text>
-			</view>
-			<view class="demo-btn deepmerge-btn" @click="handleComplexMerge">
-				<text>{{ t('deepMerge.nestedMergeBtn') }}</text>
-			</view>
-			<view class="demo-item demo-item--last" v-if="complexMerged != null">
-				<text class="demo-desc">{{ t('deepMerge.resultLabel') }}{{ JSON.stringify(complexMerged) }}</text>
-			</view>
-		</demo-block>
+        <!-- 嵌套对象合并 -->
+        <demo-block :title="t('deepMerge.nestedTitle')" :code="codes.nested">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('deepMerge.targetLabel')" :label="JSON.stringify(complexTarget)" :arrow="false" />
+                <ux-cell-item :title="t('deepMerge.sourceLabel')" :label="JSON.stringify(complexSource)" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('deepMerge.nestedMergeBtn')" @click="handleComplexMerge()" />
+            <template v-if="complexMerged != null">
+                <ux-gap :height="8" />
+                <ux-cell-group :border="false">
+                    <ux-cell-item :title="t('deepMerge.resultLabel')" :label="JSON.stringify(complexMerged)" :arrow="false" :border-bottom="false" />
+                </ux-cell-group>
+            </template>
+        </demo-block>
 
-		<!-- 方法说明 -->
-		<demo-block :title="t('deepMerge.usageTitle')">
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">$u.deepMerge(target, source)</text>
-				<text class="demo-desc">{{ t('deepMerge.usageTarget') }}</text>
-				<text class="demo-desc">{{ t('deepMerge.usageSource') }}</text>
-				<text class="demo-desc">{{ t('deepMerge.usageReturn') }}</text>
-				<text class="demo-desc">{{ t('deepMerge.usageNote') }}</text>
-			</view>
-		</demo-block>
-	</demo-page>
+        <!-- 使用说明 -->
+        <demo-block :title="t('deepMerge.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('deepMerge.usageTarget')" description="$u.deepMerge(target, source)" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('deepMerge.usageSource')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('deepMerge.usageReturn')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('deepMerge.usageNote')" />
+        </demo-block>
+    </demo-page>
 </template>
 
-<style lang="scss">
-/* 使用全局 demo.scss 样式 */
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
-.deepmerge-btn {
-	margin-bottom: 0;
-}
+    const { t } = useLocale('demo');
+
+    const targetObj = ref<UTSJSONObject>({
+        name: t('deepMerge.dataName'),
+        age: 25,
+        address: {
+            city: t('deepMerge.dataCity'),
+            district: t('deepMerge.dataDistrict')
+        }
+    });
+
+    const sourceObj = ref<UTSJSONObject>({
+        age: 30,
+        email: 'zhangsan@example.com',
+        address: {
+            city: t('deepMerge.dataSourceCity'),
+            street: t('deepMerge.dataStreet')
+        }
+    });
+
+    const mergedObj = ref<UTSJSONObject | null>(null);
+
+    /** 对象深合并：source 覆盖同名字段，嵌套对象递归合并 */
+    function handleMerge(): void {
+        mergedObj.value = $u.deepMerge(targetObj.value, sourceObj.value);
+    }
+
+    const targetArr = ref<UTSJSONObject>({ items: [1, 2] });
+    const sourceArr = ref<UTSJSONObject>({ items: [3, 4] });
+    const mergedArr = ref<UTSJSONObject | null>(null);
+
+    /** 数组合并：数组按整体覆盖，不做逐项合并 */
+    function handleMergeArray(): void {
+        mergedArr.value = $u.deepMerge(targetArr.value, sourceArr.value);
+    }
+
+    const complexTarget = ref<UTSJSONObject>({
+        user: {
+            profile: {
+                name: t('deepMerge.dataComplexName'),
+                settings: {
+                    theme: 'light'
+                }
+            }
+        }
+    });
+
+    const complexSource = ref<UTSJSONObject>({
+        user: {
+            profile: {
+                settings: {
+                    language: 'zh-CN'
+                }
+            }
+        }
+    });
+
+    const complexMerged = ref<UTSJSONObject | null>(null);
+
+    /** 嵌套对象合并：settings 下两级字段都会保留 */
+    function handleComplexMerge(): void {
+        complexMerged.value = $u.deepMerge(complexTarget.value, complexSource.value);
+    }
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
 </style>

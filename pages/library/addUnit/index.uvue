@@ -1,73 +1,112 @@
 <template>
-	<demo-page :title="t('addUnit.title')" :subtitle="t('addUnit.subtitle')">
-		<!-- 基础用法 -->
-		<demo-block :title="t('addUnit.basicTitle')">
-			<view class="demo-item" :class="index === baseList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in baseList" :key="index">
-				<text class="demo-desc">{{ item.desc }}</text>
-				<text class="demo-result">{{ item.result }}</text>
-			</view>
-		</demo-block>
+    <demo-page :title="t('addUnit.title')" :subtitle="t('addUnit.subtitle')">
+        <!-- 基础用法 -->
+        <demo-block :title="t('addUnit.basicTitle')" :code="codes.basic">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in baseList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<!-- 字符串入参 -->
-		<demo-block :title="t('addUnit.strTitle')">
-			<view class="demo-item" :class="index === strList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in strList" :key="index">
-				<text class="demo-desc">{{ item.desc }}</text>
-				<text class="demo-result">{{ item.result }}</text>
-			</view>
-		</demo-block>
+        <!-- 字符串入参 -->
+        <demo-block :title="t('addUnit.strTitle')" :code="codes.str">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in strList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<!-- 特殊值 -->
-		<demo-block :title="t('addUnit.specialTitle')">
-			<view class="demo-item" :class="index === specialList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in specialList" :key="index">
-				<text class="demo-desc">{{ item.desc }}</text>
-				<text class="demo-result">{{ item.result }}</text>
-			</view>
-		</demo-block>
+        <!-- 特殊值 -->
+        <demo-block :title="t('addUnit.specialTitle')" :code="codes.special">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in specialList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<!-- 多值场景 -->
-		<demo-block :title="t('addUnit.multiTitle')">
-			<view class="demo-item" :class="index === multiList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in multiList" :key="index">
-				<text class="demo-desc">{{ item.desc }}</text>
-				<text class="demo-result">{{ item.result }}</text>
-			</view>
-		</demo-block>
-	</demo-page>
+        <!-- 多值场景 -->
+        <demo-block :title="t('addUnit.multiTitle')" :code="codes.multi">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in multiList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('addUnit.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('addUnit.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('addUnit.usage2')" />
+        </demo-block>
+    </demo-page>
 </template>
 
 <script setup lang="uts">
-	import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-	const { t } = useLocale('demo');
+    const { t } = useLocale('demo');
 
-	const baseList = [
-		{ desc: '$u.addUnit(10)', result: $u.addUnit(10) },
-		{ desc: '$u.addUnit(16)', result: $u.addUnit(16) },
-		{ desc: '$u.addUnit(20)', result: $u.addUnit(20) },
-		{ desc: '$u.addUnit(0)', result: $u.addUnit(0) },
-	];
+    /** 演示行：左侧调用表达式，右侧返回结果，last 控制分隔线 */
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
 
-	const strList = [
-		{ desc: '$u.addUnit("10px")', result: $u.addUnit('10px') },
-		{ desc: '$u.addUnit("10px")', result: $u.addUnit('10px') },
-		{ desc: '$u.addUnit("50%")', result: $u.addUnit('50%') },
-		{ desc: '$u.addUnit("2em")', result: $u.addUnit('2em') },
-	];
+    const baseList: Row[] = [
+        { desc: '$u.addUnit(10)', result: $u.addUnit(10), last: false },
+        { desc: '$u.addUnit(16)', result: $u.addUnit(16), last: false },
+        { desc: '$u.addUnit(20)', result: $u.addUnit(20), last: false },
+        { desc: '$u.addUnit(0)', result: $u.addUnit(0), last: true }
+    ];
 
-	const specialList = [
-		{ desc: '$u.addUnit("auto")', result: $u.addUnit('auto') },
-		{ desc: '$u.addUnit("")', result: $u.addUnit('') },
-		{ desc: '$u.addUnit(null)', result: $u.addUnit(null) },
-		{ desc: '$u.addUnit(16, "px")', result: $u.addUnit(16, 'px') },
-	];
+    const strList: Row[] = [
+        { desc: '$u.addUnit("10px")', result: $u.addUnit('10px'), last: false },
+        { desc: '$u.addUnit("10rpx")', result: $u.addUnit('10rpx'), last: false },
+        { desc: '$u.addUnit("50%")', result: $u.addUnit('50%'), last: false },
+        { desc: '$u.addUnit("2em")', result: $u.addUnit('2em'), last: true }
+    ];
 
-	const multiList = [
-		{ desc: '$u.addUnit("10 20")', result: $u.addUnit('10 20') },
-		{ desc: '$u.addUnit("10px 20")', result: $u.addUnit('10px 20') },
-		{ desc: '$u.addUnit("10 10px 30")', result: $u.addUnit('10 10px 30') },
-		{ desc: '$u.addUnit("auto 10")', result: $u.addUnit('auto 10') },
-	];
+    const specialList: Row[] = [
+        { desc: '$u.addUnit("auto")', result: $u.addUnit('auto'), last: false },
+        { desc: '$u.addUnit("")', result: $u.addUnit(''), last: false },
+        { desc: '$u.addUnit(null)', result: $u.addUnit(null), last: false },
+        { desc: '$u.addUnit(16, "px")', result: $u.addUnit(16, 'px'), last: true }
+    ];
+
+    const multiList: Row[] = [
+        { desc: '$u.addUnit("10 20")', result: $u.addUnit('10 20'), last: false },
+        { desc: '$u.addUnit("10px 20")', result: $u.addUnit('10px 20'), last: false },
+        { desc: '$u.addUnit("10 10px 30")', result: $u.addUnit('10 10px 30'), last: false },
+        { desc: '$u.addUnit("auto 10")', result: $u.addUnit('auto 10'), last: true }
+    ];
 </script>
 
 <style lang="scss">
-	/* 样式由 demo-page 组件提供 */
+    /* 样式由 demo-page 组件提供 */
 </style>

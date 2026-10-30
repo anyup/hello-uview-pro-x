@@ -1,112 +1,113 @@
-<script setup lang="uts">
-	import { $u, useLocale } from '@/uni_modules/uview-pro-x';
-
-	const { t } = useLocale('demo');
-
-	const originalObj = ref<UTSJSONObject>({
-		name: t('deepClone.dataName'),
-		age: 25,
-		address: {
-			city: t('deepClone.dataCity'),
-			district: t('deepClone.dataDistrict')
-		},
-		hobbies: [t('deepClone.dataHobbyRead'), t('deepClone.dataHobbySwim')]
-	});
-
-	const clonedObj = ref<UTSJSONObject | null>(null);
-	const isSameRef = ref<boolean>(false);
-	const isDeepEqual = ref<boolean>(false);
-
-	const handleClone = () => {
-		clonedObj.value = $u.deepClone(originalObj.value);
-		isSameRef.value = originalObj.value === clonedObj.value;
-		isDeepEqual.value = JSON.stringify(originalObj.value) === JSON.stringify(clonedObj.value);
-	};
-
-	const handleModifyClone = () => {
-		if (clonedObj.value != null) {
-			clonedObj.value['name'] = t('deepClone.dataModifiedName');
-			const address = clonedObj.value['address'] as UTSJSONObject;
-			address['city'] = t('deepClone.dataModifiedCity');
-			clonedObj.value['address'] = address;
-		}
-	};
-
-	const originalArr = ref<any[]>([1, 2, { a: 3 }]);
-	const clonedArr = ref<any[]>([]);
-
-	const handleCloneArray = () => {
-		clonedArr.value = $u.deepClone(originalArr.value);
-	};
-
-	const handleModifyArray = () => {
-		if ((clonedArr.value as any[]).length > 0) {
-			clonedArr.value[0] = 100;
-			const item = clonedArr.value[2];
-			if (typeof item === 'object' && item != null) {
-				(item as UTSJSONObject)['a'] = 300;
-			}
-		}
-	};
-</script>
-
 <template>
-	<demo-page :title="t('deepClone.title')" :subtitle="t('deepClone.subtitle')">
-		<!-- 对象深克隆 -->
-		<demo-block :title="t('deepClone.objectTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ t('deepClone.originalObj') }}</text>
-				<text class="demo-result">{{ JSON.stringify(originalObj) }}</text>
-			</view>
-			<view class="demo-btn deepclone-btn" @click="handleClone">
-				<text>{{ t('deepClone.cloneBtn') }}</text>
-			</view>
-			<view class="demo-item" v-if="clonedObj != null">
-				<text class="demo-desc">{{ t('deepClone.clonedObj') }}</text>
-				<text class="demo-result">{{ JSON.stringify(clonedObj) }}</text>
-				<text class="demo-desc">{{ t('deepClone.sameRef') }}{{ isSameRef ? t('deepClone.yes') : t('deepClone.no') }}</text>
-				<text class="demo-desc">{{ t('deepClone.contentEqual') }}{{ isDeepEqual ? t('deepClone.yes') : t('deepClone.no') }}</text>
-			</view>
-			<view class="demo-btn deepclone-btn" @click="handleModifyClone" v-if="clonedObj != null">
-				<text>{{ t('deepClone.modifyCloneBtn') }}</text>
-			</view>
-		</demo-block>
+    <demo-page :title="t('deepClone.title')" :subtitle="t('deepClone.subtitle')">
+        <!-- 对象深克隆 -->
+        <demo-block :title="t('deepClone.objectTitle')" :code="codes.object">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('deepClone.originalObj')" :label="JSON.stringify(originalObj)" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('deepClone.cloneBtn')" @click="handleClone()" />
+            <template v-if="clonedObj != null">
+                <ux-gap :height="8" />
+                <ux-cell-group :border="false">
+                    <ux-cell-item :title="t('deepClone.clonedObj')" :label="JSON.stringify(clonedObj)" :arrow="false" />
+                    <ux-cell-item :title="t('deepClone.sameRef')" :arrow="false">
+                        <ux-tag size="mini" :type="isSameRef ? 'error' : 'success'" :text="isSameRef ? t('deepClone.yes') : t('deepClone.no')" />
+                    </ux-cell-item>
+                    <ux-cell-item :title="t('deepClone.contentEqual')" :arrow="false" :border-bottom="false">
+                        <ux-tag size="mini" :type="isDeepEqual ? 'success' : 'error'" :text="isDeepEqual ? t('deepClone.yes') : t('deepClone.no')" />
+                    </ux-cell-item>
+                </ux-cell-group>
+                <ux-gap :height="8" />
+                <ux-button size="small" type="warning" block :text="t('deepClone.modifyCloneBtn')" @click="handleModifyClone()" />
+            </template>
+        </demo-block>
 
-		<!-- 数组深克隆 -->
-		<demo-block :title="t('deepClone.arrayTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ t('deepClone.originalArr') }}</text>
-				<text class="demo-result">{{ JSON.stringify(originalArr) }}</text>
-			</view>
-			<view class="demo-btn deepclone-btn" @click="handleCloneArray">
-				<text>{{ t('deepClone.cloneArrayBtn') }}</text>
-			</view>
-			<view class="demo-item" v-if="(clonedArr as any[]).length > 0">
-				<text class="demo-desc">{{ t('deepClone.clonedArr') }}</text>
-				<text class="demo-result">{{ JSON.stringify(clonedArr) }}</text>
-			</view>
-			<view class="demo-btn deepclone-btn" @click="handleModifyArray" v-if="(clonedArr as any[]).length > 0">
-				<text>{{ t('deepClone.modifyArrayBtn') }}</text>
-			</view>
-		</demo-block>
+        <!-- 数组深克隆 -->
+        <demo-block :title="t('deepClone.arrayTitle')" :code="codes.array">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('deepClone.originalArr')" :label="JSON.stringify(originalArr)" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="8" />
+            <ux-button size="small" type="primary" block :text="t('deepClone.cloneArrayBtn')" @click="handleCloneArray()" />
+            <template v-if="clonedArr.length > 0">
+                <ux-gap :height="8" />
+                <ux-cell-group :border="false">
+                    <ux-cell-item :title="t('deepClone.clonedArr')" :label="JSON.stringify(clonedArr)" :arrow="false" :border-bottom="false" />
+                </ux-cell-group>
+                <ux-gap :height="8" />
+                <ux-button size="small" type="warning" block :text="t('deepClone.modifyArrayBtn')" @click="handleModifyArray()" />
+            </template>
+        </demo-block>
 
-		<!-- 方法说明 -->
-		<demo-block :title="t('deepClone.usageTitle')">
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">$u.deepClone(obj)</text>
-				<text class="demo-desc">{{ t('deepClone.usageObj') }}</text>
-				<text class="demo-desc">{{ t('deepClone.usageSupport') }}</text>
-				<text class="demo-desc">{{ t('deepClone.usageReturn') }}</text>
-			</view>
-		</demo-block>
-	</demo-page>
+        <!-- 使用说明 -->
+        <demo-block :title="t('deepClone.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('deepClone.usageObj')" description="$u.deepClone(obj)" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('deepClone.usageSupport')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('deepClone.usageReturn')" />
+        </demo-block>
+    </demo-page>
 </template>
 
-<style lang="scss">
-/* 使用全局 demo.scss 样式 */
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
-.deepclone-btn {
-	margin-bottom: 0;
-}
+    const { t } = useLocale('demo');
+
+    const originalObj = ref<UTSJSONObject>({
+        name: t('deepClone.dataName'),
+        age: 25,
+        address: {
+            city: t('deepClone.dataCity'),
+            district: t('deepClone.dataDistrict')
+        },
+        hobbies: [t('deepClone.dataHobbyRead'), t('deepClone.dataHobbySwim')]
+    });
+
+    const clonedObj = ref<UTSJSONObject | null>(null);
+    const isSameRef = ref<boolean>(false);
+    const isDeepEqual = ref<boolean>(false);
+
+    /** 克隆对象并比对引用与内容 */
+    function handleClone(): void {
+        clonedObj.value = $u.deepClone(originalObj.value);
+        isSameRef.value = originalObj.value === clonedObj.value;
+        isDeepEqual.value = JSON.stringify(originalObj.value) === JSON.stringify(clonedObj.value);
+    }
+
+    /** 修改克隆体的字段，验证原对象不受影响 */
+    function handleModifyClone(): void {
+        if (clonedObj.value != null) {
+            clonedObj.value['name'] = t('deepClone.dataModifiedName');
+            const address = clonedObj.value['address'] as UTSJSONObject;
+            address['city'] = t('deepClone.dataModifiedCity');
+            clonedObj.value['address'] = address;
+        }
+    }
+
+    const originalArr = ref<any[]>([1, 2, { a: 3 }]);
+    const clonedArr = ref<any[]>([]);
+
+    /** 克隆数组 */
+    function handleCloneArray(): void {
+        clonedArr.value = $u.deepClone(originalArr.value);
+    }
+
+    /** 修改克隆数组的首项与嵌套对象 */
+    function handleModifyArray(): void {
+        if (clonedArr.value.length > 0) {
+            clonedArr.value[0] = 100;
+            const item = clonedArr.value[2];
+            if (typeof item === 'object' && item != null) {
+                (item as UTSJSONObject)['a'] = 300;
+            }
+        }
+    }
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
 </style>

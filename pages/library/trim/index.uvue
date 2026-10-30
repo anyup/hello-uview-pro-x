@@ -1,28 +1,62 @@
 <template>
     <demo-page :title="t('trim.title')" :subtitle="t('trim.subtitle')">
         <!-- 基础用法 -->
-        <demo-block :title="t('trim.basicTitle')">
-            <view class="demo-item" :class="index === baseList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in baseList" :key="index">
-                <text class="demo-desc">{{ item.desc }}</text>
-                <text class="demo-result">{{ item.result }}</text>
-            </view>
+        <demo-block :title="t('trim.basicTitle')" :code="codes.basic">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in baseList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 边界与回退 -->
+        <demo-block :title="t('trim.edgeTitle')" :desc="t('trim.edgeDesc')" :code="codes.edge">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in edgeList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
         </demo-block>
     </demo-page>
 </template>
 
 <script setup lang="uts">
-import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-const { t } = useLocale('demo');
+    const { t } = useLocale('demo');
 
-const baseList = [
-    { desc: '$u.trim(" hello ")', result: `"${$u.trim(' hello ')}"` },
-    { desc: '$u.trim(" hello ", "left")', result: `"${$u.trim(' hello ', 'left')}"` },
-    { desc: '$u.trim(" hello ", "right")', result: `"${$u.trim(' hello ', 'right')}"` },
-    { desc: '$u.trim(" h e l l o ", "all")', result: `"${$u.trim(' h e l l o ', 'all')}"` },
-];
+    /** 演示行：左侧调用表达式，右侧返回结果，last 控制分隔线 */
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    const baseList: Row[] = [
+        { desc: '$u.trim(" hello ")', result: `"${$u.trim(' hello ')}"`, last: false },
+        { desc: '$u.trim(" hello ", "left")', result: `"${$u.trim(' hello ', 'left')}"`, last: false },
+        { desc: '$u.trim(" hello ", "right")', result: `"${$u.trim(' hello ', 'right')}"`, last: false },
+        { desc: '$u.trim(" h e l l o ", "all")', result: `"${$u.trim(' h e l l o ', 'all')}"`, last: true }
+    ];
+
+    const edgeList: Row[] = [
+        { desc: '$u.trim("   ")', result: `"${$u.trim('   ')}"`, last: false },
+        { desc: '$u.trim("")', result: `"${$u.trim('')}"`, last: false },
+        { desc: '$u.trim("a b c")', result: `"${$u.trim('a b c')}"`, last: true }
+    ];
 </script>
 
 <style lang="scss">
-/* 使用全局 demo.scss 样式 */
+    /* 样式由 demo-page 组件提供 */
 </style>

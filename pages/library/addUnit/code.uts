@@ -1,0 +1,75 @@
+/**
+ * addUnit 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="$u.addUnit(10)" :value="$u.addUnit(10)" :arrow="false" />
+        <ux-cell-item title="$u.addUnit(16)" :value="$u.addUnit(16)" :arrow="false" />
+        <ux-cell-item title="$u.addUnit(20)" :value="$u.addUnit(20)" :arrow="false" />
+        <ux-cell-item title="$u.addUnit(0)" :value="$u.addUnit(0)" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+</script>
+`;
+
+/** 字符串入参 */
+const str = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="$u.addUnit('10px')" :value="$u.addUnit('10px')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('10rpx')" :value="$u.addUnit('10rpx')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('50%')" :value="$u.addUnit('50%')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('2em')" :value="$u.addUnit('2em')" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+</script>
+`;
+
+/** 特殊值 */
+const special = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="$u.addUnit('auto')" :value="$u.addUnit('auto')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('')" :value="$u.addUnit('')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit(null)" :value="$u.addUnit(null)" :arrow="false" />
+        <ux-cell-item title="$u.addUnit(16, 'px')" :value="$u.addUnit(16, 'px')" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+</script>
+`;
+
+/** 多值场景 */
+const multi = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="$u.addUnit('10 20')" :value="$u.addUnit('10 20')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('10px 20')" :value="$u.addUnit('10px 20')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('10 10px 30')" :value="$u.addUnit('10 10px 30')" :arrow="false" />
+        <ux-cell-item title="$u.addUnit('auto 10')" :value="$u.addUnit('auto 10')" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+</script>
+`;
+
+export const codes = {
+    basic,
+    str,
+    special,
+    multi
+};

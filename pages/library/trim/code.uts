@@ -1,0 +1,40 @@
+/**
+ * trim 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法 */
+const basic = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="$u.trim(' hello ')" :value="$u.trim(' hello ')" :arrow="false" />
+        <ux-cell-item title="$u.trim(' hello ', 'left')" :value="$u.trim(' hello ', 'left')" :arrow="false" />
+        <ux-cell-item title="$u.trim(' hello ', 'right')" :value="$u.trim(' hello ', 'right')" :arrow="false" />
+        <ux-cell-item title="$u.trim(' h e l l o ', 'all')" :value="$u.trim(' h e l l o ', 'all')" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+</script>
+`;
+
+/** 边界与回退 */
+const edge = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="$u.trim('   ')" :value="$u.trim('   ')" :arrow="false" />
+        <ux-cell-item title="$u.trim('')" :value="$u.trim('')" :arrow="false" />
+        <ux-cell-item title="$u.trim('a b c')" :value="$u.trim('a b c')" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+</script>
+`;
+
+export const codes = {
+    basic,
+    edge
+};
