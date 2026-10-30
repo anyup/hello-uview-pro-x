@@ -45,7 +45,7 @@ const color = `
 /** 自定义图片 */
 const src = `
 <template>
-    <ux-empty text="自定义图片" src="/static/logo.png" />
+    <ux-empty text="自定义图片" src="https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png" />
 </template>
 `;
 

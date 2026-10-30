@@ -2,7 +2,7 @@
     <demo-page :title="t('tabbarAbout.title')" :subtitle="t('tabbarAbout.subtitle')" showTabbar>
         <!-- 品牌头部 -->
         <view class="tab-header">
-            <image class="tab-logo" src="/static/logo.png" mode="aspectFit" />
+            <image class="tab-logo" src="https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png" mode="aspectFit" />
             <text class="tab-brand-name">uView Pro X</text>
             <text class="tab-item-desc">{{ t('tabbarAbout.tagline') }}</text>
             <view class="tab-platforms">

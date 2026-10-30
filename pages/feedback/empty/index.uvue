@@ -44,7 +44,7 @@
 
         <!-- 自定义图片 -->
         <demo-block :title="t('empty.srcTitle')" :desc="t('empty.srcDesc')" :code="codes.src">
-            <ux-empty :text="t('empty.srcText')" src="/static/logo.png"></ux-empty>
+            <ux-empty :text="t('empty.srcText')" src="https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png"></ux-empty>
         </demo-block>
 
         <!-- bottom 插槽 -->

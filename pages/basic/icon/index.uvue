@@ -37,6 +37,14 @@
             </view>
         </demo-block>
 
+        <!-- 图片图标 -->
+        <demo-block :title="t('icon.imgTitle')" :desc="t('icon.imgDesc')" :code="codes.img">
+            <view class="icon-custom-row">
+                <ux-icon :name="imageUrl" width="100" height="100" custom-class="icon-custom-item"></ux-icon>
+                <ux-icon :name="imageUrl" img-mode="aspectFit" width="150" height="150" custom-class="icon-custom-item"></ux-icon>
+            </view>
+        </demo-block>
+
         <!-- 自定义前缀 -->
         <demo-block :title="t('icon.prefixTitle')" :desc="t('icon.prefixDesc')" :code="codes.prefix">
             <view class="icon-grid">
@@ -46,17 +54,9 @@
                     v-for="(item, index) in customIconList"
                     :key="index"
                 >
-                    <ux-icon :name="item" size="20" color="#2979ff" custom-prefix="custom-icon"></ux-icon>
+                    <ux-icon :name="item" size="20" type="primary" custom-prefix="custom-icon"></ux-icon>
                     <text class="icon-name">{{ item }}</text>
                 </view>
-            </view>
-        </demo-block>
-
-        <!-- 图片图标 -->
-        <demo-block :title="t('icon.imgTitle')" :desc="t('icon.imgDesc')" :code="codes.img">
-            <view class="icon-custom-row">
-                <ux-icon :name="imageUrl" width="100" height="100" custom-class="icon-custom-item"></ux-icon>
-                <ux-icon :name="imageUrl" img-mode="aspectFit" width="150" height="150" custom-class="icon-custom-item"></ux-icon>
             </view>
         </demo-block>
 

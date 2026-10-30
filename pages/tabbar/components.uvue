@@ -8,7 +8,7 @@
             <view class="tab-lang-btn" @click="toggleLocale">
                 <text class="tab-lang-btn-text">{{ langLabel }}</text>
             </view>
-            <image class="tab-logo" src="/static/logo.png" mode="aspectFit" />
+            <image class="tab-logo" src="https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png" mode="aspectFit" />
             <!-- 一句话核心描述 -->
             <text class="tab-brand-desc">{{ t('tabbarComponents.brandDesc') }}</text>
             <view class="tab-platforms">
