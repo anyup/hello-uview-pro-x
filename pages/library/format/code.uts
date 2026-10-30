@@ -1,0 +1,157 @@
+/**
+ * format 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 数字格式化 */
+const number = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in numberList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 参数顺序：数字、小数位、小数点符号、千位分隔符、是否保留尾零
+const numberList: Row[] = [
+    { desc: '$u.formatNumber(1234)', result: $u.formatNumber(1234), last: false },
+    // 默认去尾零：虽然给了 2 位，结果仍是 1234
+    { desc: '$u.formatNumber(1234, 2)', result: $u.formatNumber(1234, 2), last: false },
+    { desc: '$u.formatNumber(1234.5678, 2)', result: $u.formatNumber(1234.5678, 2), last: false },
+    // 0 位即四舍五入取整
+    { desc: "$u.formatNumber(5321.5, 0, '.', ',')", result: $u.formatNumber(5321.5, 0, '.', ','), last: false },
+    { desc: "$u.formatNumber(1234567.891, 2, '.', ',')", result: $u.formatNumber(1234567.891, 2, '.', ','), last: false },
+    // 第五个参数传 true 保留尾零
+    { desc: "$u.formatNumber(1234, 2, '.', ',', true)", result: $u.formatNumber(1234, 2, '.', ',', true), last: false },
+    // 自定义小数点与千位分隔符（欧式写法）
+    { desc: "$u.formatNumber(1234.5, 2, ',', '.')", result: $u.formatNumber(1234.5, 2, ',', '.'), last: true }
+];
+</script>
+`;
+
+/** 姓名打码 */
+const name = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in nameList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 一字原样返回，两字保留首字，三字以上保留首末字
+const nameList: Row[] = [
+    { desc: '$u.formatName("张")', result: $u.formatName('张'), last: false },
+    { desc: '$u.formatName("张三")', result: $u.formatName('张三'), last: false },
+    { desc: '$u.formatName("欧阳修")', result: $u.formatName('欧阳修'), last: false },
+    { desc: '$u.formatName("司马相如")', result: $u.formatName('司马相如'), last: false },
+    { desc: '$u.formatName("")', result: $u.formatName(''), last: true }
+];
+</script>
+`;
+
+/** 时间格式化 */
+const time = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in timeList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// token：y 年 / m 月 / d 日 / h 时 / M 分 / s 秒，注意 m 是月、M 是分
+// 连续两位自动补零，单个字符不补零；结果随设备时区变化
+const timeList: Row[] = [
+    { desc: '$u.timeFormat(1700000000000)', result: $u.timeFormat(1700000000000), last: false },
+    { desc: "$u.timeFormat(1700000000000, 'yyyy-mm-dd hh:MM:ss')", result: $u.timeFormat(1700000000000, 'yyyy-mm-dd hh:MM:ss'), last: false },
+    // 10 位字符串按秒级时间戳处理
+    { desc: "$u.timeFormat('1700000000', 'yyyy-mm-dd')", result: $u.timeFormat('1700000000', 'yyyy-mm-dd'), last: false },
+    { desc: "$u.timeFormat(1700000000000, 'yy-m-d h:M:s')", result: $u.timeFormat(1700000000000, 'yy-m-d h:M:s'), last: true }
+];
+</script>
+`;
+
+/** 补零 */
+const padZero = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in padZeroList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 第二参数为补零后的总位数，小数先被 Math.floor 取整
+const padZeroList: Row[] = [
+    { desc: '$u.padZero(5)', result: $u.padZero(5), last: false },
+    { desc: '$u.padZero(5, 3)', result: $u.padZero(5, 3), last: false },
+    { desc: '$u.padZero(123, 2)', result: $u.padZero(123, 2), last: false },
+    { desc: '$u.padZero(7.9)', result: $u.padZero(7.9), last: true }
+];
+</script>
+`;
+
+export const codes = {
+    number,
+    name,
+    time,
+    padZero
+};

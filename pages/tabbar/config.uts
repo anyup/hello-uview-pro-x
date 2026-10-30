@@ -169,7 +169,10 @@ export const toolItems: MenuItem[] = [
     { name: 'debounce', desc: 'tabbarMenu.debounceDesc', icon: 'D', path: 'library/debounce/index' },
     { name: 'throttle', desc: 'tabbarMenu.throttleDesc', icon: 'L', path: 'library/throttle/index' },
     { name: 'deepClone', desc: 'tabbarMenu.deepCloneDesc', icon: 'K', path: 'library/deepClone/index' },
-    { name: 'deepMerge', desc: 'tabbarMenu.deepMergeDesc', icon: 'M', path: 'library/deepMerge/index' }
+    { name: 'deepMerge', desc: 'tabbarMenu.deepMergeDesc', icon: 'M', path: 'library/deepMerge/index' },
+    { name: 'format', desc: 'tabbarMenu.formatDesc', icon: 'F', path: 'library/format/index' },
+    { name: 'number', desc: 'tabbarMenu.numberDesc', icon: 'N', path: 'library/number/index' },
+    { name: 'string', desc: 'tabbarMenu.stringDesc', icon: 'S', path: 'library/string/index' }
 ];
 
 /** Hooks */

@@ -1,0 +1,83 @@
+/**
+ * number 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 尺寸换算 */
+const px = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in pxList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 结果统一转字符串，避免模板里数字与字符串混排
+const pxList: Row[] = [
+    // 数字入参在 config.unit 为 px 时原样返回
+    { desc: '$u.getPxNum(10)', result: $u.getPxNum(10).toString(), last: false },
+    { desc: "$u.getPxNum('20px')", result: $u.getPxNum('20px').toString(), last: false },
+    // 百分比按第二参数的总宽度换算
+    { desc: "$u.getPxNum('50%', 200)", result: $u.getPxNum('50%', 200).toString(), last: false },
+    { desc: "$u.getPxNum('25%', 750)", result: $u.getPxNum('25%', 750).toString(), last: false },
+    // rpx 走 uni.rpx2px，随屏宽变化
+    { desc: "$u.getPxNum('20rpx')", result: $u.getPxNum('20rpx').toFixed(2), last: true }
+];
+</script>
+`;
+
+/** 转数值 */
+const toNum = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in toNumList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// parseFloat 语义：截取前缀数字，非法值与 null 一律返回 0
+const toNumList: Row[] = [
+    { desc: "$u.toNumber('123')", result: $u.toNumber('123').toString(), last: false },
+    { desc: "$u.toNumber('6px')", result: $u.toNumber('6px').toString(), last: false },
+    { desc: '$u.toNumber(12.5)', result: $u.toNumber(12.5).toString(), last: false },
+    { desc: "$u.toNumber('abc')", result: $u.toNumber('abc').toString(), last: false },
+    { desc: "$u.toNumber('')", result: $u.toNumber('').toString(), last: false },
+    { desc: '$u.toNumber(null)', result: $u.toNumber(null).toString(), last: true }
+];
+</script>
+`;
+
+export const codes = {
+    px,
+    toNum
+};

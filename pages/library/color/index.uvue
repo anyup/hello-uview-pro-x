@@ -1,162 +1,271 @@
 <template>
     <demo-page :title="t('color.title')" :subtitle="t('color.subtitle')">
         <!-- 主色 -->
-        <demo-block :title="t('color.primaryTitle')">
-            <view class="demo-color-row" :class="index === primaryColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in primaryColors" :key="index">
-                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
-                <view class="demo-color-info">
-                    <text class="demo-color-name">{{ item.name }}</text>
-                    <text class="demo-color-value">{{ item.value }}</text>
-                </view>
-            </view>
+        <demo-block :title="t('color.primaryTitle')" :code="codes.palette">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in primaryColors"
+                    :key="index"
+                    :title="item.name"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
         </demo-block>
 
         <!-- 成功色 -->
-        <demo-block :title="t('color.successTitle')">
-            <view class="demo-color-row" :class="index === successColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in successColors" :key="index">
-                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
-                <view class="demo-color-info">
-                    <text class="demo-color-name">{{ item.name }}</text>
-                    <text class="demo-color-value">{{ item.value }}</text>
-                </view>
-            </view>
+        <demo-block :title="t('color.successTitle')" :code="codes.palette">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in successColors"
+                    :key="index"
+                    :title="item.name"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
         </demo-block>
 
         <!-- 警告色 -->
-        <demo-block :title="t('color.warningTitle')">
-            <view class="demo-color-row" :class="index === warningColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in warningColors" :key="index">
-                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
-                <view class="demo-color-info">
-                    <text class="demo-color-name">{{ item.name }}</text>
-                    <text class="demo-color-value">{{ item.value }}</text>
-                </view>
-            </view>
+        <demo-block :title="t('color.warningTitle')" :code="codes.palette">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in warningColors"
+                    :key="index"
+                    :title="item.name"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
         </demo-block>
 
         <!-- 错误色 -->
-        <demo-block :title="t('color.errorTitle')">
-            <view class="demo-color-row" :class="index === errorColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in errorColors" :key="index">
-                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
-                <view class="demo-color-info">
-                    <text class="demo-color-name">{{ item.name }}</text>
-                    <text class="demo-color-value">{{ item.value }}</text>
-                </view>
-            </view>
+        <demo-block :title="t('color.errorTitle')" :code="codes.palette">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in errorColors"
+                    :key="index"
+                    :title="item.name"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
         </demo-block>
 
         <!-- 信息色 -->
-        <demo-block :title="t('color.infoTitle')">
-            <view class="demo-color-row" v-for="(item, index) in infoColors" :key="index">
-                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
-                <view class="demo-color-info">
-                    <text class="demo-color-name">{{ item.name }}</text>
-                    <text class="demo-color-value">{{ item.value }}</text>
-                </view>
-            </view>
+        <demo-block :title="t('color.infoTitle')" :code="codes.palette">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in infoColors"
+                    :key="index"
+                    :title="item.name"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
         </demo-block>
 
         <!-- 文字色 -->
-        <demo-block :title="t('color.textTitle')">
-            <view class="demo-color-row" :class="index === textColors.length - 1 ? 'demo-color-row--last' : ''" v-for="(item, index) in textColors" :key="index">
-                <view class="demo-color-block" :style="{ backgroundColor: item.value }"></view>
-                <view class="demo-color-info">
-                    <text class="demo-color-name">{{ item.name }}</text>
-                    <text class="demo-color-value">{{ item.value }}</text>
-                </view>
-            </view>
+        <demo-block :title="t('color.textTitle')" :code="codes.palette">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in textColors"
+                    :key="index"
+                    :title="item.name"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 色值运算 -->
+        <demo-block :title="t('color.mixTitle')" :desc="t('color.mixDesc')" :code="codes.mix">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in mixRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.result }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 主题色判断与取值 -->
+        <demo-block :title="t('color.themeTitle')" :desc="t('color.themeDesc')" :code="codes.theme">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in themeFlagRows"
+                    :key="index"
+                    :title="item.desc"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <ux-tag
+                        size="mini"
+                        :type="item.result ? 'success' : 'error'"
+                        :text="item.result ? 'true' : 'false'"
+                    />
+                </ux-cell-item>
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in themeColorRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                >
+                    <template #icon>
+                        <view class="demo-swatch" :style="{ backgroundColor: item.result }"></view>
+                    </template>
+                </ux-cell-item>
+            </ux-cell-group>
         </demo-block>
     </demo-page>
 </template>
 
 <script setup lang="uts">
-import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-const { t } = useLocale('demo');
+    const { t } = useLocale('demo');
 
-type ColorItem = {
-    name: string;
-    value: string | null | undefined;
-};
+    type ColorRow = {
+        name: string;
+        value: string;
+        last: boolean;
+    };
 
-const primaryColors: ColorItem[] = [
-    { name: 'primary', value: $u.color.primary },
-    { name: 'primaryDisabled', value: $u.color.primaryDisabled },
-    { name: 'primaryDark', value: $u.color.primaryDark },
-    { name: 'primaryLight', value: $u.color.primaryLight },
-];
+    type MixRow = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
 
-const successColors: ColorItem[] = [
-    { name: 'success', value: $u.color.success },
-    { name: 'successDisabled', value: $u.color.successDisabled },
-    { name: 'successDark', value: $u.color.successDark },
-    { name: 'successLight', value: $u.color.successLight },
-];
+    type FlagRow = {
+        desc: string;
+        result: boolean;
+        last: boolean;
+    };
 
-const warningColors: ColorItem[] = [
-    { name: 'warning', value: $u.color.warning },
-    { name: 'warningDisabled', value: $u.color.warningDisabled },
-    { name: 'warningDark', value: $u.color.warningDark },
-    { name: 'warningLight', value: $u.color.warningLight },
-];
+    const primaryColors: ColorRow[] = [
+        { name: 'primary', value: $u.color.primary ?? '', last: false },
+        { name: 'primaryDisabled', value: $u.color.primaryDisabled ?? '', last: false },
+        { name: 'primaryDark', value: $u.color.primaryDark ?? '', last: false },
+        { name: 'primaryLight', value: $u.color.primaryLight ?? '', last: true }
+    ];
 
-const errorColors: ColorItem[] = [
-    { name: 'error', value: $u.color.error },
-    { name: 'errorDisabled', value: $u.color.errorDisabled },
-    { name: 'errorDark', value: $u.color.errorDark },
-    { name: 'errorLight', value: $u.color.errorLight },
-];
+    const successColors: ColorRow[] = [
+        { name: 'success', value: $u.color.success ?? '', last: false },
+        { name: 'successDisabled', value: $u.color.successDisabled ?? '', last: false },
+        { name: 'successDark', value: $u.color.successDark ?? '', last: false },
+        { name: 'successLight', value: $u.color.successLight ?? '', last: true }
+    ];
 
-const infoColors: ColorItem[] = [
-    { name: 'info', value: $u.color.info },
-    { name: 'infoDisabled', value: $u.color.infoDisabled },
-    { name: 'infoDark', value: $u.color.infoDark },
-    { name: 'infoLight', value: $u.color.infoLight },
-];
+    const warningColors: ColorRow[] = [
+        { name: 'warning', value: $u.color.warning ?? '', last: false },
+        { name: 'warningDisabled', value: $u.color.warningDisabled ?? '', last: false },
+        { name: 'warningDark', value: $u.color.warningDark ?? '', last: false },
+        { name: 'warningLight', value: $u.color.warningLight ?? '', last: true }
+    ];
 
-const textColors: ColorItem[] = [
-    { name: 'mainColor', value: $u.color.mainColor },
-    { name: 'contentColor', value: $u.color.contentColor },
-    { name: 'tipsColor', value: $u.color.tipsColor },
-    { name: 'lightColor', value: $u.color.lightColor },
-];
+    const errorColors: ColorRow[] = [
+        { name: 'error', value: $u.color.error ?? '', last: false },
+        { name: 'errorDisabled', value: $u.color.errorDisabled ?? '', last: false },
+        { name: 'errorDark', value: $u.color.errorDark ?? '', last: false },
+        { name: 'errorLight', value: $u.color.errorLight ?? '', last: true }
+    ];
+
+    const infoColors: ColorRow[] = [
+        { name: 'info', value: $u.color.info ?? '', last: false },
+        { name: 'infoDisabled', value: $u.color.infoDisabled ?? '', last: false },
+        { name: 'infoDark', value: $u.color.infoDark ?? '', last: false },
+        { name: 'infoLight', value: $u.color.infoLight ?? '', last: true }
+    ];
+
+    const textColors: ColorRow[] = [
+        { name: 'mainColor', value: $u.color.mainColor ?? '', last: false },
+        { name: 'contentColor', value: $u.color.contentColor ?? '', last: false },
+        { name: 'tipsColor', value: $u.color.tipsColor ?? '', last: false },
+        { name: 'lightColor', value: $u.color.lightColor ?? '', last: true }
+    ];
+
+    const mixRows: MixRow[] = [
+        { desc: "$u.hexToRgba('#2979ff', 0.3)", result: $u.hexToRgba('#2979ff', 0.3), last: false },
+        { desc: "$u.hexToRgba('#fff', 0.5)", result: $u.hexToRgba('#fff', 0.5), last: false },
+        { desc: "$u.mixColor('#2979ff', '#000000', 0.5)", result: $u.mixColor('#2979ff', '#000000', 0.5), last: false },
+        { desc: "$u.mixColor('#ffffff', '#000000', 0.1)", result: $u.mixColor('#ffffff', '#000000', 0.1), last: true }
+    ];
+
+    const themeFlagRows: FlagRow[] = [
+        { desc: "$u.isThemeColor('primary')", result: $u.isThemeColor('primary'), last: false },
+        { desc: "$u.isThemeColor('#2979ff')", result: $u.isThemeColor('#2979ff'), last: false },
+        { desc: "$u.isThemeColor('brand')", result: $u.isThemeColor('brand'), last: true }
+    ];
+
+    const themeColorRows: MixRow[] = [
+        {
+            desc: "$u.getThemeColor('primary', 'main', ...)",
+            result: $u.getThemeColor('primary', 'main', $u.strOr($u.color.contentColor)),
+            last: false
+        },
+        {
+            desc: "$u.getThemeColor('primary', 'dark', ...)",
+            result: $u.getThemeColor('primary', 'dark', $u.strOr($u.color.contentColor)),
+            last: false
+        },
+        {
+            desc: "$u.getThemeColor('brand', 'main', '#888888')",
+            result: $u.getThemeColor('brand', 'main', '#888888'),
+            last: true
+        }
+    ];
 </script>
 
 <style lang="scss">
-/* 使用全局 demo.scss 样式 */
-.demo-color-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid $u-divider-color;
-}
-
-.demo-color-row--last {
-    border-bottom: none;
-}
-
-.demo-color-block {
-    width: 30px;
-    height: 30px;
-    border-radius: 4px;
-    margin-right: 10px;
-    border: 1px solid $u-border-color;
-}
-
-.demo-color-info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex: 1;
-}
-
-.demo-color-name {
-    font-size: 14px;
-    color: $u-main-color;
-}
-
-.demo-color-value {
-    font-size: 13px;
-    color: $u-tips-color;
-}
+    /* 色块需真实渲染色值，属必要例外：仅 background-color 走内联 */
+    .demo-swatch {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        border: 1px solid $u-border-color;
+    }
 </style>

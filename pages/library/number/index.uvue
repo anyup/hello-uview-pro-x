@@ -1,0 +1,76 @@
+<template>
+    <demo-page :title="t('number.title')" :subtitle="t('number.subtitle')">
+        <!-- 尺寸换算 -->
+        <demo-block :title="t('number.pxTitle')" :desc="t('number.pxDesc')" :code="codes.px">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in pxList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 转数值 -->
+        <demo-block :title="t('number.toNumTitle')" :desc="t('number.toNumDesc')" :code="codes.toNum">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in toNumList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('number.usageTitle')">
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('number.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('number.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('number.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    // 结果统一转字符串，避免模板里数字与字符串混排
+    const pxList: Row[] = [
+        { desc: '$u.getPxNum(10)', result: $u.getPxNum(10).toString(), last: false },
+        { desc: "$u.getPxNum('20px')", result: $u.getPxNum('20px').toString(), last: false },
+        { desc: "$u.getPxNum('50%', 200)", result: $u.getPxNum('50%', 200).toString(), last: false },
+        { desc: "$u.getPxNum('25%', 750)", result: $u.getPxNum('25%', 750).toString(), last: false },
+        // rpx 走 uni.rpx2px，随屏宽变化
+        { desc: "$u.getPxNum('20rpx')", result: $u.getPxNum('20rpx').toFixed(2), last: true }
+    ];
+
+    const toNumList: Row[] = [
+        { desc: "$u.toNumber('123')", result: $u.toNumber('123').toString(), last: false },
+        { desc: "$u.toNumber('6px')", result: $u.toNumber('6px').toString(), last: false },
+        { desc: '$u.toNumber(12.5)', result: $u.toNumber(12.5).toString(), last: false },
+        { desc: "$u.toNumber('abc')", result: $u.toNumber('abc').toString(), last: false },
+        { desc: "$u.toNumber('')", result: $u.toNumber('').toString(), last: false },
+        { desc: '$u.toNumber(null)', result: $u.toNumber(null).toString(), last: true }
+    ];
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
+</style>

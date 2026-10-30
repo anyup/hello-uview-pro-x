@@ -103,6 +103,24 @@
           "style": {
             "navigationBarTitleText": "deepMerge 深合并"
           }
+        },
+        {
+          "path": "format/index",
+          "style": {
+            "navigationBarTitleText": "format 格式化工具"
+          }
+        },
+        {
+          "path": "number/index",
+          "style": {
+            "navigationBarTitleText": "number 数值换算"
+          }
+        },
+        {
+          "path": "string/index",
+          "style": {
+            "navigationBarTitleText": "string 字符串工具"
+          }
         }
       ]
     },

@@ -1,0 +1,118 @@
+<template>
+    <demo-page :title="t('format.title')" :subtitle="t('format.subtitle')">
+        <!-- 数字格式化 -->
+        <demo-block :title="t('format.numberTitle')" :desc="t('format.numberDesc')" :code="codes.number">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in numberList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 姓名打码 -->
+        <demo-block :title="t('format.nameTitle')" :desc="t('format.nameDesc')" :code="codes.name">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in nameList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 时间格式化 -->
+        <demo-block :title="t('format.timeTitle')" :desc="t('format.timeDesc')" :code="codes.time">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in timeList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 补零 -->
+        <demo-block :title="t('format.padZeroTitle')" :desc="t('format.padZeroDesc')" :code="codes.padZero">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in padZeroList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('format.usageTitle')">
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('format.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('format.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('format.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    const numberList: Row[] = [
+        { desc: '$u.formatNumber(1234)', result: $u.formatNumber(1234), last: false },
+        { desc: '$u.formatNumber(1234, 2)', result: $u.formatNumber(1234, 2), last: false },
+        { desc: '$u.formatNumber(1234.5678, 2)', result: $u.formatNumber(1234.5678, 2), last: false },
+        { desc: "$u.formatNumber(5321.5, 0, '.', ',')", result: $u.formatNumber(5321.5, 0, '.', ','), last: false },
+        { desc: "$u.formatNumber(1234567.891, 2, '.', ',')", result: $u.formatNumber(1234567.891, 2, '.', ','), last: false },
+        { desc: "$u.formatNumber(1234, 2, '.', ',', true)", result: $u.formatNumber(1234, 2, '.', ',', true), last: false },
+        { desc: "$u.formatNumber(1234.5, 2, ',', '.')", result: $u.formatNumber(1234.5, 2, ',', '.'), last: true }
+    ];
+
+    const nameList: Row[] = [
+        { desc: '$u.formatName("张")', result: $u.formatName('张'), last: false },
+        { desc: '$u.formatName("张三")', result: $u.formatName('张三'), last: false },
+        { desc: '$u.formatName("欧阳修")', result: $u.formatName('欧阳修'), last: false },
+        { desc: '$u.formatName("司马相如")', result: $u.formatName('司马相如'), last: false },
+        { desc: '$u.formatName("")', result: $u.formatName(''), last: true }
+    ];
+
+    // 固定时间戳，结果随设备时区变化
+    const timeList: Row[] = [
+        { desc: '$u.timeFormat(1700000000000)', result: $u.timeFormat(1700000000000), last: false },
+        { desc: "$u.timeFormat(1700000000000, 'yyyy-mm-dd hh:MM:ss')", result: $u.timeFormat(1700000000000, 'yyyy-mm-dd hh:MM:ss'), last: false },
+        { desc: "$u.timeFormat('1700000000', 'yyyy-mm-dd')", result: $u.timeFormat('1700000000', 'yyyy-mm-dd'), last: false },
+        { desc: "$u.timeFormat(1700000000000, 'yy-m-d h:M:s')", result: $u.timeFormat(1700000000000, 'yy-m-d h:M:s'), last: true }
+    ];
+
+    const padZeroList: Row[] = [
+        { desc: '$u.padZero(5)', result: $u.padZero(5), last: false },
+        { desc: '$u.padZero(5, 3)', result: $u.padZero(5, 3), last: false },
+        { desc: '$u.padZero(123, 2)', result: $u.padZero(123, 2), last: false },
+        { desc: '$u.padZero(7.9)', result: $u.padZero(7.9), last: true }
+    ];
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
+</style>

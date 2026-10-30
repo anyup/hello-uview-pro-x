@@ -1,0 +1,177 @@
+/**
+ * toStyle 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 对象转样式 */
+const object = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in objectList"
+            :key="index"
+            :title="item.desc"
+            :label="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type StyleRow = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 驼峰属性名会转成 kebab-case，输出串以分号结尾
+const objectList: StyleRow[] = [
+    { desc: '$u.toStyle({ color: "red" })', result: $u.toStyle({ color: 'red' }), last: false },
+    { desc: '$u.toStyle({ fontSize: "10px" })', result: $u.toStyle({ fontSize: '10px' }), last: false },
+    { desc: '$u.toStyle({ backgroundColor: "#2979ff" })', result: $u.toStyle({ backgroundColor: '#2979ff' }), last: false },
+    { desc: '$u.toStyle({ marginLeft: "5px", marginTop: "10px" })', result: $u.toStyle({ marginLeft: '5px', marginTop: '10px' }), last: true }
+];
+</script>
+`;
+
+/** 字符串转样式 */
+const string = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in stringList"
+            :key="index"
+            :title="item.desc"
+            :label="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type StyleRow = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 已是样式串时原样保留，仅补结尾分号
+const stringList: StyleRow[] = [
+    { desc: '$u.toStyle("color: red")', result: $u.toStyle('color: red'), last: false },
+    { desc: '$u.toStyle("color: red; font-size: 10px")', result: $u.toStyle('color: red; font-size: 10px'), last: true }
+];
+</script>
+`;
+
+/** 合并样式 */
+const merge = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in mergeList"
+            :key="index"
+            :title="item.desc"
+            :label="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type StyleRow = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 多参数按顺序拼接，后写者不覆盖前者，需自行保证不冲突
+const mergeList: StyleRow[] = [
+    { desc: '单对象：多属性拼接', result: $u.toStyle({ color: 'red', fontSize: '10px' }), last: false },
+    { desc: '单属性：颜色', result: $u.toStyle({ color: 'blue' }), last: false },
+    { desc: '对象 + 样式串：混传入参', result: $u.toStyle({ color: 'blue' }, 'font-size: 12px'), last: true }
+];
+</script>
+`;
+
+/** 文本与矩形属性拆分 */
+const split = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="textCssProperty" :label="splitText" :arrow="false" />
+        <ux-cell-item title="rectCssProperty" :label="splitRect" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <view :style="splitRectStyle">
+        <text :style="splitTextStyle">文本属性挂 text，矩形属性挂 view</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+// 文本属性与矩形属性混在一份样式里
+const splitSource = new UTSJSONObject();
+splitSource['color'] = '#ff0000';
+splitSource['font-size'] = '14px';
+splitSource['background-color'] = '#f5f5f5';
+splitSource['padding'] = '8px';
+
+// uni-app x 样式不继承：文本属性挂 text，矩形属性挂 view
+const splitResult = $u.splitCssProperty(splitSource);
+const splitText: string = JSON.stringify(splitResult.textCssProperty);
+const splitRect: string = JSON.stringify(splitResult.rectCssProperty);
+const splitTextStyle: string = $u.toStyle(splitResult.textCssProperty);
+const splitRectStyle: string = $u.toStyle(splitResult.rectCssProperty);
+</script>
+`;
+
+/** 样式预览 */
+const preview = `
+<template>
+    <view class="demo-preview" :style="previewStyle">
+        <text class="demo-preview-text">样式实时生效</text>
+    </view>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+// toStyle 的输出可直接绑定到 :style
+const previewStyle = $u.toStyle({
+    backgroundColor: '#ecf5ff',
+    padding: '10px',
+    borderRadius: '4px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#2979ff'
+});
+</script>
+
+<style lang="scss">
+.demo-preview {
+    padding: 10px;
+}
+
+.demo-preview-text {
+    font-size: 14px;
+    color: $u-main-color;
+}
+</style>
+`;
+
+export const codes = {
+    object,
+    string,
+    merge,
+    split,
+    preview
+};

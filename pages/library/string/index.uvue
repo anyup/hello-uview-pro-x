@@ -1,0 +1,88 @@
+<template>
+    <demo-page :title="t('string.title')" :subtitle="t('string.subtitle')">
+        <!-- 多级兜底 -->
+        <demo-block :title="t('string.strOrTitle')" :desc="t('string.strOrDesc')" :code="codes.strOr">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in strOrList"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 唯一标识 -->
+        <demo-block :title="t('string.guidTitle')" :desc="t('string.guidDesc')" :code="codes.guid">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in guidRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-button size="small" type="primary" block :text="t('string.regenerateBtn')" @click="refreshGuid()" />
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('string.usageTitle')">
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('string.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('string.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('string.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    // 全部为空时返回空串，这里用 - 占位便于观察
+    const emptyFallback = $u.strOr(null, null);
+
+    const strOrList: Row[] = [
+        { desc: "$u.strOr(null, 'default')", result: $u.strOr(null, 'default'), last: false },
+        { desc: "$u.strOr('', $u.color.primary)", result: $u.strOr('', $u.color.primary), last: false },
+        { desc: "$u.strOr(null, null, 'fallback')", result: $u.strOr(null, null, 'fallback'), last: false },
+        { desc: '$u.strOr(null, $u.color.tipsColor)', result: $u.strOr(null, $u.color.tipsColor), last: false },
+        { desc: '$u.strOr(null, null)', result: emptyFallback == '' ? '-' : emptyFallback, last: true }
+    ];
+
+    const guidRows = ref<Row[]>([]);
+
+    function buildGuidRows(): Row[] {
+        return [
+            { desc: '$u.guid()', result: $u.guid(), last: false },
+            { desc: '$u.guid(8)', result: $u.guid(8), last: false },
+            // 不强制首字符为 u，可能以数字开头
+            { desc: '$u.guid(8, false)', result: $u.guid(8, false), last: false },
+            { desc: '$u.guid(16, true, 16)', result: $u.guid(16, true, 16), last: true }
+        ];
+    }
+
+    function refreshGuid(): void {
+        guidRows.value = buildGuidRows();
+    }
+
+    refreshGuid();
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
+</style>

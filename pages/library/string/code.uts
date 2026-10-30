@@ -1,0 +1,95 @@
+/**
+ * string 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 多级兜底 */
+const strOr = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in strOrList"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 按顺序返回第一个非空字符串，空串视为未传
+const strOrList: Row[] = [
+    { desc: "$u.strOr(null, 'default')", result: $u.strOr(null, 'default'), last: false },
+    { desc: "$u.strOr('', $u.color.primary)", result: $u.strOr('', $u.color.primary), last: false },
+    // 支持三级及更多级兜底
+    { desc: "$u.strOr(null, null, 'fallback')", result: $u.strOr(null, null, 'fallback'), last: false },
+    { desc: '$u.strOr(null, $u.color.tipsColor)', result: $u.strOr(null, $u.color.tipsColor), last: false },
+    // 全部为空时返回空串
+    { desc: '$u.strOr(null, null)', result: '-', last: true }
+];
+</script>
+`;
+
+/** 唯一标识 */
+const guid = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in guidRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="重新生成" @click="refreshGuid()" />
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const guidRows = ref<Row[]>([]);
+
+function buildGuidRows(): Row[] {
+    return [
+        // 默认 32 位，首字符强制为 u
+        { desc: '$u.guid()', result: $u.guid(), last: false },
+        { desc: '$u.guid(8)', result: $u.guid(8), last: false },
+        // 第二个参数传 false 则不强制 u 开头，可能以数字开头
+        { desc: '$u.guid(8, false)', result: $u.guid(8, false), last: false },
+        // 第三个参数为进制，16 表示十六进制字符集
+        { desc: '$u.guid(16, true, 16)', result: $u.guid(16, true, 16), last: true }
+    ];
+}
+
+// 每次点击重算，数据放 ref 才能驱动视图更新
+function refreshGuid(): void {
+    guidRows.value = buildGuidRows();
+}
+
+refreshGuid();
+</script>
+`;
+
+export const codes = {
+    strOr,
+    guid
+};

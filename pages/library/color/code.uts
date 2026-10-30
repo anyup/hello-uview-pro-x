@@ -1,0 +1,177 @@
+/**
+ * color 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 主题色板 */
+const palette = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in primaryColors"
+            :key="index"
+            :title="item.name"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        >
+            <template #icon>
+                <view class="demo-swatch" :style="{ backgroundColor: item.value }"></view>
+            </template>
+        </ux-cell-item>
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type ColorRow = {
+    name: string;
+    value: string;
+    last: boolean;
+};
+
+// 同一结构复用于 primary / success / warning / error / info / text 六组
+const primaryColors: ColorRow[] = [
+    { name: 'primary', value: $u.color.primary ?? '', last: false },
+    { name: 'primaryDisabled', value: $u.color.primaryDisabled ?? '', last: false },
+    { name: 'primaryDark', value: $u.color.primaryDark ?? '', last: false },
+    { name: 'primaryLight', value: $u.color.primaryLight ?? '', last: true }
+];
+</script>
+
+<style lang="scss">
+/* 色块需真实渲染色值，属必要例外：仅 background-color 走内联 */
+.demo-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid $u-border-color;
+}
+</style>
+`;
+
+/** 色值运算 */
+const mix = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in mixRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        >
+            <template #icon>
+                <view class="demo-swatch" :style="{ backgroundColor: item.result }"></view>
+            </template>
+        </ux-cell-item>
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type MixRow = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const mixRows: MixRow[] = [
+    // 十六进制转 rgba：用于主题色半透明底色
+    { desc: "$u.hexToRgba('#2979ff', 0.3)", result: $u.hexToRgba('#2979ff', 0.3), last: false },
+    // 支持 3 位简写
+    { desc: "$u.hexToRgba('#fff', 0.5)", result: $u.hexToRgba('#fff', 0.5), last: false },
+    // 按比例混色：ratio 为 to 的权重（0-1）
+    { desc: "$u.mixColor('#2979ff', '#000000', 0.5)", result: $u.mixColor('#2979ff', '#000000', 0.5), last: false },
+    { desc: "$u.mixColor('#ffffff', '#000000', 0.1)", result: $u.mixColor('#ffffff', '#000000', 0.1), last: true }
+];
+</script>
+`;
+
+/** 主题色判断与取值 */
+const theme = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in themeFlagRows"
+            :key="index"
+            :title="item.desc"
+            :arrow="false"
+            :border-bottom="!item.last"
+        >
+            <ux-tag
+                size="mini"
+                :type="item.result ? 'success' : 'error'"
+                :text="item.result ? 'true' : 'false'"
+            />
+        </ux-cell-item>
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in themeColorRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        >
+            <template #icon>
+                <view class="demo-swatch" :style="{ backgroundColor: item.result }"></view>
+            </template>
+        </ux-cell-item>
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u } from '@/uni_modules/uview-pro-x';
+
+type FlagRow = {
+    desc: string;
+    result: boolean;
+    last: boolean;
+};
+
+type ColorRow = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 预设主题名判定：依赖 config.type 白名单，色值与自定义名均返回 false
+const themeFlagRows: FlagRow[] = [
+    { desc: "$u.isThemeColor('primary')", result: $u.isThemeColor('primary'), last: false },
+    { desc: "$u.isThemeColor('#2979ff')", result: $u.isThemeColor('#2979ff'), last: false },
+    { desc: "$u.isThemeColor('brand')", result: $u.isThemeColor('brand'), last: true }
+];
+
+// tone 必传：main 主色 / dark 按压态 / light 浅底
+const themeColorRows: ColorRow[] = [
+    {
+        desc: "$u.getThemeColor('primary', 'main', fallback)",
+        result: $u.getThemeColor('primary', 'main', $u.strOr($u.color.contentColor)),
+        last: false
+    },
+    {
+        desc: "$u.getThemeColor('primary', 'dark', fallback)",
+        result: $u.getThemeColor('primary', 'dark', $u.strOr($u.color.contentColor)),
+        last: false
+    },
+    // 非预设主题名走 fallback
+    {
+        desc: "$u.getThemeColor('brand', 'main', '#888888')",
+        result: $u.getThemeColor('brand', 'main', '#888888'),
+        last: true
+    }
+];
+</script>
+`;
+
+export const codes = {
+    palette,
+    mix,
+    theme
+};

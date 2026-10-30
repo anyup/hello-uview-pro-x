@@ -1,31 +1,61 @@
 <template>
     <demo-page :title="t('toStyle.title')" :subtitle="t('toStyle.subtitle')">
         <!-- 对象转样式 -->
-        <demo-block :title="t('toStyle.objectTitle')">
-            <view class="demo-item" :class="index === objectList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in objectList" :key="index">
-                <text class="demo-desc">{{ item.desc }}</text>
-                <text class="demo-result">{{ item.result }}</text>
-            </view>
+        <demo-block :title="t('toStyle.objectTitle')" :code="codes.object">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in objectList"
+                    :key="index"
+                    :title="item.desc"
+                    :label="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
         </demo-block>
 
         <!-- 字符串转样式 -->
-        <demo-block :title="t('toStyle.stringTitle')">
-            <view class="demo-item" :class="index === stringList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in stringList" :key="index">
-                <text class="demo-desc">{{ item.desc }}</text>
-                <text class="demo-result">{{ item.result }}</text>
-            </view>
+        <demo-block :title="t('toStyle.stringTitle')" :code="codes.string">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in stringList"
+                    :key="index"
+                    :title="item.desc"
+                    :label="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
         </demo-block>
 
         <!-- 合并样式 -->
-        <demo-block :title="t('toStyle.mergeTitle')">
-            <view class="demo-item" :class="index === mergeList.length - 1 ? 'demo-item--last' : ''" v-for="(item, index) in mergeList" :key="index">
-                <text class="demo-desc">{{ item.desc }}</text>
-                <text class="demo-result">{{ item.result }}</text>
+        <demo-block :title="t('toStyle.mergeTitle')" :code="codes.merge">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in mergeList"
+                    :key="index"
+                    :title="item.desc"
+                    :label="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 文本与矩形属性拆分 -->
+        <demo-block :title="t('toStyle.splitTitle')" :desc="t('toStyle.splitDesc')" :code="codes.split">
+            <ux-cell-group :border="false">
+                <ux-cell-item title="textCssProperty" :label="splitText" :arrow="false" />
+                <ux-cell-item title="rectCssProperty" :label="splitRect" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <view :style="splitRectStyle">
+                <text :style="splitTextStyle">文本属性挂 text，矩形属性挂 view</text>
             </view>
         </demo-block>
 
         <!-- 样式预览 -->
-        <demo-block :title="t('toStyle.previewTitle')">
+        <demo-block :title="t('toStyle.previewTitle')" :code="codes.preview">
             <view class="demo-preview" :style="previewStyle">
                 <text class="demo-preview-text">{{ t('toStyle.previewText') }}</text>
             </view>
@@ -34,46 +64,65 @@
 </template>
 
 <script setup lang="uts">
-import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-const { t } = useLocale('demo');
+    const { t } = useLocale('demo');
 
-const objectList = [
-    { desc: '$u.toStyle({ color: "red" })', result: $u.toStyle({ color: 'red' }) },
-    { desc: '$u.toStyle({ fontSize: "10px" })', result: $u.toStyle({ fontSize: '10px' }) },
-    { desc: '$u.toStyle({ backgroundColor: "#2979ff" })', result: $u.toStyle({ backgroundColor: '#2979ff' }) },
-    { desc: '$u.toStyle({ marginLeft: "5px", marginTop: "10px" })', result: $u.toStyle({ marginLeft: '5px', marginTop: '10px' }) },
-];
+    type StyleRow = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
 
-const stringList = [
-    { desc: '$u.toStyle("color: red")', result: $u.toStyle('color: red') },
-    { desc: '$u.toStyle("color: red; font-size: 10px")', result: $u.toStyle('color: red; font-size: 10px') },
-];
+    const objectList: StyleRow[] = [
+        { desc: '$u.toStyle({ color: "red" })', result: $u.toStyle({ color: 'red' }), last: false },
+        { desc: '$u.toStyle({ fontSize: "10px" })', result: $u.toStyle({ fontSize: '10px' }), last: false },
+        { desc: '$u.toStyle({ backgroundColor: "#2979ff" })', result: $u.toStyle({ backgroundColor: '#2979ff' }), last: false },
+        { desc: '$u.toStyle({ marginLeft: "5px", marginTop: "10px" })', result: $u.toStyle({ marginLeft: '5px', marginTop: '10px' }), last: true }
+    ];
 
-const mergeList = [
-    { desc: t('toStyle.mergeDesc1'), result: $u.toStyle({ color: 'red', fontSize: '10px' }) },
-    { desc: t('toStyle.mergeDesc2'), result: $u.toStyle({ color: 'blue' }) },
-    { desc: t('toStyle.stringTitle'), result: $u.toStyle('color: red; font-size: 10px') },
-];
+    const stringList: StyleRow[] = [
+        { desc: '$u.toStyle("color: red")', result: $u.toStyle('color: red'), last: false },
+        { desc: '$u.toStyle("color: red; font-size: 10px")', result: $u.toStyle('color: red; font-size: 10px'), last: true }
+    ];
 
-const previewStyle = $u.toStyle({
-    backgroundColor: '#ecf5ff',
-    padding: '10px',
-    borderRadius: '4px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: '#2979ff',
-});
+    const mergeList: StyleRow[] = [
+        { desc: t('toStyle.mergeDesc1'), result: $u.toStyle({ color: 'red', fontSize: '10px' }), last: false },
+        { desc: t('toStyle.mergeDesc2'), result: $u.toStyle({ color: 'blue' }), last: false },
+        { desc: t('toStyle.mergeDesc3'), result: $u.toStyle({ color: 'blue' }, 'font-size: 12px'), last: true }
+    ];
+
+    // 待拆分样式：文本属性与矩形属性混在一起
+    const splitSource = new UTSJSONObject();
+    splitSource['color'] = '#ff0000';
+    splitSource['font-size'] = '14px';
+    splitSource['background-color'] = '#f5f5f5';
+    splitSource['padding'] = '8px';
+
+    const splitResult = $u.splitCssProperty(splitSource);
+    const splitText: string = JSON.stringify(splitResult.textCssProperty);
+    const splitRect: string = JSON.stringify(splitResult.rectCssProperty);
+    const splitTextStyle: string = $u.toStyle(splitResult.textCssProperty);
+    const splitRectStyle: string = $u.toStyle(splitResult.rectCssProperty);
+
+    const previewStyle = $u.toStyle({
+        backgroundColor: '#ecf5ff',
+        padding: '10px',
+        borderRadius: '4px',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: '#2979ff'
+    });
 </script>
 
 <style lang="scss">
-/* 使用全局 demo.scss 样式 */
-.demo-preview {
-    padding: 10px;
-}
+    .demo-preview {
+        padding: 10px;
+    }
 
-.demo-preview-text {
-    font-size: 14px;
-    color: $u-main-color;
-}
+    .demo-preview-text {
+        font-size: 14px;
+        color: $u-main-color;
+    }
 </style>
