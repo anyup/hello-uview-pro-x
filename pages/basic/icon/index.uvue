@@ -45,21 +45,6 @@
             </view>
         </demo-block>
 
-        <!-- 自定义前缀 -->
-        <demo-block :title="t('icon.prefixTitle')" :desc="t('icon.prefixDesc')" :code="codes.prefix">
-            <view class="icon-grid">
-                <view
-                    @click="selectIcon(item)"
-                    class="icon-item"
-                    v-for="(item, index) in customIconList"
-                    :key="index"
-                >
-                    <ux-icon :name="item" size="20" type="primary" custom-prefix="custom-icon"></ux-icon>
-                    <text class="icon-name">{{ item }}</text>
-                </view>
-            </view>
-        </demo-block>
-
         <!-- 图标列表 -->
         <demo-block :title="t('icon.gridTitle')" :desc="t('icon.gridDesc')" :code="codes.grid">
             <view class="icon-grid">
@@ -79,7 +64,6 @@
 
 <script setup lang="uts">
 import { useLocale } from '@/uni_modules/uview-pro-x';
-import { customIconFont } from '@/iconfont.uts';
 import { codes } from './code';
 const { t } = useLocale('demo');
 type IconItem = {
@@ -87,9 +71,6 @@ type IconItem = {
 };
 
 const imageUrl: string = 'https://ik.imagekit.io/anyup/uview-pro/logo/uviewprox.png';
-
-// 自定义图标库图标名：直接取已登记码点表的键，避免与登记内容脱节（取键只能用静态方法 UTSJSONObject.keys）
-const customIconList: string[] = UTSJSONObject.keys(customIconFont);
 
 const iconList: IconItem[] = [
     { name: 'level' },

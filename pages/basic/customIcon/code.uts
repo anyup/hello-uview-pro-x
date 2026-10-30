@@ -1,0 +1,230 @@
+/**
+ * 自定义图标示例页的源码片段（demo-block 折叠区展示用）
+ * 与 index.uvue 中的用法一一对应，改动示例页时需同步
+ */
+
+/** 快速上手：两步接入 + 直接取用 */
+const setup = `
+<!-- 接入分两步（都在应用侧完成，组件库不内置自定义字体）：
+     1. 全局样式（App.uvue）声明字体，字体文件须放在 static 目录：
+        @font-face {
+            font-family: 'custom-icon';
+            src: url('/static/iconfont.ttf');
+        }
+     2. 可选：启动时（App.uvue 的 onLaunch）登记「前缀 → 码点表」，给码点起图标名，前缀须与上面的 font-family 同名：
+        import { \$u } from '@/uni_modules/uview-pro-x'
+        import { customIconFont } from '@/iconfont.uts'
+
+        \$u.registerIconFont('custom-icon', customIconFont)
+     码点表形如：export const customIconFont: UTSJSONObject = { 'sun': 'e712', 'eye': 'e68e' };
+     之后即可用 custom-prefix 指定前缀，图标名取码点表的键。
+     第二步是可选的：前缀本身就用作 font-family，只要声明了 @font-face 就能出字，
+     不登记时 name 改传四位码点、或把字符放进默认插槽：
+        <ux-icon size="20" name="e712" custom-prefix="custom-icon"></ux-icon>
+        <ux-icon size="20" custom-prefix="custom-icon">{{'\\ue712'}}</ux-icon>
+     登记与否不影响字体族，码点表只负责把 e712 翻译成 sun。 -->
+<template>
+    <view class="icon-custom-row">
+        <ux-icon
+            v-for="(item, index) in quickList"
+            :key="index"
+            :name="item"
+            size="24"
+            type="primary"
+            custom-prefix="custom-icon"
+        ></ux-icon>
+    </view>
+</template>
+
+<script setup lang="uts">
+    // 展示用的图标名，取自码点表
+    const quickList: string[] = ['sun', 'moon', 'star', 'sparkles', 'rocket', 'compass'];
+</script>
+
+<style scoped>
+.icon-custom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+</style>
+`;
+
+/** 取字方式：三种写法 */
+const form = `
+<template>
+    <!-- 同一个自定义图标（sun / e712）的三种取字写法 -->
+    <view class="icon-custom-row">
+        <!-- ① name 传码点表的键（与内置图标写法一致） -->
+        <view class="icon-form-item">
+            <ux-icon name="sun" size="26" type="primary" custom-prefix="custom-icon"></ux-icon>
+            <text class="icon-form-label">name=sun</text>
+        </view>
+        <!-- ② name 直传四位十六进制码点（表内无同名图标时生效） -->
+        <view class="icon-form-item">
+            <ux-icon name="e712" size="26" type="primary" custom-prefix="custom-icon"></ux-icon>
+            <text class="icon-form-label">name=e712</text>
+        </view>
+        <!-- ③ 默认插槽直传 unicode 字符（裸插值会并入组件的 text 节点，size、color 等仍由组件托管）
+             若某端模板字面量的 \\u 转义不生效，可改用脚本常量传入，如 const sunChar: string = '\\ue712' -->
+        <view class="icon-form-item">
+            <ux-icon size="26" type="primary" custom-prefix="custom-icon">{{'\\ue712'}}</ux-icon>
+            <text class="icon-form-label">slot='\\ue712'</text>
+        </view>
+    </view>
+</template>
+
+<style scoped>
+.icon-custom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.icon-form-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+    margin-bottom: 12px;
+}
+.icon-form-label {
+    font-size: 11px;
+    color: #909399;
+    margin-top: 6px;
+    text-align: center;
+}
+</style>
+`;
+
+/** 样式能力：与内置图标共用同一套属性 */
+const style = `
+<template>
+    <!-- size / type / color / bold / top 对自定义图标同样生效 -->
+    <view class="icon-custom-row">
+        <ux-icon name="sun" size="16" type="primary" custom-prefix="custom-icon"></ux-icon>
+        <ux-icon name="sun" size="22" type="success" custom-prefix="custom-icon"></ux-icon>
+        <ux-icon name="sun" size="28" color="#fa3534" custom-prefix="custom-icon"></ux-icon>
+        <ux-icon name="moon" size="28" type="warning" bold custom-prefix="custom-icon"></ux-icon>
+        <ux-icon name="moon" size="28" type="warning" top="4" custom-prefix="custom-icon"></ux-icon>
+    </view>
+</template>
+
+<style scoped>
+.icon-custom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+</style>
+`;
+
+/** 同名不串字：内置库与自定义库码点不同 */
+const dual = `
+<template>
+    <!-- 同名图标各自取自己库里的码点：左为内置图标库，右为 custom-icon 库 -->
+    <view class="icon-dual-row">
+        <view class="icon-dual-item" v-for="(item, index) in dualList" :key="index">
+            <view class="icon-dual-pair">
+                <ux-icon :name="item" size="22" color="#909399"></ux-icon>
+                <ux-icon :name="item" size="22" type="primary" custom-prefix="custom-icon"></ux-icon>
+            </view>
+            <text class="icon-dual-name">{{ item }}</text>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    // 内置码点表与本表同名的图标，两库码点不同
+    const dualList: string[] = ['eye', 'star', 'file-text', 'coupon'];
+</script>
+
+<style scoped>
+.icon-dual-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.icon-dual-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    margin-bottom: 12px;
+}
+.icon-dual-pair {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.icon-dual-name {
+    font-size: 11px;
+    color: #909399;
+    margin-top: 6px;
+}
+</style>
+`;
+
+/** 自定义图标列表：全量码点表 + 点击复制 */
+const grid = `
+<template>
+    <view class="icon-grid">
+        <view
+            @click="selectIcon(item)"
+            class="icon-item"
+            v-for="(item, index) in customIconList"
+            :key="index"
+        >
+            <ux-icon :name="item" size="20" type="primary" custom-prefix="custom-icon"></ux-icon>
+            <text class="icon-name">{{ item }}</text>
+        </view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { customIconFont } from '@/iconfont.uts'
+
+    // 直接取已登记码点表的键，避免演示清单与登记表脱节（取键只能用静态方法 UTSJSONObject.keys）
+    const customIconList: string[] = UTSJSONObject.keys(customIconFont);
+
+    function selectIcon(name: string): void {
+        uni.setClipboardData({
+            data: name,
+            success: () => {
+                uni.showToast({ title: '已复制图标名称', icon: 'none' })
+            }
+        })
+    }
+</script>
+
+<style scoped>
+.icon-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    padding: 10px 0;
+}
+.icon-name {
+    font-size: 11px;
+    color: #909399;
+    margin-top: 6px;
+}
+</style>
+`;
+
+export const codes = {
+    setup,
+    form,
+    style,
+    dual,
+    grid
+};

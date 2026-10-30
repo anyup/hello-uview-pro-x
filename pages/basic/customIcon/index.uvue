@@ -1,0 +1,190 @@
+<template>
+    <demo-page :title="t('customIcon.title')" :subtitle="t('customIcon.subtitle')">
+        <!-- 快速上手 -->
+        <demo-block :title="t('customIcon.setupTitle')" :desc="t('customIcon.setupDesc')" :code="codes.setup">
+            <view class="icon-custom-row">
+                <ux-icon
+                    v-for="(item, index) in quickList"
+                    :key="index"
+                    :name="item"
+                    size="24"
+                    type="primary"
+                    custom-prefix="custom-icon"
+                    custom-class="icon-quick-item"
+                ></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 取字方式 -->
+        <demo-block :title="t('customIcon.formTitle')" :desc="t('customIcon.formDesc')" :code="codes.form">
+            <view class="icon-custom-row">
+                <view class="icon-form-item">
+                    <ux-icon name="sun" size="26" type="primary" custom-prefix="custom-icon"></ux-icon>
+                    <text class="icon-form-label">name=sun</text>
+                </view>
+                <view class="icon-form-item">
+                    <ux-icon name="e712" size="26" type="primary" custom-prefix="custom-icon"></ux-icon>
+                    <text class="icon-form-label">name=e712</text>
+                </view>
+                <view class="icon-form-item">
+                    <ux-icon size="26" type="primary" custom-prefix="custom-icon">{{'\ue712'}}</ux-icon>
+                    <text class="icon-form-label">slot='\ue712'</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 样式能力 -->
+        <demo-block :title="t('customIcon.styleTitle')" :desc="t('customIcon.styleDesc')" :code="codes.style">
+            <view class="icon-custom-row">
+                <ux-icon name="sun" size="16" type="primary" custom-prefix="custom-icon" custom-class="icon-quick-item"></ux-icon>
+                <ux-icon name="sun" size="22" type="success" custom-prefix="custom-icon" custom-class="icon-quick-item"></ux-icon>
+                <ux-icon name="sun" size="28" color="#fa3534" custom-prefix="custom-icon" custom-class="icon-quick-item"></ux-icon>
+                <ux-icon name="moon" size="28" type="warning" bold custom-prefix="custom-icon" custom-class="icon-quick-item"></ux-icon>
+                <ux-icon name="moon" size="28" type="warning" top="4" custom-prefix="custom-icon" custom-class="icon-quick-item"></ux-icon>
+            </view>
+        </demo-block>
+
+        <!-- 同名不串字 -->
+        <demo-block :title="t('customIcon.dualTitle')" :desc="t('customIcon.dualDesc')" :code="codes.dual">
+            <text class="icon-dual-hint">{{ t('customIcon.dualHint') }}</text>
+            <view class="icon-dual-row">
+                <view class="icon-dual-item" v-for="(item, index) in dualList" :key="index">
+                    <view class="icon-dual-pair">
+                        <ux-icon :name="item" size="22" color="#909399"></ux-icon>
+                        <ux-icon :name="item" size="22" type="primary" custom-prefix="custom-icon"></ux-icon>
+                    </view>
+                    <text class="icon-form-label">{{ item }}</text>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 自定义图标列表 -->
+        <demo-block :title="t('customIcon.gridTitle')" :desc="t('customIcon.gridDesc')" :code="codes.grid">
+            <view class="icon-grid">
+                <view
+                    @click="selectIcon(item)"
+                    class="icon-item"
+                    v-for="(item, index) in customIconList"
+                    :key="index"
+                >
+                    <ux-icon :name="item" size="20" type="primary" custom-prefix="custom-icon"></ux-icon>
+                    <text class="icon-name">{{ item }}</text>
+                </view>
+            </view>
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { customIconFont } from '@/iconfont.uts';
+import { codes } from './code';
+const { t } = useLocale('demo');
+
+// 快速上手展示的图标名，均取自码点表
+const quickList: string[] = ['sun', 'moon', 'star', 'sparkles', 'rocket', 'compass'];
+
+// 内置库与本表同名的图标：两库码点不同，用于验证 custom-prefix 不会串回内置库
+const dualList: string[] = ['eye', 'star', 'file-text', 'coupon'];
+
+// 全量图标列表：直接取已登记码点表的键，避免演示清单与登记内容脱节（取键只能用静态方法 UTSJSONObject.keys）
+const customIconList: string[] = UTSJSONObject.keys(customIconFont);
+
+const selectIcon = (name: string) => {
+    uni.setClipboardData({
+        data: name,
+        success: () => {
+            uni.showToast({
+                title: t('customIcon.toastTitle'),
+                icon: 'none'
+            });
+        }
+    });
+};
+</script>
+
+<style lang="scss">
+.icon-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-top: 1px solid $u-border-color;
+    border-left: 1px solid $u-border-color;
+}
+
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 95px;
+    flex: 0 0 33.33333333%;
+    justify-content: center;
+    overflow: hidden;
+    border-right: 1px solid $u-border-color;
+    border-bottom: 1px solid $u-border-color;
+}
+
+.icon-name {
+    color: $u-tips-color;
+    margin-top: 8px;
+    font-size: 13px;
+    padding: 0 7px;
+    text-align: center;
+}
+
+.icon-custom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.icon-quick-item {
+    margin-right: 20px;
+    margin-bottom: 12px;
+}
+
+/* 取字方式三种写法对照项 */
+.icon-form-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+    margin-bottom: 12px;
+}
+
+.icon-form-label {
+    color: $u-tips-color;
+    font-size: 11px;
+    margin-top: 6px;
+    text-align: center;
+}
+
+/* 同名不串字：每个图标名下并排两枚（内置库 / 自定义库） */
+.icon-dual-hint {
+    display: block;
+    color: $u-tips-color;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.icon-dual-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.icon-dual-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    margin-bottom: 12px;
+}
+
+.icon-dual-pair {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+</style>

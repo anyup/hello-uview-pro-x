@@ -157,6 +157,12 @@
           }
         },
         {
+          "path": "customIcon/index",
+          "style": {
+            "navigationBarTitleText": "CustomIcon 自定义图标"
+          }
+        },
+        {
           "path": "image/index",
           "style": {
             "navigationBarTitleText": "Image 图片"

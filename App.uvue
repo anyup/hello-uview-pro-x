@@ -52,11 +52,10 @@
 
 	/* 演示用自定义图标字体：字体文件必须放在 static 目录，否则打包时不会被带进去 */
 	/* 该字体族名需与 $u.registerIconFont 的前缀、以及码点表的类名前缀三者一致 */
+	/* uni-app x 的 @font-face 只支持 font-family 与 src，写 font-weight/font-style/font-display 会编译报错 */
 	@font-face {
 		font-family: 'custom-icon';
-		src: url('/static/iconfont.ttf') format('truetype');
-		font-weight: normal;
-		font-style: normal;
+		src: url('/static/iconfont.ttf');
 	}
 
 	.uni-row {

@@ -32,6 +32,7 @@ export type MenuCategory = {
 /** 基础组件 */
 const basicComponentItems: MenuItem[] = [
     { name: 'Icon', zhName: '图标', desc: 'tabbarMenu.iconDesc', icon: 'I', path: 'basic/icon/index' },
+    { name: 'CustomIcon', zhName: '自定义图标', desc: 'tabbarMenu.customIconDesc', icon: 'C', path: 'basic/customIcon/index' },
     { name: 'Image', zhName: '图片', desc: 'tabbarMenu.imageDesc', icon: 'I', path: 'basic/image/index' },
     { name: 'Button', zhName: '按钮', desc: 'tabbarMenu.buttonDesc', icon: 'B', path: 'basic/button/index' },
     { name: 'Cell', zhName: '单元格', desc: 'tabbarMenu.cellDesc', icon: 'C', path: 'basic/cell/index' },
@@ -179,7 +180,13 @@ export const toolItems: MenuItem[] = [
 export const hookItems: MenuItem[] = [
     { name: 'useDebounce', desc: 'tabbarMenu.useDebounceDesc', icon: 'D', path: 'hooks/useDebounce/index' },
     { name: 'useThrottle', desc: 'tabbarMenu.useThrottleDesc', icon: 'T', path: 'hooks/useThrottle/index' },
-    { name: 'useLocale', desc: 'tabbarMenu.useLocaleDesc', icon: 'I', path: 'hooks/useLocale/index' }
+    { name: 'useLocale', desc: 'tabbarMenu.useLocaleDesc', icon: 'I', path: 'hooks/useLocale/index' },
+    { name: 'useTheme', desc: 'tabbarMenu.useThemeDesc', icon: 'T', path: 'hooks/useTheme/index' },
+    { name: 'useCountDown', desc: 'tabbarMenu.useCountDownDesc', icon: 'O', path: 'hooks/useCountDown/index' },
+    { name: 'useWindowInfo', desc: 'tabbarMenu.useWindowInfoDesc', icon: 'W', path: 'hooks/useWindowInfo/index' },
+    { name: 'useSafeArea', desc: 'tabbarMenu.useSafeAreaDesc', icon: 'A', path: 'hooks/useSafeArea/index' },
+    { name: 'useDeviceInfo', desc: 'tabbarMenu.useDeviceInfoDesc', icon: 'E', path: 'hooks/useDeviceInfo/index' },
+    { name: 'useRect', desc: 'tabbarMenu.useRectDesc', icon: 'R', path: 'hooks/useRect/index' }
 ];
 
 /** 工具页分类数据 */
