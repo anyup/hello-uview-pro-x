@@ -1,6 +1,6 @@
 {
     "name": "hello-uview-pro-x",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "uView Pro X 演示工程（uni-app x）",
     "scripts": {
         "sync": "node scripts/sync-split.mjs",

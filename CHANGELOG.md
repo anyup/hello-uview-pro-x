@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.9（2026-10-30）
+
+### ✨ Features | 新功能
+
+- **ux-icon:** 重构图标库前缀机制，支持自定义图标库与内置库统一逻辑，调整多个组件的图标前缀默认值
+- **custom-icon:** 新增自定义图标功能的演示页面，包括接入说明、三种取字方式、样式能力、与内置图标共存的示例
+
+### 👥 Contributors
+
+<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
+
 ## 1.0.8（2026-10-30）
 
 ### 💄 Styles | 风格
