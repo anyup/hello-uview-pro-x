@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.8（2026-10-30）
+
+### 💄 Styles | 风格
+
+- 移除多个文件中重复的主题样式导入
+
+### ✨ Features | 新功能
+
+- 替换部分本地为线上地址并新增图片图标示例
+- 新增格式化、数值、字符串等工具演示页面，format、number、string、toStyle、color、test
+- 完善 trim、throttle、debounce、addUnit、deepClone、deepMerge 工具函数的演示页面
+
+### 👥 Contributors
+
+<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
+
 ## 1.0.7（2026-10-29）
 
 ### ✨ Features | 新功能
