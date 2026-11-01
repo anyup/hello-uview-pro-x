@@ -75,14 +75,14 @@
 
     const { t } = useLocale('demo');
 
-    /** 示例图片地址（placehold.co 占位图） */
-    const src = 'https://placehold.co/100x100.png';
-    /** 大尺寸占位图地址（200px 放大图，与默认 100px 形成尺寸对比） */
-    const srcLg = 'https://placehold.co/200x200.png';
-    /** 宽幅图地址（用于对比裁剪模式 aspectFit / aspectFill） */
-    const wideSrc = 'https://placehold.co/600x200.png';
-    /** 慢加载图片地址（用于 loading 态演示） */
-    const slowSrc = 'https://placehold.co/100x100.png?delay=3000';
+    /** 示例头像图地址 */
+    const src = 'https://ik.imagekit.io/anyup/uview-pro/avatar/avatar1.png';
+    /** 大尺寸头像图地址（200px 放大图，与默认 100px 形成尺寸对比） */
+    const srcLg = 'https://ik.imagekit.io/anyup/uview-pro/avatar/avatar2.png';
+    /** 裁剪对比图地址（用于对比裁剪模式 aspectFit / aspectFill） */
+    const wideSrc = 'https://ik.imagekit.io/anyup/uview-pro/avatar/avatar3.png';
+    /** 加载状态演示图地址（用于 loading 态演示） */
+    const slowSrc = 'https://ik.imagekit.io/anyup/uview-pro/avatar/avatar4.png';
     /** 加载失败图片地址（让背景色占位效果常驻可见，对应 bg 演示） */
     const bgFailSrc = 'https://invalid.example.com/bg-not-found.png';
     /** 加载失败图片地址（用于 error 插槽演示） */
