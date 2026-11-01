@@ -52,15 +52,15 @@
     };
 
     const basicList: SwiperItem[] = [
-        { image: 'https://picsum.photos/id/1015/600/300' },
-        { image: 'https://picsum.photos/id/1016/600/300' },
-        { image: 'https://picsum.photos/id/1018/600/300' }
+        { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper1.png' },
+        { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper2.png' },
+        { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper3.png' }
     ];
 
     const titleList: SwiperItem[] = [
-        { image: 'https://picsum.photos/id/1015/600/300', title: t('swiper.titleOne') },
-        { image: 'https://picsum.photos/id/1016/600/300', title: t('swiper.titleTwo') },
-        { image: 'https://picsum.photos/id/1018/600/300', title: t('swiper.titleThree') }
+        { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper1.png', title: t('swiper.titleOne') },
+        { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper2.png', title: t('swiper.titleTwo') },
+        { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper3.png', title: t('swiper.titleThree') }
     ];
 
     /** 指示器模式 */

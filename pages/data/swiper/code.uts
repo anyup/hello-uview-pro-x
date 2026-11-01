@@ -1,4 +1,4 @@
-﻿/**
+/**
  * swiper 演示代码片段
  * 每个片段为可直接运行的完整示例（含 template / script / style）
  */
@@ -16,9 +16,9 @@ type SwiperItem = {
 };
 
 const list: SwiperItem[] = [
-    { image: 'https://picsum.photos/id/1015/600/300' },
-    { image: 'https://picsum.photos/id/1016/600/300' },
-    { image: 'https://picsum.photos/id/1018/600/300' }
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper1.png' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper2.png' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper3.png' }
 ];
 </script>
 `;
@@ -46,9 +46,9 @@ type ModeItem = {
 };
 
 const list: SwiperItem[] = [
-    { image: 'https://picsum.photos/id/1015/600/300' },
-    { image: 'https://picsum.photos/id/1016/600/300' },
-    { image: 'https://picsum.photos/id/1018/600/300' }
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper1.png' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper2.png' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper3.png' }
 ];
 
 const mode = ref<SwiperMode>('round');
@@ -89,9 +89,9 @@ type SwiperItem = {
 };
 
 const list: SwiperItem[] = [
-    { image: 'https://picsum.photos/id/1015/600/300' },
-    { image: 'https://picsum.photos/id/1016/600/300' },
-    { image: 'https://picsum.photos/id/1018/600/300' }
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper1.png' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper2.png' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper3.png' }
 ];
 </script>
 `;
@@ -109,9 +109,9 @@ type SwiperItem = {
 };
 
 const list: SwiperItem[] = [
-    { image: 'https://picsum.photos/id/1015/600/300', title: '风景一' },
-    { image: 'https://picsum.photos/id/1016/600/300', title: '风景二' },
-    { image: 'https://picsum.photos/id/1018/600/300', title: '风景三' }
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper1.png', title: '风景一' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper2.png', title: '风景二' },
+    { image: 'https://ik.imagekit.io/anyup/uview-pro/swiper/swiper3.png', title: '风景三' }
 ];
 </script>
 `;
