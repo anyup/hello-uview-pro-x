@@ -5,16 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.10（2026-11-01）
+
+### ✨ Features | 新功能
+
+- **image:** 优化ux-image图片演示效果
+- **swiper:** 更新轮播图示例图片资源地址
+
 ## 1.0.9（2026-10-30）
 
 ### ✨ Features | 新功能
 
 - **ux-icon:** 重构图标库前缀机制，支持自定义图标库与内置库统一逻辑，调整多个组件的图标前缀默认值
 - **custom-icon:** 新增自定义图标功能的演示页面，包括接入说明、三种取字方式、样式能力、与内置图标共存的示例
-
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
 
 ## 1.0.8（2026-10-30）
 
@@ -28,20 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 新增格式化、数值、字符串等工具演示页面，format、number、string、toStyle、color、test
 - 完善 trim、throttle、debounce、addUnit、deepClone、deepMerge 工具函数的演示页面
 
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
-
 ## 1.0.7（2026-10-29）
 
 ### ✨ Features | 新功能
 
 - 新增自定义字体图标库演示示例
 - **icon:** 新增自定义字体图标支持能力，新增 registerIconFont 方法用于注册自定义图标字体库
-
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
 
 ## 1.0.6（2026-10-29）
 
@@ -54,10 +49,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **ux-tag:** 修复标签在高行高容器中高度虚高的问题
 
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
-
 ## 1.0.5（2026-10-29）
 
 ### ♻️ Code Refactoring | 代码重构
@@ -68,10 +59,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **ux-tabbar:** 修复路由读取导致的高亮错判问题
 
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
-
 ## 1.0.4（2026-10-28）
 
 ### ♻️ Code Refactoring | 代码重构
@@ -79,20 +66,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **plugin:** 修改插件导出方式适配加密编译场景
 - 调整uViewProX的导入方式
 
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
-
 ## 1.0.3（2026-10-28）
 
 ### ✨ Features | 新功能
 
 - add page structure of the uni-app x project (587c524)
 - add js scripts (d1b160e)
-
-### 👥 Contributors
-
-<a href="https://github.com/anyup"><img src="https://github.com/anyup.png?size=40" width="40" height="40" alt="anyup" title="anyup"/></a> 
 
 ## 1.0.2 - 2026-10-27
 
