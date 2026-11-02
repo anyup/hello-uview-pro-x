@@ -16,7 +16,7 @@
  *   - uni_modules/uview-pro-x/package.json  组件库版本号（独立仓库，随发布在同仓库提交并打同名标签）
  *   - uni_modules/uview-pro-x/changelog.md  组件库更新日志（同上）
  *   - uview-pro-x-doc/package.json          文档库版本号（只更新文件，不提交、不打标签）
- *   - uview-pro-x-doc/docs/zh/components/changelog.md  文档库更新日志（同上）
+ *   - uview-pro-x-doc/docs/zh|en/components/changelog.md  文档库更新日志（同上，中英内容一致，英文不翻译）
  *
  * 组件库（uni_modules/uview-pro-x）是嵌套的独立 git 仓库：发布时与主仓库一样
  * 「提交 + 打 vX.Y.Z 标签」，默认不推送；传 --push 时两个仓库一起推送。

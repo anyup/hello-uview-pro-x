@@ -16,6 +16,7 @@
  *   --no-links         提交 hash 不生成超链接（只保留短 hash）
  *   --no-hash          日志条目不显示提交 hash（发布日志使用）
  *   --no-date          版本标题不带日期（默认标题带日期）
+ *   --contributors     版本区块末尾附 Contributors 区块（默认不输出）
  *   --exclude-types=a,b  排除指定提交类型
  *   --repo <dir>       生成来源仓库（git 历史、标签、package.json 均取自该仓库；默认当前仓库根）
  *   --merge-repo <dir> 额外合并该仓库「最近标签..HEAD」的提交到当前区块（用于多仓库共用同一份日志）
@@ -49,6 +50,8 @@ const noLinks = args.includes('--no-links');
 const noHash = args.includes('--no-hash');
 // 版本标题不带日期（可选；默认按 `## x.y.z（YYYY-MM-DD）` 输出）
 const noDate = args.includes('--no-date');
+// 贡献者区块默认不输出，需显式加 --contributors
+const includeContributors = args.includes('--contributors');
 
 // 读取 --name value / --name=value 形式的选项值
 function optionValue(name) {
@@ -142,18 +145,27 @@ function safeExec(cmd, cwd = process.cwd()) {
     }
 }
 
-function resolveRange(dir) {
-    // --current: 以 package.json 的 version 为标签 vX.Y.Z，取「上一个标签..当前标签」
-    if (onlyCurrent) {
-        const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
-        const currentTag = `v${pkg.version}`;
-        // 发布流程中标签尚未创建，此处会回退到「最近标签..HEAD」
-        // 注意：Windows cmd 会把 `^` 当转义符吞掉，这里用 `~1` 表示父提交
-        const prevTag = safeExec(`git describe --tags --abbrev=0 ${currentTag}~1`, dir);
-        if (prevTag) return `${prevTag}..${currentTag}`;
-        const lastTag = safeExec('git describe --tags --abbrev=0', dir);
-        if (lastTag) return `${lastTag}..HEAD`;
+// 「当前版本」的提交范围：上一版本标签..HEAD。
+// 发布时版本标签尚未创建，最近标签即上一版本；重新生成时版本标签已存在，取其父标签。
+// 两条路径都覆盖完整版本区间，保证多仓库合并生成的三份日志一致。
+function currentVersionRange(dir) {
+    let version = '';
+    try {
+        version = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8')).version;
+    } catch (e) {
         return '';
+    }
+    const currentTag = `v${version}`;
+    const prevTag = safeExec(`git describe --tags --abbrev=0 ${currentTag}~1`, dir);
+    const lastTag = safeExec('git describe --tags --abbrev=0', dir);
+    const startTag = prevTag || lastTag;
+    return startTag ? `${startTag}..HEAD` : '';
+}
+
+function resolveRange(dir) {
+    // --current: 以 package.json 的 version 为准，取「上一版本标签..HEAD」
+    if (onlyCurrent) {
+        return currentVersionRange(dir);
     }
     // --last: 最近一个标签..HEAD
     if (sinceLastTag) {
@@ -317,10 +329,15 @@ function renderFallbackBody() {
 function generateChangelog() {
     try {
         const range = resolveRange(repoDir);
-        // 合并仓库固定取「最近标签..HEAD」，与 --current/--last 无关；--all 按标签重建时不合并
+        // 合并仓库：--current 时同样取「上一版本标签..HEAD」，保证与来源仓库覆盖同一版本区间；
+        // 其他模式固定取「最近标签..HEAD」；--all 按标签重建时不合并
         // 目录不是 git 仓库时跳过；仓库还没有任何标签时取全量，避免首次发布漏掉历史提交
         const mergeRepoUsable = Boolean(mergeRepoDir) && !generateAll && fs.existsSync(path.join(mergeRepoDir, '.git'));
-        const mergeRange = mergeRepoUsable ? lastTagRange(mergeRepoDir) : '';
+        const mergeRange = mergeRepoUsable
+            ? onlyCurrent
+                ? currentVersionRange(mergeRepoDir)
+                : lastTagRange(mergeRepoDir)
+            : '';
         console.log(
             `🔄 生成 changelog... ${shouldUseEmoji ? '带 emoji' : '不带 emoji'}（来源: ${repoDir}${
                 range ? `，范围: ${range}` : ''
@@ -332,7 +349,7 @@ function generateChangelog() {
             mergeRepoUsable ? collectCommits(mergeRange, mergeRepoDir, mergeRepoUrl) : []
         );
         const commitsByType = groupCommitsByType(commits, excludeTypes);
-        const contributors = collectContributors(commits);
+        const contributors = includeContributors ? collectContributors(commits) : null;
 
         const hasExisting = fs.existsSync(outputPath);
         // 统一按 LF 处理既存内容：Windows 工作区可能为 CRLF，直接按 `\n\n## ` 查找/去重会失配
@@ -367,7 +384,7 @@ function generateChangelog() {
                 const rangeExp = prev ? `${prev}..${tag}` : `${tag}`;
                 const tagCommits = collectCommits(rangeExp, repoDir, repoUrl);
                 const groups = groupCommitsByType(tagCommits, excludeTypes);
-                const tagContributors = collectContributors(tagCommits);
+                const tagContributors = includeContributors ? collectContributors(tagCommits) : null;
                 let body = renderBodyFromGroups(groups, tagContributors);
                 if (!body) body = renderFallbackBody();
                 sections += `${buildSectionHeader({ version: tag.replace(/^v/, ''), date: tagDate })}\n\n${body}`;
@@ -503,6 +520,7 @@ function generateChangelog() {
         console.log('  npm run changelog:last:plain            - 同上（不带 emoji）');
         console.log('  npm run changelog:all                   - 按 git 标签重建所有版本区块');
         console.log('  npm run changelog:all:plain             - 同上（不带 emoji）');
+        console.log('  追加 --contributors                     - 版本区块末尾附 Contributors（默认不输出）');
     } catch (error) {
         console.error('❌ 生成 changelog 失败:', error.message);
         process.exit(1);

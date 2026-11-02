@@ -144,6 +144,42 @@
           "style": {
             "navigationBarTitleText": "useLocale 国际化"
           }
+        },
+        {
+          "path": "useTheme/index",
+          "style": {
+            "navigationBarTitleText": "useTheme 主题管理"
+          }
+        },
+        {
+          "path": "useCountDown/index",
+          "style": {
+            "navigationBarTitleText": "useCountDown 倒计时"
+          }
+        },
+        {
+          "path": "useWindowInfo/index",
+          "style": {
+            "navigationBarTitleText": "useWindowInfo 窗口信息"
+          }
+        },
+        {
+          "path": "useSafeArea/index",
+          "style": {
+            "navigationBarTitleText": "useSafeArea 安全区"
+          }
+        },
+        {
+          "path": "useDeviceInfo/index",
+          "style": {
+            "navigationBarTitleText": "useDeviceInfo 设备信息"
+          }
+        },
+        {
+          "path": "useRect/index",
+          "style": {
+            "navigationBarTitleText": "useRect 元素尺寸"
+          }
         }
       ]
     },
