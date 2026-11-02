@@ -1,99 +1,135 @@
-<script setup lang="uts">
-import { useDebounce, useLocale } from '@/uni_modules/uview-pro-x';
-
-const { t } = useLocale('demo');
-
-// 解构方式使用：const { debounce } = useDebounce(delay)
-const { debounce } = useDebounce(500);
-
-const clickCount = ref(0);
-const executeCount = ref(0);
-const lastExecuteTime = ref('');
-
-// 使用默认 500ms 延迟（time 传 null 使用默认值）
-const handleDebounceClick = () => {
-    clickCount.value++;
-    debounce(() => {
-        executeCount.value++;
-        lastExecuteTime.value = new Date().toLocaleTimeString();
-    }, null);
-};
-
-// 使用自定义 1000ms 延迟
-const customClickCount = ref(0);
-const customExecuteCount = ref(0);
-const handleCustomDebounce = () => {
-    customClickCount.value++;
-    debounce(() => {
-        customExecuteCount.value++;
-    }, 1000);
-};
-
-// 临时指定延迟时间
-const dynamicClickCount = ref(0);
-const dynamicExecuteCount = ref(0);
-const handleDynamicDebounce = () => {
-    dynamicClickCount.value++;
-    debounce(() => {
-        dynamicExecuteCount.value++;
-    }, 2000);
-};
-</script>
-
 <template>
     <demo-page :title="t('useDebounce.title')" :subtitle="t('useDebounce.subtitle')">
         <!-- 默认延迟 -->
-        <demo-block :title="t('useDebounce.defaultTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">{{ t('useDebounce.clickCount') }}{{ clickCount }}</text>
-                <text class="demo-desc">{{ t('useDebounce.actualExec') }}{{ executeCount }}</text>
-                <text class="demo-desc">{{ t('useDebounce.lastExec') }}{{ lastExecuteTime.length > 0 ? lastExecuteTime : '-' }}</text>
-            </view>
-            <view class="demo-btn usedebounce-btn" @click="handleDebounceClick">
-                <text>{{ t('useDebounce.defaultBtn') }}</text>
-            </view>
+        <demo-block :title="t('useDebounce.defaultTitle')" :code="codes.defaultDelay">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in defaultRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-button size="small" type="primary" block :text="t('useDebounce.defaultBtn')" @click="handleDebounceClick()" />
         </demo-block>
 
         <!-- 自定义延迟 -->
-        <demo-block :title="t('useDebounce.customTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">{{ t('useDebounce.clickCount') }}{{ customClickCount }}</text>
-                <text class="demo-desc">{{ t('useDebounce.actualExec') }}{{ customExecuteCount }}</text>
-            </view>
-            <view class="demo-btn usedebounce-btn" @click="handleCustomDebounce">
-                <text>{{ t('useDebounce.customBtn') }}</text>
-            </view>
+        <demo-block :title="t('useDebounce.customTitle')" :code="codes.custom">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in customRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-button size="small" type="primary" block :text="t('useDebounce.customBtn')" @click="handleCustomDebounce()" />
         </demo-block>
 
         <!-- 临时指定延迟 -->
-        <demo-block :title="t('useDebounce.dynamicTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">{{ t('useDebounce.clickCount') }}{{ dynamicClickCount }}</text>
-                <text class="demo-desc">{{ t('useDebounce.actualExec') }}{{ dynamicExecuteCount }}</text>
-            </view>
-            <view class="demo-btn usedebounce-btn" @click="handleDynamicDebounce">
-                <text>{{ t('useDebounce.dynamicBtn') }}</text>
-            </view>
+        <demo-block :title="t('useDebounce.dynamicTitle')" :code="codes.dynamic">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in dynamicRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-button size="small" type="primary" block :text="t('useDebounce.dynamicBtn')" @click="handleDynamicDebounce()" />
         </demo-block>
 
         <!-- 方法说明 -->
-        <demo-block :title="t('useDebounce.usageTitle')">
-            <view class="demo-item demo-item--last">
-                <text class="demo-desc">const { debounce } = useDebounce(delay)</text>
-                <text class="demo-desc">{{ t('useDebounce.usageDelay') }}</text>
-                <text class="demo-desc">{{ t('useDebounce.usageDebounce') }}</text>
-                <text class="demo-desc">{{ t('useDebounce.usageCallback') }}</text>
-                <text class="demo-desc">{{ t('useDebounce.usageTime') }}</text>
-            </view>
+        <demo-block :title="t('useDebounce.usageTitle')" :code="codes.usage">
+            <ux-alert-tips type="primary" :show-icon="true" title="const { debounce } = useDebounce(delay)" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useDebounce.usageDelay')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useDebounce.usageDebounce')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useDebounce.usageCallback')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useDebounce.usageTime')" />
         </demo-block>
     </demo-page>
 </template>
 
-<style lang="scss">
-/* 使用全局 demo.scss 样式 */
+<script setup lang="uts">
+    import { useDebounce, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-/* 区块内按钮：去掉全局 margin-bottom，与 demo-block 底部留白对齐 */
-.usedebounce-btn {
-    margin-bottom: 0;
-}
+    const { t } = useLocale('demo');
+
+    // 解构方式使用：const { debounce } = useDebounce(delay)
+    const { debounce } = useDebounce(500);
+
+    type CellRow = {
+        title: string;
+        value: string;
+        last: boolean;
+    };
+
+    const clickCount = ref(0);
+    const executeCount = ref(0);
+    const lastExecuteTime = ref('');
+
+    const customClickCount = ref(0);
+    const customExecuteCount = ref(0);
+
+    const dynamicClickCount = ref(0);
+    const dynamicExecuteCount = ref(0);
+
+    const defaultRows = computed((): CellRow[] => [
+        { title: t('useDebounce.clickCount'), value: clickCount.value.toString(), last: false },
+        { title: t('useDebounce.actualExec'), value: executeCount.value.toString(), last: false },
+        { title: t('useDebounce.lastExec'), value: lastExecuteTime.value.length > 0 ? lastExecuteTime.value : '-', last: true }
+    ]);
+
+    const customRows = computed((): CellRow[] => [
+        { title: t('useDebounce.clickCount'), value: customClickCount.value.toString(), last: false },
+        { title: t('useDebounce.actualExec'), value: customExecuteCount.value.toString(), last: true }
+    ]);
+
+    const dynamicRows = computed((): CellRow[] => [
+        { title: t('useDebounce.clickCount'), value: dynamicClickCount.value.toString(), last: false },
+        { title: t('useDebounce.actualExec'), value: dynamicExecuteCount.value.toString(), last: true }
+    ]);
+
+    // 第二个参数传 null 表示使用 Hook 初始化时的默认延迟
+    function handleDebounceClick(): void {
+        clickCount.value++;
+        debounce((): void => {
+            executeCount.value++;
+            lastExecuteTime.value = new Date().toLocaleTimeString();
+        }, null);
+    }
+
+    // 本次调用临时指定 1000ms
+    function handleCustomDebounce(): void {
+        customClickCount.value++;
+        debounce((): void => {
+            customExecuteCount.value++;
+        }, 1000);
+    }
+
+    // 本次调用临时指定 2000ms
+    function handleDynamicDebounce(): void {
+        dynamicClickCount.value++;
+        debounce((): void => {
+            dynamicExecuteCount.value++;
+        }, 2000);
+    }
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
 </style>

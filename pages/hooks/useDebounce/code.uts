@@ -1,0 +1,174 @@
+/**
+ * useDebounce 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 默认延迟 */
+const defaultBlock = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in defaultRows"
+            :key="index"
+            :title="item.title"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="默认延迟（500ms）" @click="handleDebounceClick()" />
+</template>
+
+<script setup lang="uts">
+import { useDebounce } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { debounce } = useDebounce(delay)
+const { debounce } = useDebounce(500);
+
+type CellRow = {
+    title: string;
+    value: string;
+    last: boolean;
+};
+
+const clickCount = ref(0);
+const executeCount = ref(0);
+const lastExecuteTime = ref('');
+
+const defaultRows = computed((): CellRow[] => [
+    { title: '点击次数', value: clickCount.value.toString(), last: false },
+    { title: '实际执行次数', value: executeCount.value.toString(), last: false },
+    { title: '最近执行时间', value: lastExecuteTime.value.length > 0 ? lastExecuteTime.value : '-', last: true }
+]);
+
+// 第二个参数传 null 表示使用 Hook 初始化时的默认延迟
+function handleDebounceClick(): void {
+    clickCount.value++;
+    debounce((): void => {
+        executeCount.value++;
+        lastExecuteTime.value = new Date().toLocaleTimeString();
+    }, null);
+}
+</script>
+`;
+
+/** 自定义延迟 */
+const custom = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in customRows"
+            :key="index"
+            :title="item.title"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="自定义延迟（1000ms）" @click="handleCustomDebounce()" />
+</template>
+
+<script setup lang="uts">
+import { useDebounce } from '@/uni_modules/uview-pro-x';
+
+const { debounce } = useDebounce(500);
+
+type CellRow = {
+    title: string;
+    value: string;
+    last: boolean;
+};
+
+const customClickCount = ref(0);
+const customExecuteCount = ref(0);
+
+const customRows = computed((): CellRow[] => [
+    { title: '点击次数', value: customClickCount.value.toString(), last: false },
+    { title: '实际执行次数', value: customExecuteCount.value.toString(), last: true }
+]);
+
+// 本次调用临时指定 1000ms
+function handleCustomDebounce(): void {
+    customClickCount.value++;
+    debounce((): void => {
+        customExecuteCount.value++;
+    }, 1000);
+}
+</script>
+`;
+
+/** 临时指定延迟 */
+const dynamic = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in dynamicRows"
+            :key="index"
+            :title="item.title"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="临时指定延迟（2000ms）" @click="handleDynamicDebounce()" />
+</template>
+
+<script setup lang="uts">
+import { useDebounce } from '@/uni_modules/uview-pro-x';
+
+const { debounce } = useDebounce(500);
+
+type CellRow = {
+    title: string;
+    value: string;
+    last: boolean;
+};
+
+const dynamicClickCount = ref(0);
+const dynamicExecuteCount = ref(0);
+
+const dynamicRows = computed((): CellRow[] => [
+    { title: '点击次数', value: dynamicClickCount.value.toString(), last: false },
+    { title: '实际执行次数', value: dynamicExecuteCount.value.toString(), last: true }
+]);
+
+// 本次调用临时指定 2000ms
+function handleDynamicDebounce(): void {
+    dynamicClickCount.value++;
+    debounce((): void => {
+        dynamicExecuteCount.value++;
+    }, 2000);
+}
+</script>
+`;
+
+/** 方法说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { debounce } = useDebounce(delay)" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="delay：Hook 初始化时的默认延迟，单位 ms，省略时为 500" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="debounce：返回值，调用即触发一次防抖" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="callback：窗口结束后执行的回调" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="debounceTime：本次调用的延迟，传 null 用默认值" />
+</template>
+
+<script setup lang="uts">
+import { useDebounce } from '@/uni_modules/uview-pro-x';
+
+const { debounce } = useDebounce(500);
+</script>
+`;
+
+export const codes = {
+    defaultDelay: defaultBlock,
+    custom,
+    dynamic,
+    usage
+};
