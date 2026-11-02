@@ -1,0 +1,174 @@
+/**
+ * useThrottle 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 默认间隔 */
+const defaultBlock = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in defaultRows"
+            :key="index"
+            :title="item.title"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="默认间隔（1000ms）" @click="handleThrottleClick()" />
+</template>
+
+<script setup lang="uts">
+import { useThrottle } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { throttle } = useThrottle(delay)
+const { throttle } = useThrottle(1000);
+
+type CellRow = {
+    title: string;
+    value: string;
+    last: boolean;
+};
+
+const clickCount = ref(0);
+const executeCount = ref(0);
+const lastExecuteTime = ref('');
+
+const defaultRows = computed((): CellRow[] => [
+    { title: '点击次数', value: clickCount.value.toString(), last: false },
+    { title: '实际执行次数', value: executeCount.value.toString(), last: false },
+    { title: '最近执行时间', value: lastExecuteTime.value.length > 0 ? lastExecuteTime.value : '-', last: true }
+]);
+
+// 第二个参数传 null 表示使用 Hook 初始化时的默认间隔
+function handleThrottleClick(): void {
+    clickCount.value++;
+    throttle((): void => {
+        executeCount.value++;
+        lastExecuteTime.value = new Date().toLocaleTimeString();
+    }, null);
+}
+</script>
+`;
+
+/** 自定义间隔 */
+const custom = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in customRows"
+            :key="index"
+            :title="item.title"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="自定义间隔（2000ms）" @click="handleCustomThrottle()" />
+</template>
+
+<script setup lang="uts">
+import { useThrottle } from '@/uni_modules/uview-pro-x';
+
+const { throttle } = useThrottle(1000);
+
+type CellRow = {
+    title: string;
+    value: string;
+    last: boolean;
+};
+
+const customClickCount = ref(0);
+const customExecuteCount = ref(0);
+
+const customRows = computed((): CellRow[] => [
+    { title: '点击次数', value: customClickCount.value.toString(), last: false },
+    { title: '实际执行次数', value: customExecuteCount.value.toString(), last: true }
+]);
+
+// 本次调用临时指定 2000ms
+function handleCustomThrottle(): void {
+    customClickCount.value++;
+    throttle((): void => {
+        customExecuteCount.value++;
+    }, 2000);
+}
+</script>
+`;
+
+/** 临时指定间隔 */
+const dynamic = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in dynamicRows"
+            :key="index"
+            :title="item.title"
+            :value="item.value"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="临时指定间隔（3000ms）" @click="handleDynamicThrottle()" />
+</template>
+
+<script setup lang="uts">
+import { useThrottle } from '@/uni_modules/uview-pro-x';
+
+const { throttle } = useThrottle(1000);
+
+type CellRow = {
+    title: string;
+    value: string;
+    last: boolean;
+};
+
+const dynamicClickCount = ref(0);
+const dynamicExecuteCount = ref(0);
+
+const dynamicRows = computed((): CellRow[] => [
+    { title: '点击次数', value: dynamicClickCount.value.toString(), last: false },
+    { title: '实际执行次数', value: dynamicExecuteCount.value.toString(), last: true }
+]);
+
+// 本次调用临时指定 3000ms
+function handleDynamicThrottle(): void {
+    dynamicClickCount.value++;
+    throttle((): void => {
+        dynamicExecuteCount.value++;
+    }, 3000);
+}
+</script>
+`;
+
+/** 方法说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { throttle } = useThrottle(delay)" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="delay：Hook 初始化时的默认间隔，单位 ms，省略时为 500" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="throttle：返回值，调用即触发一次节流（首触即执行）" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="callback：窗口内首次触发时执行的回调" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="throttleTime：本次调用的间隔，传 null 用默认值" />
+</template>
+
+<script setup lang="uts">
+import { useThrottle } from '@/uni_modules/uview-pro-x';
+
+const { throttle } = useThrottle(1000);
+</script>
+`;
+
+export const codes = {
+    defaultDelay: defaultBlock,
+    custom,
+    dynamic,
+    usage
+};
