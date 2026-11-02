@@ -1,0 +1,141 @@
+/**
+ * useDeviceInfo 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script）
+ */
+
+/** 设备身份 */
+const device = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in deviceRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u, useDeviceInfo } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { deviceBrand } = useDeviceInfo()
+const { info } = useDeviceInfo();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 部分平台字段为空串，展示层统一用 $u.strOr 回退
+const deviceRows = computed((): Row[] => {
+    const current = info.value;
+    return [
+        { desc: 'deviceBrand', result: $u.strOr(current.deviceBrand, '-'), last: false },
+        { desc: 'deviceModel', result: $u.strOr(current.deviceModel, '-'), last: false },
+        { desc: 'deviceType', result: $u.strOr(current.deviceType, '-'), last: true }
+    ];
+});
+</script>
+`;
+
+/** 系统与平台 */
+const system = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in systemRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u, useDeviceInfo } from '@/uni_modules/uview-pro-x';
+
+const { info } = useDeviceInfo();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const systemRows = computed((): Row[] => {
+    const current = info.value;
+    return [
+        { desc: 'platform', result: $u.strOr(current.platform, '-'), last: false },
+        { desc: 'osName', result: $u.strOr(current.osName, '-'), last: false },
+        { desc: 'osVersion', result: $u.strOr(current.osVersion, '-'), last: false },
+        { desc: 'system', result: $u.strOr(current.system, '-'), last: true }
+    ];
+});
+</script>
+`;
+
+/** 屏幕方向 */
+const orientation = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in orientationRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-alert-tips type="warning" :show-icon="true" title="deviceOrientation 在页面创建时采集一次，横竖屏切换不会自动更新。" />
+</template>
+
+<script setup lang="uts">
+import { $u, useDeviceInfo } from '@/uni_modules/uview-pro-x';
+
+const { info } = useDeviceInfo();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const orientationRows = computed((): Row[] => [
+    { desc: 'deviceOrientation', result: $u.strOr(info.value.deviceOrientation, '-'), last: true }
+]);
+</script>
+`;
+
+/** 使用说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { info, deviceBrand, platform } = useDeviceInfo()" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="设备信息运行期不变，模块级只采集一次" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="H5 端部分字段为空串，展示层用 $u.strOr 回退" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="屏幕方向变化请结合 useWindowInfo 的窗口宽高判断" />
+</template>
+
+<script setup lang="uts">
+import { useDeviceInfo } from '@/uni_modules/uview-pro-x';
+
+const { info, deviceBrand, deviceModel, platform, osName } = useDeviceInfo();
+</script>
+`;
+
+export const codes = {
+    device,
+    system,
+    orientation,
+    usage
+};
