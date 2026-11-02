@@ -1,0 +1,154 @@
+/**
+ * useWindowInfo 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script）
+ */
+
+/** 窗口尺寸 */
+const size = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in sizeRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { useWindowInfo } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { windowWidth } = useWindowInfo()
+const { info } = useWindowInfo();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const sizeRows = computed((): Row[] => {
+    const current = info.value;
+    return [
+        { desc: 'windowWidth', result: current.windowWidth.toString(), last: false },
+        { desc: 'windowHeight', result: current.windowHeight.toString(), last: false },
+        { desc: 'screenWidth', result: current.screenWidth.toString(), last: false },
+        { desc: 'screenHeight', result: current.screenHeight.toString(), last: false },
+        { desc: 'pixelRatio', result: current.pixelRatio.toString(), last: true }
+    ];
+});
+</script>
+`;
+
+/** 状态栏与内容区 */
+const status = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in statusRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { useWindowInfo } from '@/uni_modules/uview-pro-x';
+
+const { info } = useWindowInfo();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const statusRows = computed((): Row[] => {
+    const current = info.value;
+    return [
+        { desc: 'statusBarHeight', result: current.statusBarHeight.toString(), last: false },
+        { desc: 'windowTop', result: current.windowTop.toString(), last: false },
+        { desc: 'windowBottom', result: current.windowBottom.toString(), last: false },
+        { desc: 'screenTop', result: current.screenTop.toString(), last: true }
+    ];
+});
+</script>
+`;
+
+/** 安全区数据 */
+const safe = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in safeRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { useWindowInfo } from '@/uni_modules/uview-pro-x';
+
+const { info } = useWindowInfo();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// safeArea / safeAreaInsets 可能为 null，取值前先判空
+const safeRows = computed((): Row[] => {
+    const area = info.value.safeArea;
+    const insets = info.value.safeAreaInsets;
+    return [
+        { desc: 'safeArea.left', result: area != null ? area.left.toString() : '-', last: false },
+        { desc: 'safeArea.top', result: area != null ? area.top.toString() : '-', last: false },
+        { desc: 'safeArea.right', result: area != null ? area.right.toString() : '-', last: false },
+        { desc: 'safeArea.bottom', result: area != null ? area.bottom.toString() : '-', last: false },
+        { desc: 'safeArea.width', result: area != null ? area.width.toString() : '-', last: false },
+        { desc: 'safeArea.height', result: area != null ? area.height.toString() : '-', last: false },
+        { desc: 'insets.left', result: insets != null ? insets.left.toString() : '-', last: false },
+        { desc: 'insets.top', result: insets != null ? insets.top.toString() : '-', last: false },
+        { desc: 'insets.right', result: insets != null ? insets.right.toString() : '-', last: false },
+        { desc: 'insets.bottom', result: insets != null ? insets.bottom.toString() : '-', last: true }
+    ];
+});
+</script>
+`;
+
+/** 使用说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { info, windowWidth, safeArea } = useWindowInfo()" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="模块级缓存，多个组件共享同一份数据" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="挂载后会延迟刷新一次，保证 App 端布局稳定" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="safeArea / safeAreaInsets 可能为 null，取值前需判空" />
+</template>
+
+<script setup lang="uts">
+import { useWindowInfo } from '@/uni_modules/uview-pro-x';
+
+const { info, windowWidth, windowHeight, safeArea, safeAreaInsets } = useWindowInfo();
+</script>
+`;
+
+export const codes = {
+    size,
+    status,
+    safe,
+    usage
+};

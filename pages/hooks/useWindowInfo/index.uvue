@@ -1,0 +1,115 @@
+<template>
+    <demo-page :title="t('useWindowInfo.title')" :subtitle="t('useWindowInfo.subtitle')">
+        <!-- 窗口尺寸 -->
+        <demo-block :title="t('useWindowInfo.sizeTitle')" :desc="t('useWindowInfo.sizeDesc')" :code="codes.size">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in sizeRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 状态栏与内容区 -->
+        <demo-block :title="t('useWindowInfo.statusTitle')" :desc="t('useWindowInfo.statusDesc')" :code="codes.status">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in statusRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 安全区数据 -->
+        <demo-block :title="t('useWindowInfo.safeTitle')" :desc="t('useWindowInfo.safeDesc')" :code="codes.safe">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in safeRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('useWindowInfo.usageTitle')" :code="codes.usage">
+            <ux-alert-tips type="primary" :show-icon="true" title="const { info, windowWidth, safeArea } = useWindowInfo()" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useWindowInfo.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useWindowInfo.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useWindowInfo.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useWindowInfo, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    // 解构方式使用：const { windowWidth } = useWindowInfo()
+    const { info } = useWindowInfo();
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    const sizeRows = computed((): Row[] => {
+        const current = info.value;
+        return [
+            { desc: 'windowWidth', result: current.windowWidth.toString(), last: false },
+            { desc: 'windowHeight', result: current.windowHeight.toString(), last: false },
+            { desc: 'screenWidth', result: current.screenWidth.toString(), last: false },
+            { desc: 'screenHeight', result: current.screenHeight.toString(), last: false },
+            { desc: 'pixelRatio', result: current.pixelRatio.toString(), last: true }
+        ];
+    });
+
+    const statusRows = computed((): Row[] => {
+        const current = info.value;
+        return [
+            { desc: 'statusBarHeight', result: current.statusBarHeight.toString(), last: false },
+            { desc: 'windowTop', result: current.windowTop.toString(), last: false },
+            { desc: 'windowBottom', result: current.windowBottom.toString(), last: false },
+            { desc: 'screenTop', result: current.screenTop.toString(), last: true }
+        ];
+    });
+
+    // safeArea / safeAreaInsets 可能为 null，取值前先判空
+    const safeRows = computed((): Row[] => {
+        const area = info.value.safeArea;
+        const insets = info.value.safeAreaInsets;
+        return [
+            { desc: 'safeArea.left', result: area != null ? area.left.toString() : '-', last: false },
+            { desc: 'safeArea.top', result: area != null ? area.top.toString() : '-', last: false },
+            { desc: 'safeArea.right', result: area != null ? area.right.toString() : '-', last: false },
+            { desc: 'safeArea.bottom', result: area != null ? area.bottom.toString() : '-', last: false },
+            { desc: 'safeArea.width', result: area != null ? area.width.toString() : '-', last: false },
+            { desc: 'safeArea.height', result: area != null ? area.height.toString() : '-', last: false },
+            { desc: 'insets.left', result: insets != null ? insets.left.toString() : '-', last: false },
+            { desc: 'insets.top', result: insets != null ? insets.top.toString() : '-', last: false },
+            { desc: 'insets.right', result: insets != null ? insets.right.toString() : '-', last: false },
+            { desc: 'insets.bottom', result: insets != null ? insets.bottom.toString() : '-', last: true }
+        ];
+    });
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
+</style>
