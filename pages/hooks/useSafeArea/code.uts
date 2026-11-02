@@ -1,0 +1,115 @@
+/**
+ * useSafeArea 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 安全区数值 */
+const value = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in valueRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { useSafeArea } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { top, bottom } = useSafeArea()
+const { top, bottom } = useSafeArea();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const valueRows = computed((): Row[] => [
+    { desc: '顶部插入 top', result: top.value.toString(), last: false },
+    { desc: '底部插入 bottom', result: bottom.value.toString(), last: true }
+]);
+</script>
+`;
+
+/** 可视化占位 */
+const preview = `
+<template>
+    <view class="demo-safe-frame">
+        <view class="demo-safe-bar" :style="{ height: topPx, backgroundColor: $u.strOr($u.color.primaryLight) }"></view>
+        <view class="demo-safe-center">
+            <text class="demo-safe-center-text">内容区（安全区之外）</text>
+        </view>
+        <view class="demo-safe-bar" :style="{ height: bottomPx, backgroundColor: $u.strOr($u.color.successLight) }"></view>
+    </view>
+</template>
+
+<script setup lang="uts">
+import { $u, useSafeArea } from '@/uni_modules/uview-pro-x';
+
+const { top, bottom } = useSafeArea();
+
+// 色带高度绑定安全区数值，按 px 拼字符串走内联样式
+const topPx = computed((): string => top.value.toString() + 'px');
+const bottomPx = computed((): string => bottom.value.toString() + 'px');
+</script>
+
+<style lang="scss">
+    .demo-safe-frame {
+        display: flex;
+        flex-direction: column;
+        height: 160px;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: $u-bg-gray-light;
+    }
+
+    .demo-safe-bar {
+        width: 100%;
+    }
+
+    .demo-safe-center {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        background-color: $u-bg-color;
+    }
+
+    .demo-safe-center-text {
+        font-size: 12px;
+        color: $u-tips-color;
+    }
+</style>
+`;
+
+/** 使用说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { top, bottom } = useSafeArea()" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="只表达安全区插入距离，不含状态栏高度" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="无安全区时 top / bottom 均为 0" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="状态栏避让请用 useWindowInfo().statusBarHeight" />
+</template>
+
+<script setup lang="uts">
+import { useSafeArea } from '@/uni_modules/uview-pro-x';
+
+const { top, bottom } = useSafeArea();
+</script>
+`;
+
+export const codes = {
+    value,
+    preview,
+    usage
+};

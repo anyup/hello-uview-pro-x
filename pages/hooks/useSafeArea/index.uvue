@@ -1,0 +1,94 @@
+<template>
+    <demo-page :title="t('useSafeArea.title')" :subtitle="t('useSafeArea.subtitle')">
+        <!-- 安全区数值 -->
+        <demo-block :title="t('useSafeArea.valueTitle')" :desc="t('useSafeArea.valueDesc')" :code="codes.value">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in valueRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 可视化占位 -->
+        <demo-block :title="t('useSafeArea.previewTitle')" :desc="t('useSafeArea.previewDesc')" :code="codes.preview">
+            <view class="demo-safe-frame">
+                <view class="demo-safe-bar" :style="{ height: topPx, backgroundColor: $u.strOr($u.color.primaryLight) }"></view>
+                <view class="demo-safe-center">
+                    <text class="demo-safe-center-text">{{ t('useSafeArea.previewCenter') }}</text>
+                </view>
+                <view class="demo-safe-bar" :style="{ height: bottomPx, backgroundColor: $u.strOr($u.color.successLight) }"></view>
+            </view>
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('useSafeArea.usageTitle')" :code="codes.usage">
+            <ux-alert-tips type="primary" :show-icon="true" title="const { top, bottom } = useSafeArea()" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useSafeArea.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useSafeArea.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useSafeArea.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useSafeArea, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    // 解构方式使用：const { top, bottom } = useSafeArea()
+    const { top, bottom } = useSafeArea();
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    const valueRows = computed((): Row[] => [
+        { desc: t('useSafeArea.topLabel'), result: top.value.toString(), last: false },
+        { desc: t('useSafeArea.bottomLabel'), result: bottom.value.toString(), last: true }
+    ]);
+
+    // 色带高度绑定安全区数值，需按 px 拼字符串走内联样式
+    const topPx = computed((): string => top.value.toString() + 'px');
+    const bottomPx = computed((): string => bottom.value.toString() + 'px');
+</script>
+
+<style lang="scss">
+    /* 色带高度需按实际安全区数值变化，属必要例外：仅 height / background-color 走内联 */
+    .demo-safe-frame {
+        display: flex;
+        flex-direction: column;
+        height: 160px;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: $u-bg-gray-light;
+    }
+
+    .demo-safe-bar {
+        width: 100%;
+    }
+
+    .demo-safe-center {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        background-color: $u-bg-color;
+    }
+
+    .demo-safe-center-text {
+        font-size: 12px;
+        color: $u-tips-color;
+    }
+</style>
