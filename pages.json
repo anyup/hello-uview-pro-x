@@ -174,12 +174,12 @@
           "style": {
             "navigationBarTitleText": "useDeviceInfo 设备信息"
           }
-        // },
-        // {
-        //   "path": "useRect/index",
-        //   "style": {
-        //     "navigationBarTitleText": "useRect 元素尺寸"
-        //   }
+        },
+        {
+          "path": "useRect/index",
+          "style": {
+            "navigationBarTitleText": "useRect 元素尺寸"
+          }
         }
       ]
     },

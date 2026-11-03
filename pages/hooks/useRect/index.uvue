@@ -1,0 +1,101 @@
+<template>
+    <demo-page :title="t('useRect.title')" :subtitle="t('useRect.subtitle')">
+        <!-- 元素尺寸 -->
+        <demo-block :title="t('useRect.measureTitle')" :desc="t('useRect.measureDesc')" :code="codes.measure">
+            <view ref="box" class="demo-rect-box" :style="{ backgroundColor: $u.strOr($u.color.primaryLight) }">
+                <text class="demo-rect-box-text">200 × 120</text>
+            </view>
+            <ux-gap :height="12" />
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in measureRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 重新测量 -->
+        <demo-block :title="t('useRect.refreshTitle')" :desc="t('useRect.refreshDesc')" :code="codes.refresh">
+            <ux-button size="small" type="primary" block :text="t('useRect.refreshBtn')" @click="handleMeasure()" />
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('useRect.usageTitle')" :code="codes.usage">
+            <ux-alert-tips type="primary" :show-icon="true" title="const { getRect } = useRect()" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useRect.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useRect.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useRect.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useRect, useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    // 解构方式使用：const { getRect } = useRect()
+    const { getRect } = useRect();
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    // 模板 ref 拿到的是 UniElement，未渲染时为 null
+    const box = ref<UniElement | null>(null);
+    const measureRows = ref<Row[]>([]);
+
+    async function measure(): Promise<void> {
+        const rect = await getRect(box.value);
+        if (rect == null) {
+            measureRows.value = [{ desc: t('useRect.measureTitle'), result: t('useRect.emptyResult'), last: true }];
+            return;
+        }
+        measureRows.value = [
+            { desc: 'width', result: rect.width.toFixed(1) + 'px', last: false },
+            { desc: 'height', result: rect.height.toFixed(1) + 'px', last: false },
+            { desc: 'top', result: rect.top.toFixed(1) + 'px', last: false },
+            { desc: 'left', result: rect.left.toFixed(1) + 'px', last: false },
+            { desc: 'right', result: rect.right.toFixed(1) + 'px', last: false },
+            { desc: 'bottom', result: rect.bottom.toFixed(1) + 'px', last: true }
+        ];
+    }
+
+    function handleMeasure(): void {
+        measure();
+    }
+
+    // 挂载后再测量，保证元素已完成布局
+    onMounted((): void => {
+        measure();
+    });
+</script>
+
+<style lang="scss">
+    /* 目标块尺寸固定，用于展示测量结果 */
+    .demo-rect-box {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 120px;
+        border-radius: 8px;
+        border: 1px solid $u-border-color;
+    }
+
+    .demo-rect-box-text {
+        font-size: 12px;
+        color: $u-content-color;
+    }
+</style>

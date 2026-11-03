@@ -1,0 +1,130 @@
+/**
+ * useRect 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 元素尺寸 */
+const measure = `
+<template>
+    <view ref="box" class="demo-rect-box" :style="{ backgroundColor: $u.strOr($u.color.primaryLight) }">
+        <text class="demo-rect-box-text">200 × 120</text>
+    </view>
+    <ux-gap :height="12" />
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in measureRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u, useRect } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { getRect } = useRect()
+const { getRect } = useRect();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 模板 ref 拿到的是 UniElement，未渲染时为 null
+const box = ref<UniElement | null>(null);
+const measureRows = ref<Row[]>([]);
+
+async function measure(): Promise<void> {
+    const rect = await getRect(box.value);
+    if (rect == null) {
+        measureRows.value = [{ desc: '元素尺寸', result: '未取到元素', last: true }];
+        return;
+    }
+    measureRows.value = [
+        { desc: 'width', result: rect.width.toFixed(1) + 'px', last: false },
+        { desc: 'height', result: rect.height.toFixed(1) + 'px', last: false },
+        { desc: 'top', result: rect.top.toFixed(1) + 'px', last: false },
+        { desc: 'left', result: rect.left.toFixed(1) + 'px', last: false },
+        { desc: 'right', result: rect.right.toFixed(1) + 'px', last: false },
+        { desc: 'bottom', result: rect.bottom.toFixed(1) + 'px', last: true }
+    ];
+}
+
+// 挂载后再测量，保证元素已完成布局
+onMounted((): void => {
+    measure();
+});
+</script>
+
+<style lang="scss">
+    .demo-rect-box {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 120px;
+        border-radius: 8px;
+        border: 1px solid $u-border-color;
+    }
+
+    .demo-rect-box-text {
+        font-size: 12px;
+        color: $u-content-color;
+    }
+</style>
+`;
+
+/** 重新测量 */
+const refresh = `
+<template>
+    <ux-button size="small" type="primary" block text="重新测量" @click="handleMeasure()" />
+</template>
+
+<script setup lang="uts">
+import { useRect } from '@/uni_modules/uview-pro-x';
+
+const { getRect } = useRect();
+
+const box = ref<UniElement | null>(null);
+
+// getRect 为异步方法，返回 null 表示未取到元素
+async function handleMeasure(): Promise<void> {
+    const rect = await getRect(box.value);
+    if (rect == null) {
+        console.log('未取到元素');
+        return;
+    }
+    console.log('width', rect.width, 'height', rect.height);
+}
+</script>
+`;
+
+/** 使用说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { getRect } = useRect()" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="ref 类型为 UniElement | null，未渲染时需判空" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="底层走 getBoundingClientRectAsync，Web / App / 小程序通用" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="返回相对视口的矩形，页面滚动后需重新测量" />
+</template>
+
+<script setup lang="uts">
+import { useRect } from '@/uni_modules/uview-pro-x';
+
+const { getRect } = useRect();
+</script>
+`;
+
+export const codes = {
+    measure,
+    refresh,
+    usage
+};
