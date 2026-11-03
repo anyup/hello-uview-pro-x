@@ -1,0 +1,172 @@
+/**
+ * useCountDown 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script）
+ */
+
+/** 按秒倒计时 */
+const basic = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in basicRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u, useCountDown } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { current, start } = useCountDown({ time })
+const basic = useCountDown({ time: 60000 });
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const basicRows = computed((): Row[] => {
+    const current = basic.current.value;
+    return [
+        { desc: '剩余天数', result: current.days.toString(), last: false },
+        { desc: '剩余小时', result: $u.padZero(current.hours), last: false },
+        { desc: '剩余分钟', result: $u.padZero(current.minutes), last: false },
+        { desc: '剩余秒数', result: $u.padZero(current.seconds), last: false },
+        { desc: '剩余毫秒', result: current.remainTime.toString(), last: true }
+    ];
+});
+
+onMounted((): void => {
+    basic.start();
+});
+</script>
+`;
+
+/** 开始 / 暂停 / 重置 */
+const control = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="当前状态" :value="controlStatus" :arrow="false" :border-bottom="true" />
+        <ux-cell-item title="剩余毫秒" :value="control.current.value.remainTime.toString()" :arrow="false" :border-bottom="false" />
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-row :gutter="10">
+        <ux-col :span="4">
+            <ux-button size="small" type="primary" block :text="startText" @click="handleStart()" />
+        </ux-col>
+        <ux-col :span="4">
+            <ux-button size="small" type="warning" block text="暂停" @click="handlePause()" />
+        </ux-col>
+        <ux-col :span="4">
+            <ux-button size="small" type="info" block text="重置" @click="handleReset()" />
+        </ux-col>
+    </ux-row>
+</template>
+
+<script setup lang="uts">
+import { useCountDown, type CountDownTime } from '@/uni_modules/uview-pro-x';
+
+const hasStarted = ref(false);
+const running = ref(false);
+const control = useCountDown({
+    time: 20000,
+    onChange: (current: CountDownTime): void => {
+        if (current.remainTime == 0) {
+            running.value = false;
+            hasStarted.value = false;
+        }
+    }
+});
+
+const controlStatus = computed((): string => {
+    if (running.value) return '进行中';
+    if (!hasStarted.value) return '未开始';
+    return '已暂停';
+});
+
+const startText = computed((): string => (hasStarted.value ? '继续' : '开始'));
+
+function handleStart(): void {
+    hasStarted.value = true;
+    running.value = true;
+    control.start();
+}
+
+function handlePause(): void {
+    running.value = false;
+    control.pause();
+}
+
+// reset 只重置数值，不会自动开始
+function handleReset(): void {
+    running.value = false;
+    hasStarted.value = false;
+    control.reset(null);
+}
+</script>
+`;
+
+/** 结束回调 */
+const finish = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item title="剩余时间：" :value="quickRemainText" :arrow="false" :border-bottom="true" />
+        <ux-cell-item title="结束标记：" :arrow="false" :border-bottom="false">
+            <ux-tag size="mini" :type="finished ? 'success' : 'info'" :text="finished ? '已完成' : '未开始'" />
+        </ux-cell-item>
+    </ux-cell-group>
+    <ux-gap :height="12" />
+    <ux-button size="small" type="primary" block text="开始 10 秒倒计时" @click="handleQuickStart()" />
+</template>
+
+<script setup lang="uts">
+import { useCountDown } from '@/uni_modules/uview-pro-x';
+
+const finished = ref(false);
+const quick = useCountDown({
+    time: 10000,
+    onFinish: (): void => {
+        finished.value = true;
+    }
+});
+
+const quickRemainText = computed((): string => (quick.current.value.remainTime / 1000).toFixed(1) + 's');
+
+function handleQuickStart(): void {
+    finished.value = false;
+    quick.reset(null);
+    quick.start();
+}
+</script>
+`;
+
+/** 使用说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { current, start, pause, reset } = useCountDown({ time: 60000 })" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="内部以结束时间计时，长时间运行不漂移" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="onUnmounted 自动清理定时器，无需手动清除" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="reset 后需再次调用 start 才会继续倒数" />
+</template>
+
+<script setup lang="uts">
+import { useCountDown } from '@/uni_modules/uview-pro-x';
+
+const { current, start, pause, reset } = useCountDown({ time: 60000 });
+</script>
+`;
+
+export const codes = {
+    basic,
+    control,
+    finish,
+    usage
+};

@@ -1,0 +1,171 @@
+<template>
+    <demo-page :title="t('useCountDown.title')" :subtitle="t('useCountDown.subtitle')">
+        <!-- 按秒倒计时 -->
+        <demo-block :title="t('useCountDown.basicTitle')" :desc="t('useCountDown.basicDesc')" :code="codes.basic">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in basicRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- 开始 / 暂停 / 重置 -->
+        <demo-block :title="t('useCountDown.controlTitle')" :desc="t('useCountDown.controlDesc')" :code="codes.control">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in controlRows"
+                    :key="index"
+                    :title="item.desc"
+                    :value="item.result"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-row :gutter="10">
+                <ux-col :span="4">
+                    <ux-button size="small" type="primary" block :text="startText" @click="handleControlStart()" />
+                </ux-col>
+                <ux-col :span="4">
+                    <ux-button size="small" type="warning" block :text="t('useCountDown.pauseBtn')" @click="handleControlPause()" />
+                </ux-col>
+                <ux-col :span="4">
+                    <ux-button size="small" type="info" block :text="t('useCountDown.resetBtn')" @click="handleControlReset()" />
+                </ux-col>
+            </ux-row>
+        </demo-block>
+
+        <!-- 结束回调 -->
+        <demo-block :title="t('useCountDown.finishTitle')" :desc="t('useCountDown.finishDesc')" :code="codes.finish">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    :title="t('useCountDown.quickRemain')"
+                    :value="quickRemainText"
+                    :arrow="false"
+                    :border-bottom="true"
+                />
+                <ux-cell-item :title="t('useCountDown.quickStatus')" :arrow="false" :border-bottom="false">
+                    <ux-tag
+                        size="mini"
+                        :type="finished ? 'success' : 'info'"
+                        :text="finished ? t('useCountDown.finishedText') : t('useCountDown.waitingText')"
+                    />
+                </ux-cell-item>
+            </ux-cell-group>
+            <ux-gap :height="12" />
+            <ux-button size="small" type="primary" block :text="t('useCountDown.finishStart')" @click="handleQuickStart()" />
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('useCountDown.usageTitle')" :code="codes.usage">
+            <ux-alert-tips type="primary" :show-icon="true" title="const { current, start, pause, reset } = useCountDown({ time: 60000 })" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useCountDown.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useCountDown.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useCountDown.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { $u, useCountDown, useLocale, type CountDownTime } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    type Row = {
+        desc: string;
+        result: string;
+        last: boolean;
+    };
+
+    // 解构方式使用：const { current, start } = useCountDown({ time })
+    const basic = useCountDown({ time: 60000 });
+
+    // 控制区：20 秒，归零时把状态复位，按钮文案随之回到「开始」
+    const hasStarted = ref(false);
+    const running = ref(false);
+    const control = useCountDown({
+        time: 20000,
+        onChange: (current: CountDownTime): void => {
+            if (current.remainTime == 0) {
+                running.value = false;
+                hasStarted.value = false;
+            }
+        }
+    });
+
+    // 结束回调：10 秒，归零时触发 onFinish
+    const finished = ref(false);
+    const quick = useCountDown({
+        time: 10000,
+        onFinish: (): void => {
+            finished.value = true;
+        }
+    });
+
+    const basicRows = computed((): Row[] => {
+        const current = basic.current.value;
+        return [
+            { desc: t('useCountDown.days'), result: current.days.toString(), last: false },
+            { desc: t('useCountDown.hours'), result: $u.padZero(current.hours), last: false },
+            { desc: t('useCountDown.minutes'), result: $u.padZero(current.minutes), last: false },
+            { desc: t('useCountDown.seconds'), result: $u.padZero(current.seconds), last: false },
+            { desc: t('useCountDown.remain'), result: current.remainTime.toString(), last: true }
+        ];
+    });
+
+    const controlStatus = computed((): string => {
+        if (running.value) return t('useCountDown.runningText');
+        if (!hasStarted.value) return t('useCountDown.waitingText');
+        return t('useCountDown.pausedText');
+    });
+
+    const controlRows = computed((): Row[] => [
+        { desc: t('useCountDown.statusLabel'), result: controlStatus.value, last: false },
+        { desc: t('useCountDown.remain'), result: control.current.value.remainTime.toString(), last: true }
+    ]);
+
+    const startText = computed((): string => (hasStarted.value ? t('useCountDown.continueBtn') : t('useCountDown.startBtn')));
+
+    const quickRemainText = computed((): string => (quick.current.value.remainTime / 1000).toFixed(1) + 's');
+
+    function handleControlStart(): void {
+        hasStarted.value = true;
+        running.value = true;
+        control.start();
+    }
+
+    function handleControlPause(): void {
+        running.value = false;
+        control.pause();
+    }
+
+    // reset 只重置数值，不会自动开始
+    function handleControlReset(): void {
+        running.value = false;
+        hasStarted.value = false;
+        control.reset(null);
+    }
+
+    function handleQuickStart(): void {
+        finished.value = false;
+        quick.reset(null);
+        quick.start();
+    }
+
+    onMounted((): void => {
+        basic.start();
+    });
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page 组件提供 */
+</style>
