@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.12（2026-11-03）
+
+### ✨ Features | 新功能
+
+- 新增 useDeviceInfo 钩子使用示例，包含设备身份、系统平台、屏幕方向等场景示例，方便快速接入使用。
+- 新增 useWindowInfo 组件示例，用于快速获取 windowWidth、windowHeight、screenWidth、screenHeight、pixelRatio
+- 新增 useSafeArea 示例，主要用于快速获取屏幕顶部、底部安全区域距离
+
 ## 1.0.11（2026-11-02）
 
 ### ✨ Features | 新功能
