@@ -138,7 +138,7 @@
           "style": {
             "navigationBarTitleText": "useThrottle 节流Hook"
           }
-        // },
+        },
         // {
         //   "path": "useLocale/index",
         //   "style": {
@@ -151,29 +151,29 @@
         //     "navigationBarTitleText": "useTheme 主题管理"
         //   }
         // },
-        // {
-        //   "path": "useCountDown/index",
-        //   "style": {
-        //     "navigationBarTitleText": "useCountDown 倒计时"
-        //   }
-        // },
-        // {
-        //   "path": "useWindowInfo/index",
-        //   "style": {
-        //     "navigationBarTitleText": "useWindowInfo 窗口信息"
-        //   }
-        // },
-        // {
-        //   "path": "useSafeArea/index",
-        //   "style": {
-        //     "navigationBarTitleText": "useSafeArea 安全区"
-        //   }
-        // },
-        // {
-        //   "path": "useDeviceInfo/index",
-        //   "style": {
-        //     "navigationBarTitleText": "useDeviceInfo 设备信息"
-        //   }
+        {
+          "path": "useCountDown/index",
+          "style": {
+            "navigationBarTitleText": "useCountDown 倒计时"
+          }
+        },
+        {
+          "path": "useWindowInfo/index",
+          "style": {
+            "navigationBarTitleText": "useWindowInfo 窗口信息"
+          }
+        },
+        {
+          "path": "useSafeArea/index",
+          "style": {
+            "navigationBarTitleText": "useSafeArea 安全区"
+          }
+        },
+        {
+          "path": "useDeviceInfo/index",
+          "style": {
+            "navigationBarTitleText": "useDeviceInfo 设备信息"
+          }
         // },
         // {
         //   "path": "useRect/index",
