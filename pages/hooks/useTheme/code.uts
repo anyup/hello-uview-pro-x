@@ -1,0 +1,227 @@
+/**
+ * useTheme 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script）
+ */
+
+/** 当前主题状态 */
+const state = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in stateRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+// 解构方式使用：const { currentTheme } = useTheme()
+const { themes, currentTheme, darkMode, isInDarkMode } = useTheme();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+const stateRows = computed((): Row[] => {
+    const theme = currentTheme.value;
+    return [
+        { desc: '当前主题：', result: theme != null ? theme.name : '-', last: false },
+        { desc: '暗黑设置：', result: darkMode.value, last: false },
+        { desc: '生效暗黑：', result: isInDarkMode() ? 'dark' : 'light', last: false },
+        { desc: '可用主题数：', result: themes.value.length.toString(), last: true }
+    ];
+});
+</script>
+`;
+
+/** 主题切换 */
+const theme = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in themeRows"
+            :key="index"
+            :title="item.label"
+            :label="item.name"
+            :value="item.active ? '当前' : ''"
+            :arrow="true"
+            :border-bottom="!item.last"
+            @click="setTheme(item.name)"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { $u, useTheme, type Theme, type ThemeColor } from '@/uni_modules/uview-pro-x';
+
+const { themes, currentTheme, initTheme, setTheme } = useTheme();
+
+type ThemeRow = {
+    name: string;
+    label: string;
+    primary: string;
+    active: boolean;
+    last: boolean;
+};
+
+// 演示主题：只覆盖主色，其余令牌由主题引擎回退到基础调色板
+function buildDemoTheme(name: string, label: string, primary: string): Theme {
+    const palette: ThemeColor = { primary: primary };
+    const theme: Theme = { name: name, label: label, color: palette };
+    return theme;
+}
+
+// 与内置主题合并（同名覆盖）
+initTheme([buildDemoTheme('demoPurple', '演示紫', '#7c4dff'), buildDemoTheme('demoGreen', '演示绿', '#00b578')]);
+
+const themeRows = computed((): ThemeRow[] => {
+    const list = themes.value;
+    const current = currentTheme.value;
+    const currentName = current != null ? current.name : '';
+    const rows: ThemeRow[] = [];
+    for (let i = 0; i < list.length; i++) {
+        const item = list[i];
+        rows.push({
+            name: item.name,
+            label: $u.strOr(item.label, item.name),
+            primary: $u.strOr(item.color.primary, ''),
+            active: item.name == currentName,
+            last: i == list.length - 1
+        });
+    }
+    return rows;
+});
+</script>
+`;
+
+/** 暗黑模式 */
+const dark = `
+<template>
+    <ux-row :gutter="10">
+        <ux-col :span="4">
+            <ux-button size="small" type="primary" block text="亮色" @click="setDarkMode('light')" />
+        </ux-col>
+        <ux-col :span="4">
+            <ux-button size="small" type="info" block text="暗黑" @click="setDarkMode('dark')" />
+        </ux-col>
+        <ux-col :span="4">
+            <ux-button size="small" type="info" block text="跟随系统" @click="setDarkMode('auto')" />
+        </ux-col>
+    </ux-row>
+    <ux-gap :height="10" />
+    <ux-button size="small" type="warning" block text="切换明暗" @click="toggleDarkMode()" />
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { darkMode, setDarkMode, toggleDarkMode } = useTheme();
+
+// light 强制亮色 / dark 强制暗黑 / auto 跟随系统
+const isLight = computed((): boolean => darkMode.value == 'light');
+</script>
+`;
+
+/** 主题 CSS 变量 */
+const cssVars = `
+<template>
+    <ux-cell-group :border="false">
+        <ux-cell-item
+            v-for="(item, index) in cssVarRows"
+            :key="index"
+            :title="item.desc"
+            :value="item.result"
+            :arrow="false"
+            :border-bottom="!item.last"
+        />
+    </ux-cell-group>
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { cssVars } = useTheme();
+
+type Row = {
+    desc: string;
+    result: string;
+    last: boolean;
+};
+
+// 变量表整体替换，computed 会跟随刷新；config.type 内的令牌会加 --u-type 前缀
+function cssVar(key: string): string {
+    const value = cssVars.value[key];
+    if (value == null) return '-';
+    return value.toString();
+}
+
+const cssVarRows = computed((): Row[] => [
+    { desc: '--u-theme-mode', result: cssVar('--u-theme-mode'), last: false },
+    { desc: '--u-type-primary', result: cssVar('--u-type-primary'), last: false },
+    { desc: '--u-type-success', result: cssVar('--u-type-success'), last: false },
+    { desc: '--u-main-color', result: cssVar('--u-main-color'), last: true }
+]);
+</script>
+`;
+
+/** 恢复默认 */
+const reset = `
+<template>
+    <ux-button size="small" type="primary" block text="恢复默认主题" @click="restoreDefault()" />
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { currentTheme, initTheme, setTheme, setDarkMode } = useTheme();
+
+// 无参 initTheme() 回到内置主题；再把解析后的主题名写回存储
+function restoreDefault(): void {
+    initTheme();
+    setDarkMode('light');
+    const current = currentTheme.value;
+    if (current != null) setTheme(current.name);
+}
+
+// 离开页面也恢复，避免影响其他页面
+onUnload((): void => {
+    restoreDefault();
+});
+</script>
+`;
+
+/** 使用说明 */
+const usage = `
+<template>
+    <ux-alert-tips type="primary" :show-icon="true" title="const { themes, currentTheme, setTheme } = useTheme()" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="状态为模块级，跨页面共享同一份主题" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="setTheme / setDarkMode 会写入本地存储" />
+    <ux-gap :height="8" />
+    <ux-alert-tips type="primary" :show-icon="true" title="额外主题通过 initTheme([...]) 注入，与内置主题合并" />
+</template>
+
+<script setup lang="uts">
+import { useTheme } from '@/uni_modules/uview-pro-x';
+
+const { themes, currentTheme, cssVars, setTheme, setDarkMode, initTheme } = useTheme();
+</script>
+`;
+
+export const codes = {
+    state,
+    theme,
+    dark,
+    cssVars,
+    reset,
+    usage
+};
