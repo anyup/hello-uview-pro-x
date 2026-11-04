@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.14（2026-11-04）
+
+### ✨ Features | 新功能
+
+- 新增 useRect 钩子函数，用于获取元素布局信息，演示元素尺寸测量、重新测量功能
+
 ## 1.0.13（2026-11-03）
 
 ### ✨ Features | 新功能
