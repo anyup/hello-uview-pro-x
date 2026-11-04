@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.15（2026-11-04）
+
+### ✨ Features | 新功能
+
+- **useLocale:** 重构 useLocale 国际化功能支持，优化页面结构，删除冗余按钮样式
+- **useTheme:** 新增 useTheme 主题管理 hook，包含快速查看主题状态、主题切换、暗黑模式设置、CSS 变量查看、恢复默认等
+
 ## 1.0.14（2026-11-04）
 
 ### ✨ Features | 新功能
