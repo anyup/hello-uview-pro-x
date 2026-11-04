@@ -1,189 +1,230 @@
 <template>
-	<demo-page :title="demo('useLocale.title')" :subtitle="demo('useLocale.subtitle')">
+    <demo-page :title="demo('useLocale.title')" :subtitle="demo('useLocale.subtitle')">
+        <!-- 当前语言 -->
+        <demo-block :title="demo('useLocale.currentTitle')" :code="codes.current">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="demo('useLocale.currentLang')" :value="currentLangText" :arrow="false" />
+                <ux-cell-item :title="demo('useLocale.localeLabel')" :value="currentLocaleText" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.currentTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.currentLang') }}{{ currentLocale?.label }} ({{ currentLocale?.name }})</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.localeLabel') }}{{ currentLocale?.locale }}</text>
-			</view>
-		</demo-block>
+        <!-- 切换语言 -->
+        <demo-block :title="demo('useLocale.switchTitle')" :code="codes.switchBlock">
+            <ux-button
+                size="small"
+                :type="isActive('zh-CN') ? 'primary' : 'info'"
+                block
+                :text="demo('useLocale.zhBtn')"
+                @click="switchLocale('zh-CN')"
+            />
+            <ux-gap :height="8" />
+            <ux-button
+                size="small"
+                :type="isActive('en-US') ? 'primary' : 'info'"
+                block
+                text="English"
+                @click="switchLocale('en-US')"
+            />
+            <ux-gap :height="8" />
+            <ux-button
+                size="small"
+                :type="isActive('fr-FR') ? 'primary' : 'info'"
+                block
+                text="Français"
+                @click="switchLocale('fr-FR')"
+            />
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.switchTitle')">
-			<view class="demo-item">
-				<view class="demo-btn-group">
-					<view
-						class="demo-btn"
-						:class="{ 'demo-btn--active': currentLocale?.name === 'zh-CN' }"
-						@click="switchLocale('zh-CN')"
-					>
-						<text class="demo-btn-text" :class="{ 'demo-btn-text--active': currentLocale?.name === 'zh-CN' }">{{ demo('useLocale.zhBtn') }}</text>
-					</view>
-					<view
-						class="demo-btn demo-btn--split"
-						:class="{ 'demo-btn--active': currentLocale?.name === 'en-US' }"
-						@click="switchLocale('en-US')"
-					>
-						<text class="demo-btn-text" :class="{ 'demo-btn-text--active': currentLocale?.name === 'en-US' }">English</text>
-					</view>
-					<view
-						class="demo-btn demo-btn--split"
-						:class="{ 'demo-btn--active': currentLocale?.name === 'fr-FR' }"
-						@click="switchLocale('fr-FR')"
-					>
-						<text class="demo-btn-text" :class="{ 'demo-btn-text--active': currentLocale?.name === 'fr-FR' }">Français</text>
-					</view>
-				</view>
-			</view>
-		</demo-block>
+        <!-- 组件文案翻译 -->
+        <demo-block :title="demo('useLocale.translateTitle')" :code="codes.translate">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in translateRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.translateTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.modalTitle') }}</text>
-				<text class="demo-result">{{ t('uModal.title') }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.modalConfirm') }}</text>
-				<text class="demo-result">{{ t('uModal.confirmText') }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.searchPlaceholder') }}</text>
-				<text class="demo-result">{{ t('uSearch.placeholder') }}</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.uploadText') }}</text>
-				<text class="demo-result">{{ t('uUpload.uploadText') }}</text>
-			</view>
-		</demo-block>
+        <!-- 占位符替换 -->
+        <demo-block :title="demo('useLocale.placeholderTitle')" :code="codes.placeholder">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="demo('useLocale.originalText')" :value="placeholderRaw" :arrow="false" />
+                <ux-cell-item :title="demo('useLocale.replacedText')" :value="placeholderReplaced" :arrow="false" :border-bottom="false" />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.placeholderTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.originalText') }}</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.replacedText') }}</text>
-				<text class="demo-result">{{ t('uUpload.notAllowedExt', { ext: 'pdf' }) }}</text>
-			</view>
-		</demo-block>
+        <!-- 命名空间 -->
+        <demo-block :title="demo('useLocale.namespaceTitle')" :code="codes.namespace">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in namespaceRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.namespaceTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.uploadTextLabel') }}</text>
-				<text class="demo-result">{{ uploadT('uploadText') }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.uploadImageLabel') }}</text>
-				<text class="demo-result">{{ uploadT('uploadImage') }}</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.retryLabel') }}</text>
-				<text class="demo-result">{{ uploadT('retry') }}</text>
-			</view>
-		</demo-block>
+        <!-- 语言包列表 -->
+        <demo-block :title="demo('useLocale.localesTitle')" :code="codes.locales">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in localeRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.localesTitle')">
-			<view v-for="(item, index) in locales" :key="index" class="demo-item" :class="index === locales.length - 1 ? 'demo-item--last' : ''">
-				<text class="demo-desc">{{ index + 1 }}. {{ item.label }} ({{ item.name }})</text>
-			</view>
-		</demo-block>
+        <!-- 指定语言翻译 -->
+        <demo-block :title="demo('useLocale.mergeTitle')" :code="codes.merge">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in mergeRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.mergeTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.enSectionSubTitle') }}</text>
-				<text class="demo-result">{{ t('uSection.subTitle', null, 'en-US') }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.enEmptyData') }}</text>
-				<text class="demo-result">{{ t('uEmpty.data', null, 'en-US') }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.enModalTitle') }}</text>
-				<text class="demo-result">{{ t('uModal.title', null, 'en-US') }}</text>
-			</view>
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.frEmptySearch') }}</text>
-				<text class="demo-result">{{ t('uEmpty.search', null, 'fr-FR') }}</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.frSectionSubTitle') }}</text>
-				<text class="demo-result">{{ t('uSection.subTitle', null, 'fr-FR') }}</text>
-			</view>
-		</demo-block>
+        <!-- 内置语言包 -->
+        <demo-block :title="demo('useLocale.calendarTitle')" :code="codes.builtin">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in builtinRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
 
-		<demo-block :title="demo('useLocale.calendarTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.weekLabel') }}</text>
-				<text class="demo-result">{{ t('uCalendar.sun') }} {{ t('uCalendar.mon') }} {{ t('uCalendar.tue') }} {{ t('uCalendar.wed') }}</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.yearMonthLabel') }}</text>
-				<text class="demo-result">{{ t('uCalendar.year') }} {{ t('uCalendar.month') }}</text>
-			</view>
-		</demo-block>
-
-		<demo-block :title="demo('useLocale.emptyTitle')">
-			<view class="demo-item">
-				<text class="demo-desc">{{ demo('useLocale.carLabel') }}</text>
-				<text class="demo-result">{{ t('uEmpty.car') }}</text>
-			</view>
-			<view class="demo-item demo-item--last">
-				<text class="demo-desc">{{ demo('useLocale.searchLabel') }}</text>
-				<text class="demo-result">{{ t('uEmpty.search') }}</text>
-			</view>
-		</demo-block>
-	</demo-page>
+        <!-- 空状态文案 -->
+        <demo-block :title="demo('useLocale.emptyTitle')" :code="codes.builtin">
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in emptyRows"
+                    :key="index"
+                    :title="item.title"
+                    :value="item.value"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
+        </demo-block>
+    </demo-page>
 </template>
 
 <script setup lang="uts">
-import { useLocale } from '@/uni_modules/uview-pro-x'
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
 
-// 使用全局 useLocale - 解构方式
-const { t, currentLocale, locales, setLocale } = useLocale()
+    // 使用全局 useLocale - 解构方式
+    const { t, currentLocale, locales, setLocale } = useLocale();
 
-// 页面自身文案使用 demo 命名空间
-const { t: demo } = useLocale('demo')
+    // 页面自身文案使用 demo 命名空间
+    const { t: demo } = useLocale('demo');
 
-// 使用命名空间 useLocale (uUpload) - 解构方式
-const { t: uploadT } = useLocale('uUpload')
+    // 使用命名空间 useLocale (uUpload) - 解构方式
+    const { t: uploadT } = useLocale('uUpload');
 
-// 切换语言
-const switchLocale = (name: string) => {
-	setLocale(name)
-}
+    type CellRow = {
+        title: string;
+        value: string;
+        last: boolean;
+    };
+
+    // currentLocale 可能为 null，统一在这里收敛
+    const currentLangText = computed((): string => {
+        const cur = currentLocale.value;
+        if (cur == null) return '-';
+        return cur.label + ' (' + cur.name + ')';
+    });
+
+    const currentLocaleText = computed((): string => {
+        const cur = currentLocale.value;
+        return cur == null ? '-' : cur.locale;
+    });
+
+    const currentName = computed((): string => {
+        const cur = currentLocale.value;
+        return cur == null ? '' : cur.name;
+    });
+
+    const translateRows = computed((): CellRow[] => [
+        { title: demo('useLocale.modalTitle'), value: t('uModal.title'), last: false },
+        { title: demo('useLocale.modalConfirm'), value: t('uModal.confirmText'), last: false },
+        { title: demo('useLocale.searchPlaceholder'), value: t('uSearch.placeholder'), last: false },
+        { title: demo('useLocale.uploadText'), value: t('uUpload.uploadText'), last: true }
+    ]);
+
+    // 占位符：原文含 {ext}，翻译时替换为 pdf
+    const placeholderRaw = 'uUpload.notAllowedExt';
+    const placeholderReplaced = computed((): string => t('uUpload.notAllowedExt', { ext: 'pdf' }));
+
+    const namespaceRows = computed((): CellRow[] => [
+        { title: demo('useLocale.uploadTextLabel'), value: uploadT('uploadText'), last: false },
+        { title: demo('useLocale.uploadImageLabel'), value: uploadT('uploadImage'), last: false },
+        { title: demo('useLocale.retryLabel'), value: uploadT('retry'), last: true }
+    ]);
+
+    // 语言包列表：last 在数据层生成，模板不读源数组长度
+    const localeRows = computed((): CellRow[] => {
+        const list = locales.value;
+        const rows: CellRow[] = [];
+        for (let i = 0; i < list.length; i++) {
+            rows.push({
+                title: (i + 1).toString(),
+                value: list[i].label + ' (' + list[i].name + ')',
+                last: i == list.length - 1
+            });
+        }
+        return rows;
+    });
+
+    // 第三参数指定语言，不受当前语言影响
+    const mergeRows: CellRow[] = [
+        { title: demo('useLocale.enSectionSubTitle'), value: t('uSection.subTitle', null, 'en-US'), last: false },
+        { title: demo('useLocale.enEmptyData'), value: t('uEmpty.data', null, 'en-US'), last: false },
+        { title: demo('useLocale.enModalTitle'), value: t('uModal.title', null, 'en-US'), last: false },
+        { title: demo('useLocale.frEmptySearch'), value: t('uEmpty.search', null, 'fr-FR'), last: false },
+        { title: demo('useLocale.frSectionSubTitle'), value: t('uSection.subTitle', null, 'fr-FR'), last: true }
+    ];
+
+    const builtinRows: CellRow[] = [
+        { title: demo('useLocale.weekLabel'), value: t('uCalendar.sun') + ' ' + t('uCalendar.mon') + ' ' + t('uCalendar.tue') + ' ' + t('uCalendar.wed'), last: false },
+        { title: demo('useLocale.yearMonthLabel'), value: t('uCalendar.year') + ' ' + t('uCalendar.month'), last: true }
+    ];
+
+    const emptyRows: CellRow[] = [
+        { title: demo('useLocale.carLabel'), value: t('uEmpty.car'), last: false },
+        { title: demo('useLocale.searchLabel'), value: t('uEmpty.search'), last: true }
+    ];
+
+    function isActive(name: string): boolean {
+        return currentName.value == name;
+    }
+
+    // 切换语言
+    function switchLocale(name: string): void {
+        setLocale(name);
+    }
 </script>
 
 <style lang="scss">
-/* 分段切换按钮（覆盖全局 demo-btn 样式，撑满整行） */
-.demo-btn-group {
-	display: flex;
-	flex-direction: row;
-}
-
-.demo-btn {
-	flex: 1;
-	background-color: $u-bg-gray-light;
-	padding: 10px 0;
-	border-radius: 4px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.demo-btn--split {
-	margin-left: 10px;
-}
-
-.demo-btn--active {
-	background-color: $u-type-primary;
-}
-
-.demo-btn-text {
-	font-size: 14px;
-	color: $u-main-color;
-}
-
-.demo-btn-text--active {
-	color: $u-white-color;
-}
+    /* 样式由 demo-page 组件提供 */
 </style>
