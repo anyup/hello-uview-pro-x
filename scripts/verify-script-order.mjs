@@ -49,13 +49,20 @@ function extractTemplate(source) {
  * 权威：.agents/skills/component-writer/references/spec/ 的模板属性规范章节。
  * ------------------------------------------------------------------ */
 
-/** 引号感知地找标签闭合 >（属性值内的 > 不闭合标签，如 v-if="a > b"） */
+/** 引号与行内注释感知地找标签闭合 >（属性值内的 > 不闭合标签，标签内 `<!-- -->` 里的 > 也不闭合） */
 function findTagEnd(body, from) {
     let quote = null;
     for (let k = from; k < body.length; k++) {
         const ch = body[k];
         if (quote) {
             if (ch === quote) quote = null;
+            continue;
+        }
+        // 行内注释（如模板条件编译）整体跳过，否则 `-->` 的 > 会被误当成标签闭合
+        if (ch === '<' && body.startsWith('<!--', k)) {
+            const ce = body.indexOf('-->', k + 4);
+            if (ce === -1) return -1;
+            k = ce + 2;
             continue;
         }
         if (ch === '"' || ch === "'") {
@@ -95,7 +102,13 @@ function scanTags(body) {
     return tags;
 }
 
-/** 切分开标签的属性列表（含布尔属性；值按引号配对读取），返回 { name, raw, selfClosing } */
+/**
+ * 切分开标签的属性列表（含布尔属性；值按引号配对读取），返回 { name, raw, selfClosing }。
+ * 行内注释（模板内条件编译 `<!-- #ifdef MP-WEIXIN -->` 包裹单个属性的写法）不是属性，
+ * 按锚点挂到相邻属性上整体搬迁：`#ifdef`/`#ifndef` 是其后属性的前置行，`#else`/`#elif`/`#endif`
+ * 是前一个属性的后置行，其它行内注释是其后属性的前置行。不这么做会被当成属性参与码点排序
+ * （`<!--`、`#ifdef` 分别落进静态组与 v-指令组），导致永远判定乱序。
+ */
 function parseOpenTag(tagRaw) {
     let inner = tagRaw.slice(1, -1); // 去掉 < 与 >
     let selfClosing = false;
@@ -106,10 +119,24 @@ function parseOpenTag(tagRaw) {
     const m = inner.match(/^([\w-]+)/);
     const name = m ? m[1] : '';
     const attrs = [];
+    const pending = []; // 尚未找到宿主属性的行内注释（前置行）
     let i = m ? m[0].length : 0;
     while (i < inner.length) {
         while (i < inner.length && /\s/.test(inner[i])) i++;
         if (i >= inner.length) break;
+        if (inner.startsWith('<!--', i)) {
+            const ce = inner.indexOf('-->', i + 4);
+            const end = ce === -1 ? inner.length : ce + 3;
+            const cmt = inner.slice(i, end);
+            i = end;
+            // 闭合/分支指令贴在前一个属性之后，开块指令与普通注释贴在后一个属性之前
+            if (/^<!--\s*#(?:else|elif|endif)\b/.test(cmt) && attrs.length > 0) {
+                attrs[attrs.length - 1].trail.push(cmt);
+            } else {
+                pending.push(cmt);
+            }
+            continue;
+        }
         const nameStart = i;
         while (i < inner.length && !/[\s=]/.test(inner[i])) i++;
         const attrName = inner.slice(nameStart, i);
@@ -129,7 +156,11 @@ function parseOpenTag(tagRaw) {
                 raw = inner.slice(nameStart, i);
             }
         }
-        attrs.push({ name: attrName, raw });
+        attrs.push({ name: attrName, raw, lead: pending.splice(0), trail: [] });
+    }
+    // 末尾残留的注释挂到最后一个属性之后，避免丢行
+    if (pending.length > 0 && attrs.length > 0) {
+        attrs[attrs.length - 1].trail.push(...pending);
     }
     return { name, selfClosing, attrs };
 }
@@ -161,13 +192,15 @@ function detectEol(text) {
 
 /**
  * 规范化开标签（eol 取源文件换行风格，避免 CRLF 文件插入 LF 造成混合换行）：
- * 0 个属性 → 原样；1 个属性 → 单行；≥2 个属性 → 每属性一行（缩进 indent+4），闭合 > 或 /> 单独一行
+ * 0 个属性 → 原样；1 个属性且无行内注释 → 单行；其余 → 每属性一行（缩进 indent+4），
+ * 闭合 > 或 /> 单独一行；行内注释随其宿主属性一起搬迁（前置行在前、后置行在后）。
  */
 function formatOpenTag(tagRaw, indent, eol) {
     const nl = eol || '\n';
     const { name, selfClosing, attrs } = parseOpenTag(tagRaw);
     if (attrs.length === 0) return tagRaw;
-    if (attrs.length === 1) {
+    const hasComment = attrs.some((a) => a.lead.length > 0 || a.trail.length > 0);
+    if (attrs.length === 1 && !hasComment) {
         return '<' + name + ' ' + attrs[0].raw + (selfClosing ? ' />' : '>');
     }
     const sorted = attrs.slice().sort((a, b) => {
@@ -180,7 +213,13 @@ function formatOpenTag(tagRaw, indent, eol) {
         return 0; // 稳定排序：同名属性保持原相对顺序
     });
     const pad = indent + '    ';
-    return '<' + name + nl + sorted.map((a) => pad + a.raw).join(nl) + nl + indent + (selfClosing ? '/>' : '>');
+    const lines = [];
+    for (const a of sorted) {
+        for (const c of a.lead) lines.push(c);
+        lines.push(a.raw);
+        for (const c of a.trail) lines.push(c);
+    }
+    return '<' + name + nl + lines.map((l) => pad + l).join(nl) + nl + indent + (selfClosing ? '/>' : '>');
 }
 
 /** 模板属性顺序检查：对每个 ≥1 属性的开标签，校验其与规范化输出一致 */

@@ -5,11 +5,5 @@
       "模板 class 硬编码 BEM 裸类 'ux-xxx__foo'：组件自身类必须用 bem.b/e/m/em/is 生成（xxx）",
       "px 手拼违规（应改 `$u.addUnit(...)`，仅纯字面量可直接写）：xxx"
     ]
-  },
-  "ux-collapse-item": [
-    "script 硬编码 BEM 裸类 'ux-collapse-item--hover'：类名一律用 bem.b/e/m/em/is 生成后存入变量/返回值，不得手写字符串字面量"
-  ],
-  "ux-grid-item": [
-    "script 硬编码 BEM 裸类 'ux-grid-item--hover'：类名一律用 bem.b/e/m/em/is 生成后存入变量/返回值，不得手写字符串字面量"
-  ]
+  }
 }
