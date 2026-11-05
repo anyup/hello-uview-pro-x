@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.17（2026-11-06）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- 修复非 APP 环境下图标提示文字显示异常的问题
+
+### ♻️ Code Refactoring | 代码重构
+
+- 删除无用验证页面及相关配置
+- 删除已废弃的遮罩组件文件
+
 ## 1.0.16（2026-11-05）
 
 ### ♻️ Code Refactoring | 代码重构
