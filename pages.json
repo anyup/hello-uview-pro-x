@@ -424,12 +424,6 @@
           }
         },
         {
-          "path": "mask/verify",
-          "style": {
-            "navigationBarTitleText": "Mask 验证（临时）"
-          }
-        },
-        {
           "path": "loading/index",
           "style": {
             "navigationBarTitleText": "Loading 加载"
