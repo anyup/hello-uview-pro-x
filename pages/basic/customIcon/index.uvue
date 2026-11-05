@@ -162,7 +162,9 @@ const selectIcon = (name: string) => {
 
 /* 同名不串字：每个图标名下并排两枚（内置库 / 自定义库） */
 .icon-dual-hint {
+    /* #ifndef APP */
     display: block;
+    /* #endif */
     color: $u-tips-color;
     font-size: 12px;
     margin-bottom: 10px;
