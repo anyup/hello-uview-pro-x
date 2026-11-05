@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.16（2026-11-05）
+
+### ♻️ Code Refactoring | 代码重构
+
+- **ux-collapse-item:** 优化折叠项 hover 样式的类名生成方式，使用 bem 工具类
+- **ux-column-notice:** 提取通告栏文字类型类名的计算属性，优化代码结构
+- **ux-grid-item:** 优化部分硬编码样式，统一样式命名生成工具
+- 优化脚本顺序校验的行内注释处理逻辑
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-image:** 修复微信小程序下图片长按菜单失效问题
+
 ## 1.0.15（2026-11-04）
 
 ### ✨ Features | 新功能
