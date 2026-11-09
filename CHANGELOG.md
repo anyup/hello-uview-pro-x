@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.19（2026-11-09）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **type:** 修复 DarkMode 运行时导入问题，解决加密版插件运行时导入类型报错的问题
+- **module:** 修复加密版插件导入路径错误导致的模块找不到问题
+
+### ✨ Features | 新功能
+
+- **ux-button:** 新增 ux-button 组件的 easycom 配置文件
+
 ## 1.0.18（2026-11-09）
 
 ### ✨ Features | 新功能
