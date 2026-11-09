@@ -1,7 +1,8 @@
 ﻿import App from './App.uvue'
 // 插件对象用命名导入：加密版插件的云端入口为 `export * from './index'`，不转发 default；
 // 命名导出在源码版 / 加密版均可用，故不写 `import uViewProX from ...`
-import { uViewProX, frFR } from './uni_modules/uview-pro-x'
+// 加密版插件只能用 uni_modules 别名（@/uni_modules/<id>）导入：相对路径走不到 uni_modules 解析链，会因入口 index.uts 已加密而报「Cannot find module」
+import { uViewProX, frFR } from '@/uni_modules/uview-pro-x'
 import { zhCN, enUS } from './locales'
 import themes from './theme.uts'
 import { createSSRApp } from 'vue'
