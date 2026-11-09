@@ -118,7 +118,9 @@
 		return style;
 	});
 
-	// App：scroll-view 容器滚动
+	// App：scroll-view 容器自身滚动时上报（页面把 usePageScroll().onScroll 绑到这里）
+	// 注意：demo 容器根节点未限高时实际滚动发生在页面层，此通道不会触发，
+	// 由页面脚本自己注册的 onPageScroll 兜底（ux-back-top 内部也是这么做的）
 	// #ifdef APP
 	const onScroll = (e: UniScrollEvent) => {
 		emit('scroll', e);

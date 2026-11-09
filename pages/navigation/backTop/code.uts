@@ -16,15 +16,18 @@ const basic = `
 </template>
 
 <script setup lang="uts">
-const scrollTop = ref(0);
+import { usePageScroll } from '@/uni_modules/uview-pro-x';
+
+// 页面滚动距离：页面层 onPageScroll 在页面脚本里注册（小程序端编译期需要），容器滚动绑 onScroll
+const { scrollTop, setScrollTop } = usePageScroll();
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
+
 const items = ref<string[]>([]);
 for (let i = 0; i < 20; i++) {
     items.value.push('item_' + i);
 }
-
-onPageScroll((e) => {
-    scrollTop.value = e.scrollTop;
-});
 </script>
 
 <style scoped>
@@ -56,15 +59,18 @@ const shape = `
 </template>
 
 <script setup lang="uts">
-const scrollTop = ref(0);
+import { usePageScroll } from '@/uni_modules/uview-pro-x';
+
+// 页面滚动距离：页面层 onPageScroll 在页面脚本里注册（小程序端编译期需要），容器滚动绑 onScroll
+const { scrollTop, setScrollTop } = usePageScroll();
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
+
 const items = ref<string[]>([]);
 for (let i = 0; i < 20; i++) {
     items.value.push('item_' + i);
 }
-
-onPageScroll((e) => {
-    scrollTop.value = e.scrollTop;
-});
 </script>
 
 <style scoped>
@@ -92,15 +98,18 @@ const tips = `
 </template>
 
 <script setup lang="uts">
-const scrollTop = ref(0);
+import { usePageScroll } from '@/uni_modules/uview-pro-x';
+
+// 页面滚动距离：页面层 onPageScroll 在页面脚本里注册（小程序端编译期需要），容器滚动绑 onScroll
+const { scrollTop, setScrollTop } = usePageScroll();
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
+
 const items = ref<string[]>([]);
 for (let i = 0; i < 20; i++) {
     items.value.push('item_' + i);
 }
-
-onPageScroll((e) => {
-    scrollTop.value = e.scrollTop;
-});
 </script>
 
 <style scoped>
@@ -128,15 +137,18 @@ const position = `
 </template>
 
 <script setup lang="uts">
-const scrollTop = ref(0);
+import { usePageScroll } from '@/uni_modules/uview-pro-x';
+
+// 页面滚动距离：页面层 onPageScroll 在页面脚本里注册（小程序端编译期需要），容器滚动绑 onScroll
+const { scrollTop, setScrollTop } = usePageScroll();
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
+
 const items = ref<string[]>([]);
 for (let i = 0; i < 20; i++) {
     items.value.push('item_' + i);
 }
-
-onPageScroll((e) => {
-    scrollTop.value = e.scrollTop;
-});
 </script>
 
 <style scoped>
@@ -170,15 +182,18 @@ const iconStyle = `
 </template>
 
 <script setup lang="uts">
-const scrollTop = ref(0);
+import { usePageScroll } from '@/uni_modules/uview-pro-x';
+
+// 页面滚动距离：页面层 onPageScroll 在页面脚本里注册（小程序端编译期需要），容器滚动绑 onScroll
+const { scrollTop, setScrollTop } = usePageScroll();
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
+
 const items = ref<string[]>([]);
 for (let i = 0; i < 20; i++) {
     items.value.push('item_' + i);
 }
-
-onPageScroll((e) => {
-    scrollTop.value = e.scrollTop;
-});
 </script>
 
 <style scoped>

@@ -48,28 +48,23 @@
 </template>
 
 <script setup lang="uts">
-    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { useLocale, usePageScroll } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
 
-    const scrollTop = ref(0);
+    // 滚动距离：页面滚动与容器滚动都写进同一个 ref，页面里不用再判断平台
+    const { scrollTop, onScroll, setScrollTop } = usePageScroll();
+
+    // 页面层滚动必须在页面脚本里注册：小程序端编译期要靠这次调用给页面挂上滚动钩子
+    onPageScroll((e) => {
+        setScrollTop(e.scrollTop);
+    });
 
     const testItems = ref<string[]>([]);
     for (let i = 0; i < 20; i++) {
         testItems.value.push(`item_${i}`);
     }
-
-    const onScroll = (e: UniScrollEvent) => {
-        scrollTop.value = e.detail.scrollTop;
-    };
-
-    // 小程序自定义组件不支持页面 onPageScroll，需在页面层监听滚动，手动传给 ux-back-top
-    // #ifdef MP
-    onPageScroll((e) => {
-        scrollTop.value = e.scrollTop;
-    });
-    // #endif
 </script>
 
 <style lang="scss">
