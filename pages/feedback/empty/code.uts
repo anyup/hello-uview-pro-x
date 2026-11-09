@@ -14,7 +14,7 @@ const basic = `
 const icons = `
 <template>
     <view class="empty-icons">
-        <view class="empty-icon-item"><ux-empty mode="car" /></view>
+        <view class="empty-icon-item"><ux-empty mode="cart" /></view>
         <view class="empty-icon-item"><ux-empty mode="list" /></view>
         <view class="empty-icon-item"><ux-empty mode="search" /></view>
         <view class="empty-icon-item"><ux-empty mode="order" /></view>

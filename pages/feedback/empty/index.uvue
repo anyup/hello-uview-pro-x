@@ -10,7 +10,7 @@
         <demo-block :title="t('empty.iconsTitle')" :desc="t('empty.iconsDesc')" :code="codes.icons">
             <view class="empty-icons">
                 <view class="empty-icon-item">
-                    <ux-empty mode="car"></ux-empty>
+                    <ux-empty mode="cart"></ux-empty>
                 </view>
                 <view class="empty-icon-item">
                     <ux-empty mode="list"></ux-empty>
