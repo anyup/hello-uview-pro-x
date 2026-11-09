@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.18（2026-11-09）
+
+### ✨ Features | 新功能
+
+- 新增 usePageScroll 钩子，提供统一的页面滚动距离管理通道，支持页面本身滚动和 scroll-view 容器内滚动两种场景
+- 新增获取导航栏高度的工具方法 getNavbarHeight，用于获取不同平台下的导航栏缺省高度
+
+### ♻️ Code Refactoring | 代码重构
+
+- **ux-navbar:** 统一处理 H5、App、小程序各端的缺省高度值，简化组件内的重复代码
+- **backTop:** 统一使用 usePageScroll 管理滚动状态，简化多端适配逻辑
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-back-top:** 修复滚动距离计算逻辑的描述注释，明确外部 scroll-top 优先的规则，解决小程序端滚动跟踪的理解歧义
+
 ## 1.0.17（2026-11-06）
 
 ### 🐛 Bug Fixes | Bug 修复
