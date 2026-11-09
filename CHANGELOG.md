@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.20（2026-11-10）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **i18n:** 修正多语言文件中部分组件的命名问题，包括简体中文、英文、法语
+- **types:** 解决加密版插件编译时类型导入丢失导致的运行期导出错误问题
+- **empty:** 修复空状态示例中的购物车图标模式声明错误问题
+
 ## 1.0.19（2026-11-09）
 
 ### 🐛 Bug Fixes | Bug 修复
