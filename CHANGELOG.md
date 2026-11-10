@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.21（2026-11-10）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **useChildren:** 修复使用 Pinia 时类型与 useChildren 不兼容导致的运行时异常警告，优化依赖更新问题
+
+### ✨ Features | 新功能
+
+- 新增 pinia 状态管理演示示例，包括定义 store、挂载和页面使用的完整示例
+- **steps:** 新增动态步骤条示例，支持添加和删除步骤，自动同步步骤数、序号与连接线
+
 ## 1.0.20（2026-11-10）
 
 ### 🐛 Bug Fixes | Bug 修复
