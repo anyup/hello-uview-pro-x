@@ -1,0 +1,99 @@
+<template>
+    <demo-page :title="t('pinia.title')" :subtitle="t('pinia.subtitle')">
+        <!-- Store 状态：storeToRefs 解包后模板直接使用 -->
+        <demo-block :title="t('pinia.stateTitle')" :code="codes.store">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('pinia.nameLabel')" :arrow="false">
+                    <text class="pinia-value">{{ name }}</text>
+                </ux-cell-item>
+                <ux-cell-item :title="t('pinia.countLabel')" :arrow="false">
+                    <text class="pinia-value">{{ count }}</text>
+                </ux-cell-item>
+                <ux-cell-item :title="t('pinia.doubleCountLabel')" :arrow="false">
+                    <text class="pinia-value">{{ doubleCount }}</text>
+                </ux-cell-item>
+                <ux-cell-item :title="t('pinia.countTextLabel')" :arrow="false" :border-bottom="false">
+                    <text class="pinia-value">{{ countText }}</text>
+                </ux-cell-item>
+            </ux-cell-group>
+        </demo-block>
+
+        <!-- Actions：修改 store 状态，页面自动响应 -->
+        <demo-block :title="t('pinia.actionsTitle')" :code="codes.usage">
+            <view class="pinia-actions">
+                <view class="pinia-action">
+                    <ux-button size="small" type="primary" block :text="t('pinia.increment')" @click="increment()" />
+                </view>
+                <view class="pinia-action">
+                    <ux-button size="small" type="warning" block :text="t('pinia.decrement')" @click="decrement()" />
+                </view>
+                <view class="pinia-action">
+                    <ux-button size="small" type="success" block :text="t('pinia.rename')" @click="rename()" />
+                </view>
+                <view class="pinia-action">
+                    <ux-button size="small" type="error" block :text="t('pinia.reset')" @click="reset()" />
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 使用说明 -->
+        <demo-block :title="t('pinia.tipsTitle')" :code="codes.mount">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('pinia.tipMount')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('pinia.tipStore')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('pinia.tipRefs')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('pinia.tipVersion')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { storeToRefs } from 'pinia';
+    import { useCounterStore } from '@/store/counter.uts';
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    // 任意页面取到的都是同一份 store 实例
+    const counterStore = useCounterStore();
+
+    // state / getter 必须经 storeToRefs 解构，直接解构 store 会丢失响应式
+    const { name, count, doubleCount, countText } = storeToRefs(counterStore);
+
+    function increment(): void {
+        counterStore.increment();
+    }
+
+    function decrement(): void {
+        counterStore.decrement();
+    }
+
+    function rename(): void {
+        counterStore.rename();
+    }
+
+    function reset(): void {
+        counterStore.reset();
+    }
+</script>
+
+<style lang="scss">
+    .pinia-actions {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .pinia-action {
+        width: 48%;
+        margin-bottom: 8px;
+    }
+
+    .pinia-value {
+        font-weight: 500;
+    }
+</style>

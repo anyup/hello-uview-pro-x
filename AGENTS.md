@@ -42,9 +42,14 @@
 ## 示例页规范
 
 - 页面用 `demo-page` 组件包裹（内部已处理 `scroll-view` 滚动）：根节点 `scroll-view` + `flex: 1`，**禁 `min-height` / `height: 100%`**。
-- 分类分包：`basic` / `form` / `data` / `feedback` / `layout` / `navigation` / `others`，另有 `library`（工具）与 `hooks` 两个子包。
-- 新增示例页四件事：建页 → `pages.json` 注册子包路由 → `pages/tabbar/config.uts` 追加菜单项 → 新增整个分类时同步 `scripts/verify-demo-examples.mjs` 的 `DEMO_GROUP_RE` 目录白名单（漏改会让新目录页面默默不入门禁）。
-- 公共样式 `style/demo.scss`（`App.uvue` 中全局引入）。预定义类名：`.demo-page` / `.demo-header` / `.demo-title` / `.demo-card` / `.demo-card-title` / `.demo-item` / `.demo-desc` / `.demo-result` / `.demo-result-success|error|warning` / `.demo-btn`。
+- 分类分包：`basic` / `form` / `data` / `feedback` / `layout` / `navigation` / `others`，另有 `library`（utils 工具）与 `hooks`（`useXxx` hooks）两个子包。
+- 入口在 **`pages/tabbar/library.uvue`**（消费 `pages/tabbar/config.uts` 的 `libraryCategories` → `toolItems` / `hookItems`），**不是首页** `pages/demo/index.uvue`。
+- 新增示例页四件事：建页（`index.uvue` + `code.uts`）→ `pages.json` 注册子包路由 → `pages/tabbar/config.uts` 追加菜单项 + `tabbarMenu.<name>Desc` 中英双写 → 新增整个分类时同步 `scripts/verify-demo-examples.mjs` 的 `ALL_DEMO_GROUP_RE` 目录白名单（漏改会让新目录页面默默不入门禁）。
+- **每页必带 `code.uts`**：一个 `demo-block` 对应一个片段，`codes.<key>` 与页内 `:code` 同名；片段自包含（含 `template` + `script`），**不得出现 `demo-page` / `demo-block` / `.demo-*` 类**。说明型区块不绑 `:code`。`codes` 导出必须写成**多行**（`export const codes = {` / 每项一行 / `};`），门禁的 `parseCodesKeys` 正则要求 `};` 前有换行，单行写法会被判成「导出未定义」。
+- 列表最后一项的分隔线由**数据层 `last` 字段**控制（`:border-bottom="!item.last"`），模板里**禁读源数组**（`list.length - 1` / `list[index]` 在 Vapor 下可能原生崩溃）。
+- **演示内容组件优先**：列表 → `ux-cell-group` + `ux-cell-item`，按钮 → `ux-button`（多个横排用 `ux-row :gutter` + `ux-col :span`，栅格总数 **12**，三等分用 `:span="4"`），输入 → `ux-input`，状态 → `ux-tag`，说明 → `ux-alert-tips`（「使用说明」区块统一 `type="primary"`，`type="info"` 只用于组件自身的主题演示），间距 → `ux-gap`；**不给 `ux-*` 写 `class` / `:class`**（门禁会判违规），`custom-style` 只在动态数值/颜色时使用。
+- 导入口径：示例页与 `code.uts` 只从库入口导入 `import { $u, useXxx, type Xxx } from '@/uni_modules/uview-pro-x'`，**禁 `libs/` / `types/` / `locale/` 等下级路径**（加密版插件不支持下级目录导入）。
+- 公共样式 `style/demo.scss`（`App.uvue` 中全局引入）。预定义类名：`.demo-page` / `.demo-header` / `.demo-title` / `.demo-card` / `.demo-card-title` / `.demo-item` / `.demo-desc` / `.demo-result` / `.demo-result-success|error|warning` / `.demo-btn`。**新增页不往 `demo.scss` 加类**，控件交给 `ux-*`；旧 `.demo-btn*` / `.demo-item*` 逐步退场。
 - 页面写法（消费侧规范）：`.agents/skills/uview-pro-x/references/`。
 
 ## 验证（默认不跑自动验证）
@@ -61,9 +66,9 @@
   ```powershell
   & "D:\Program Files\HBuilderX\cli.exe" launch web --project "<本仓库绝对路径>"
   ```
-  约 5 秒编译完成（输出 `Local: http://localhost:9000/`）；本仓库 `package.json` 仅承载发布与 changelog 脚本（无 `dev` 脚本），开发服务器仍由 HBuilderX 启动。
+  约 5 秒编译完成（输出 `Local: http://localhost:9000/`）；本仓库无 package.json，不能用 `npm run dev`。
 - **一键验证**：项目根执行 `node scripts/verify-h5.mjs <route> --timeout 120000 [--json]`（route 形如 `feedback/mask`，脚本自动补 `pages/` 与 `/index`；只收集 console/page 错误，不截图）。**勿写临时 playwright 脚本**。
-- **门禁脚本**：`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.uts 一一对应、prop 完整性）。
+- **门禁脚本**：`scripts/verify-type-shims.mjs`（`types/global.uts` 纯类型 ↔ 同名 const 占位一一对应，加密版插件必需；对象型类型不许加占位）、`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.uts 一一对应、prop 完整性）。扫描范围含 `library` / `hooks` 子包；这两组无 `ux-*` 主体组件，自动跳过 prop 完整性一项，其余（段序 / custom-class / code 归档 / 详情）照常校验。
 - **验证职责划分**：AI 只验证 H5（复用常驻 dev server）；**App 端编译验证（UTS 语法最终校验）由用户在 HBuilderX 执行**，AI 不跑 App 构建。
 - **编译报错先查** `.agents/skills/migrate-component/references/error-patterns/README.md` 命中表，命中即按表修，不盲试。
 - **一次性探针脚本用完即清**：只跑一次的临时脚本（`_probe_*.mjs`、临时导出改本）用完立即删除，不留工作区。
@@ -90,8 +95,8 @@
 |---|---|
 | `.agents/skills/component-writer/` | **ux-* 组件编写**（新增 / 整改 / 优化）唯一权威：`references/spec` + `recipes` + `samples`（样板 ux-button / ux-navbar）；`scripts/verify-script-order.mjs` 校验 |
 | `.agents/skills/migrate-component/` | 存量组件从 uView Pro 版本搬过来时的流程与配方（已很少用，按需）：`references/` 含 `error-patterns` 命中表、`recipes` 配方索引 |
-| `.agents/skills/uview-pro-x/`（技能名 `uview-pro-x`） | 消费侧：在外部 uni-app x 项目用 uview-pro-x 写页面的自包含规范（随技能发货 API 卡片，本仓库示例页同样遵循） |
-| `.agents/skills/uview-pro/`（技能名 `uview-pro`） | 消费侧：普通 uni-app（非 x，`u-*` + TS）项目用 uview-pro 写页面的同类规范，服务兄弟项目 |
+| `.agents/skills/uview-pro-x/` | 消费侧：在外部 uni-app x 项目用 uview-pro-x 写页面的自包含规范（随技能发货 API 卡片，本仓库示例页同样遵循） |
+| `.agents/skills/uview-pro/` | 消费侧：普通 uni-app（非 x，`u-*` + TS）项目的同类规范，服务兄弟项目 |
 | `.agents/skills/uniappx-crash-triage/` | App 端（安卓真机）原生崩溃排查流程：日志取证 → dump 指纹比对 → 隔离实验 |
 | `.agents/plan.md` | 一期计划唯一权威：覆盖度（源库→x 库迁移进度）、演示入口批次、阶段与执行机制 |
 | `README.md` / `README.en.md` | 对外介绍（安装 / 使用 / 快速开始） |

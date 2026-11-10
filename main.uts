@@ -6,6 +6,7 @@ import { uViewProX, frFR } from '@/uni_modules/uview-pro-x'
 import { zhCN, enUS } from './locales'
 import themes from './theme.uts'
 import { createSSRApp } from 'vue'
+import { createPinia } from 'pinia'
 
 // 如果开启了样式隔离2.0策略 H5端 需在 main.uts 引入基础样式文件
 // #ifdef WEB
@@ -15,6 +16,8 @@ import './style/reset.scss'
 
 export function createApp() {
 	const app = createSSRApp(App)
+	// 状态管理：uni-app x 内置 pinia 3.0.4，项目未安装 pinia 时由编译器自动指向内置运行时
+	app.use(createPinia())
 	app.use(uViewProX, {
 		locale: {
 			locales: [zhCN, enUS],

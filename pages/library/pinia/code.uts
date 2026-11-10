@@ -1,0 +1,87 @@
+/**
+ * pinia 演示代码片段
+ * 每个片段为可直接运行的完整示例（含说明与代码）
+ */
+
+/** 1. 定义 store */
+const store = `
+// store/counter.uts
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+
+export const useCounterStore = defineStore('counter', () => {
+    // state
+    const name = ref<string>('Pinia')
+    const count = ref<number>(0)
+
+    // getters
+    const doubleCount = computed((): number => count.value * 2)
+    const countText = computed((): string => name.value + ': ' + count.value)
+
+    // actions
+    function increment(): void {
+        count.value++
+    }
+
+    function decrement(): void {
+        count.value--
+    }
+
+    function rename(): void {
+        name.value = name.value === 'Pinia' ? 'Pinia Store' : 'Pinia'
+    }
+
+    function reset(): void {
+        name.value = 'Pinia'
+        count.value = 0
+    }
+
+    return {
+        name,
+        count,
+        doubleCount,
+        countText,
+        increment,
+        decrement,
+        rename,
+        reset
+    }
+})
+`;
+
+/** 2. main.uts 挂载 */
+const mount = `
+// main.uts
+import { createSSRApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.uvue'
+
+export function createApp() {
+    const app = createSSRApp(App)
+    app.use(createPinia())
+    return {
+        app
+    }
+}
+`;
+
+/** 3. 页面使用 */
+const usage = `
+// pages/xxx/index.uvue
+import { storeToRefs } from 'pinia'
+import { useCounterStore } from '@/store/counter.uts'
+
+const counterStore = useCounterStore()
+// state / getter 必须经 storeToRefs 解构，直接解构 store 会丢失响应式
+const { name, count, doubleCount, countText } = storeToRefs(counterStore)
+
+function increment(): void {
+    counterStore.increment()
+}
+`;
+
+export const codes = {
+    store,
+    mount,
+    usage
+};

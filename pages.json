@@ -121,6 +121,12 @@
           "style": {
             "navigationBarTitleText": "string 字符串工具"
           }
+        },
+        {
+          "path": "pinia/index",
+          "style": {
+            "navigationBarTitleText": "pinia 状态管理"
+          }
         }
       ]
     },
