@@ -87,10 +87,61 @@ function next(): void {
 </style>
 `;
 
+/** 动态增删步骤条：子项变化后步骤数、序号与连接线同步 */
+const dynamic = `
+<template>
+    <ux-steps mode="number" :current="current">
+        <ux-step v-for="(item, index) in steps" :key="index" :name="item" />
+    </ux-steps>
+    <text class="steps-count">当前步骤数: {{ count }}</text>
+    <view class="btn-row">
+        <ux-button size="small" type="primary" @click="addStep" :disabled="steps.length >= 5">添加步骤</ux-button>
+        <ux-button size="small" @click="removeStep" :disabled="steps.length <= 1">删除步骤</ux-button>
+    </view>
+</template>
+
+<script setup lang="uts">
+const steps = ref<string[]>(['步骤一', '步骤二', '步骤三']);
+const stepNames: string[] = ['步骤一', '步骤二', '步骤三', '步骤四', '步骤五'];
+const count = computed((): number => steps.value.length);
+const current = computed((): number => steps.value.length > 1 ? 1 : 0);
+
+function addStep(): void {
+    if (steps.value.length >= 5) return;
+    const next = steps.value.slice();
+    next.push(stepNames[next.length]);
+    steps.value = next;
+}
+
+function removeStep(): void {
+    if (steps.value.length <= 1) return;
+    const next = steps.value.slice();
+    next.pop();
+    steps.value = next;
+}
+</script>
+
+<style scoped>
+.steps-count {
+    display: block;
+    font-size: 12px;
+    color: #909399;
+    margin-top: 8px;
+}
+
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 12px;
+}
+</style>
+`;
+
 export const codes = {
     dot,
     number,
     vertical,
     color,
-    control
+    control,
+    dynamic
 };

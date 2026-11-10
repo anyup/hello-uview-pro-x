@@ -46,6 +46,17 @@
             </view>
         </demo-block>
 
+        <demo-block :title="t('steps.dynamicTitle')" :desc="t('steps.dynamicDesc')" :code="codes.dynamic">
+            <ux-steps mode="number" :current="dynamicCurrent">
+                <ux-step v-for="(item, index) in dynamicSteps" :key="index" :name="item" />
+            </ux-steps>
+            <text class="steps-count">{{ t('steps.dynamicHint') }}: {{ dynamicCount }}</text>
+            <view class="demo-btn-row">
+                <ux-button custom-class="demo-btn-item" size="small" shape="round" type="primary" @click="addStep()" :disabled="!canAddStep">{{ t('steps.addStep') }}</ux-button>
+                <ux-button size="small" shape="round" @click="removeStep()" :disabled="!canRemoveStep">{{ t('steps.removeStep') }}</ux-button>
+            </view>
+        </demo-block>
+
     </demo-page>
 </template>
 
@@ -72,6 +83,29 @@ function nextStep(): void {
         current5.value++;
     }
 }
+
+// —— 动态增删：子项由 v-for 渲染，验证 childrenList 长度与下标联动 ——
+const dynamicSteps = ref<string[]>(['步骤一', '步骤二', '步骤三']);
+const stepNames: string[] = ['步骤一', '步骤二', '步骤三', '步骤四', '步骤五'];
+const dynamicCount = computed<number>((): number => dynamicSteps.value.length);
+// current 固定在第二步（不超过末步）：前两步为完成态，后续步骤渲染数字序号，便于观察增删后的下标重排
+const dynamicCurrent = computed<number>((): number => dynamicCount.value > 1 ? 1 : 0);
+const canAddStep = computed<boolean>((): boolean => dynamicSteps.value.length < 5);
+const canRemoveStep = computed<boolean>((): boolean => dynamicSteps.value.length > 1);
+
+function addStep(): void {
+    if (dynamicSteps.value.length >= 5) return;
+    const next = dynamicSteps.value.slice();
+    next.push(stepNames[next.length]);
+    dynamicSteps.value = next;
+}
+
+function removeStep(): void {
+    if (dynamicSteps.value.length <= 1) return;
+    const next = dynamicSteps.value.slice();
+    next.pop();
+    dynamicSteps.value = next;
+}
 </script>
 
 <style lang="scss">
@@ -84,5 +118,12 @@ function nextStep(): void {
 
 .demo-btn-item {
     margin-right: 10px;
+}
+
+.steps-count {
+    display: block;
+    font-size: 12px;
+    color: #909399;
+    margin-top: 8px;
 }
 </style>
