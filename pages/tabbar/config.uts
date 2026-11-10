@@ -93,7 +93,8 @@ const layoutComponentItems: MenuItem[] = [
     { name: 'Grid', zhName: '宫格', desc: 'tabbarMenu.gridDesc', icon: 'G', path: 'layout/grid/index' },
     { name: 'Divider', zhName: '分割线', desc: 'tabbarMenu.dividerDesc', icon: 'D', path: 'layout/divider/index' },
     { name: 'Layout', zhName: '栅格布局', desc: 'tabbarMenu.layoutDesc', icon: 'L', path: 'layout/layout/index' },
-    { name: 'Section', zhName: '区块标题', desc: 'tabbarMenu.sectionDesc', icon: 'S', path: 'layout/section/index' }
+    { name: 'Section', zhName: '区块标题', desc: 'tabbarMenu.sectionDesc', icon: 'S', path: 'layout/section/index' },
+    { name: 'Sticky', zhName: '吸顶', desc: 'tabbarMenu.stickyDesc', icon: 'T', path: 'layout/sticky/index' }
 ];
 
 /** 导航组件 */
@@ -173,7 +174,8 @@ export const toolItems: MenuItem[] = [
     { name: 'deepMerge', desc: 'tabbarMenu.deepMergeDesc', icon: 'M', path: 'library/deepMerge/index' },
     { name: 'format', desc: 'tabbarMenu.formatDesc', icon: 'F', path: 'library/format/index' },
     { name: 'number', desc: 'tabbarMenu.numberDesc', icon: 'N', path: 'library/number/index' },
-    { name: 'string', desc: 'tabbarMenu.stringDesc', icon: 'S', path: 'library/string/index' }
+    { name: 'string', desc: 'tabbarMenu.stringDesc', icon: 'S', path: 'library/string/index' },
+    { name: 'pinia', desc: 'tabbarMenu.piniaDesc', icon: 'P', path: 'library/pinia/index' }
 ];
 
 /** Hooks */

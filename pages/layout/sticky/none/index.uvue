@@ -1,0 +1,157 @@
+<template>
+    <scroll-view class="page" direction="vertical" :show-scrollbar="false" @scroll="onScroll">
+        <view class="page-body">
+            <!-- 页面没有导航栏：返回入口与标题跟内容一起滚动，吸顶线只让出状态栏 -->
+            <view class="page-head" :style="headStyle">
+                <ux-button size="small" type="info" :text="t('sticky.back')" @click="goBack"></ux-button>
+                <text class="page-head-title">{{ t('sticky.nonePageTitle') }}</text>
+            </view>
+
+            <text class="page-desc">{{ t('sticky.nonePageDesc') }}</text>
+
+            <view class="page-state">
+                <text class="page-state-text">{{ t('sticky.stateLabel') }}：{{ fixedState ? t('sticky.stateFixed') : t('sticky.stateNormal') }} · scrollTop：{{ scrollTopDisplay }} · navbar：none</text>
+            </view>
+
+            <!-- 本页完全没有导航栏：navbar 声明 none 后只让出状态栏，吸顶线贴在状态栏下方 -->
+            <ux-sticky
+                :scroll-top="scrollTop"
+                navbar="none"
+                :bg-color="'primary'"
+                :z-index="1200"
+                @fixed="onFixed"
+                @unfixed="onUnfixed"
+            >
+                <view class="page-bar">
+                    <text class="page-bar-text">{{ t('sticky.rowText') }}</text>
+                </view>
+            </ux-sticky>
+
+            <view v-for="(item, index) in rows" :key="index" class="page-row">
+                <text class="page-row-text">{{ t('sticky.rowItem') }} {{ item }}</text>
+            </view>
+        </view>
+    </scroll-view>
+</template>
+
+<script setup lang="uts">
+    import { $u, createStyle, useLocale, usePageScroll, useWindowInfo } from '@/uni_modules/uview-pro-x';
+
+    const { t } = useLocale('demo');
+
+    // 无导航栏页面从屏幕顶部绘制，顶部内容自己让出状态栏
+    const { statusBarHeight } = useWindowInfo();
+    const headStyle = computed((): UTSJSONObject => {
+        const style = createStyle();
+        style['padding-top'] = $u.addUnit(statusBarHeight.value + 8);
+        return style;
+    });
+
+    // 容器滚动通道：scroll-view 自己上报，页面里不用再注册 onPageScroll
+    const { scrollTop, onScroll } = usePageScroll();
+
+    // 状态行只展示整数：浮点像素逐帧变化会不断改写文本并重排，App 上表现为屏闪
+    const scrollTopDisplay = ref(0);
+    watch(scrollTop, (value: number): void => {
+        const integer = Math.floor(value);
+        if (integer !== scrollTopDisplay.value) {
+            scrollTopDisplay.value = integer;
+        }
+    });
+
+    const fixedState = ref(false);
+
+    // 行数要够多，才能把吸顶区域推过固定线
+    const rows = ref<string[]>([]);
+    for (let i = 0; i < 20; i++) {
+        rows.value.push((i + 1).toString());
+    }
+
+    // 页面没有导航栏，返回入口自己给
+    const goBack = () => {
+        uni.navigateBack({ delta: 1 });
+    };
+
+    const onFixed = () => {
+        fixedState.value = true;
+    };
+
+    const onUnfixed = () => {
+        fixedState.value = false;
+    };
+</script>
+
+<style lang="scss">
+    .page {
+        flex: 1;
+        background-color: $u-bg-color;
+    }
+
+    .page-body {
+        padding: 0 12px 24px;
+    }
+
+    .page-head {
+        padding: 8px 0 4px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .page-head-title {
+        margin-left: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: $u-main-color;
+    }
+
+    .page-desc {
+        padding: 4px 0 0;
+        font-size: 13px;
+        line-height: 19px;
+        color: $u-content-color;
+    }
+
+    .page-state {
+        padding: 10px 0 8px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .page-state-text {
+        flex: 1;
+        font-size: 13px;
+        line-height: 18px;
+        color: $u-content-color;
+    }
+
+    .page-bar {
+        height: 44px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .page-bar-text {
+        font-size: 14px;
+        font-weight: bold;
+        color: $u-white-color;
+    }
+
+    .page-row {
+        height: 56px;
+        margin-top: 8px;
+        border-radius: 8px;
+        background-color: $u-white-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .page-row-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

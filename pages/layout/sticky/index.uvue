@@ -1,0 +1,223 @@
+<template>
+    <demo-page :title="t('sticky.title')" :subtitle="t('sticky.subtitle')" @scroll="onScroll">
+
+        <demo-block :title="t('sticky.demoTitle')" :desc="t('sticky.demoDesc')" :code="codes.basic">
+            <!-- 控件区：在同一个吸顶容器上切换各属性，避免同页多个吸顶容器互相覆盖 -->
+            <view class="sticky-controls">
+                <view class="sticky-control">
+                    <ux-button
+                        size="small"
+                        :type="offsetTop === 0 ? 'primary' : 'info'"
+                        text="offset-top 0"
+                        @click="setOffsetTop(0)"
+                    ></ux-button>
+                </view>
+                <view class="sticky-control">
+                    <ux-button
+                        size="small"
+                        :type="offsetTop === 60 ? 'primary' : 'info'"
+                        text="offset-top 60"
+                        @click="setOffsetTop(60)"
+                    ></ux-button>
+                </view>
+                <view class="sticky-control">
+                    <ux-button
+                        size="small"
+                        :type="bgColor === 'primary' ? 'primary' : 'info'"
+                        text="bg-color primary"
+                        @click="toggleBgColor"
+                    ></ux-button>
+                </view>
+                <view class="sticky-control">
+                    <ux-button
+                        size="small"
+                        :type="stickyEnabled ? 'primary' : 'info'"
+                        :text="stickyEnabled ? t('sticky.enableOn') : t('sticky.enableOff')"
+                        @click="toggleEnable"
+                    ></ux-button>
+                </view>
+                <view class="sticky-control">
+                    <ux-button
+                        size="small"
+                        :type="manualScroll ? 'primary' : 'info'"
+                        :text="manualScroll ? t('sticky.channelManual') : t('sticky.channelAuto')"
+                        @click="toggleChannel"
+                    ></ux-button>
+                </view>
+            </view>
+
+            <!-- 状态区：fixed / unfixed 事件；scrollTop 可直接看到滚动通道是否喂到数据 -->
+            <view class="sticky-state">
+                <text class="sticky-state-text">{{ t('sticky.stateLabel') }}：{{ fixedState ? t('sticky.stateFixed') : t('sticky.stateNormal') }} · scrollTop：{{ scrollTopDisplay }} · offset-top：{{ offsetTop }} · navbar：custom</text>
+            </view>
+
+            <!-- navbar 跟着页面结构走：本页顶部由 demo-page 的自绘导航栏占据，所以固定声明 custom；
+                 导航栏形态由 pages.json 的 navigationStyle 决定，不是运行时能切换的开关 -->
+            <ux-sticky
+                :scroll-top="manualScroll ? scrollTop : -1"
+                navbar="custom"
+                :offset-top="offsetTop"
+                :bg-color="bgColor"
+                :z-index="1200"
+                :enable="stickyEnabled"
+                @fixed="onFixed"
+                @unfixed="onUnfixed"
+            >
+                <view class="sticky-bar">
+                    <text :class="bgColor === 'primary' ? 'sticky-bar-text-light' : 'sticky-bar-text'">{{ t('sticky.rowText') }}</text>
+                </view>
+            </ux-sticky>
+
+            <view v-for="(item, index) in rows" :key="index" class="sticky-row">
+                <text class="sticky-row-text">{{ t('sticky.rowItem') }} {{ item }}</text>
+            </view>
+        </demo-block>
+
+        <!-- 入口：跳到真实页面结构下的吸顶效果（导航栏由 pages.json 配置，不是组件内切换） -->
+        <demo-block :title="t('sticky.entryTitle')" :desc="t('sticky.entryDesc')">
+            <ux-button type="primary" :block="true" :text="t('sticky.entryDefault')" @click="openPage('/pages/layout/sticky/default/index')"></ux-button>
+            <ux-gap :height="12" />
+            <ux-button type="info" :block="true" :text="t('sticky.entryNone')" @click="openPage('/pages/layout/sticky/none/index')"></ux-button>
+        </demo-block>
+
+        <!-- 使用说明：不绑定 code 片段 -->
+        <demo-block :title="t('sticky.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('sticky.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('sticky.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('sticky.usage3')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('sticky.usage4')" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, usePageScroll } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    // 滚动距离：页面滚动与容器滚动都写进同一个 ref，页面里不用再判断平台
+    const { scrollTop, onScroll, setScrollTop } = usePageScroll();
+
+    // 页面层滚动必须在页面脚本里注册：小程序端编译期要靠这次调用给页面挂上滚动钩子
+    onPageScroll((e) => {
+        setScrollTop(e.scrollTop);
+    });
+
+    // 状态行只展示整数：滚动距离是浮点像素，小数位逐帧变化会不断改写文本并重排，App 上表现为屏闪
+    const scrollTopDisplay = ref(0);
+    watch(scrollTop, (value: number): void => {
+        const integer = Math.floor(value);
+        if (integer !== scrollTopDisplay.value) {
+            scrollTopDisplay.value = integer;
+        }
+    });
+
+    const offsetTop = ref(0);
+    const bgColor = ref('');
+    const stickyEnabled = ref(true);
+    // true：外部滚动通道（传 scroll-top）；false：组件内部自动观察
+    const manualScroll = ref(true);
+    const fixedState = ref(false);
+
+    // 演示列表：行数要够多，才能把吸顶区域推过固定线
+    const rows = ref<string[]>([]);
+    for (let i = 0; i < 16; i++) {
+        rows.value.push((i + 1).toString());
+    }
+
+    const setOffsetTop = (value: number) => {
+        offsetTop.value = value;
+    };
+
+    const toggleBgColor = () => {
+        bgColor.value = bgColor.value === 'primary' ? '' : 'primary';
+    };
+
+    const toggleEnable = () => {
+        stickyEnabled.value = !stickyEnabled.value;
+    };
+
+    const toggleChannel = () => {
+        manualScroll.value = !manualScroll.value;
+        fixedState.value = false;
+    };
+
+    const onFixed = () => {
+        fixedState.value = true;
+    };
+
+    const onUnfixed = () => {
+        fixedState.value = false;
+    };
+
+    // 跳独立页面：两页的导航栏由 pages.json 配好，用来对照 navbar 的取值
+    const openPage = (url: string) => {
+        uni.navigateTo({ url: url });
+    };
+</script>
+
+<style lang="scss">
+    .sticky-controls {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sticky-control {
+        margin: 0 8px 8px 0;
+    }
+
+    .sticky-state {
+        padding: 4px 0 8px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .sticky-state-text {
+        flex: 1;
+        font-size: 13px;
+        line-height: 18px;
+        color: $u-content-color;
+    }
+
+    .sticky-bar {
+        height: 44px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sticky-bar-text {
+        font-size: 14px;
+        font-weight: bold;
+        color: $u-type-primary;
+    }
+
+    .sticky-bar-text-light {
+        font-size: 14px;
+        font-weight: bold;
+        color: $u-white-color;
+    }
+
+    .sticky-row {
+        height: 56px;
+        margin-top: 8px;
+        border-radius: 8px;
+        background-color: $u-bg-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sticky-row-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>

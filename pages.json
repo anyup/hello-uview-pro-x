@@ -493,6 +493,28 @@
           "style": {
             "navigationBarTitleText": "Section 区块标题"
           }
+        },
+        {
+          "path": "sticky/index",
+          "style": {
+            "navigationBarTitleText": "Sticky 吸顶"
+          }
+        },
+        {
+          "path": "sticky/default/index",
+          "style": {
+            "navigationBarTitleText": "Sticky 原生导航栏",
+            "navigationBarBackgroundColor": "#ffffff",
+            "navigationBarTextStyle": "black",
+            "navigationStyle": "default"
+          }
+        },
+        {
+          "path": "sticky/none/index",
+          "style": {
+            "navigationBarTitleText": "Sticky 无导航栏",
+            "navigationStyle": "custom"
+          }
         }
       ]
     },

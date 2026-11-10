@@ -36,4 +36,5 @@ node_modules
 .trae/
 sync-split.mjs
 sync-split.config.json
+rice-ui/
 uview-pro-x-doc/

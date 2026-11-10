@@ -1,0 +1,113 @@
+/**
+ * sticky 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 基础用法：声明页面导航栏形态 + usePageScroll 取滚动距离，页面里不判断平台 */
+const basic = `
+<template>
+    <!-- navbar 声明页面顶部结构，组件自己换算避让高度：
+         custom = 自绘导航栏（让出状态栏 + 导航栏）；default = 原生导航栏（H5 让出导航栏高度，App/小程序不避让）；
+         none = 无导航栏（只让出状态栏） -->
+    <scroll-view class="page" direction="vertical" @scroll="onScroll">
+        <view class="toolbar">
+            <ux-button size="small" text="offset-top 0" @click="setOffsetTop(0)"></ux-button>
+            <ux-button size="small" text="offset-top 60" @click="setOffsetTop(60)"></ux-button>
+            <ux-button size="small" :text="enabled ? '关闭吸顶' : '开启吸顶'" @click="toggleEnable"></ux-button>
+        </view>
+        <text class="state">{{ fixed ? '已吸顶' : '未吸顶' }} · navbar：custom</text>
+
+        <ux-sticky
+            :scroll-top="scrollTop"
+            navbar="custom"
+            :offset-top="offsetTop"
+            :bg-color="bgColor"
+            :z-index="1200"
+            :enable="enabled"
+            @fixed="onFixed"
+            @unfixed="onUnfixed"
+        >
+            <view class="bar">
+                <text class="bar-text">吸顶区域</text>
+            </view>
+        </ux-sticky>
+
+        <view v-for="(item, index) in rows" :key="index" class="row">
+            <text>列表内容 {{ item }}</text>
+        </view>
+    </scroll-view>
+</template>
+
+<script setup lang="uts">
+import { usePageScroll } from '@/uni_modules/uview-pro-x';
+
+// 页面滚动与容器滚动都写进同一个 ref，不用再分平台判断滚动发生在哪一层
+const { scrollTop, onScroll, setScrollTop } = usePageScroll();
+
+// 页面层滚动在页面脚本里注册：小程序端编译期靠这次调用给页面挂上滚动钩子
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
+
+const offsetTop = ref(0);
+const bgColor = ref('primary');
+const enabled = ref(true);
+const fixed = ref(false);
+
+// 行数要够多，才能把吸顶区域推过固定线
+const rows = ref<string[]>([]);
+for (let i = 0; i < 16; i++) {
+    rows.value.push((i + 1).toString());
+}
+
+const setOffsetTop = (value: number) => {
+    offsetTop.value = value;
+};
+
+const toggleEnable = () => {
+    enabled.value = !enabled.value;
+};
+
+const onFixed = () => {
+    fixed.value = true;
+};
+
+const onUnfixed = () => {
+    fixed.value = false;
+};
+</script>
+
+<style>
+.page {
+    flex: 1;
+}
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+}
+.state {
+    padding: 0 8px 8px;
+    font-size: 13px;
+}
+.bar {
+    height: 44px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+}
+.bar-text {
+    color: #ffffff;
+}
+.row {
+    height: 56px;
+    margin: 8px;
+    background-color: #f2f3f5;
+    border-radius: 8px;
+}
+</style>
+`;
+
+export const codes = {
+    basic
+};

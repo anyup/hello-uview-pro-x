@@ -1,0 +1,140 @@
+<template>
+    <scroll-view class="page" direction="vertical" :show-scrollbar="false" @scroll="onScroll">
+        <view class="page-body">
+            <view class="page-head">
+                <text class="page-title">{{ t('sticky.defaultPageTitle') }}</text>
+                <text class="page-desc">{{ t('sticky.defaultPageDesc') }}</text>
+            </view>
+
+            <view class="page-state">
+                <text class="page-state-text">{{ t('sticky.stateLabel') }}：{{ fixedState ? t('sticky.stateFixed') : t('sticky.stateNormal') }} · scrollTop：{{ scrollTopDisplay }} · navbar：default</text>
+            </view>
+
+            <!-- 本页是原生导航栏页面：navbar 声明 default 后吸顶线直接贴导航栏底部，不做额外避让 -->
+            <ux-sticky
+                :scroll-top="scrollTop"
+                navbar="default"
+                :bg-color="'primary'"
+                :z-index="1200"
+                @fixed="onFixed"
+                @unfixed="onUnfixed"
+            >
+                <view class="page-bar">
+                    <text class="page-bar-text">{{ t('sticky.rowText') }}</text>
+                </view>
+            </ux-sticky>
+
+            <view v-for="(item, index) in rows" :key="index" class="page-row">
+                <text class="page-row-text">{{ t('sticky.rowItem') }} {{ item }}</text>
+            </view>
+        </view>
+    </scroll-view>
+</template>
+
+<script setup lang="uts">
+    import { useLocale, usePageScroll } from '@/uni_modules/uview-pro-x';
+
+    const { t } = useLocale('demo');
+
+    // 容器滚动通道：scroll-view 自己上报，页面里不用再注册 onPageScroll
+    const { scrollTop, onScroll } = usePageScroll();
+
+    // 状态行只展示整数：浮点像素逐帧变化会不断改写文本并重排，App 上表现为屏闪
+    const scrollTopDisplay = ref(0);
+    watch(scrollTop, (value: number): void => {
+        const integer = Math.floor(value);
+        if (integer !== scrollTopDisplay.value) {
+            scrollTopDisplay.value = integer;
+        }
+    });
+
+    const fixedState = ref(false);
+
+    // 行数要够多，才能把吸顶区域推过固定线
+    const rows = ref<string[]>([]);
+    for (let i = 0; i < 20; i++) {
+        rows.value.push((i + 1).toString());
+    }
+
+    const onFixed = () => {
+        fixedState.value = true;
+    };
+
+    const onUnfixed = () => {
+        fixedState.value = false;
+    };
+</script>
+
+<style lang="scss">
+    .page {
+        flex: 1;
+        background-color: $u-bg-color;
+    }
+
+    .page-body {
+        padding: 12px 12px 24px;
+    }
+
+    .page-head {
+        padding: 4px 0 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-title {
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 26px;
+        color: $u-main-color;
+    }
+
+    .page-desc {
+        margin-top: 6px;
+        font-size: 13px;
+        line-height: 19px;
+        color: $u-content-color;
+    }
+
+    .page-state {
+        padding: 0 0 8px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .page-state-text {
+        flex: 1;
+        font-size: 13px;
+        line-height: 18px;
+        color: $u-content-color;
+    }
+
+    .page-bar {
+        height: 44px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .page-bar-text {
+        font-size: 14px;
+        font-weight: bold;
+        color: $u-white-color;
+    }
+
+    .page-row {
+        height: 56px;
+        margin-top: 8px;
+        border-radius: 8px;
+        background-color: $u-white-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .page-row-text {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+</style>
