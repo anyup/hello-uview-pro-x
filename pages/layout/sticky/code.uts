@@ -50,6 +50,7 @@ onPageScroll((e) => {
 });
 
 const offsetTop = ref(0);
+// bgColor 可传主题色名（如 primary）或色值；片段里固定为 primary，只切换 offset-top 与 enable
 const bgColor = ref('primary');
 const enabled = ref(true);
 const fixed = ref(false);

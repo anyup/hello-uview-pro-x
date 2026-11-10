@@ -20,6 +20,7 @@
             "rowText": "吸顶区域",
             "rowItem": "列表内容",
             "usageTitle": "使用说明",
+            "usageDesc": "四条要点：navbar 跟页面结构保持一致、非标准导航栏传数值、滚动距离统一用 usePageScroll 取，以及不传 scroll-top 时的退化行为。",
             "usage1": "• navbar 声明页面顶部结构：default 原生导航栏（H5 让出导航栏高度，App/小程序内容区已在导航栏下方）、custom 自绘导航栏（让出状态栏 + 导航栏）、none 全屏无导航栏（只让出状态栏）",
             "usage2": "• 自绘导航栏不是标准高度时传数值，如 navbar=\"56\"：数值即导航栏本体高度，状态栏仍自动叠加；全站统一可用 componentProps 配置",
             "usage3": "• 滚动距离用 usePageScroll() 取：页面滚动与 scroll-view 容器滚动都覆盖，页面脚本里 onPageScroll 调 setScrollTop、容器 @scroll 绑 onScroll，不要按平台分支判断",

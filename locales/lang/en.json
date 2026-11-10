@@ -20,6 +20,7 @@
             "rowText": "Sticky area",
             "rowItem": "List item",
             "usageTitle": "Usage notes",
+            "usageDesc": "Four rules: keep navbar in sync with the page structure, pass a number for non-standard navbar heights, read the scroll distance from usePageScroll, and mind the fallback when scroll-top is absent.",
             "usage1": "• navbar declares the page top structure: default native navbar (H5 insets the navbar height, App/mini program content area already starts below it), custom self-drawn navbar (status bar + navbar reserved), none for full-screen pages without a navbar (status bar only)",
             "usage2": "• For a non-standard navbar height pass a number, e.g. navbar=\"56\": the number is the navbar body height and the status bar is still added; configure it app-wide via componentProps",
             "usage3": "• Get the scroll distance from usePageScroll(): it covers both page scrolling and scroll-view scrolling — register onPageScroll in the page script calling setScrollTop, and bind onScroll to the container instead of branching per platform",

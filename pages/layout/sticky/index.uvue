@@ -81,7 +81,7 @@
         </demo-block>
 
         <!-- 使用说明：不绑定 code 片段 -->
-        <demo-block :title="t('sticky.usageTitle')">
+        <demo-block :title="t('sticky.usageTitle')" :desc="t('sticky.usageDesc')">
             <ux-alert-tips type="primary" :show-icon="true" :title="t('sticky.usage1')" />
             <ux-gap :height="8" />
             <ux-alert-tips type="primary" :show-icon="true" :title="t('sticky.usage2')" />
