@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.22（2026-11-10）
+
+### ✨ Features | 新功能
+
+- **ux-sticky:** 新增吸顶组件，适配多端导航栏与外部滚动通道，统一多端导航栏高度计算，优化吸顶定位逻辑避免内容上跳
+- **sticky:** 新增吸顶组件的全场景演示页面，包含基础用法、原生导航栏和无导航栏三种场景
+
+### ♻️ Code Refactoring | 代码重构
+
+- **demo:** 优化容器返回顶部逻辑，统一处理页面和容器滚动
+- **demo:** 完善吸顶组件的使用说明文案，补充 bgColor 属性的注释
+
 ## 1.0.21（2026-11-10）
 
 ### 🐛 Bug Fixes | Bug 修复
