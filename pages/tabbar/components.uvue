@@ -90,7 +90,7 @@
         </view>
 
         <!-- 返回顶部：作为最后一个子节点，避开 App 端同级叠放时被滚动内容覆盖；
-             App 端滚动发生在 demo-page 的 scroll-view 内，靠 parent-id 定位归零容器 -->
+             滚动距离由页面层 onPageScroll 提供，回顶靠 parent-id 归零对应滚动容器 -->
         <ux-back-top
             :scroll-top="scrollTop"
             :top="300"
@@ -100,17 +100,18 @@
 </template>
 
 <script setup lang="uts">
-import { $u, useLocale, useTheme, type DarkMode } from '@/uni_modules/uview-pro-x';
+import { $u, useLocale, useTheme, usePageScroll, type DarkMode } from '@/uni_modules/uview-pro-x';
 import { componentCategories } from './config';
 
 const categories = componentCategories;
 
-// 返回顶部：App/H5 由 demo-page 上报滚动距离（其 App 分支根为 scroll-view），组件自身拿不到页面滚动
-const scrollTop = ref(0);
+// 返回顶部：页面滚动与容器滚动都写进同一个 ref，页面里不判断平台
+const { scrollTop, onScroll, setScrollTop } = usePageScroll();
 
-const onScroll = (e: UniScrollEvent) => {
-    scrollTop.value = e.detail.scrollTop;
-};
+// 页面层滚动必须在页面脚本里注册：小程序端编译期要靠这次调用给页面挂上滚动钩子
+onPageScroll((e) => {
+    setScrollTop(e.scrollTop);
+});
 
 const { currentLocale, setLocale } = useLocale();
 const { t } = useLocale('demo');
@@ -157,13 +158,6 @@ function navigate(path: string): void {
 function goSearch(): void {
     uni.navigateTo({ url: '/pages/search/index' });
 }
-
-// 小程序自定义组件不支持页面 onPageScroll，需由页面自己监听并传给 ux-back-top
-// #ifdef MP
-onPageScroll((e) => {
-    scrollTop.value = e.scrollTop;
-});
-// #endif
 </script>
 
 <style lang="scss">
