@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.23（2026-11-11）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-checkbox:** 修复 App 端 checkbox 禁用态跨端显示不一致问题
+- **ux-radio:** 修复App 端禁用态文字颜色错误的问题，解决跨端样式不一致的bug
+
+### 💄 Styles | 风格
+
+- **demo:** 简化 steps 步骤计数样式，移除冗余属性，修复 App 演示兼容
+
 ## 1.0.22（2026-11-10）
 
 ### ✨ Features | 新功能
