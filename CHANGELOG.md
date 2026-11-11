@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.24（2026-11-11）
+
+### ✨ Features | 新功能
+
+- **request:** 新增 Request 请求库核心模块，支持请求、响应拦截器配置，支持多实例多域名请求配置，支持取消请求
+- **request:** 新增 Request 上传和下载的基础传输实现，封装平台原生 API，提供进度回调、中止能力，适配加密环境类型擦除问题，剥离默认配置与拦截器逻辑
+- **useRequest:** 新增 useRequest 请求钩子，提供带竞态处理和取消能力的请求封装，支持请求的 loading 状态、数据存储、错误处理，支持自动取消上一次未完成请求以避免竞态，在组件卸载时自动取消请求。
+- **demo:** 新增 Request 请求模块的核心功能演示，以及 useRequest 组合式请求工具的使用示例，包含单例实例、拦截器配置、多域名派生实例及拦截器安装逻辑，展示基础三态、连续调用、取消请求等场景
+- **demo:** 新增 version 统一管理版本号和新增能力登记，版本号自动获取
+
 ## 1.0.23（2026-11-11）
 
 ### 🐛 Bug Fixes | Bug 修复
