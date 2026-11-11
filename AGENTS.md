@@ -68,7 +68,7 @@
   ```
   约 5 秒编译完成（输出 `Local: http://localhost:9000/`）；本仓库无 package.json，不能用 `npm run dev`。
 - **一键验证**：项目根执行 `node scripts/verify-h5.mjs <route> --timeout 120000 [--json]`（route 形如 `feedback/mask`，脚本自动补 `pages/` 与 `/index`；只收集 console/page 错误，不截图）。**勿写临时 playwright 脚本**。
-- **门禁脚本**：`scripts/verify-type-shims.mjs`（`types/global.uts` 纯类型 ↔ 同名 const 占位一一对应，加密版插件必需；对象型类型不许加占位）、`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.uts 一一对应、prop 完整性）。扫描范围含 `library` / `hooks` 子包；这两组无 `ux-*` 主体组件，自动跳过 prop 完整性一项，其余（段序 / custom-class / code 归档 / 详情）照常校验。
+- **门禁脚本**：`scripts/verify-type-shims.mjs`（`types/global.uts` 纯类型 ↔ 同名 const 占位一一对应，加密版插件必需；对象型类型不许加占位）、`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.uts 一一对应、prop 完整性）、`scripts/verify-uvue-css.mjs`（uvue 样式的 App 端平台限制，如 `display` 仅 `flex`/`none`；识别 `#ifdef` / `#ifndef` 条件编译，只在 App 端会编译的分支上报错）。扫描范围含 `library` / `hooks` 子包；这两组无 `ux-*` 主体组件，自动跳过 prop 完整性一项，其余（段序 / custom-class / code 归档 / 详情）照常校验。
 - **验证职责划分**：AI 只验证 H5（复用常驻 dev server）；**App 端编译验证（UTS 语法最终校验）由用户在 HBuilderX 执行**，AI 不跑 App 构建。
 - **编译报错先查** `.agents/skills/migrate-component/references/error-patterns/README.md` 命中表，命中即按表修，不盲试。
 - **一次性探针脚本用完即清**：只跑一次的临时脚本（`_probe_*.mjs`、临时导出改本）用完立即删除，不留工作区。
