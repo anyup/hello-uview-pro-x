@@ -127,6 +127,24 @@
           "style": {
             "navigationBarTitleText": "pinia 状态管理"
           }
+        },
+        {
+          "path": "request/index",
+          "style": {
+            "navigationBarTitleText": "http 请求"
+          }
+        },
+        {
+          "path": "request/best-practice/index",
+          "style": {
+            "navigationBarTitleText": "request 最佳实践"
+          }
+        },
+        {
+          "path": "useRequest/index",
+          "style": {
+            "navigationBarTitleText": "useRequest 请求状态"
+          }
         }
       ]
     },

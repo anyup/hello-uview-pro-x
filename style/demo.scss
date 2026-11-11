@@ -77,6 +77,15 @@
 }
 
 /**
+ * 页面版本印章容器：ux-tag 不写 class，间距由外层控制
+ */
+.demo-header-stamp {
+	display: flex;
+	flex-shrink: 0;
+	margin-left: 8px;
+}
+
+/**
  * 页面副标题
  * - 提示色调，与标题保持间距
  */

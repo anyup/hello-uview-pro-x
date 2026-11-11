@@ -244,11 +244,31 @@
     flex-direction: column;
 }
 
+/* 名称行：名称 + 版本印章（印章版本号来自 @/version，升版本后自动收起） */
+.tab-item-name-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+/* 版本印章容器：ux-tag 不写 class，间距与不收缩由外层控制 */
+.tab-item-stamp {
+    display: flex;
+    flex-shrink: 0;
+    margin-left: 6px;
+}
+
 .tab-item-name {
     font-size: 14px;
     color: $u-main-color;
     font-weight: bold;
     margin-bottom: 3px;
+}
+
+/* 名称行的名称：去掉下方间距（App 端 UCSS 不支持后代选择器，故用单类修饰符） */
+.tab-item-name--inline {
+    margin-bottom: 0;
 }
 
 .tab-item-desc {

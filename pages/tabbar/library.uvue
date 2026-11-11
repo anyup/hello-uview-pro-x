@@ -20,7 +20,13 @@
                         <text class="tab-icon-text">{{ item.icon }}</text>
                     </view>
                     <view class="tab-item-body">
-                        <text class="tab-item-name">{{ item.name }}</text>
+                        <view class="tab-item-name-row">
+                            <text class="tab-item-name tab-item-name--inline">{{ item.name }}</text>
+                            <!-- 版本印章：仅本轮版本新增的入口显示（ux-tag 镂空），版本号见 @/version -->
+                            <view v-if="currentNewVersion(item.path) != ''" class="tab-item-stamp">
+                                <ux-tag :text="'NEW v' + currentNewVersion(item.path)" type="error" mode="plain" size="mini" shape="square" />
+                            </view>
+                        </view>
                         <text class="tab-item-desc">{{ t(item.desc) }}</text>
                     </view>
                     <text class="tab-arrow">›</text>
@@ -33,6 +39,7 @@
 <script setup lang="uts">
 import { $u, useLocale } from '@/uni_modules/uview-pro-x';
 import { libraryCategories } from './config';
+import { currentNewVersion } from '@/version';
 
 const { t } = useLocale('demo');
 const categories = libraryCategories;

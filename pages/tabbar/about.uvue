@@ -22,7 +22,7 @@
             <view class="tab-list">
                 <view class="tab-item" v-for="(row, idx) in versionRows" :key="idx">
                     <text class="tab-info-label">{{ t(row.name) }}</text>
-                    <text class="tab-info-value">{{ t(row.value) }}</text>
+                    <text class="tab-info-value">{{ rowValue(row) }}</text>
                 </view>
             </view>
         </view>
@@ -59,7 +59,7 @@
 
         <!-- 底部信息 -->
         <view class="tab-footer">
-            <text class="tab-footer-text">{{ t('tabbarAbout.footerName') }} {{ t('tabbarAbout.versionValue') }}</text>
+            <text class="tab-footer-text">{{ t('tabbarAbout.footerName') }} {{ LIB_VERSION_TEXT }}</text>
         </view>
     </demo-page>
 </template>
@@ -68,17 +68,27 @@
 import { $u, useLocale } from '@/uni_modules/uview-pro-x';
 import {
     componentCategories,
-    toolItems,
+    libraryCategories,
     hookItems,
     aboutVersionRows,
     aboutFeatureRows,
     type InfoRow,
     type MenuCategory
 } from './config';
+import { LIB_VERSION_TEXT } from '@/version';
 
 const { t } = useLocale('demo');
 const versionRows = aboutVersionRows;
 const featureRows = aboutFeatureRows;
+
+/** 信息行右侧值：literal 为直接展示的文本（版本号），否则取 i18n key */
+function rowValue(row: InfoRow): string {
+    const literal = row.literal;
+    if (literal != null && literal != '') {
+        return literal;
+    }
+    return t(row.value);
+}
 
 // 统计各分类下的菜单项总数
 function countItems(categories: MenuCategory[]): number {
@@ -92,7 +102,7 @@ function countItems(categories: MenuCategory[]): number {
 // 组件规模行：数值来自菜单配置，无需手工维护
 const scaleRows: InfoRow[] = [
     { name: 'tabbarAbout.componentLabel', value: countItems(componentCategories).toString(), desc: '' },
-    { name: 'tabbarAbout.toolLabel', value: toolItems.length.toString(), desc: '' },
+    { name: 'tabbarAbout.toolLabel', value: countItems(libraryCategories).toString(), desc: '' },
     { name: 'tabbarAbout.hookLabel', value: hookItems.length.toString(), desc: '' }
 ];
 </script>

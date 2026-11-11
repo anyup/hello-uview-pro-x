@@ -3,6 +3,8 @@
  * 数据驱动 3 个 TabBar 页面渲染，便于维护和扩展
  */
 
+import { LIB_VERSION_TEXT } from '@/version';
+
 /** 菜单项 */
 export type MenuItem = {
     /** 显示名称 */
@@ -161,6 +163,13 @@ export const componentCategories: MenuCategory[] = [
 
 // ===================== 工具页 =====================
 
+/** 网络请求（独立分组，置于工具页首位） */
+const requestItems: MenuItem[] = [
+    { name: 'http', desc: 'tabbarMenu.httpRequestDesc', icon: 'H', path: 'library/request/index' },
+    { name: 'request', desc: 'tabbarMenu.requestBestPracticeDesc', icon: 'R', path: 'library/request/best-practice/index' },
+    { name: 'useRequest', desc: 'tabbarMenu.useRequestDesc', icon: 'U', path: 'library/useRequest/index' }
+];
+
 /** 工具函数 */
 export const toolItems: MenuItem[] = [
     { name: 'addUnit', desc: 'tabbarMenu.addUnitDesc', icon: 'A', path: 'library/addUnit/index' },
@@ -194,6 +203,11 @@ export const hookItems: MenuItem[] = [
 /** 工具页分类数据 */
 export const libraryCategories: MenuCategory[] = [
     {
+        name: 'tabbarMenu.categoryRequest',
+        icon: 'N',
+        items: requestItems
+    },
+    {
         name: 'tabbarMenu.categoryTool',
         icon: 'U',
         items: toolItems
@@ -215,11 +229,13 @@ export type InfoRow = {
     value: string;
     /** 副标题描述（与 value 二选一） */
     desc: string;
+    /** 直接展示的文本（非 i18n key，如版本号）；非空时优先于 value */
+    literal?: string;
 };
 
 /** 关于页版本信息 */
 export const aboutVersionRows: InfoRow[] = [
-    { name: 'tabbarAbout.versionLabel', value: 'tabbarAbout.versionValue', desc: '' },
+    { name: 'tabbarAbout.versionLabel', value: '', literal: LIB_VERSION_TEXT, desc: '' },
     { name: 'tabbarAbout.engineLabel', value: 'tabbarAbout.engineValue', desc: '' },
     { name: 'tabbarAbout.renderLabel', value: 'tabbarAbout.renderValue', desc: '' },
     { name: 'tabbarAbout.languageLabel', value: 'tabbarAbout.languageValue', desc: '' }
