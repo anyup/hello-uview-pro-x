@@ -1,0 +1,156 @@
+<template>
+    <demo-page :title="t('request.bpTitle')" :subtitle="t('request.bpSubtitle')" :since="sinceOf('library/request/best-practice/index')">
+        <!-- 1. 模块单例：两个模块分别 import，读到同一份配置 -->
+        <demo-block :title="t('request.bpSharedTitle')" :desc="t('request.bpSharedDesc')">
+            <ux-button type="primary" :block="true" :text="t('request.bpSharedText')" @click="readShared" />
+            <demo-result :text="sharedPageText" />
+            <demo-result type="success" :text="sharedOtherText" />
+        </demo-block>
+
+        <!-- 2. 拦截器：统一注入凭证 + 统一解包 -->
+        <demo-block :title="t('request.bpInterceptorTitle')" :desc="t('request.bpInterceptorDesc')">
+            <ux-button type="success" :block="true" :text="t('request.bpInterceptorText')" @click="runMain" />
+            <demo-result type="success" :text="mainText" />
+        </demo-block>
+
+        <!-- 3. 第二域名：继承 defaults，不继承拦截器 -->
+        <demo-block :title="t('request.bpCdnTitle')" :desc="t('request.bpCdnDesc')">
+            <ux-button type="warning" :block="true" :text="t('request.bpCdnText')" @click="runCdn" />
+            <demo-result type="warning" :text="cdnText" />
+        </demo-block>
+
+        <!-- 4. 复用同一套拦截器 -->
+        <demo-block :title="t('request.bpInstallTitle')" :desc="t('request.bpInstallDesc')">
+            <ux-button type="info" :block="true" :text="t('request.bpInstallText')" @click="runCdnInstalled" />
+            <demo-result :text="cdnInstalledText" />
+        </demo-block>
+
+        <!-- 使用说明：不绑定 code 片段 -->
+        <demo-block :title="t('request.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('request.bpUsage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('request.bpUsage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('request.bpUsage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import type { HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
+    import { sinceOf } from '@/version';
+    import { request } from '../demo-api/request';
+    import { cdnRequest, installCdnInterceptors, isCdnInterceptorsInstalled } from '../demo-api/cdn';
+    import { describeSharedInstance } from '../demo-api/second-reader';
+
+    const { t } = useLocale('demo');
+
+    /** 安全读字符串字段：服务端结构不固定，避免 null 断言 */
+    const readString = (source: UTSJSONObject, key: string): string => {
+        const raw = source[key];
+        return raw == null ? '' : raw.toString();
+    };
+
+    /** 安全读对象字段 */
+    const readObject = (source: UTSJSONObject, key: string): UTSJSONObject => {
+        const raw = source[key];
+        return raw == null ? new UTSJSONObject() : raw as UTSJSONObject;
+    };
+
+    /** 大小写不敏感读回显头：服务端可能改写键的大小写 */
+    const readHeader = (headers: UTSJSONObject, name: string): string => {
+        const target = name.toLowerCase();
+        for (let key in headers) {
+            if (key.toLowerCase() == target) {
+                return readString(headers, key);
+            }
+        }
+        return '';
+    };
+
+    /** 错误描述：拦截器只保证 HttpError，其它异常（如页面自身 TypeError）退回 toString */
+    const describeError = (e: any): string => {
+        if (e == null) return '';
+        const err = e as HttpError;
+        if (typeof err.code != 'string' || typeof err.status != 'number') return e.toString() ?? '';
+        return err.code + ' · HTTP ' + err.status.toString() + ' · ' + err.message;
+    };
+
+    /** 本页 import 到的实例配置 */
+    const describeRequest = (): string => {
+        const headers = request.defaults.headers;
+        return 'baseURL=' + request.defaults.baseURL
+            + ' · timeout=' + request.defaults.timeout.toString()
+            + ' · x-client=' + readString(headers, 'x-client')
+            + ' · content-type=' + readString(headers, 'content-type');
+    };
+
+    const sharedPageText = ref<string>(t('request.bpIdle'));
+    const sharedOtherText = ref<string>(t('request.bpIdle'));
+    const mainText = ref<string>(t('request.idle'));
+    const cdnText = ref<string>(t('request.idle'));
+    const cdnInstalledText = ref<string>(t('request.idle'));
+
+    /** 1. 两处读取：值一致说明拿到的是同一个模块单例 */
+    const readShared = (): void => {
+        sharedPageText.value = t('request.bpFromPage') + '：' + describeRequest();
+        sharedOtherText.value = t('request.bpFromOther') + '：' + describeSharedInstance();
+    };
+
+    /** 2. 主实例：请求拦截器注入凭证，响应拦截器已解包，then 里直接是业务数据 */
+    const runMain = (): void => {
+        mainText.value = t('request.loading');
+        request.get('/get').then((data: any) => {
+            const body = data as UTSJSONObject;
+            const headers = readObject(body, 'headers');
+            mainText.value = t('request.bpUnwrappedYes') + ' · ' + t('request.bpDomain') + '=' + readString(body, 'url')
+                + ' · authorization=' + readHeader(headers, 'authorization')
+                + ' · x-client=' + readHeader(headers, 'x-client');
+        }).catch((e: any) => {
+            mainText.value = describeError(e);
+        });
+    };
+
+    /** 3. 第二实例：未装拦截器时 resolve 完整响应；装好后已被解包，按当前状态渲染 */
+    const runCdn = (): void => {
+        cdnText.value = t('request.loading');
+        const installed = isCdnInterceptorsInstalled();
+        cdnRequest.get('/get').then((res: any) => {
+            if (installed) {
+                const data = res as UTSJSONObject;
+                const headers = readObject(data, 'headers');
+                cdnText.value = t('request.bpInstalledBefore') + ' · ' + t('request.bpUnwrappedYes')
+                    + ' · ' + t('request.bpDomain') + '=' + readString(data, 'url')
+                    + ' · x-client=' + readHeader(headers, 'x-client')
+                    + ' · authorization=' + readHeader(headers, 'authorization');
+                return;
+            }
+            const response = res as HttpResponse;
+            const body = response.data as UTSJSONObject;
+            const headers = readObject(body, 'headers');
+            cdnText.value = t('request.bpUnwrappedNo') + ' · HTTP ' + response.status.toString()
+                + ' · ' + t('request.bpDomain') + '=' + readString(body, 'url')
+                + ' · x-client=' + readHeader(headers, 'x-client')
+                + ' · authorization=' + readHeader(headers, 'authorization');
+        }).catch((e: any) => {
+            cdnText.value = describeError(e);
+        });
+    };
+
+    /** 4. 装上同一套拦截器后再请求：解包与凭证都生效，且只安装一次 */
+    const runCdnInstalled = (): void => {
+        const first = installCdnInterceptors();
+        cdnInstalledText.value = t('request.loading');
+        cdnRequest.get('/get').then((data: any) => {
+            const body = data as UTSJSONObject;
+            const headers = readObject(body, 'headers');
+            const prefix = first ? t('request.bpInstalledNow') : t('request.bpInstalledBefore');
+            cdnInstalledText.value = prefix + ' · ' + t('request.bpUnwrappedYes')
+                + ' · ' + t('request.bpDomain') + '=' + readString(body, 'url')
+                + ' · authorization=' + readHeader(headers, 'authorization');
+        }).catch((e: any) => {
+            cdnInstalledText.value = describeError(e);
+        });
+    };
+</script>

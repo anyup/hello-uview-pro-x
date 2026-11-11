@@ -1,0 +1,123 @@
+/**
+ * useRequest 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script）
+ */
+
+/** 基础三态 */
+const basic = `
+<template>
+    <ux-button text="请求 /uuid" type="primary" shape="round" @click="run" />
+    <demo-result :text="summary" />
+</template>
+
+<script setup lang="uts">
+import { http, useRequest } from '@/uni_modules/uview-pro-x';
+import type { HttpCallConfig, HttpResponse } from '@/uni_modules/uview-pro-x';
+
+const api = http.create({ baseURL: 'https://httpbin.org' });
+
+const detail = useRequest<UTSJSONObject>((ctx) => {
+    return api.get('/uuid', null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
+        return (res as HttpResponse).data as UTSJSONObject;
+    });
+});
+
+const summary = computed<string>(() => {
+    if (detail.loading.value) return '请求中…';
+    const err = detail.error.value;
+    if (err != null) return err.message;
+    const data = detail.data.value;
+    if (data == null) return '待发起';
+    return data['uuid'] as string;
+});
+
+const run = (): void => {
+    detail.run();
+};
+</script>
+`;
+
+/** 连续调用：旧请求作废 */
+const sequence = `
+<template>
+    <ux-button text="连续发起两次请求" type="success" shape="round" @click="runTwice" />
+    <demo-result type="success" :text="summary" />
+</template>
+
+<script setup lang="uts">
+import { http, useRequest } from '@/uni_modules/uview-pro-x';
+import type { HttpCallConfig, HttpResponse } from '@/uni_modules/uview-pro-x';
+
+const api = http.create({ baseURL: 'https://httpbin.org' });
+
+/** fetcher 读取 target，两次 run 使用不同地址 */
+const target = ref<string>('/uuid');
+
+const detail = useRequest<UTSJSONObject>((ctx) => {
+    return api.get(target.value, null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
+        return (res as HttpResponse).data as UTSJSONObject;
+    });
+});
+
+const summary = computed<string>(() => {
+    if (detail.loading.value) return '请求中…';
+    const err = detail.error.value;
+    if (err != null) return err.message;
+    const data = detail.data.value;
+    if (data == null) return '待发起';
+    return data['url'] as string;
+});
+
+const runTwice = (): void => {
+    target.value = '/delay/3';
+    detail.run();   // 慢请求，随后会被取消
+    target.value = '/get?from=latest';   // 响应带 url 字段，便于确认结果来源
+    detail.run();   // 立即发起新请求，慢请求作废
+};
+</script>
+`;
+
+/** 取消请求 */
+const cancel = `
+<template>
+    <ux-button text="发起并在 500ms 后取消" type="warning" shape="round" @click="run" />
+    <demo-result type="warning" :text="summary" />
+</template>
+
+<script setup lang="uts">
+import { http, useRequest } from '@/uni_modules/uview-pro-x';
+import type { HttpCallConfig, HttpResponse } from '@/uni_modules/uview-pro-x';
+
+const api = http.create({ baseURL: 'https://httpbin.org' });
+const canceled = ref<boolean>(false);
+
+const slow = useRequest<UTSJSONObject>((ctx) => {
+    return api.get('/delay/5', null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
+        return (res as HttpResponse).data as UTSJSONObject;
+    });
+});
+
+const summary = computed<string>(() => {
+    if (slow.loading.value) return '请求中…';
+    if (canceled.value) return '已取消（未写入 error）';
+    const err = slow.error.value;
+    if (err != null) return err.message;
+    return '待发起';
+});
+
+const run = (): void => {
+    canceled.value = false;
+    slow.run();
+    setTimeout(() => {
+        slow.cancel();
+        canceled.value = true;
+    }, 500);
+};
+</script>
+`;
+
+export const codes = {
+    basic,
+    sequence,
+    cancel
+};

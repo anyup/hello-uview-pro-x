@@ -1,0 +1,127 @@
+<template>
+    <demo-page :title="t('useRequestPage.title')" :subtitle="t('useRequestPage.subtitle')" :since="sinceOf('library/useRequest/index')">
+        <!-- 基础三态 -->
+        <demo-block :title="t('useRequestPage.basicTitle')" :desc="t('useRequestPage.basicDesc')" :code="codes.basic">
+            <ux-button :text="t('useRequestPage.basicText')" type="primary" shape="round" @click="runBasic" />
+            <demo-result :text="basicText" />
+        </demo-block>
+
+        <!-- 连续调用：旧请求作废 -->
+        <demo-block :title="t('useRequestPage.sequenceTitle')" :desc="t('useRequestPage.sequenceDesc')" :code="codes.sequence">
+            <ux-button :text="t('useRequestPage.sequenceText')" type="success" shape="round" @click="runSequence" />
+            <demo-result type="success" :text="sequenceText" />
+        </demo-block>
+
+        <!-- 取消请求 -->
+        <demo-block :title="t('useRequestPage.cancelTitle')" :desc="t('useRequestPage.cancelDesc')" :code="codes.cancel">
+            <ux-button :text="t('useRequestPage.cancelText')" type="warning" shape="round" @click="runSlowThenCancel" />
+            <demo-result type="warning" :text="cancelText" />
+        </demo-block>
+
+        <!-- 使用要点 -->
+        <demo-block :title="t('useRequestPage.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('useRequestPage.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('useRequestPage.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="success" :show-icon="true" :title="t('useRequestPage.usage3')" />
+        </demo-block>
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { http, useLocale, useRequest } from '@/uni_modules/uview-pro-x';
+    import type { HttpCallConfig, HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
+    import { sinceOf } from '@/version';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 演示数据源：httpbin 提供 uuid 与延迟接口 */
+    const DEMO_BASE = 'https://httpbin.org';
+
+    const api = http.create({ baseURL: DEMO_BASE, timeout: 15000 });
+
+    /** 统一错误描述：非 HttpError 退回 toString */
+    const describeError = (e: any): string => {
+        if (e == null) return '';
+        const err = e as HttpError;
+        if (typeof err.code != 'string' || typeof err.status != 'number') return e.toString() ?? '';
+        return err.code + ' · HTTP ' + err.status.toString() + ' · ' + err.message;
+    };
+
+    /** 1. 基础：loading / data / error 直接驱动文案 */
+    const detail = useRequest<UTSJSONObject>((ctx) => {
+        return api.get('/uuid', null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
+            return (res as HttpResponse).data as UTSJSONObject;
+        });
+    });
+
+    const basicText = computed<string>(() => {
+        if (detail.loading.value) return t('request.loading');
+        const err = detail.error.value;
+        if (err != null) return describeError(err);
+        const data = detail.data.value;
+        if (data == null) return t('request.idle');
+        return t('useRequestPage.basicResult') + (data['uuid'] as string);
+    });
+
+    const runBasic = (): void => {
+        detail.run();
+    };
+
+    /** 2. 连续调用：慢请求被取消，结果只来自后一次 */
+    const target = ref<string>('/uuid');
+
+    const sequencer = useRequest<UTSJSONObject>((ctx) => {
+        return api.get(target.value, null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
+            return (res as HttpResponse).data as UTSJSONObject;
+        });
+    });
+
+    const sequenceText = computed<string>(() => {
+        if (sequencer.loading.value) return t('request.loading');
+        const err = sequencer.error.value;
+        if (err != null) return describeError(err);
+        const data = sequencer.data.value;
+        if (data == null) return t('request.idle');
+        return t('useRequestPage.sequenceResult') + (data['url'] as string);
+    });
+
+    const runSequence = (): void => {
+        target.value = '/delay/3';
+        sequencer.run();
+        target.value = '/get?from=latest';
+        sequencer.run();
+    };
+
+    /** 3. 取消：500ms 后 cancel，取消不写入 error */
+    const wasCanceled = ref<boolean>(false);
+
+    const slow = useRequest<UTSJSONObject>((ctx) => {
+        return api.get('/delay/5', null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
+            return (res as HttpResponse).data as UTSJSONObject;
+        });
+    });
+
+    const cancelText = computed<string>(() => {
+        if (slow.loading.value) return t('request.loading');
+        if (wasCanceled.value) return t('request.canceled');
+        const err = slow.error.value;
+        if (err != null) return describeError(err);
+        return t('request.idle');
+    });
+
+    const runSlowThenCancel = (): void => {
+        wasCanceled.value = false;
+        slow.run();
+        setTimeout(() => {
+            slow.cancel();
+            wasCanceled.value = true;
+        }, 500);
+    };
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page / demo-block 组件提供 */
+</style>

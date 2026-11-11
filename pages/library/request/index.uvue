@@ -1,0 +1,188 @@
+<template>
+    <demo-page :title="t('request.title')" :subtitle="t('request.subtitle')" :since="sinceOf('library/request/index')">
+        <!-- 基础 GET -->
+        <demo-block :title="t('request.getTitle')" :desc="t('request.getDesc')" :code="codes.get">
+            <ux-button :text="t('request.getText')" type="primary" shape="round" @click="runGet" />
+            <demo-result :text="getText" />
+        </demo-block>
+
+        <!-- POST 与请求拦截器 -->
+        <demo-block :title="t('request.postTitle')" :desc="t('request.postDesc')" :code="codes.post">
+            <ux-button :text="t('request.postText')" type="success" shape="round" @click="runPost" />
+            <demo-result type="success" :text="postText" />
+        </demo-block>
+
+        <!-- HTTP 错误 -->
+        <demo-block :title="t('request.errorTitle')" :desc="t('request.errorDesc')" :code="codes.error">
+            <ux-button :text="t('request.errorText')" type="error" shape="round" @click="runError" />
+            <demo-result type="error" :text="errorText" />
+        </demo-block>
+
+        <!-- 取消请求 -->
+        <demo-block :title="t('request.cancelTitle')" :desc="t('request.cancelDesc')" :code="codes.cancel">
+            <ux-button :text="t('request.cancelText')" type="warning" shape="round" @click="runCancel" />
+            <demo-result type="warning" :text="cancelText" />
+        </demo-block>
+
+        <!-- 上传 -->
+        <demo-block :title="t('request.uploadTitle')" :desc="t('request.uploadDesc')" :code="codes.upload">
+            <ux-button :text="t('request.uploadText')" type="info" shape="round" @click="runUpload" />
+            <demo-result :text="uploadText" />
+        </demo-block>
+
+        <!-- 下载 -->
+        <demo-block :title="t('request.downloadTitle')" :desc="t('request.downloadDesc')" :code="codes.download">
+            <ux-button :text="t('request.downloadText')" type="info" shape="round" @click="runDownload" />
+            <demo-result :text="downloadText" />
+        </demo-block>
+
+        <!-- 使用要点 -->
+        <demo-block :title="t('request.usageTitle')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('request.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="warning" :show-icon="true" :title="t('request.usage2')" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="uts">
+    import { http, useLocale } from '@/uni_modules/uview-pro-x';
+    import type { HttpCallConfig, HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
+    import { sinceOf } from '@/version';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /** 演示数据源：httpbin 提供回显、延迟与图片 */
+    const DEMO_BASE = 'https://httpbin.org';
+
+    /** 演示实例：派生自 http，只覆盖 baseURL 与超时 */
+    const api = http.create({ baseURL: DEMO_BASE, timeout: 15000 });
+
+    /**
+     * 错误演示实例：请求不存在的仓库，返回 404 且带 JSON 体。
+     * H5 端请求空响应体的 404（如 httpbin /status/404）时，运行时 JSON 解析失败会额外打印一条告警，
+     * 故改用带 JSON 体的错误接口，控制台只保留预期的 404 网络记录。
+     */
+    const errorApi = http.create({ baseURL: 'https://gitee.com/api/v5', timeout: 15000 });
+
+    // 请求拦截器：数组链，按注册顺序执行；这里统一追加演示头
+    api.interceptors.request.use((config) => {
+        config.headers['x-demo-source'] = 'uview-pro-x';
+        return config;
+    });
+
+    /** 统一错误描述：code / HTTP 状态 / message */
+    const describeError = (e: any): string => {
+        const err = e as HttpError;
+        return err.code + ' · HTTP ' + err.status.toString() + ' · ' + err.message;
+    };
+
+    const getText = ref<string>(t('request.idle'));
+    const postText = ref<string>(t('request.idle'));
+    const errorText = ref<string>(t('request.idle'));
+    const cancelText = ref<string>(t('request.idle'));
+    const uploadText = ref<string>(t('request.idle'));
+    const downloadText = ref<string>(t('request.idle'));
+
+    /** 基础 GET：params 会拼成查询串，默认返回 HttpResponse */
+    const runGet = (): void => {
+        getText.value = t('request.loading');
+        const params = new UTSJSONObject();
+        params['demo'] = 'uview-pro-x';
+        params['page'] = 1;
+        api.get('/get', params).then((res: any) => {
+            const response = res as HttpResponse;
+            const body = response.data as UTSJSONObject;
+            getText.value = 'HTTP ' + response.status.toString() + ' · ' + (body['url'] as string);
+        }).catch((e: any) => {
+            getText.value = describeError(e);
+        });
+    };
+
+    /** POST：请求体用 UTSJSONObject，拦截器已注入演示头，httpbin 会原样回显 json */
+    const runPost = (): void => {
+        postText.value = t('request.sending');
+        const payload = new UTSJSONObject();
+        payload['title'] = 'uview-pro-x';
+        payload['body'] = 'http demo';
+        payload['userId'] = 1;
+        api.post('/post', payload).then((res: any) => {
+            const response = res as HttpResponse;
+            const body = response.data as UTSJSONObject;
+            const echo = body['json'] as UTSJSONObject;
+            postText.value = 'HTTP ' + response.status.toString() + ' · ' + (echo['title'] as string);
+        }).catch((e: any) => {
+            postText.value = describeError(e);
+        });
+    };
+
+    /** 404：非 2xx 走 ERR_BAD_RESPONSE，response 随错误带回 */
+    const runError = (): void => {
+        errorText.value = t('request.loading');
+        errorApi.get('/repos/uview-pro-x/not-found').then((res: any) => {
+            errorText.value = t('request.errorUnexpected');
+        }).catch((e: any) => {
+            const err = e as HttpError;
+            errorText.value = err.code + ' · HTTP ' + err.status.toString();
+        });
+    };
+
+    /** 取消：300ms 后 abort，catch 里用 isCancel 区分取消与失败 */
+    const runCancel = (): void => {
+        const controller = http.abortController();
+        cancelText.value = t('request.canceling');
+        setTimeout(() => {
+            controller.abort();
+        }, 300);
+        http.get(DEMO_BASE + '/delay/5', null, { signal: controller.signal } as HttpCallConfig).then((res: any) => {
+            cancelText.value = t('request.cancelFailed');
+        }).catch((e: any) => {
+            cancelText.value = http.isCancel(e) ? t('request.canceled') : describeError(e);
+        });
+    };
+
+    /** 上传：先选图拿临时路径，content-type 由平台生成 */
+    const runUpload = (): void => {
+        uni.chooseImage({
+            count: 1,
+            success: (res) => {
+                const paths = res.tempFilePaths;
+                if (paths.length == 0) return;
+                uploadText.value = t('request.uploading');
+                http.upload({
+                    url: DEMO_BASE + '/post',
+                    filePath: paths[0],
+                    name: 'file',
+                    onProgress: (p) => {
+                        uploadText.value = t('request.uploading') + ' ' + p.progress.toString() + '%';
+                    }
+                }).then((result) => {
+                    uploadText.value = 'HTTP ' + result.status.toString();
+                }).catch((e: any) => {
+                    uploadText.value = describeError(e);
+                });
+            }
+        });
+    };
+
+    /** 下载：返回临时文件路径，App 端可复制到业务目录 */
+    const runDownload = (): void => {
+        downloadText.value = t('request.downloading');
+        http.download({
+            url: DEMO_BASE + '/image/png',
+            onProgress: (p) => {
+                downloadText.value = t('request.downloading') + ' ' + p.progress.toString() + '%';
+            }
+        }).then((result) => {
+            downloadText.value = result.tempFilePath;
+        }).catch((e: any) => {
+            downloadText.value = describeError(e);
+        });
+    };
+</script>
+
+<style lang="scss">
+    /* 样式由 demo-page / demo-block 组件提供 */
+</style>

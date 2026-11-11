@@ -1,0 +1,196 @@
+/**
+ * http 请求演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script）
+ */
+
+/** 基础 GET */
+const get = `
+<template>
+    <ux-button text="发起 GET" type="primary" shape="round" @click="runGet" />
+    <demo-result :text="text" />
+</template>
+
+<script setup lang="uts">
+import { http } from '@/uni_modules/uview-pro-x';
+import type { HttpResponse } from '@/uni_modules/uview-pro-x';
+
+const text = ref<string>('待发起');
+const api = http.create({ baseURL: 'https://httpbin.org' });
+
+const runGet = (): void => {
+    const params = new UTSJSONObject();
+    params['demo'] = 'uview-pro-x';
+    params['page'] = 1;
+    api.get('/get', params).then((res: any) => {
+        const response = res as HttpResponse;
+        const body = response.data as UTSJSONObject;
+        text.value = 'HTTP ' + response.status.toString() + ' · ' + (body['url'] as string);
+    }).catch((e: any) => {
+        text.value = e.message;
+    });
+};
+</script>
+`;
+
+/** POST 与请求拦截器 */
+const post = `
+<template>
+    <ux-button text="发起 POST" type="success" shape="round" @click="runPost" />
+    <demo-result type="success" :text="text" />
+</template>
+
+<script setup lang="uts">
+import { http } from '@/uni_modules/uview-pro-x';
+import type { HttpResponse } from '@/uni_modules/uview-pro-x';
+
+const text = ref<string>('待发起');
+const api = http.create({ baseURL: 'https://httpbin.org' });
+
+// 请求拦截器：数组链，按注册顺序执行
+api.interceptors.request.use((config) => {
+    config.headers['x-demo-source'] = 'uview-pro-x';
+    return config;
+});
+
+const runPost = (): void => {
+    const payload = new UTSJSONObject();
+    payload['title'] = 'uview-pro-x';
+    payload['body'] = 'http demo';
+    payload['userId'] = 1;
+    api.post('/post', payload).then((res: any) => {
+        const body = (res as HttpResponse).data as UTSJSONObject;
+        const echo = body['json'] as UTSJSONObject;
+        text.value = (echo['title'] as string);
+    }).catch((e: any) => {
+        text.value = e.message;
+    });
+};
+</script>
+`;
+
+/** HTTP 错误 */
+const error = `
+<template>
+    <ux-button text="请求 404" type="error" shape="round" @click="runError" />
+    <demo-result type="error" :text="text" />
+</template>
+
+<script setup lang="uts">
+import { http } from '@/uni_modules/uview-pro-x';
+import type { HttpError } from '@/uni_modules/uview-pro-x';
+
+const text = ref<string>('待发起');
+// 错误接口 404 且返回 JSON 体：H5 端空响应体的 404 会伴随一条 JSON 解析告警
+const errorApi = http.create({ baseURL: 'https://gitee.com/api/v5' });
+
+const runError = (): void => {
+    errorApi.get('/repos/uview-pro-x/not-found').then((res: any) => {
+        text.value = '未预期的成功';
+    }).catch((e: any) => {
+        const err = e as HttpError;
+        // code: ERR_BAD_RESPONSE；status: 404；response 里保留原始响应
+        text.value = err.code + ' · HTTP ' + err.status.toString();
+    });
+};
+</script>
+`;
+
+/** 取消请求 */
+const cancel = `
+<template>
+    <ux-button text="发起并取消" type="warning" shape="round" @click="runCancel" />
+    <demo-result type="warning" :text="text" />
+</template>
+
+<script setup lang="uts">
+import { http } from '@/uni_modules/uview-pro-x';
+import type { HttpCallConfig } from '@/uni_modules/uview-pro-x';
+
+const text = ref<string>('待发起');
+
+const runCancel = (): void => {
+    // 每次点击新建控制器，避免复用已 abort 的 signal
+    const controller = http.abortController();
+    setTimeout(() => {
+        controller.abort();
+    }, 300);
+    http.get('https://httpbin.org/delay/5', null, { signal: controller.signal } as HttpCallConfig).then((res: any) => {
+        text.value = '取消失败：请求已完成';
+    }).catch((e: any) => {
+        text.value = http.isCancel(e) ? '已取消（ERR_CANCELED）' : e.message;
+    });
+};
+</script>
+`;
+
+/** 上传 */
+const upload = `
+<template>
+    <ux-button text="选择图片上传" type="info" shape="round" @click="runUpload" />
+    <demo-result :text="text" />
+</template>
+
+<script setup lang="uts">
+import { http } from '@/uni_modules/uview-pro-x';
+
+const text = ref<string>('待发起');
+
+const runUpload = (): void => {
+    uni.chooseImage({
+        count: 1,
+        success: (res) => {
+            const paths = res.tempFilePaths;
+            if (paths.length == 0) return;
+            http.upload({
+                url: 'https://httpbin.org/post',
+                filePath: paths[0],
+                name: 'file',
+                onProgress: (p) => {
+                    text.value = p.progress.toString() + '%';
+                }
+            }).then((result) => {
+                text.value = 'HTTP ' + result.status.toString();
+            }).catch((e: any) => {
+                text.value = e.message;
+            });
+        }
+    });
+};
+</script>
+`;
+
+/** 下载 */
+const download = `
+<template>
+    <ux-button text="下载图片" type="info" shape="round" @click="runDownload" />
+    <demo-result :text="text" />
+</template>
+
+<script setup lang="uts">
+import { http } from '@/uni_modules/uview-pro-x';
+
+const text = ref<string>('待发起');
+
+const runDownload = (): void => {
+    http.download({
+        url: 'https://httpbin.org/image/png',
+        onProgress: (p) => {
+            text.value = p.progress.toString() + '%';
+        }
+    }).then((result) => {
+        text.value = result.tempFilePath;
+    }).catch((e: any) => {
+        text.value = e.message;
+    });
+};
+</script>
+`;
+
+export const codes = {
+    get,
+    post,
+    error,
+    cancel,
+    upload,
+    download
+};

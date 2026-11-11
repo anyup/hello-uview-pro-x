@@ -1,0 +1,26 @@
+import { http } from '@/uni_modules/uview-pro-x';
+import { setupInterceptors } from './interceptors';
+
+/** 演示数据源：httpbin 提供回显、延迟与图片 */
+const DEMO_BASE = 'https://httpbin.org';
+
+/** 默认请求头：模块级只建一次 */
+const defaultHeaders = new UTSJSONObject();
+defaultHeaders['content-type'] = 'application/json';
+defaultHeaders['x-client'] = 'uview-pro-x';
+
+/**
+ * 业务实例：模块级单例
+ * @description ESM 模块在同一运行环境只执行一次，所有页面 import 到的都是这一份实例，
+ *   baseURL、超时、请求头与拦截器全站共享
+ */
+const request = http.create({
+    baseURL: DEMO_BASE,
+    timeout: 15000,
+    headers: defaultHeaders
+});
+
+// 拦截器不随 create 继承，在模块顶层注册一次
+setupInterceptors(request);
+
+export { request, DEMO_BASE };
