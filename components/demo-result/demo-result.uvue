@@ -1,20 +1,26 @@
 <template>
-    <view class="demo-result" :class="'demo-result--' + type">
-        <text class="demo-result-text">{{ text }}</text>
+    <view
+        class="demo-result"
+        :class="'demo-result--' + props.type"
+    >
+        <text
+            class="demo-result-text"
+            :class="'demo-result-text--' + props.type"
+        >{{ props.text }}</text>
     </view>
 </template>
 
 <script setup lang="uts">
-    defineOptions({
-        name: 'demo-result',
-        styleIsolation: 'app-and-page'
-    });
-
     /**
      * 演示结果展示组件 - 统一结果状态样式
      * - type：状态类型（default 主色 / success 成功 / error 错误 / warning 警告）
      * - text：结果文本
      */
+    defineOptions({
+        name: 'demo-result',
+        styleIsolation: 'app-and-page'
+    });
+
     const props = withDefaults(defineProps<{
         type?: 'default' | 'success' | 'error' | 'warning';
         text: string;
@@ -33,28 +39,43 @@
         background-color: $u-bg-color;
     }
 
+    /* App 端 text 不继承父 view 的 color（回落默认黑色），文字色必须写在 text 自身的类上；
+       色值取 $u-type-* 令牌（内部为 var(--u-type-*)），可随主题 / 暗黑模式联动 */
     .demo-result-text {
         font-size: 14px;
         font-weight: 500;
+        color: $u-main-color;
+    }
+
+    .demo-result-text--default {
+        color: $u-type-primary;
+    }
+
+    .demo-result-text--success {
+        color: $u-type-success;
+    }
+
+    .demo-result-text--error {
+        color: $u-type-error;
+    }
+
+    .demo-result-text--warning {
+        color: $u-type-warning;
     }
 
     .demo-result--default {
-        color: $u-type-primary;
         background-color: $u-type-primary-light;
     }
 
     .demo-result--success {
-        color: $u-type-success;
         background-color: $u-type-success-light;
     }
 
     .demo-result--error {
-        color: $u-type-error;
         background-color: $u-type-error-light;
     }
 
     .demo-result--warning {
-        color: $u-type-warning;
         background-color: $u-type-warning-light;
     }
 </style>
