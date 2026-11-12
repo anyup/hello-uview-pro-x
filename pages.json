@@ -38,7 +38,11 @@
     "backgroundColor": "@backgroundColor",
     "backgroundColorContent": "@backgroundColorContent",
     "backgroundTextStyle": "@backgroundTextStyle",
-    "navigationStyle": "custom"
+    "navigationStyle": "custom",
+    "mp-alipay": { 
+      "transparentTitle": "always",
+      "titlePenetrate": "YES"
+    }
   },
   "easycom": {
     "autoscan": true,
@@ -524,14 +528,22 @@
             "navigationBarTitleText": "Sticky 原生导航栏",
             "navigationBarBackgroundColor": "#ffffff",
             "navigationBarTextStyle": "black",
-            "navigationStyle": "default"
+            "navigationStyle": "default",
+            "mp-alipay": { 
+              "transparentTitle": "none",
+              "titlePenetrate": "NO"
+            }
           }
         },
         {
           "path": "sticky/none/index",
           "style": {
             "navigationBarTitleText": "Sticky 无导航栏",
-            "navigationStyle": "custom"
+            "navigationStyle": "custom",
+            "mp-alipay": { 
+              "transparentTitle": "none",
+              "titlePenetrate": "NO"
+            }
           }
         }
       ]

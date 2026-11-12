@@ -21,11 +21,13 @@
     <tr>
         <td><img src="https://ik.imagekit.io/anyup/uview-pro/download/h5x.png" width="200" ></td>
         <td><img src="https://ik.imagekit.io/anyup/uview-pro/download/wechatx.jpg" width="200" ></td>
+        <td><img src="https://ik.imagekit.io/anyup/uview-pro/download/alipayx.png" width="200" ></td>
         <td><img src="https://ik.imagekit.io/anyup/uview-pro/download/androidx.png" width="200" ></td>
     </tr>
     <tr>
         <td align="center"><strong>H5</strong><br>（浏览器扫码）</td>
-        <td align="center"><strong>小程序</strong><br>（微信扫码）</td>
+        <td align="center"><strong>微信小程序</strong><br>（微信扫码）</td>
+        <td align="center"><strong>支付宝小程序</strong><br>（支付宝扫码）</td>
         <td align="center"><strong>APP（安卓）</strong><br>（浏览器扫码）</td>
     </tr>
 </table>

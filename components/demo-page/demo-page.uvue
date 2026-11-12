@@ -13,8 +13,8 @@
         <!-- 统一自定义导航栏：覆盖原生导航栏（globalStyle.navigationStyle=custom），背景为主题主色渐变（随主题与暗黑模式联动） -->
         <ux-navbar
             v-if="!props.hideNavbar"
-            :title="zhName"
-            :is-back="!props.showTabbar"
+            :title="navbarTitle"
+            :is-back="showBackIcon"
             :background="navBackground"
             :border-bottom="false"
             :title-color="$u.color.whiteColor"
@@ -46,8 +46,8 @@
         <!-- 统一自定义导航栏（非 App 端） -->
         <ux-navbar
             v-if="!props.hideNavbar"
-            :title="zhName"
-            :is-back="!props.showTabbar"
+            :title="navbarTitle"
+            :is-back="showBackIcon"
             :background="navBackground"
             :border-bottom="false"
             :title-color="$u.color.whiteColor"
@@ -95,6 +95,16 @@
 	const current = ref<number>(0);
 	const { t } = useLocale('demo');
 
+	// 是否显示自绘返回图标：支付宝小程序保留了原生返回箭头，自绘返回会与之重叠，故隐藏
+	const showBackIcon = computed<boolean>(() => {
+		// #ifdef MP-ALIPAY
+		return false;
+		// #endif
+		// #ifndef MP-ALIPAY
+		return !props.showTabbar;
+		// #endif
+	});
+
 	/** 页面印章版本号：未传 since 时为空，不渲染印章 */
 	const sinceVersion = computed<string>(() => props.since ?? '');
 
@@ -118,6 +128,16 @@
 	});
 	const enName = computed<string>(() => (hasEnTag.value ? titleParts.value[0] : ''));
 	const zhName = computed<string>(() => (hasEnTag.value ? titleParts.value.slice(1).join(' ') : props.title));
+
+	// 导航栏标题：支付宝小程序保留了原生导航栏标题，自绘标题会与之重复，故置空（ux-navbar 内部 title 为空时不渲染标题区）
+	const navbarTitle = computed<string>(() => {
+		// #ifdef MP-ALIPAY
+		return '';
+		// #endif
+		// #ifndef MP-ALIPAY
+		return zhName.value;
+		// #endif
+	});
 
 	// 当前主题 CSS 变量，注入到根元素使全页 SCSS/CSS 变量随主题/暗黑模式联动
 	const { cssVars } = useTheme();
