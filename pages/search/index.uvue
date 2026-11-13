@@ -1,5 +1,6 @@
 <template>
-    <view class="search-page">
+    <!-- 根节点注入主题 CSS 变量：暗黑模式下统一接管 --u-* 底色/字色/边框，与 demo-page 同一套机制 -->
+    <view class="search-page" :style="cssVarsStyle">
         <!-- 导航栏：主题主色渐变背景，白字，返回上一页 -->
         <ux-navbar
             :title="t('searchPage.title')"
@@ -72,7 +73,7 @@
 </template>
 
 <script setup lang="uts">
-import { $u, useLocale } from '@/uni_modules/uview-pro-x';
+import { $u, useLocale, useTheme } from '@/uni_modules/uview-pro-x';
 import { componentCategories } from '../tabbar/config';
 
 /** 搜索结果项 */
@@ -89,6 +90,11 @@ type SearchResult = {
 };
 
 const { t } = useLocale('demo');
+
+// 主题变量（随 useTheme 响应式更新）：页内样式全部走 $u-* → var(--u-*)，
+// 不注入时只会落到 theme.scss 里 page 选择器的亮色默认值，暗黑模式不生效
+const { cssVars } = useTheme();
+const cssVarsStyle = computed<string>(() => $u.toStyle(cssVars.value));
 
 // 搜索历史本地存储：数组以分隔符拼接为字符串存储，规避 UTS 端存储数组类型差异
 const HISTORY_KEY = 'ux-pro-x-search-history';
