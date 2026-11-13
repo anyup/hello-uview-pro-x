@@ -24,7 +24,7 @@ export function createApp() {
 			defaultLocale: 'zh-CN',
 			isForce: false
 		},
-		// 多主题：theme.uts 的 4 套自定义主题与内置官方蓝合并为 5 套
+		// 多主题：列表即注册列表，含显式声明的内置基线主题项（共 5 套）
 		theme: themes
 	})
 	return {

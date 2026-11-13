@@ -1,6 +1,82 @@
 <template>
     <demo-page :title="t('useTheme.title')" :subtitle="t('useTheme.subtitle')">
-        <!-- 当前主题状态 -->
+        <!-- ① 设置面板：模拟真实设置页（开关直切，行入口打开底部选择器） -->
+        <demo-block :title="t('useTheme.panelTitle')" :desc="t('useTheme.panelDesc')" :code="codes.panel">
+            <ux-cell-group :border="false">
+                <ux-cell-item :title="t('useTheme.darkSwitchLabel')" :arrow="false">
+                    <ux-switch :model-value="isInDarkMode()" :active-color="$u.color.primary" @change="handleDarkSwitch" />
+                </ux-cell-item>
+                <ux-cell-item :title="t('useTheme.autoSwitchLabel')" :arrow="false">
+                    <ux-switch :model-value="isAutoMode" :active-color="$u.color.primary" @change="handleAutoSwitch" />
+                </ux-cell-item>
+                <ux-cell-item :title="t('useTheme.themeColorLabel')" :value="currentThemeLabel" @click="openThemePicker()" />
+                <ux-cell-item
+                    :title="t('useTheme.localeRowLabel')"
+                    :value="currentLocaleLabel"
+                    :border-bottom="false"
+                    @click="openLocalePicker()"
+                />
+            </ux-cell-group>
+            <view class="ut-hint-wrap">
+                <text class="ut-hint">{{ t('useTheme.panelHint') }}</text>
+            </view>
+        </demo-block>
+
+        <!-- ② 暗黑模式三态：强制亮 / 强制暗 / 跟随系统 -->
+        <demo-block :title="t('useTheme.darkTitle')" :desc="t('useTheme.darkDesc')" :code="codes.dark">
+            <ux-subsection :list="darkOptions" :current="darkIndex" @change="handleDarkSectionChange" />
+            <ux-gap :height="12" />
+            <ux-button size="small" type="warning" block :text="t('useTheme.darkToggle')" @click="handleToggleDark()" />
+        </demo-block>
+
+        <!-- ③ 主题列表：点击即切换并持久化 -->
+        <demo-block :title="t('useTheme.themeTitle')" :desc="t('useTheme.themeDesc')" :code="codes.themes">
+            <view class="ut-theme-list">
+                <view
+                    v-for="(item, index) in themeRows"
+                    :key="item.name"
+                    class="ut-theme-row"
+                    :class="item.active ? rowActiveClass() : ''"
+                    @click="handleSetTheme(item.name)"
+                >
+                    <view class="ut-theme-dot" :style="{ backgroundColor: item.primary }"></view>
+                    <view class="ut-theme-meta">
+                        <text :class="item.active ? 'ut-theme-name ut-theme-name--active' : 'ut-theme-name'">{{ item.label }}</text>
+                        <text class="ut-theme-code">{{ item.name }}</text>
+                    </view>
+                    <text class="ut-theme-primary">{{ item.primary }}</text>
+                    <ux-icon v-if="item.active" name="checkmark-circle-fill" color="primary" size="20" />
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- ④ 亮 / 暗调色板：同一主题在两种模式下的实际取值 -->
+        <demo-block :title="t('useTheme.paletteTitle')" :desc="t('useTheme.paletteDesc')" :code="codes.palette">
+            <view class="ut-palette">
+                <view class="ut-palette-head">
+                    <view class="ut-palette-name"></view>
+                    <view class="ut-palette-cell">
+                        <text class="ut-palette-title">{{ t('useTheme.paletteLight') }}</text>
+                    </view>
+                    <view class="ut-palette-cell">
+                        <text class="ut-palette-title">{{ t('useTheme.paletteDark') }}</text>
+                    </view>
+                </view>
+                <view v-for="(row, index) in paletteRows" :key="row.name" class="ut-palette-row">
+                    <text class="ut-palette-name">{{ row.name }}</text>
+                    <view class="ut-palette-cell">
+                        <view class="ut-palette-swatch" :style="{ backgroundColor: row.light }"></view>
+                        <text class="ut-palette-hex">{{ row.lightHex }}</text>
+                    </view>
+                    <view class="ut-palette-cell">
+                        <view class="ut-palette-swatch" :style="{ backgroundColor: row.dark }"></view>
+                        <text class="ut-palette-hex">{{ row.darkHex }}</text>
+                    </view>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- ⑤ 状态与持久化：区分「内存里的生效值」与「已写入存储的值」 -->
         <demo-block :title="t('useTheme.stateTitle')" :desc="t('useTheme.stateDesc')" :code="codes.state">
             <ux-cell-group :border="false">
                 <ux-cell-item
@@ -14,62 +90,7 @@
             </ux-cell-group>
         </demo-block>
 
-        <!-- 主题切换 -->
-        <demo-block :title="t('useTheme.themeTitle')" :desc="t('useTheme.themeDesc')" :code="codes.theme">
-            <ux-cell-group :border="false">
-                <ux-cell-item
-                    v-for="(item, index) in themeRows"
-                    :key="index"
-                    :title="item.label"
-                    :label="item.name"
-                    :value="item.active ? t('useTheme.themeCurrent') : ''"
-                    :arrow="true"
-                    :border-bottom="!item.last"
-                    @click="handleSetTheme(item.name)"
-                >
-                    <template #icon>
-                        <view class="demo-theme-dot" :style="{ backgroundColor: item.primary }"></view>
-                    </template>
-                </ux-cell-item>
-            </ux-cell-group>
-        </demo-block>
-
-        <!-- 暗黑模式 -->
-        <demo-block :title="t('useTheme.darkTitle')" :desc="t('useTheme.darkDesc')" :code="codes.dark">
-            <ux-row :gutter="10">
-                <ux-col :span="4">
-                    <ux-button
-                        size="small"
-                        :type="isLightMode ? 'primary' : 'info'"
-                        block
-                        :text="t('useTheme.darkLight')"
-                        @click="handleSetDarkMode('light')"
-                    />
-                </ux-col>
-                <ux-col :span="4">
-                    <ux-button
-                        size="small"
-                        :type="isDarkMode ? 'primary' : 'info'"
-                        block
-                        :text="t('useTheme.darkDark')"
-                        @click="handleSetDarkMode('dark')"
-                    />
-                </ux-col>
-                <ux-col :span="4">
-                    <ux-button
-                        size="small"
-                        :type="isAutoMode ? 'primary' : 'info'"
-                        block
-                        :text="t('useTheme.darkAuto')"
-                        @click="handleSetDarkMode('auto')"
-                    />
-                </ux-col>
-            </ux-row>
-            <ux-gap :height="10" />
-            <ux-button size="small" type="warning" block :text="t('useTheme.darkToggle')" @click="handleToggleDark()" />
-        </demo-block>
-
-        <!-- 主题 CSS 变量 -->
+        <!-- ⑥ CSS 变量：页面根节点注入后的实际取值 -->
         <demo-block :title="t('useTheme.cssVarsTitle')" :desc="t('useTheme.cssVarsDesc')" :code="codes.cssVars">
             <ux-cell-group :border="false">
                 <ux-cell-item
@@ -83,32 +104,88 @@
             </ux-cell-group>
         </demo-block>
 
-        <!-- 恢复默认 -->
+        <!-- ⑦ 恢复默认 -->
         <demo-block :title="t('useTheme.resetTitle')" :desc="t('useTheme.resetDesc')" :code="codes.reset">
             <ux-button size="small" type="primary" block :text="t('useTheme.resetBtn')" @click="handleReset()" />
         </demo-block>
 
-        <!-- 使用说明 -->
+        <!-- ⑧ 使用说明 -->
         <demo-block :title="t('useTheme.usageTitle')" :code="codes.usage">
-            <ux-alert-tips type="primary" :show-icon="true" title="const { themes, currentTheme, setTheme } = useTheme()" />
-            <ux-gap :height="8" />
-            <ux-alert-tips type="primary" :show-icon="true" :title="t('useTheme.usage1')" />
-            <ux-gap :height="8" />
-            <ux-alert-tips type="primary" :show-icon="true" :title="t('useTheme.usage2')" />
-            <ux-gap :height="8" />
-            <ux-alert-tips type="primary" :show-icon="true" :title="t('useTheme.usage3')" />
+            <ux-cell-group :border="false">
+                <ux-cell-item
+                    v-for="(item, index) in usageRows"
+                    :key="index"
+                    :title="item.title"
+                    :label="item.label"
+                    :arrow="false"
+                    :border-bottom="!item.last"
+                />
+            </ux-cell-group>
         </demo-block>
+
+        <!-- 主题选择：底部弹窗，选中项主色描边 + 浅色底 + 勾选图标 -->
+        <ux-popup v-model:show="themePickerVisible" mode="bottom" :border-radius="16" :closeable="true">
+            <view class="ut-sheet">
+                <view class="ut-sheet-head">
+                    <text class="ut-sheet-title">{{ t('useTheme.pickerThemeTitle') }}</text>
+                </view>
+                <view class="ut-theme-list ut-sheet-list">
+                    <view
+                        v-for="(item, index) in themeRows"
+                        :key="item.name"
+                        class="ut-theme-row"
+                        :class="item.active ? rowActiveClass() : ''"
+                        @click="handleSetTheme(item.name)"
+                    >
+                        <view class="ut-theme-dot" :style="{ backgroundColor: item.primary }"></view>
+                        <view class="ut-theme-meta">
+                            <text :class="item.active ? 'ut-theme-name ut-theme-name--active' : 'ut-theme-name'">{{ item.label }}</text>
+                            <text class="ut-theme-code">{{ item.name }}</text>
+                        </view>
+                        <ux-icon v-if="item.active" name="checkmark-circle-fill" color="primary" size="20" />
+                    </view>
+                </view>
+            </view>
+        </ux-popup>
+
+        <!-- 语言选择：与主题选择同一套弹窗形态 -->
+        <ux-popup v-model:show="localePickerVisible" mode="bottom" :border-radius="16" :closeable="true">
+            <view class="ut-sheet">
+                <view class="ut-sheet-head">
+                    <text class="ut-sheet-title">{{ t('useTheme.pickerLocaleTitle') }}</text>
+                </view>
+                <view class="ut-theme-list ut-sheet-list">
+                    <view
+                        v-for="(item, index) in localeRows"
+                        :key="item.name"
+                        class="ut-theme-row"
+                        :class="item.active ? rowActiveClass() : ''"
+                        @click="handleSetLocale(item.name)"
+                    >
+                        <view class="ut-theme-meta ut-theme-meta--flush">
+                            <text :class="item.active ? 'ut-theme-name ut-theme-name--active' : 'ut-theme-name'">{{ item.label }}</text>
+                            <text class="ut-theme-code">{{ item.name }}</text>
+                        </view>
+                        <ux-icon v-if="item.active" name="checkmark-circle-fill" color="primary" size="20" />
+                    </view>
+                </view>
+            </view>
+        </ux-popup>
     </demo-page>
 </template>
 
 <script setup lang="uts">
-    import { $u, useTheme, useLocale, type DarkMode, type Theme, type ThemeColor } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale, useTheme, type DarkMode, type SubsectionListItem, type Theme } from '@/uni_modules/uview-pro-x';
+    import themePresets from '@/theme.uts';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
 
     // 解构方式使用：const { currentTheme, setTheme } = useTheme()
     const { themes, currentTheme, darkMode, cssVars, initTheme, setTheme, setDarkMode, toggleDarkMode, isInDarkMode } = useTheme();
+
+    // 语言切换与主题同属模块级状态，放在同一个设置面板里更贴近真实场景
+    const { currentLocale, locales, setLocale } = useLocale();
 
     type Row = {
         desc: string;
@@ -121,27 +198,53 @@
         label: string;
         primary: string;
         active: boolean;
+    };
+
+    type LocaleRow = {
+        name: string;
+        label: string;
+        active: boolean;
+    };
+
+    type PaletteRow = {
+        name: string;
+        light: string;
+        dark: string;
+        lightHex: string;
+        darkHex: string;
+    };
+
+    type UsageRow = {
+        title: string;
+        label: string;
         last: boolean;
     };
 
-    // 演示主题：只覆盖主色，其余令牌由主题引擎回退到基础调色板
-    function buildDemoTheme(name: string, label: string, primary: string): Theme {
-        const palette: ThemeColor = { primary: primary };
-        const theme: Theme = { name: name, label: label, color: palette };
-        return theme;
+    // 主题存储在归一化后是完整对象，离开页面按快照恢复即可（不写存储）
+    const initialThemes: Theme[] = themes.value.slice();
+    // 全局未注册多主题时补一份与首页一致的主题列表，保证演示可用
+    if (initialThemes.length < 2) {
+        initTheme(themePresets as Theme[]);
     }
 
-    // 进入页面注入两个演示主题（与内置主题合并，同名覆盖）
-    initTheme([buildDemoTheme('demoPurple', t('useTheme.demoPurple'), '#7c4dff'), buildDemoTheme('demoGreen', t('useTheme.demoGreen'), '#00b578')]);
+    const themePickerVisible = ref<boolean>(false);
+    const localePickerVisible = ref<boolean>(false);
 
-    const stateRows = computed((): Row[] => {
+    // 选中态底色：亮色用主色浅色底，暗色换页面底色
+    // （暗色下 primaryLight 由亮色按 0.6 混向暗色板，浅色底会被推成中灰，文字读不清）
+    function rowActiveClass(): string {
+        return isInDarkMode() ? 'ut-theme-row--active-dark' : 'ut-theme-row--active';
+    }
+
+    const currentThemeLabel = computed((): string => {
         const theme = currentTheme.value;
-        return [
-            { desc: t('useTheme.stateTheme'), result: theme != null ? theme.name : '-', last: false },
-            { desc: t('useTheme.stateMode'), result: darkMode.value, last: false },
-            { desc: t('useTheme.stateResolved'), result: isInDarkMode() ? 'dark' : 'light', last: false },
-            { desc: t('useTheme.stateCount'), result: themes.value.length.toString(), last: true }
-        ];
+        if (theme == null) return '-';
+        return $u.strOr(theme.label, theme.name);
+    });
+
+    const currentLocaleLabel = computed((): string => {
+        const cur = currentLocale.value;
+        return cur == null ? '-' : cur.label;
     });
 
     const themeRows = computed((): ThemeRow[] => {
@@ -154,17 +257,103 @@
             rows.push({
                 name: item.name,
                 label: $u.strOr(item.label, item.name),
-                primary: $u.strOr(item.color.primary, ''),
-                active: item.name == currentName,
-                last: i == list.length - 1
+                primary: $u.strOr(item.color.primary, '#cccccc'),
+                active: item.name == currentName
             });
         }
         return rows;
     });
 
-    const isLightMode = computed((): boolean => darkMode.value == 'light');
-    const isDarkMode = computed((): boolean => darkMode.value == 'dark');
+    const localeRows = computed((): LocaleRow[] => {
+        const list = locales.value;
+        const cur = currentLocale.value;
+        const curName = cur != null ? cur.name : '';
+        const rows: LocaleRow[] = [];
+        for (let i = 0; i < list.length; i++) {
+            rows.push({ name: list[i].name, label: list[i].label, active: list[i].name == curName });
+        }
+        return rows;
+    });
+
+    // 三段式暗黑设置：下标与 DarkMode 一一对应
+    const darkOptions = computed((): SubsectionListItem[] => {
+        return [
+            { name: t('useTheme.darkAuto') },
+            { name: t('useTheme.darkLight') },
+            { name: t('useTheme.darkDark') }
+        ];
+    });
+
+    const darkIndex = computed((): number => {
+        if (darkMode.value == 'auto') return 0;
+        if (darkMode.value == 'light') return 1;
+        return 2;
+    });
+
     const isAutoMode = computed((): boolean => darkMode.value == 'auto');
+
+    // 语义色令牌：亮色取主题 color，暗色取归一化后的 darkColor
+    const PALETTE_TOKENS: string[] = ['primary', 'success', 'warning', 'error', 'info'];
+
+    function readToken(json: UTSJSONObject, key: string): string {
+        const value = json[key];
+        if (value != null && typeof value == 'string') return value as string;
+        return '-';
+    }
+
+    const paletteRows = computed((): PaletteRow[] => {
+        const theme = currentTheme.value;
+        if (theme == null) return [];
+        const lightJson = JSON.parse(JSON.stringify(theme.color)) as UTSJSONObject;
+        const darkColor = theme.darkColor;
+        const darkJson = darkColor == null
+            ? new UTSJSONObject()
+            : (JSON.parse(JSON.stringify(darkColor)) as UTSJSONObject);
+        const rows: PaletteRow[] = [];
+        for (let i = 0; i < PALETTE_TOKENS.length; i++) {
+            const key = PALETTE_TOKENS[i];
+            const lightHex = readToken(lightJson, key);
+            const darkHex = readToken(darkJson, key);
+            rows.push({
+                name: key,
+                light: lightHex == '-' ? 'transparent' : lightHex,
+                dark: darkHex == '-' ? 'transparent' : darkHex,
+                lightHex: lightHex,
+                darkHex: darkHex
+            });
+        }
+        return rows;
+    });
+
+    const THEME_STORAGE_KEY = 'uview-pro-x-theme';
+    const DARK_MODE_STORAGE_KEY = 'uview-pro-x-dark-mode';
+
+    // 存储读取：默认值不落库，所以这里能直接看出「有没有手动切换过」
+    function readSaved(key: string): string {
+        try {
+            const value = uni.getStorageSync(key);
+            if (value != null && typeof value == 'string' && (value as string).length > 0) {
+                return value as string;
+            }
+        } catch (e) {
+            // 读取失败按未写入处理
+        }
+        return t('useTheme.notWritten');
+    }
+
+    const stateRows = computed((): Row[] => {
+        const theme = currentTheme.value;
+        const name = theme != null ? theme.name : '-';
+        const mode = darkMode.value;
+        return [
+            { desc: t('useTheme.stateTheme'), result: name, last: false },
+            { desc: t('useTheme.stateMode'), result: mode, last: false },
+            { desc: t('useTheme.stateResolved'), result: isInDarkMode() ? 'dark' : 'light', last: false },
+            { desc: t('useTheme.stateStorageTheme'), result: readSaved(THEME_STORAGE_KEY), last: false },
+            { desc: t('useTheme.stateStorageDark'), result: readSaved(DARK_MODE_STORAGE_KEY), last: false },
+            { desc: t('useTheme.stateCount'), result: themes.value.length.toString(), last: true }
+        ];
+    });
 
     // 取 CSS 变量值：变量表整体替换，computed 会跟随刷新
     // 主色 / 成功色等 config.type 内的令牌会加 --u-type 前缀
@@ -177,46 +366,233 @@
     const cssVarRows = computed((): Row[] => [
         { desc: '--u-theme-mode', result: cssVar('--u-theme-mode'), last: false },
         { desc: '--u-type-primary', result: cssVar('--u-type-primary'), last: false },
+        { desc: '--u-type-primary-light', result: cssVar('--u-type-primary-light'), last: false },
         { desc: '--u-type-success', result: cssVar('--u-type-success'), last: false },
-        { desc: '--u-main-color', result: cssVar('--u-main-color'), last: true }
+        { desc: '--u-main-color', result: cssVar('--u-main-color'), last: false },
+        { desc: '--u-bg-color', result: cssVar('--u-bg-color'), last: true }
     ]);
+
+    const usageRows = computed((): UsageRow[] => [
+        { title: t('useTheme.usage1Title'), label: t('useTheme.usage1Label'), last: false },
+        { title: t('useTheme.usage2Title'), label: t('useTheme.usage2Label'), last: false },
+        { title: t('useTheme.usage3Title'), label: t('useTheme.usage3Label'), last: false },
+        { title: t('useTheme.usage4Title'), label: t('useTheme.usage4Label'), last: true }
+    ]);
+
+    function openThemePicker(): void {
+        themePickerVisible.value = true;
+    }
+
+    function openLocalePicker(): void {
+        localePickerVisible.value = true;
+    }
 
     function handleSetTheme(name: string): void {
         setTheme(name);
+        themePickerVisible.value = false;
     }
 
-    function handleSetDarkMode(mode: DarkMode): void {
-        setDarkMode(mode);
+    function handleSetLocale(name: string): void {
+        setLocale(name);
+        localePickerVisible.value = false;
+    }
+
+    // 开关显示的是「实际生效值」：auto 模式下点开关会转成强制亮 / 强制暗
+    function handleDarkSwitch(value: boolean | number | string): void {
+        if (value === true) {
+            setDarkMode('dark');
+        } else {
+            setDarkMode('light');
+        }
+    }
+
+    function handleAutoSwitch(value: boolean | number | string): void {
+        if (value === true) {
+            setDarkMode('auto');
+        } else {
+            const resolved: DarkMode = isInDarkMode() ? 'dark' : 'light';
+            setDarkMode(resolved);
+        }
+    }
+
+    function handleDarkSectionChange(index: number): void {
+        if (index == 0) {
+            setDarkMode('auto');
+        } else if (index == 1) {
+            setDarkMode('light');
+        } else {
+            setDarkMode('dark');
+        }
     }
 
     function handleToggleDark(): void {
         toggleDarkMode();
     }
 
-    // 恢复默认：无参 initTheme() 回到内置主题，并把解析后的主题名写回存储
-    function restoreDefault(): void {
+    // 恢复默认：回到内置主题并复位为亮色（显式操作，允许写存储）
+    function handleReset(): void {
         initTheme();
         setDarkMode('light');
-        const current = currentTheme.value;
-        if (current != null) setTheme(current.name);
     }
 
-    function handleReset(): void {
-        restoreDefault();
-    }
-
-    // 离开页面恢复，避免演示主题与暗黑设置残留到其他示例页
+    // 离开页面只恢复主题列表，不改暗黑设置：暗黑是全局能力，用户切了就是真实意图
     onUnload((): void => {
-        restoreDefault();
+        initTheme(initialThemes);
     });
 </script>
 
 <style lang="scss">
+    .ut-hint-wrap {
+        padding-top: 10px;
+    }
+
+    .ut-hint {
+        font-size: 12px;
+        color: $u-tips-color;
+        line-height: 1.6;
+    }
+
+    /* 主题行：色点 + 名称 + 主色值 + 选中勾 */
+    .ut-theme-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ut-theme-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border: 1px solid $u-border-color;
+        border-radius: 8px;
+        background-color: $u-bg-white;
+    }
+
+    .ut-theme-row--active {
+        border-color: $u-type-primary;
+        background-color: $u-type-primary-light;
+    }
+
+    /* 暗色下 primary-light 会被推导成中灰，改用页面底色保证文字可读 */
+    .ut-theme-row--active-dark {
+        border-color: $u-type-primary;
+        background-color: $u-bg-color;
+    }
+
+    /* App 端 UCSS 不支持后代选择器，选中态加粗落在同一节点上 */
+    .ut-theme-name--active {
+        font-weight: bold;
+    }
+
     /* 主题色圆点需真实渲染色值，属必要例外：仅 background-color 走内联 */
-    .demo-theme-dot {
+    .ut-theme-dot {
         width: 20px;
         height: 20px;
         border-radius: 10px;
+        flex-shrink: 0;
+    }
+
+    .ut-theme-meta {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+        margin-left: 10px;
+    }
+
+    .ut-theme-meta--flush {
+        margin-left: 0;
+    }
+
+    .ut-theme-name {
+        font-size: 14px;
+        color: $u-main-color;
+    }
+
+    .ut-theme-code {
+        font-size: 11px;
+        color: $u-tips-color;
+        margin-top: 2px;
+    }
+
+    .ut-theme-primary {
+        font-size: 12px;
+        color: $u-content-color;
+        margin-right: 6px;
+    }
+
+    /* 调色板：令牌名 + 亮色块 + 暗色块 */
+    .ut-palette {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ut-palette-head {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 6px;
+    }
+
+    .ut-palette-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid $u-divider-color;
+    }
+
+    .ut-palette-name {
+        width: 66px;
+        flex-shrink: 0;
+        font-size: 12px;
+        color: $u-content-color;
+    }
+
+    .ut-palette-title {
+        font-size: 12px;
+        color: $u-tips-color;
+    }
+
+    .ut-palette-cell {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ut-palette-swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
         border: 1px solid $u-border-color;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+
+    .ut-palette-hex {
+        font-size: 11px;
+        color: $u-main-color;
+    }
+
+    /* 底部选择弹窗：标题左右留出关闭图标热区 */
+    .ut-sheet {
+        padding-bottom: 8px;
+    }
+
+    .ut-sheet-head {
+        padding: 16px 44px 8px 16px;
+    }
+
+    .ut-sheet-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: $u-main-color;
+    }
+
+    .ut-sheet-list {
+        padding: 0 16px;
     }
 </style>

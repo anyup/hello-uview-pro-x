@@ -1,49 +1,15 @@
 // 此自定义uView Pro主题生成于2025-11-29 13:18
 // 地址：https://uviewpro.cn/zh/guide/themeGenerate.html
 
+import { BASE_THEME_NAME } from '@/uni_modules/uview-pro-x';
+
 export default [
-    // {
-    //     "name": "uviewpro",
-    //     "label": "官方蓝",
-    //     "description": "",
-    //     "color": {
-    //         "primary": "#2979ff",
-    //         "primaryDark": "#2b85e4",
-    //         "primaryDisabled": "#a0cfff",
-    //         "primaryLight": "#ecf5ff",
-    //         "bgColor": "#f3f4f6",
-    //         "bgWhite": "#ffffff",
-    //         "bgGrayLight": "#f1f1f1",
-    //         "bgGrayDark": "#2f343c",
-    //         "bgBlack": "#000000",
-    //         "info": "#909399",
-    //         "infoDark": "#82848a",
-    //         "infoDisabled": "#c8c9cc",
-    //         "infoLight": "#f4f4f5",
-    //         "warning": "#ff9900",
-    //         "warningDark": "#f29100",
-    //         "warningDisabled": "#fcbd71",
-    //         "warningLight": "#fdf6ec",
-    //         "error": "#fa3534",
-    //         "errorDark": "#dd6161",
-    //         "errorDisabled": "#fab6b6",
-    //         "errorLight": "#fef0f0",
-    //         "success": "#19be6b",
-    //         "successDark": "#18b566",
-    //         "successDisabled": "#71d5a1",
-    //         "successLight": "#dbf1e1",
-    //         "mainColor": "#303133",
-    //         "contentColor": "#606266",
-    //         "tipsColor": "#909399",
-    //         "lightColor": "#c0c4cc",
-    //         "borderColor": "#dcdfe6",
-    //         "whiteColor": "#ffffff",
-    //         "blackColor": "#000000",
-    //         "dividerColor": "#ebeef5",
-    //         "maskColor": "rgba(0, 0, 0, 0.4)",
-    //         "shadowColor": "rgba(0, 0, 0, 0.1)"
-    //     }
-    // },
+    // 内置基线主题：内置主题默认不再自动进入列表，需要它出现在切换列表里就显式声明同名项
+    // （色板 / CSS 变量 / 文案均取基线，只需一个 name）
+    {
+        name: BASE_THEME_NAME,
+        color: {}
+    },
     // 主题 1: 紫色
     {
         name: 'purple',
