@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.28（2026-11-13）
+
+### ♻️ Code Refactoring | 代码重构
+
+- **config:** 新增 BASE_THEME_NAME 常量统一管理主题名称，明确内置基线主题变量
+- **useTheme:** 重构主题合并与初始化逻辑，优化主题配置处理，新增归一化主题配置函数，确保用户自定义主题能正确继承基线配置并正常生效
+- **useTheme:** 重构主题演示页面，新增完整设置与主题管理功能，包括：设置面板、暗黑模式三态、主题列表、调色板、状态持久化、CSS变量、恢复默认
+- **scripts:** 新增对 App 端 uvue 不支持组合选择器的校验规则
+
 ## 1.0.27（2026-11-13）
 
 ### 🐛 Bug Fixes | Bug 修复
