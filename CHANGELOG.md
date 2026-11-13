@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.27（2026-11-13）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **search-page:** 修复搜索页未注入时暗黑模式样式不生效的问题
+
 ## 1.0.26（2026-11-12）
 
 ### ✨ Features | 新功能
