@@ -6,9 +6,13 @@
  * 这类写法在 H5/小程序上正常工作，只在 App 编译期报警告（plugin:uni:app-uvue-css），
  * 很容易被忽略；本脚本把这类平台限制前移到静态检查。
  *
- * 判定范围：style 块内的声明，且该声明在 App 端会被编译（CSS 条件编译注释感知）：
+ * 判定范围：style 块内的声明与顶层选择器，且在 App 端会被编译（CSS 条件编译注释感知）：
  *   - ifdef APP / ifdef H5 || APP  → 校验
  *   - ifndef APP / ifdef H5        → 跳过（App 端不生效）
+ *
+ * 两类规则：
+ *   1. 声明取值：如 App 端 display 仅支持 flex | none
+ *   2. 选择器形态：App（uvue）不支持组合选择器（后代 / 子代 / 兄弟）
  *
  * 用法：
  *   node scripts/verify-uvue-css.mjs                  全量扫描，违规时退出码 1
@@ -34,6 +38,53 @@ const RULES = [
 		reason: 'App（uvue）display 仅支持 flex | none'
 	}
 ]
+
+// 选择器规则：App 端不支持组合选择器，需拆成单类并在模板上同时挂类
+const SELECTOR_RULE = {
+	reason: 'App（uvue）不支持组合选择器（后代 / 子代 / 兄弟），改为单类选择器并用模板同时挂多个 class'
+}
+
+/**
+ * 校验单个顶层选择器，返回违规描述；合规返回 null
+ * @param {string} sel 完整选择器（可能含逗号分组）
+ */
+function checkSelector(sel) {
+	// @media / @keyframes / @supports 等规则块不是选择器
+	if (sel.startsWith('@')) return null
+	for (const rawPart of sel.split(',')) {
+		// 去掉伪类 / 伪元素括号内的内容，避免 :not(.a .b) 误判
+		const part = rawPart.trim().replace(/\([^)]*\)/g, '()')
+		if (part === '') continue
+		if (/[>+~]/.test(part) || /\s/.test(part)) return sel.replace(/\s+/g, ' ')
+	}
+	return null
+}
+
+/**
+ * 去除块注释（支持跨行）：选择器与声明判定都不能把注释正文当语法
+ * @param {string} raw 原始行
+ * @param {() => boolean} getInComment 读取当前是否处于块注释内
+ * @param {(v: boolean) => void} setInComment 回写块注释状态
+ */
+function stripComments(raw, getInComment, setInComment) {
+	let out = ''
+	let i = 0
+	while (i < raw.length) {
+		if (getInComment()) {
+			const end = raw.indexOf('*/', i)
+			if (end < 0) return out
+			setInComment(false)
+			i = end + 2
+		} else {
+			const start = raw.indexOf('/*', i)
+			if (start < 0) return out + raw.slice(i)
+			out += raw.slice(i, start)
+			setInComment(true)
+			i = start + 2
+		}
+	}
+	return out
+}
 
 /**
  * 条件编译表达式是否会让代码在 App 端生效
@@ -90,6 +141,11 @@ function scanFile(file) {
 	// 条件编译可出现在声明块内部，所以生效性必须逐行判定而非在块开头快照
 	let depth = 0
 	let bufLines = []
+	// 选择器采集：depth 为 0 时、遇到 { 之前的文本即选择器
+	let selBuf = ''
+	let selStart = 0
+	// 跨行块注释状态：多行 /* ... */ 的正文不能参与选择器判定
+	let inComment = false
 
 	// 结算一个属性块：逐行按分号拆声明（行号直接取该行，跨行值不在规则表覆盖范围内）
 	const flush = () => {
@@ -134,12 +190,23 @@ function scanFile(file) {
 		}
 
 		const active = !condStack.some((on) => !on)
-		const line = raw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/, '')
+		const line = stripComments(raw, () => inComment, (v) => {
+			inComment = v
+		}).replace(/\/\/.*$/, '')
 		let rowBuf = ''
 		for (let c = 0; c < line.length; c++) {
 			const ch = line[c]
 			if (ch === '{') {
-				if (depth === 0) bufLines = []
+				if (depth === 0) {
+					if (active) {
+						const bad = checkSelector(selBuf.trim())
+						if (bad != null) {
+							findings.push({ line: selStart, prop: 'selector', value: bad, rule: SELECTOR_RULE })
+						}
+					}
+					selBuf = ''
+					bufLines = []
+				}
 				depth++
 			} else if (ch === '}') {
 				if (depth > 0) {
@@ -152,6 +219,9 @@ function scanFile(file) {
 				}
 			} else if (depth > 0) {
 				rowBuf += ch
+			} else {
+				if (selBuf.trim() === '' && !/\s/.test(ch)) selStart = i + 1
+				selBuf += ch
 			}
 		}
 		if (depth > 0) bufLines.push({ line: i + 1, text: rowBuf, active })
