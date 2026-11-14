@@ -22,6 +22,7 @@ const length = `
 <template>
     <view>
         <ux-line length="50%" />
+        <ux-gap :height="8" />
         <ux-line length="150px" />
     </view>
 </template>
@@ -52,6 +53,7 @@ const borderStyle = `
 <template>
     <view>
         <ux-line border-style="dashed" />
+        <ux-gap :height="8" />
         <ux-line border-style="dotted" />
     </view>
 </template>
@@ -62,6 +64,7 @@ const hairLine = `
 <template>
     <view>
         <ux-line />
+        <ux-gap :height="8" />
         <ux-line :hair-line="false" />
     </view>
 </template>

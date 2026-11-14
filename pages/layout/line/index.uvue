@@ -2,23 +2,24 @@
     <demo-page :title="t('line.title')" :subtitle="t('line.subtitle')">
 
         <!-- 基础用法 -->
-        <demo-block :title="t('line.basicTitle')" :code="codes.basic">
+        <demo-block :title="t('line.basicTitle')" :desc="t('line.basicDesc')" :code="codes.basic">
             <ux-line></ux-line>
         </demo-block>
 
         <!-- 自定义颜色 -->
-        <demo-block :title="t('line.colorTitle')" :code="codes.color">
+        <demo-block :title="t('line.colorTitle')" :desc="t('line.colorDesc')" :code="codes.color">
             <ux-line color="#f56c6c"></ux-line>
         </demo-block>
 
         <!-- 自定义长度 -->
-        <demo-block :title="t('line.lengthTitle')" :code="codes.length">
+        <demo-block :title="t('line.lengthTitle')" :desc="t('line.lengthDesc')" :code="codes.length">
             <ux-line length="50%"></ux-line>
+            <ux-gap :height="8" />
             <ux-line length="150px"></ux-line>
         </demo-block>
 
         <!-- 竖向线条 -->
-        <demo-block :title="t('line.colTitle')" :code="codes.col">
+        <demo-block :title="t('line.colTitle')" :desc="t('line.colDesc')" :code="codes.col">
             <view class="line-row-box">
                 <view class="line-row-item">
                     <text class="line-row-text">{{ t('line.contentOne') }}</text>
@@ -29,19 +30,21 @@
         </demo-block>
 
         <!-- 线条类型 -->
-        <demo-block :title="t('line.borderStyleTitle')" :code="codes.borderStyle">
+        <demo-block :title="t('line.borderStyleTitle')" :desc="t('line.borderStyleDesc')" :code="codes.borderStyle">
             <ux-line border-style="dashed"></ux-line>
+            <ux-gap :height="8" />
             <ux-line border-style="dotted"></ux-line>
         </demo-block>
 
         <!-- 粗细线条 -->
-        <demo-block :title="t('line.hairLineTitle')" :code="codes.hairLine">
+        <demo-block :title="t('line.hairLineTitle')" :desc="t('line.hairLineDesc')" :code="codes.hairLine">
             <ux-line></ux-line>
+            <ux-gap :height="8" />
             <ux-line :hair-line="false"></ux-line>
         </demo-block>
 
         <!-- 边距 -->
-        <demo-block :title="t('line.marginTitle')" :code="codes.margin">
+        <demo-block :title="t('line.marginTitle')" :desc="t('line.marginDesc')" :code="codes.margin">
             <view class="line-margin-box">
                 <text class="line-margin-text">{{ t('line.blockOne') }}</text>
             </view>
