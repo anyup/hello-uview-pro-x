@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.29（2026-11-15）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **layout-line:** 修复多个间距组件 ux-line 示例展示问题
+
+### 💄 Styles | 风格
+
+- 修改默认导航栏文字颜色为黑色，适配浅色主题显示
+
 ## 1.0.28（2026-11-13）
 
 ### ♻️ Code Refactoring | 代码重构
