@@ -98,6 +98,70 @@ function onClick(): void {
 </style>
 `;
 
+/** 文字样式 */
+const font = `
+<template>
+    <view class="btn-wrap">
+        <!-- font-size 只改字号、不改按钮高度；需要非标高度时配 height（行高自动同步） -->
+        <ux-button :font-size="18" type="primary" text="字号 18" custom-class="btn-item" @click="onClick" />
+        <!-- bold 加粗（含 loading 文案） -->
+        <ux-button bold type="success" text="加粗文字" custom-class="btn-item" @click="onClick" />
+        <!-- color 自定义文字色：图标与 loading 圆环默认跟随，图标可用 icon-color 单独覆盖 -->
+        <ux-button color="#ff9900" type="default" icon="star" text="自定义文字色" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
+/** 自定义高度 */
+const height = `
+<template>
+    <view class="btn-wrap">
+        <!-- height 与 font-size 配对：文字行高自动同步为按钮高度，始终垂直居中 -->
+        <ux-button :height="44" :font-size="16" type="primary" text="高 44 / 字号 16" custom-class="btn-item" @click="onClick" />
+        <!-- shape=circle 且非 block 时宽度同步为同值，保持正圆 -->
+        <ux-button :height="56" shape="circle" icon="star" type="error" custom-class="btn-item" @click="onClick" />
+    </view>
+</template>
+
+<script setup lang="uts">
+function onClick(): void {
+    uni.showToast({ title: '点击了按钮', icon: 'none' });
+}
+</script>
+
+<style scoped>
+.btn-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.btn-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+</style>
+`;
+
 /** 按钮形状 */
 const shape = `
 <template>
@@ -516,6 +580,8 @@ export const codes = {
     type,
     plain,
     size,
+    font,
+    height,
     shape,
     radius,
     ripple,

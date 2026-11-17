@@ -32,6 +32,25 @@
             </view>
         </demo-block>
 
+        <!-- 文字样式：font-size 覆盖档位字号（只改字、不改按钮高度）、bold 加粗、color 自定义文字色 -->
+        <demo-block :title="t('button.fontTitle')" :desc="t('button.fontDesc')" :code="codes.font">
+            <view class="btn-wrap">
+                <ux-button :font-size="18" type="primary" :text="t('button.fontSizeText')" custom-class="btn-item" @click="btnClick" />
+                <ux-button bold type="success" :text="t('button.fontBoldText')" custom-class="btn-item" @click="btnClick" />
+                <!-- color 自定义文字色：图标与 loading 圆环默认跟随，图标可用 icon-color 单独覆盖 -->
+                <ux-button color="#ff9900" type="default" icon="star" :text="t('button.fontColorText')" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
+        <!-- 自定义高度：height 与 font-size 配对覆盖非标尺寸（文字行高自动同步），circle 形状宽度自动同步保持正圆 -->
+        <demo-block :title="t('button.heightTitle')" :desc="t('button.heightDesc')" :code="codes.height">
+            <view class="btn-wrap">
+                <ux-button :height="44" :font-size="16" type="primary" :text="t('button.heightText')" custom-class="btn-item" @click="btnClick" />
+                <!-- 正圆：高度改后宽度同步为同值，不会变椭圆 -->
+                <ux-button :height="56" shape="circle" icon="star" type="error" custom-class="btn-item" @click="btnClick" />
+            </view>
+        </demo-block>
+
         <!-- 按钮形状 -->
         <demo-block :title="t('button.shapeTitle')" :desc="t('button.shapeDesc')" :code="codes.shape">
             <view class="btn-wrap">
