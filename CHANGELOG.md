@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.31（2026-11-17）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-navbar:** 修正导航栏高度单位的描述错误问题
+
+### ✨ Features | 新功能
+
+- **ux-button:** 新增fontSize、bold、color、height四个可配置属性，支持自定义按钮文字样式和尺寸
+- **button:** 新增按钮字号、文字色和自定义高度演示示例
+
 ## 1.0.30（2026-11-16）
 
 ### 🐛 Bug Fixes | Bug 修复
