@@ -32,7 +32,7 @@ jobs:
           node-version: 22
 
       # 1) 拉取组件库：本仓库只有宿主工程与示例页，ux-* 组件源码在私有库 anyup/uview-pro-x。
-      #    私有库按“纯库仓库”组织（根目录即组件库包：package.json + components/ + index.uts…），
+      #    私有库按“纯库仓库”组织（根目录即组件库包：package.json + components/ + index.ts…），
       #    因此可直接检出到 uni_modules/uview-pro-x，无需二次搬运子目录。
       #    跨仓库访问私有库不能用本仓库的 GITHUB_TOKEN（令牌只对当前仓库有效），
       #    需 secrets.UVIEW_PRO_X_TOKEN（对 anyup/uview-pro-x 有 Contents 读权限）。
@@ -53,7 +53,7 @@ jobs:
                  uni_modules/uview-pro-x/scripts uni_modules/uview-pro-x/unpackage uni_modules/uview-pro-x/node_modules
           # 防御验证：组件库必需文件缺失则显式失败
           test -f uni_modules/uview-pro-x/package.json
-          test -f uni_modules/uview-pro-x/index.uts
+          test -f uni_modules/uview-pro-x/index.ts
 
       # 3) 缓存 HBuilderX 原始包（tar.gz，稳定不变对象）。不缓存解压目录——避免 cli open/publish 写入运行态
       #    导致缓存文件变动、Post 阶段上传失败。命中则跳过重新下载 1.7GB。
