@@ -46,7 +46,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { http, useLocale } from '@/uni_modules/uview-pro-x';
     import type { HttpCallConfig, HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
     import { sinceOf } from '@/version';
@@ -89,29 +90,29 @@
     /** 基础 GET：params 会拼成查询串，默认返回 HttpResponse */
     const runGet = (): void => {
         getText.value = t('request.loading');
-        const params = new UTSJSONObject();
+        const params = {};
         params['demo'] = 'uview-pro-x';
         params['page'] = 1;
         api.get('/get', params).then((res: any) => {
             const response = res as HttpResponse;
-            const body = response.data as UTSJSONObject;
+            const body = response.data as JsonObject;
             getText.value = 'HTTP ' + response.status.toString() + ' · ' + (body['url'] as string);
         }).catch((e: any) => {
             getText.value = describeError(e);
         });
     };
 
-    /** POST：请求体用 UTSJSONObject，拦截器已注入演示头，httpbin 会原样回显 json */
+    /** POST：请求体用 JsonObject，拦截器已注入演示头，httpbin 会原样回显 json */
     const runPost = (): void => {
         postText.value = t('request.sending');
-        const payload = new UTSJSONObject();
+        const payload = {};
         payload['title'] = 'uview-pro-x';
         payload['body'] = 'http demo';
         payload['userId'] = 1;
         api.post('/post', payload).then((res: any) => {
             const response = res as HttpResponse;
-            const body = response.data as UTSJSONObject;
-            const echo = body['json'] as UTSJSONObject;
+            const body = response.data as JsonObject;
+            const echo = body['json'] as JsonObject;
             postText.value = 'HTTP ' + response.status.toString() + ' · ' + (echo['title'] as string);
         }).catch((e: any) => {
             postText.value = describeError(e);

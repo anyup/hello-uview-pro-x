@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// 校验 types/global.uts 的「运行期占位」与纯类型是否一一对应（加密版插件必需）。
+// 校验 types/global.ts 的「运行期占位」与纯类型是否一一对应（加密版插件必需）。
 // 背景：加密版插件无法被本地编译器解析，消费方的类型导入会被原样保留成运行期导入；
 //   - 对象型类型（右值为 { ... }）编译后是 UTSType 类，天然有运行期导出；
 //   - 字面量联合 / 函数类型 / 纯别名编译后被完全擦除，没有运行期导出 → 必须补同名 const 占位，
 //     否则 H5 运行期会报 `does not provide an export named 'xxx'`。
 // 用法：
-//   node scripts/verify-type-shims.mjs                  # 默认扫描 types/global.uts + libs 下全部 .uts
+//   node scripts/verify-type-shims.mjs                  # 默认扫描 types/global.ts + libs 下全部 .ts
 //   node scripts/verify-type-shims.mjs --file <path>    # 只查指定文件（自测用）
 //   node scripts/verify-type-shims.mjs --json           # 机器可读输出
 // 规则：
@@ -23,15 +23,15 @@ const argv = process.argv.slice(2);
 const json = argv.includes('--json');
 const fileIdx = argv.indexOf('--file');
 
-/** 默认扫描范围：全局类型文件 + libs 下全部 .uts（都经入口 export * 对外暴露） */
+/** 默认扫描范围：全局类型文件 + libs 下全部 .ts（都经入口 export * 对外暴露） */
 function collectTargets() {
     if (fileIdx !== -1) return [argv[fileIdx + 1]];
-    const targets = [join(libRoot, 'types/global.uts')];
+    const targets = [join(libRoot, 'types/global.ts')];
     const walk = (dir) => {
         for (const entry of readdirSync(dir, { withFileTypes: true })) {
             const full = join(dir, entry.name);
             if (entry.isDirectory()) walk(full);
-            else if (entry.name.endsWith('.uts')) targets.push(full);
+            else if (entry.name.endsWith('.ts')) targets.push(full);
         }
     };
     walk(join(libRoot, 'libs'));

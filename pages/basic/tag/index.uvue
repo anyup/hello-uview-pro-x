@@ -45,6 +45,12 @@
                 <ux-tag custom-class="tag-spacing" :text="t('tag.customTextText')" color="#ff00ff"></ux-tag>
                 <ux-tag custom-class="tag-spacing" :text="t('tag.customBgText')" bg-color="#2979ff" color="#ffffff"></ux-tag>
                 <ux-tag custom-class="tag-spacing" :text="t('tag.customBorderText')" mode="plain" color="#fa3534" border-color="#fa3534"></ux-tag>
+                <ux-tag
+                    custom-class="tag-spacing"
+                    :text="t('tag.customStyleText')"
+                    color="#ffffff"
+                    :custom-style="{ backgroundColor: '#7c4dff' }"
+                ></ux-tag>
             </view>
         </demo-block>
 
@@ -90,7 +96,7 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
     const { t } = useLocale('demo');

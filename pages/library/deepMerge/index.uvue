@@ -61,13 +61,14 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { $u, useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
 
-    const targetObj = ref<UTSJSONObject>({
+    const targetObj = ref<JsonObject>({
         name: t('deepMerge.dataName'),
         age: 25,
         address: {
@@ -76,7 +77,7 @@
         }
     });
 
-    const sourceObj = ref<UTSJSONObject>({
+    const sourceObj = ref<JsonObject>({
         age: 30,
         email: 'zhangsan@example.com',
         address: {
@@ -85,23 +86,23 @@
         }
     });
 
-    const mergedObj = ref<UTSJSONObject | null>(null);
+    const mergedObj = ref<JsonObject | null>(null);
 
     /** 对象深合并：source 覆盖同名字段，嵌套对象递归合并 */
     function handleMerge(): void {
         mergedObj.value = $u.deepMerge(targetObj.value, sourceObj.value);
     }
 
-    const targetArr = ref<UTSJSONObject>({ items: [1, 2] });
-    const sourceArr = ref<UTSJSONObject>({ items: [3, 4] });
-    const mergedArr = ref<UTSJSONObject | null>(null);
+    const targetArr = ref<JsonObject>({ items: [1, 2] });
+    const sourceArr = ref<JsonObject>({ items: [3, 4] });
+    const mergedArr = ref<JsonObject | null>(null);
 
     /** 数组合并：数组按整体覆盖，不做逐项合并 */
     function handleMergeArray(): void {
         mergedArr.value = $u.deepMerge(targetArr.value, sourceArr.value);
     }
 
-    const complexTarget = ref<UTSJSONObject>({
+    const complexTarget = ref<JsonObject>({
         user: {
             profile: {
                 name: t('deepMerge.dataComplexName'),
@@ -112,7 +113,7 @@
         }
     });
 
-    const complexSource = ref<UTSJSONObject>({
+    const complexSource = ref<JsonObject>({
         user: {
             profile: {
                 settings: {
@@ -122,7 +123,7 @@
         }
     });
 
-    const complexMerged = ref<UTSJSONObject | null>(null);
+    const complexMerged = ref<JsonObject | null>(null);
 
     /** 嵌套对象合并：settings 下两级字段都会保留 */
     function handleComplexMerge(): void {

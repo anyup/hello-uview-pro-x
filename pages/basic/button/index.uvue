@@ -185,7 +185,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale, createStyle } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
     const { t } = useLocale('demo');
@@ -216,7 +217,7 @@
     ];
 
     /** 自定义样式：黑色背景 + 白色文字 */
-    const customStyle = computed((): UTSJSONObject => {
+    const customStyle = computed((): JsonObject => {
         const style = createStyle();
         style['backgroundColor'] = '#000000';
         style['color'] = '#ffffff';
@@ -225,7 +226,7 @@
 
     /** 插槽内层文字：App 端样式不继承，插槽文字必须自行设置 color。
         白色用于 primary 按钮、自定义黑底白字按钮的插槽文字 */
-    const slotTextStyle = computed((): UTSJSONObject => {
+    const slotTextStyle = computed((): JsonObject => {
         const style = createStyle();
         style['color'] = '#ffffff';
         return style;
@@ -244,7 +245,7 @@
     const normalTap = () => {
         normalCount.value++;
         uni.showToast({
-            title: t('button.throttleNormalToast', { count: normalCount.value } as UTSJSONObject),
+            title: t('button.throttleNormalToast', { count: normalCount.value } as JsonObject),
             icon: 'none'
         });
     };
@@ -254,7 +255,7 @@
     const throttleTap = () => {
         throttledCount.value++;
         uni.showToast({
-            title: t('button.throttleToast', { count: throttledCount.value } as UTSJSONObject),
+            title: t('button.throttleToast', { count: throttledCount.value } as JsonObject),
             icon: 'none'
         });
     };

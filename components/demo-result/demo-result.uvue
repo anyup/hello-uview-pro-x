@@ -10,7 +10,7 @@
     </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
     /**
      * 演示结果展示组件 - 统一结果状态样式
      * - type：状态类型（default 主色 / success 成功 / error 错误 / warning 警告）

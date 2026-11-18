@@ -148,14 +148,15 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 import { useLocale } from '@/uni_modules/uview-pro-x';
 import { codes } from './code';
 
 const { t } = useLocale('demo');
 
 // 自定义样式演示：itemStyle / headStyle / bodyStyle（键统一连字符）
-const customItemStyle: UTSJSONObject = {
+const customItemStyle: JsonObject = {
     'border-width': '1px',
     'border-style': 'solid',
     'border-color': '#ebeef5',
@@ -164,19 +165,19 @@ const customItemStyle: UTSJSONObject = {
     'overflow': 'hidden'
 };
 
-const customHeadStyle: UTSJSONObject = {
+const customHeadStyle: JsonObject = {
     'background-color': '#f8f9fb',
     'padding-left': '12px',
     'padding-right': '12px'
 };
 
-const customBodyStyle: UTSJSONObject = {
+const customBodyStyle: JsonObject = {
     'padding-left': '12px',
     'padding-right': '12px'
 };
 
 // 嵌套演示：内层面板样式（浅色边框与背景区分层级）
-const nestedItemStyle: UTSJSONObject = {
+const nestedItemStyle: JsonObject = {
     'border-width': '1px',
     'border-style': 'solid',
     'border-color': '#ebeef5',

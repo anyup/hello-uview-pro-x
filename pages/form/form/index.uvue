@@ -192,19 +192,20 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale, type FormRule, type FormErrorType, type SelectListItem, type PickerOption } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
 
     /** 左侧图标样式 */
-    const iconStyle: UTSJSONObject = { 'color': '#888888', 'fontSize': '16px' };
+    const iconStyle: JsonObject = { 'color': '#888888', 'fontSize': '16px' };
 
     // ==================== 表单数据 ====================
 
     const formRef = ref<any | null>(null);
-    const model = ref<UTSJSONObject>(new UTSJSONObject());
+    const model = ref<JsonObject>({});
     model.value['name'] = '';
     model.value['intro'] = '';
     model.value['extra'] = { 'strong': '' };
@@ -223,18 +224,18 @@
     model.value['remember'] = false;
 
     /**
-     * 嵌套字段 extra.strong：UTSJSONObject 深层访问在模板中会被判为可空，
+     * 嵌套字段 extra.strong：JsonObject 深层访问在模板中会被判为可空，
      * 用计算属性隔离并在脚本内显式断言，避免 "Object is possibly 'null'" 告警。
      * 校验规则 prop 仍用 "extra.strong"，由 ux-form 内部经下标读取。
      */
     const extraStrong = computed<string>({
         get: (): string => {
-            const extra = model.value['extra'] as UTSJSONObject;
+            const extra = model.value['extra'] as JsonObject;
             if (extra == null) return '';
             return (extra['strong'] as string) ?? '';
         },
         set: (val: string): void => {
-            const extra = model.value['extra'] as UTSJSONObject;
+            const extra = model.value['extra'] as JsonObject;
             if (extra != null) {
                 extra['strong'] = val;
             }
@@ -364,7 +365,7 @@
             { text: t('form.sexSecret'), value: 'secret' }
         ]
     ];
-    const onSexConfirm = (event: UTSJSONObject): void => {
+    const onSexConfirm = (event: JsonObject): void => {
         const options = event['selectedOptions'] as PickerOption[];
         if (options != null && options.length > 0) {
             model.value['sex'] = options[0].text;
@@ -397,7 +398,7 @@
             }
         ]
     ];
-    const onRegionConfirm = (event: UTSJSONObject): void => {
+    const onRegionConfirm = (event: JsonObject): void => {
         const options = event['selectedOptions'] as PickerOption[];
         if (options == null || options.length === 0) return;
         let result = '';
@@ -412,7 +413,7 @@
         { label: t('form.goodsClothing'), value: 'clothing' },
         { label: t('form.goodsCraft'), value: 'craft' }
     ];
-    const onGoodsConfirm = (value: UTSJSONObject[]): void => {
+    const onGoodsConfirm = (value: JsonObject[]): void => {
         if (value != null && value.length > 0) {
             const label = value[0]['label'] as string;
             if (label != null && label !== '') {

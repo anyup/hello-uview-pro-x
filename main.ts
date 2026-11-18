@@ -1,0 +1,33 @@
+﻿import App from './App.uvue'
+// 插件对象用命名导入：加密版插件的云端入口为 `export * from './index'`，不转发 default；
+// 命名导出在源码版 / 加密版均可用，故不写 `import uViewProX from ...`
+// 加密版插件只能用 uni_modules 别名（@/uni_modules/<id>）导入：相对路径走不到 uni_modules 解析链，会因入口已加密而报「Cannot find module」
+import { uViewProX, frFR } from '@/uni_modules/uview-pro-x'
+import { zhCN, enUS } from './locales'
+import themes from './theme'
+import { createSSRApp } from 'vue'
+import { createPinia } from 'pinia'
+
+// 如果开启了样式隔离2.0策略 H5端 需在 main.ts 引入基础样式文件
+// #ifdef WEB
+import './style/reset.scss'
+// #endif
+
+
+export function createApp() {
+	const app = createSSRApp(App)
+	// 状态管理：uni-app x 内置 pinia 3.0.4，项目未安装 pinia 时由编译器自动指向内置运行时
+	app.use(createPinia())
+	app.use(uViewProX, {
+		locale: {
+			locales: [zhCN, enUS],
+			defaultLocale: 'zh-CN',
+			isForce: false
+		},
+		// 多主题：列表即注册列表，含显式声明的内置基线主题项（共 5 套）
+		theme: themes
+	})
+	return {
+		app
+	}
+}

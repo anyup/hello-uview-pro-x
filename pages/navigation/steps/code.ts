@@ -1,0 +1,147 @@
+/**
+ * steps 演示代码片段
+ * 每个片段为可直接运行的完整示例（含 template / script / style）
+ */
+
+/** 点型步骤条 */
+const dot = `
+<template>
+    <ux-steps :current="1">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+    </ux-steps>
+</template>
+`;
+
+/** 数字步骤条 */
+const number = `
+<template>
+    <ux-steps mode="number" :current="2">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+        <ux-step name="步骤四" />
+    </ux-steps>
+</template>
+`;
+
+/** 垂直步骤条 */
+const vertical = `
+<template>
+    <ux-steps direction="column" :current="1">
+        <ux-step name="步骤一" desc="已完成" />
+        <ux-step name="步骤二" desc="进行中" />
+        <ux-step name="步骤三" desc="待处理" />
+    </ux-steps>
+</template>
+`;
+
+/** 自定义颜色 */
+const color = `
+<template>
+    <ux-steps mode="number" :current="1" active-color="#fa3534" inactive-color="#909399">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+    </ux-steps>
+</template>
+`;
+
+/** 受控步骤条 */
+const control = `
+<template>
+    <ux-steps mode="number" :current="current">
+        <ux-step name="步骤一" />
+        <ux-step name="步骤二" />
+        <ux-step name="步骤三" />
+    </ux-steps>
+    <view class="btn-row">
+        <ux-button size="small" @click="prev" :disabled="current === 0">上一步</ux-button>
+        <ux-button size="small" type="primary" @click="next" :disabled="current === 2">下一步</ux-button>
+    </view>
+</template>
+
+<script setup lang="ts">
+const current = ref<number>(0);
+
+function prev(): void {
+    if (current.value > 0) {
+        current.value--;
+    }
+}
+
+function next(): void {
+    if (current.value < 2) {
+        current.value++;
+    }
+}
+</script>
+
+<style scoped>
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+</style>
+`;
+
+/** 动态增删步骤条：子项变化后步骤数、序号与连接线同步 */
+const dynamic = `
+<template>
+    <ux-steps mode="number" :current="current">
+        <ux-step v-for="(item, index) in steps" :key="index" :name="item" />
+    </ux-steps>
+    <text class="steps-count">当前步骤数: {{ count }}</text>
+    <view class="btn-row">
+        <ux-button size="small" type="primary" @click="addStep" :disabled="steps.length >= 5">添加步骤</ux-button>
+        <ux-button size="small" @click="removeStep" :disabled="steps.length <= 1">删除步骤</ux-button>
+    </view>
+</template>
+
+<script setup lang="ts">
+const steps = ref<string[]>(['步骤一', '步骤二', '步骤三']);
+const stepNames: string[] = ['步骤一', '步骤二', '步骤三', '步骤四', '步骤五'];
+const count = computed((): number => steps.value.length);
+const current = computed((): number => steps.value.length > 1 ? 1 : 0);
+
+function addStep(): void {
+    if (steps.value.length >= 5) return;
+    const next = steps.value.slice();
+    next.push(stepNames[next.length]);
+    steps.value = next;
+}
+
+function removeStep(): void {
+    if (steps.value.length <= 1) return;
+    const next = steps.value.slice();
+    next.pop();
+    steps.value = next;
+}
+</script>
+
+<style scoped>
+.steps-count {
+    display: block;
+    font-size: 12px;
+    color: #909399;
+    margin-top: 8px;
+}
+
+.btn-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 12px;
+}
+</style>
+`;
+
+export const codes = {
+    dot,
+    number,
+    vertical,
+    color,
+    control,
+    dynamic
+};

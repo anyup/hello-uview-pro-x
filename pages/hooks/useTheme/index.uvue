@@ -174,9 +174,10 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { $u, useLocale, useTheme, type DarkMode, type SubsectionListItem, type Theme } from '@/uni_modules/uview-pro-x';
-    import themePresets from '@/theme.uts';
+    import themePresets from '@/theme';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
@@ -295,7 +296,7 @@
     // 语义色令牌：亮色取主题 color，暗色取归一化后的 darkColor
     const PALETTE_TOKENS: string[] = ['primary', 'success', 'warning', 'error', 'info'];
 
-    function readToken(json: UTSJSONObject, key: string): string {
+    function readToken(json: JsonObject, key: string): string {
         const value = json[key];
         if (value != null && typeof value == 'string') return value as string;
         return '-';
@@ -304,11 +305,11 @@
     const paletteRows = computed((): PaletteRow[] => {
         const theme = currentTheme.value;
         if (theme == null) return [];
-        const lightJson = JSON.parse(JSON.stringify(theme.color)) as UTSJSONObject;
+        const lightJson = JSON.parse(JSON.stringify(theme.color)) as JsonObject;
         const darkColor = theme.darkColor;
         const darkJson = darkColor == null
-            ? new UTSJSONObject()
-            : (JSON.parse(JSON.stringify(darkColor)) as UTSJSONObject);
+            ? {}
+            : (JSON.parse(JSON.stringify(darkColor)) as JsonObject);
         const rows: PaletteRow[] = [];
         for (let i = 0; i < PALETTE_TOKENS.length; i++) {
             const key = PALETTE_TOKENS[i];

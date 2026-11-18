@@ -29,7 +29,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { http, useLocale, useRequest } from '@/uni_modules/uview-pro-x';
     import type { HttpCallConfig, HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
     import { sinceOf } from '@/version';
@@ -51,9 +52,9 @@
     };
 
     /** 1. 基础：loading / data / error 直接驱动文案 */
-    const detail = useRequest<UTSJSONObject>((ctx) => {
+    const detail = useRequest<JsonObject>((ctx) => {
         return api.get('/uuid', null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
-            return (res as HttpResponse).data as UTSJSONObject;
+            return (res as HttpResponse).data as JsonObject;
         });
     });
 
@@ -73,9 +74,9 @@
     /** 2. 连续调用：慢请求被取消，结果只来自后一次 */
     const target = ref<string>('/uuid');
 
-    const sequencer = useRequest<UTSJSONObject>((ctx) => {
+    const sequencer = useRequest<JsonObject>((ctx) => {
         return api.get(target.value, null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
-            return (res as HttpResponse).data as UTSJSONObject;
+            return (res as HttpResponse).data as JsonObject;
         });
     });
 
@@ -98,9 +99,9 @@
     /** 3. 取消：500ms 后 cancel，取消不写入 error */
     const wasCanceled = ref<boolean>(false);
 
-    const slow = useRequest<UTSJSONObject>((ctx) => {
+    const slow = useRequest<JsonObject>((ctx) => {
         return api.get('/delay/5', null, { signal: ctx.signal } as HttpCallConfig).then((res: any) => {
-            return (res as HttpResponse).data as UTSJSONObject;
+            return (res as HttpResponse).data as JsonObject;
         });
     });
 

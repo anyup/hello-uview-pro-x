@@ -49,7 +49,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 import { useLocale, type SelectListItem } from '@/uni_modules/uview-pro-x';
 import { codes } from './code';
 
@@ -128,7 +129,7 @@ const list3: SelectListItem[] = [
     }
 ];
 
-function joinLabels(value: UTSJSONObject[]): string {
+function joinLabels(value: JsonObject[]): string {
     if (value == null) return '';
     const labels: string[] = [];
     for (let i = 0; i < value.length; i++) {
@@ -143,15 +144,15 @@ function joinLabels(value: UTSJSONObject[]): string {
     return labels.join(' / ');
 }
 
-function onConfirm1(value: UTSJSONObject[]): void {
+function onConfirm1(value: JsonObject[]): void {
     result1.value = joinLabels(value);
 }
 
-function onConfirm2(value: UTSJSONObject[]): void {
+function onConfirm2(value: JsonObject[]): void {
     result2.value = joinLabels(value);
 }
 
-function onConfirm3(value: UTSJSONObject[]): void {
+function onConfirm3(value: JsonObject[]): void {
     result3.value = joinLabels(value);
 }
 </script>

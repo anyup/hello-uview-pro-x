@@ -36,7 +36,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import type { HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
     import { sinceOf } from '@/version';
@@ -47,19 +48,19 @@
     const { t } = useLocale('demo');
 
     /** 安全读字符串字段：服务端结构不固定，避免 null 断言 */
-    const readString = (source: UTSJSONObject, key: string): string => {
+    const readString = (source: JsonObject, key: string): string => {
         const raw = source[key];
         return raw == null ? '' : raw.toString();
     };
 
     /** 安全读对象字段 */
-    const readObject = (source: UTSJSONObject, key: string): UTSJSONObject => {
+    const readObject = (source: JsonObject, key: string): JsonObject => {
         const raw = source[key];
-        return raw == null ? new UTSJSONObject() : raw as UTSJSONObject;
+        return raw == null ? {} : raw as JsonObject;
     };
 
     /** 大小写不敏感读回显头：服务端可能改写键的大小写 */
-    const readHeader = (headers: UTSJSONObject, name: string): string => {
+    const readHeader = (headers: JsonObject, name: string): string => {
         const target = name.toLowerCase();
         for (let key in headers) {
             if (key.toLowerCase() == target) {
@@ -102,7 +103,7 @@
     const runMain = (): void => {
         mainText.value = t('request.loading');
         request.get('/get').then((data: any) => {
-            const body = data as UTSJSONObject;
+            const body = data as JsonObject;
             const headers = readObject(body, 'headers');
             mainText.value = t('request.bpUnwrappedYes') + ' · ' + t('request.bpDomain') + '=' + readString(body, 'url')
                 + ' · authorization=' + readHeader(headers, 'authorization')
@@ -118,7 +119,7 @@
         const installed = isCdnInterceptorsInstalled();
         cdnRequest.get('/get').then((res: any) => {
             if (installed) {
-                const data = res as UTSJSONObject;
+                const data = res as JsonObject;
                 const headers = readObject(data, 'headers');
                 cdnText.value = t('request.bpInstalledBefore') + ' · ' + t('request.bpUnwrappedYes')
                     + ' · ' + t('request.bpDomain') + '=' + readString(data, 'url')
@@ -127,7 +128,7 @@
                 return;
             }
             const response = res as HttpResponse;
-            const body = response.data as UTSJSONObject;
+            const body = response.data as JsonObject;
             const headers = readObject(body, 'headers');
             cdnText.value = t('request.bpUnwrappedNo') + ' · HTTP ' + response.status.toString()
                 + ' · ' + t('request.bpDomain') + '=' + readString(body, 'url')
@@ -143,7 +144,7 @@
         const first = installCdnInterceptors();
         cdnInstalledText.value = t('request.loading');
         cdnRequest.get('/get').then((data: any) => {
-            const body = data as UTSJSONObject;
+            const body = data as JsonObject;
             const headers = readObject(body, 'headers');
             const prefix = first ? t('request.bpInstalledNow') : t('request.bpInstalledBefore');
             cdnInstalledText.value = prefix + ' · ' + t('request.bpUnwrappedYes')

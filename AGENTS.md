@@ -1,6 +1,6 @@
 # uView-Pro-x（演示工程 + 组件库维护）
 
-> uView Pro 组件库的 uni-app x 版本（Vue3 + UTS 强类型）**演示工程**：本仓库只承载示例页与宿主工程，组件库源码在私有仓库，编译时装配进来。支持 App（Android/iOS/鸿蒙）、H5、微信小程序三端。
+> uView Pro 组件库的 uni-app x TS 版本（Vue3 + TypeScript，2.0 起 ts 语言策略，需 HBuilderX 5.31+）**演示工程**：本仓库只承载示例页与宿主工程，组件库源码在私有仓库，编译时装配进来。支持 App（Android/iOS/鸿蒙）、H5、微信与支付宝小程序。1.x（UTS）资产停在各自 `main` 分支，2.0 在 `feature/dev-ts` 推进。
 > 组件用 `ux-` 前缀；组件专属类名用 `useBEM` BEM（`ux-` 前缀），全局工具类（`u-line-1`、`u-iconfont` 等）保留 `u-` 前缀。
 
 ## 双仓库结构
@@ -8,7 +8,7 @@
 | 仓库 | 可见性 | 内容 | 本地位置 |
 |------|--------|------|----------|
 | `anyup/hello-uview-pro-x` | 公开 | 本仓库：示例页（`pages/`）、demo 容器组件（`components/`）、`pages.json` / `manifest.json` / `App.uvue` 等宿主工程 | 仓库根 |
-| `anyup/uview-pro-x` | 私有 | 组件库源码：`package.json` + `components/ux-*` + `libs/` + `locale/` + `types/` + `static/` + `theme.scss`/`index.scss`/`index.uts` | `uni_modules/uview-pro-x/` |
+| `anyup/uview-pro-x` | 私有 | 组件库源码：`package.json` + `components/ux-*` + `libs/` + `locale/` + `types/` + `static/` + `theme.scss`/`index.scss`/`index.ts` | `uni_modules/uview-pro-x/` |
 
 - **`uni_modules/uview-pro-x/` 是一个独立的 git 仓库**（私有库的工作副本），不被本仓库跟踪：改组件库源码后要**在私有库提交推送**，别 `git add` 到本仓库。
 - **打包发布**：两个仓库各自带一份 `.github/workflows/deploy-h5-edgeone.yml`，互相拉取对方仓库→装配编译→发布到同一个 EdgeOne Pages 项目 `h5-uviewpro-x`（自定义域名 `h5-x.uviewpro.cn`，勿写成带连字符的 `h5-uview-pro-x`，否则会新建第二个项目）。组件库仓库在推送 tag（`v*`，随发布打标签）或手动触发时发布，普通提交不触发；公开仓库仅手动触发（互为补充）。
@@ -24,7 +24,7 @@
 | L2 | `libs/hooks/`, `libs/styles/`, `locale/` | Hooks 和样式（全局样式三分类：根 `theme.scss` 主题变量 + `libs/styles/global.scss` 共用 + `libs/styles/mixins/` 按功能拆分的 mixin 叶子文件如 `hairline.scss`，统一经 `index.scss` 导出，按需 import 不自动注入）—— 依赖 L0-L1 |
 | L3 | `components/` | 组件库（ux-* 前缀）—— 依赖 L0-L2；**同级组件互不导入** |
 | L4 | `pages/` | 示例页面 —— 依赖 L0-L3 |
-| L5 | `App.uvue`, `main.uts`, `index.uts` | 入口点 —— 依赖 L0-L4 |
+| L5 | `App.uvue`, `main.ts`, `index.ts` | 入口点 —— 依赖 L0-L4。**入口必须与实现同轨 ts**：uts 入口会把 import 后缀归一成 `.uts` 而无法消费 ts 库；H5 靠 `index.html` 的 `<script src="/main.ts">` 解析入口 |
 
 依赖方向不可逆；上表的 L0-L5 对应 `uni_modules/uview-pro-x/` 内部结构。
 
@@ -32,10 +32,10 @@
 
 | 项 | 约定 |
 |---|---|
-| 目录 / 文件 | `components/ux-{name}/`，内含 `ux-{name}.uvue`（同级 `types.uts`） |
+| 目录 / 文件 | `components/ux-{name}/`，内含 `ux-{name}.uvue`（同级 `types.ts`） |
 | 注册 | easycom 自动解析（[pages.json](pages.json)）：`"^ux-(.*)": "@/uni_modules/uview-pro-x/components/ux-$1/ux-$1.uvue"`；组件内嵌兄弟组件须**显式 import**，不走 easycom（同级组件目录互不导入，组件组合 import 属合法耦合） |
 | defineOptions | `name: 'ux-{name}'`；`styleIsolation: 'isolated'` + `virtualHost: true`（`virtualHost` 需 `#ifndef MP-TOUTIAO` 包裹） |
-| 取色 | SCSS：`@import '@/uni_modules/uview-pro-x/theme.scss'` 后用 `$u-*` 变量（`$u-` 令牌前缀是库的公共主题 API，不随组件改名）；脚本：`$u.color.*`（`libs/config/color.uts` 的 reactive）。**禁硬编码色值、禁用 CSS 变量** |
+| 取色 | SCSS：`@import '@/uni_modules/uview-pro-x/theme.scss'` 后用 `$u-*` 变量（`$u-` 令牌前缀是库的公共主题 API，不随组件改名）；脚本：`$u.color.*`（`libs/config/color.ts` 的 reactive）。**禁硬编码色值、禁用 CSS 变量** |
 | 全局工具类自包含 | `isolated` 下组件不能引用全局 class：用到的全局工具类需在组件自身 `<style>` 内 `@import '../../libs/styles/global.scss'`；mixin 按需引叶子文件（如 `mixins/hairline.scss`），勿同时 import 统一入口（重复定义）；类型工具类在组件本地定义 |
 | 写法权威 | `.agents/skills/component-writer/references/`（spec / recipes / samples）为唯一权威；改后跑 `scripts/verify-script-order.mjs` 门禁（段序 / 命名 / 模板 ref），须 0 不合规 |
 
@@ -43,13 +43,13 @@
 
 - 页面用 `demo-page` 组件包裹（内部已处理 `scroll-view` 滚动）：根节点 `scroll-view` + `flex: 1`，**禁 `min-height` / `height: 100%`**。
 - 分类分包：`basic` / `form` / `data` / `feedback` / `layout` / `navigation` / `others`，另有 `library`（utils 工具）与 `hooks`（`useXxx` hooks）两个子包。
-- 入口在 **`pages/tabbar/library.uvue`**（消费 `pages/tabbar/config.uts` 的 `libraryCategories` → `toolItems` / `hookItems`），**不是首页** `pages/demo/index.uvue`。
-- 新增示例页四件事：建页（`index.uvue` + `code.uts`）→ `pages.json` 注册子包路由 → `pages/tabbar/config.uts` 追加菜单项 + `tabbarMenu.<name>Desc` 中英双写 → 新增整个分类时同步 `scripts/verify-demo-examples.mjs` 的 `ALL_DEMO_GROUP_RE` 目录白名单（漏改会让新目录页面默默不入门禁）。
-- **新版本功能打标（版本号唯一来源根 `package.json` 的 `version`）**：`version.uts` 直接 `import { version } from '@/package.json'` 派生 `LIB_VERSION` / `LIB_VERSION_TEXT`，**不在页面硬编码版本号**（发版只改 package.json）。新增入口时在 `version.uts` 的 `SINCE_ENTRIES` 追加 `{ path, since }`（`path` 与 `MenuItem.path` 一致），列表入口自动出现 `NEW vX.Y.Z` 印章（仅 `since == LIB_VERSION` 时显示，下个版本自动收起）；演示页头部传 `:since="sinceOf('xxx/index')"` 显示页面印章（长期保留）。印章统一用 `ux-tag`（`type="error" mode="plain" shape="square"`，列表 `size="mini"`、页头 `size="default"`），**不另写印章组件**；间距由外层 `.tab-item-stamp` / `.demo-header-stamp` 控制（不给 ux-* 写 class）。「关于」页版本号与组件页页脚同样取 `LIB_VERSION_TEXT`。
-- **每页必带 `code.uts`**：一个 `demo-block` 对应一个片段，`codes.<key>` 与页内 `:code` 同名；片段自包含（含 `template` + `script`），**不得出现 `demo-page` / `demo-block` / `.demo-*` 类**。说明型区块不绑 `:code`。`codes` 导出必须写成**多行**（`export const codes = {` / 每项一行 / `};`），门禁的 `parseCodesKeys` 正则要求 `};` 前有换行，单行写法会被判成「导出未定义」。
+- 入口在 **`pages/tabbar/library.uvue`**（消费 `pages/tabbar/config.ts` 的 `libraryCategories` → `toolItems` / `hookItems`），**不是首页** `pages/demo/index.uvue`。
+- 新增示例页四件事：建页（`index.uvue` + `code.ts`）→ `pages.json` 注册子包路由 → `pages/tabbar/config.ts` 追加菜单项 + `tabbarMenu.<name>Desc` 中英双写 → 新增整个分类时同步 `scripts/verify-demo-examples.mjs` 的 `ALL_DEMO_GROUP_RE` 目录白名单（漏改会让新目录页面默默不入门禁）。
+- **新版本功能打标（版本号唯一来源根 `package.json` 的 `version`）**：`version.ts` 直接 `import { version } from '@/package.json'` 派生 `LIB_VERSION` / `LIB_VERSION_TEXT`，**不在页面硬编码版本号**（发版只改 package.json）。新增入口时在 `version.ts` 的 `SINCE_ENTRIES` 追加 `{ path, since }`（`path` 与 `MenuItem.path` 一致），列表入口自动出现 `NEW vX.Y.Z` 印章（仅 `since == LIB_VERSION` 时显示，下个版本自动收起）；演示页头部传 `:since="sinceOf('xxx/index')"` 显示页面印章（长期保留）。印章统一用 `ux-tag`（`type="error" mode="plain" shape="square"`，列表 `size="mini"`、页头 `size="default"`），**不另写印章组件**；间距由外层 `.tab-item-stamp` / `.demo-header-stamp` 控制（不给 ux-* 写 class）。「关于」页版本号与组件页页脚同样取 `LIB_VERSION_TEXT`。
+- **每页必带 `code.ts`**：一个 `demo-block` 对应一个片段，`codes.<key>` 与页内 `:code` 同名；片段自包含（含 `template` + `script`），**不得出现 `demo-page` / `demo-block` / `.demo-*` 类**。说明型区块不绑 `:code`。`codes` 导出必须写成**多行**（`export const codes = {` / 每项一行 / `};`），门禁的 `parseCodesKeys` 正则要求 `};` 前有换行，单行写法会被判成「导出未定义」。
 - 列表最后一项的分隔线由**数据层 `last` 字段**控制（`:border-bottom="!item.last"`），模板里**禁读源数组**（`list.length - 1` / `list[index]` 在 Vapor 下可能原生崩溃）。
 - **演示内容组件优先**：列表 → `ux-cell-group` + `ux-cell-item`，按钮 → `ux-button`（多个横排用 `ux-row :gutter` + `ux-col :span`，栅格总数 **12**，三等分用 `:span="4"`），输入 → `ux-input`，状态 → `ux-tag`，说明 → `ux-alert-tips`（「使用说明」区块统一 `type="primary"`，`type="info"` 只用于组件自身的主题演示），间距 → `ux-gap`；**不给 `ux-*` 写 `class` / `:class`**（门禁会判违规），`custom-style` 只在动态数值/颜色时使用。
-- 导入口径：示例页与 `code.uts` 只从库入口导入 `import { $u, useXxx, type Xxx } from '@/uni_modules/uview-pro-x'`，**禁 `libs/` / `types/` / `locale/` 等下级路径**（加密版插件不支持下级目录导入）。
+- 导入口径：示例页与 `code.ts` 只从库入口导入 `import { $u, useXxx, type Xxx } from '@/uni_modules/uview-pro-x'`，**禁 `libs/` / `types/` / `locale/` 等下级路径**（加密版插件不支持下级目录导入）。纯类型一律 `import type`（ts 下纯类型文件编译后为空模块）。
 - 公共样式 `style/demo.scss`（`App.uvue` 中全局引入）。预定义类名：`.demo-page` / `.demo-header` / `.demo-title` / `.demo-card` / `.demo-card-title` / `.demo-item` / `.demo-desc` / `.demo-result` / `.demo-result-success|error|warning` / `.demo-btn`。**新增页不往 `demo.scss` 加类**，控件交给 `ux-*`；旧 `.demo-btn*` / `.demo-item*` 逐步退场。
 - 页面写法（消费侧规范）：`.agents/skills/uview-pro-x/references/`。
 
@@ -69,8 +69,8 @@
   ```
   约 5 秒编译完成（输出 `Local: http://localhost:9000/`）；本仓库无 package.json，不能用 `npm run dev`。
 - **一键验证**：项目根执行 `node scripts/verify-h5.mjs <route> --timeout 120000 [--json]`（route 形如 `feedback/mask`，脚本自动补 `pages/` 与 `/index`；只收集 console/page 错误，不截图）。**勿写临时 playwright 脚本**。
-- **门禁脚本**：`scripts/verify-type-shims.mjs`（`types/global.uts` 纯类型 ↔ 同名 const 占位一一对应，加密版插件必需；对象型类型不许加占位）、`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.uts 一一对应、prop 完整性）、`scripts/verify-uvue-css.mjs`（uvue 样式的 App 端平台限制，如 `display` 仅 `flex`/`none`；识别 `#ifdef` / `#ifndef` 条件编译，只在 App 端会编译的分支上报错）。扫描范围含 `library` / `hooks` 子包；这两组无 `ux-*` 主体组件，自动跳过 prop 完整性一项，其余（段序 / custom-class / code 归档 / 详情）照常校验。
-- **验证职责划分**：AI 只验证 H5（复用常驻 dev server）；**App 端编译验证（UTS 语法最终校验）由用户在 HBuilderX 执行**，AI 不跑 App 构建。
+- **门禁脚本**：`scripts/verify-type-shims.mjs`（`types/global.ts` 纯类型 ↔ 同名 const 占位一一对应，加密版插件必需；对象型类型不许加占位）、`scripts/verify-script-order.mjs`（组件 script 编排）、`scripts/verify-demo-examples.mjs --demo <dir>`（示例页 index.uvue ↔ code.ts 一一对应、prop 完整性）、`scripts/verify-uvue-css.mjs`（uvue 样式的 App 端平台限制，如 `display` 仅 `flex`/`none`；识别 `#ifdef` / `#ifndef` 条件编译，只在 App 端会编译的分支上报错）。扫描范围含 `library` / `hooks` 子包；这两组无 `ux-*` 主体组件，自动跳过 prop 完整性一项，其余（段序 / custom-class / code 归档 / 详情）照常校验。
+- **验证职责划分**：AI 只验证 H5（复用常驻 dev server）；**App 端编译验证（TS 语法最终校验）由用户在 HBuilderX 执行**，AI 不跑 App 构建。
 - **编译报错先查** `.agents/skills/migrate-component/references/error-patterns/README.md` 命中表，命中即按表修，不盲试。
 - **一次性探针脚本用完即清**：只跑一次的临时脚本（`_probe_*.mjs`、临时导出改本）用完立即删除，不留工作区。
 
@@ -111,4 +111,4 @@
 
 - **参考库字眼隔离**：`uni_modules/uview-pro-x` 的代码与注释**不出现参考库名称**（含其组件名前缀、CSS 变量名，也不用改写的占位词），注释写成自洽的规则描述；`.agents/` 技能文档可且应保留真实名称。
 - 命名规范仅约束 `uni_modules/uview-pro-x/components` 下的**库组件**；`components/demo-*` 等演示容器组件不适用。
-- 平台约束（UCSS 选择器/单位/动画等）与 UTS 语法细则**不在此重复**，见对应 skill 的 `references/`。
+- 平台约束（UCSS 选择器/单位/动画等）与 TS 语法细则**不在此重复**，见对应 skill 的 `references/`。

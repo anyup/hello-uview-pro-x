@@ -34,14 +34,15 @@
     </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { $u, createStyle, useLocale, usePageScroll, useWindowInfo } from '@/uni_modules/uview-pro-x';
 
     const { t } = useLocale('demo');
 
     // 无导航栏页面从屏幕顶部绘制，顶部内容自己让出状态栏
     const { statusBarHeight } = useWindowInfo();
-    const headStyle = computed((): UTSJSONObject => {
+    const headStyle = computed((): JsonObject => {
         const style = createStyle();
         style['padding-top'] = $u.addUnit(statusBarHeight.value + 8);
         return style;

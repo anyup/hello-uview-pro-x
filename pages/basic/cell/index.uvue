@@ -120,14 +120,15 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale, createStyle } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
 
     /** 分组标题样式：加粗深色，演示 title-style 覆盖 */
-    const groupTitleStyle = computed((): UTSJSONObject => {
+    const groupTitleStyle = computed((): JsonObject => {
         const style = createStyle();
         style['color'] = '#303133';
         style['font-weight'] = 'bold';
@@ -135,35 +136,35 @@
     });
 
     /** 标题宽度区域背景（演示 title-width 固定宽度效果） */
-    const titleWidthBg = computed((): UTSJSONObject => {
+    const titleWidthBg = computed((): JsonObject => {
         const style = createStyle();
         style['background-color'] = '#f5f5f5';
         return style;
     });
 
     /** 左侧图标样式 */
-    const iconStyle = computed((): UTSJSONObject => {
+    const iconStyle = computed((): JsonObject => {
         const style = createStyle();
         style['color'] = '#2979ff';
         return style;
     });
 
     /** 标题样式 */
-    const titleStyle = computed((): UTSJSONObject => {
+    const titleStyle = computed((): JsonObject => {
         const style = createStyle();
         style['color'] = '#2979ff';
         return style;
     });
 
     /** 右侧内容样式 */
-    const valueStyle = computed((): UTSJSONObject => {
+    const valueStyle = computed((): JsonObject => {
         const style = createStyle();
         style['color'] = '#fa3534';
         return style;
     });
 
     /** 描述文字样式 */
-    const labelStyle = computed((): UTSJSONObject => {
+    const labelStyle = computed((): JsonObject => {
         const style = createStyle();
         style['fontSize'] = '12px';
         return style;

@@ -49,9 +49,9 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
     import { storeToRefs } from 'pinia';
-    import { useCounterStore } from '@/store/counter.uts';
+    import { useCounterStore } from '@/store/counter';
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 

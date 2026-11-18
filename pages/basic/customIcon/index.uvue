@@ -75,9 +75,10 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 import { useLocale } from '@/uni_modules/uview-pro-x';
-import { customIconFont } from '@/iconfont.uts';
+import { customIconFont } from '@/iconfont';
 import { codes } from './code';
 const { t } = useLocale('demo');
 
@@ -87,8 +88,8 @@ const quickList: string[] = ['sun', 'moon', 'star', 'sparkles', 'rocket', 'compa
 // 内置库与本表同名的图标：两库码点不同，用于验证 custom-prefix 不会串回内置库
 const dualList: string[] = ['eye', 'star', 'file-text', 'coupon'];
 
-// 全量图标列表：直接取已登记码点表的键，避免演示清单与登记内容脱节（取键只能用静态方法 UTSJSONObject.keys）
-const customIconList: string[] = UTSJSONObject.keys(customIconFont);
+// 全量图标列表：直接取已登记码点表的键，避免演示清单与登记内容脱节（取键只能用静态方法 JsonObject.keys）
+const customIconList: string[] = Object.keys(customIconFont);
 
 const selectIcon = (name: string) => {
     uni.setClipboardData({

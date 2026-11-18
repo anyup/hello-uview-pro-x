@@ -124,7 +124,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 import { useLocale } from '@/uni_modules/uview-pro-x';
 import { codes } from './code';
 const { t } = useLocale('demo');
@@ -133,8 +134,8 @@ const { t } = useLocale('demo');
 const dateValue: number = 1783245600000;
 
 // 样式定制演示：图标与文字样式对象（键统一连字符）
-const iconCustomStyle: UTSJSONObject = { 'font-size': '16px' };
-const textCustomStyle: UTSJSONObject = { 'font-style': 'italic' };
+const iconCustomStyle: JsonObject = { 'font-size': '16px' };
+const textCustomStyle: JsonObject = { 'font-style': 'italic' };
 
 // 开放能力回调结果（仅微信小程序 openType 分支触发，展示 detail 原始内容）
 const openTypeResult = ref<string>('');
@@ -144,23 +145,23 @@ const openTypeResult = ref<string>('');
  * @param event 开放能力原生事件
  */
 function updateOpenTypeResult(event: UniEvent) {
-    const detail = (event as unknown as UTSJSONObject)['detail'];
+    const detail = (event as unknown as JsonObject)['detail'];
     openTypeResult.value = detail == null ? '{}' : JSON.stringify(detail);
 }
 
 function onGetUserInfo(event: UniEvent) {
     updateOpenTypeResult(event);
-    console.log('ux-text getUserInfo', (event as unknown as UTSJSONObject)['detail']);
+    console.log('ux-text getUserInfo', (event as unknown as JsonObject)['detail']);
 }
 
 function onContact(event: UniEvent) {
     updateOpenTypeResult(event);
-    console.log('ux-text contact', (event as unknown as UTSJSONObject)['detail']);
+    console.log('ux-text contact', (event as unknown as JsonObject)['detail']);
 }
 
 function onGetPhoneNumber(event: UniEvent) {
     updateOpenTypeResult(event);
-    console.log('ux-text getPhoneNumber', (event as unknown as UTSJSONObject)['detail']);
+    console.log('ux-text getPhoneNumber', (event as unknown as JsonObject)['detail']);
 }
 </script>
 

@@ -45,7 +45,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
@@ -58,13 +59,13 @@
     const closeShow = ref(true);
 
     /** 自定义图标样式 */
-    const iconStyle: UTSJSONObject = { 'color': '#19be6b' };
+    const iconStyle: JsonObject = { 'color': '#19be6b' };
 
     /** 自定义标题样式 */
-    const titleStyle: UTSJSONObject = { 'font-size': '15px' };
+    const titleStyle: JsonObject = { 'font-size': '15px' };
 
     /** 自定义描述样式 */
-    const descStyle: UTSJSONObject = { 'font-size': '12px' };
+    const descStyle: JsonObject = { 'font-size': '12px' };
 
     /** 点击提示内容 */
     const onBasicClick = () => {

@@ -51,13 +51,14 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { $u, useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
 
-    const originalObj = ref<UTSJSONObject>({
+    const originalObj = ref<JsonObject>({
         name: t('deepClone.dataName'),
         age: 25,
         address: {
@@ -67,7 +68,7 @@
         hobbies: [t('deepClone.dataHobbyRead'), t('deepClone.dataHobbySwim')]
     });
 
-    const clonedObj = ref<UTSJSONObject | null>(null);
+    const clonedObj = ref<JsonObject | null>(null);
     const isSameRef = ref<boolean>(false);
     const isDeepEqual = ref<boolean>(false);
 
@@ -82,7 +83,7 @@
     function handleModifyClone(): void {
         if (clonedObj.value != null) {
             clonedObj.value['name'] = t('deepClone.dataModifiedName');
-            const address = clonedObj.value['address'] as UTSJSONObject;
+            const address = clonedObj.value['address'] as JsonObject;
             address['city'] = t('deepClone.dataModifiedCity');
             clonedObj.value['address'] = address;
         }
@@ -102,7 +103,7 @@
             clonedArr.value[0] = 100;
             const item = clonedArr.value[2];
             if (typeof item === 'object' && item != null) {
-                (item as UTSJSONObject)['a'] = 300;
+                (item as JsonObject)['a'] = 300;
             }
         }
     }

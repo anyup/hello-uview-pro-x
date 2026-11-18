@@ -56,7 +56,7 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
     import { useLocale, useTheme } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 

@@ -180,7 +180,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
@@ -240,7 +241,7 @@
     /** 自定义样式演示显隐 */
     const customShow = ref(true);
     /** 自定义根节点样式 */
-    const customStyle = ref<UTSJSONObject>({
+    const customStyle = ref<JsonObject>({
         'background-color': '#edf4ff',
         'border-radius': '8px'
     });

@@ -22,7 +22,8 @@
     </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { $u, useLocale } from '@/uni_modules/uview-pro-x'
 
     defineOptions({
@@ -45,14 +46,14 @@
         showDesc?: boolean;
         code?: string;
         copyText?: string;
-        customStyle?: UTSJSONObject | string;
+        customStyle?: JsonObject | string;
     }>(), {
         title: '',
         desc: '',
         showDesc: true,
         code: '',
         copyText: '',
-        customStyle: (): UTSJSONObject => new UTSJSONObject()
+        customStyle: (): JsonObject => {}
     });
 
     const { t } = useLocale('demo');

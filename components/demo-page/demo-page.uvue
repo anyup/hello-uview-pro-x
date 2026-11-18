@@ -74,7 +74,8 @@
     <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 	import { $u, useLocale, useTheme, type TabbarItem } from '@/uni_modules/uview-pro-x'
 
 	defineOptions({
@@ -144,8 +145,8 @@
 	const cssVarsStyle = computed(() => $u.toStyle(cssVars.value));
 
 	// 导航栏背景：主题主色左→右渐变（primary → 与黑色 50% 混合的加深色），随主题/暗黑模式联动，标题置白字
-	const navBackground = computed<UTSJSONObject>(() => {
-		const style = new UTSJSONObject();
+	const navBackground = computed<JsonObject>(() => {
+		const style = {};
 		const end = $u.mixColor($u.color.primary, '#000000', 0.5);
 		style['background-image'] = 'linear-gradient(90deg, ' + $u.color.primary + ' 0%, ' + end + ' 100%)';
 		return style;

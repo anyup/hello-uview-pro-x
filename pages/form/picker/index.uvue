@@ -61,7 +61,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 import { useLocale, type PickerOption } from '@/uni_modules/uview-pro-x';
 import { codes } from './code';
 
@@ -149,25 +150,25 @@ const colorColumns: PickerOption[][] = [
     ]
 ];
 
-function joinValues(event: UTSJSONObject): string {
+function joinValues(event: JsonObject): string {
     const values = event['selectedValues'] as string[];
     if (values == null) return '';
     return values.join(' / ');
 }
 
-function onConfirm1(event: UTSJSONObject): void {
+function onConfirm1(event: JsonObject): void {
     result1.value = joinValues(event);
 }
 
-function onConfirm2(event: UTSJSONObject): void {
+function onConfirm2(event: JsonObject): void {
     result2.value = joinValues(event);
 }
 
-function onConfirm3(event: UTSJSONObject): void {
+function onConfirm3(event: JsonObject): void {
     result3.value = joinValues(event);
 }
 
-function onConfirm4(event: UTSJSONObject): void {
+function onConfirm4(event: JsonObject): void {
     result4.value = joinValues(event);
 }
 </script>

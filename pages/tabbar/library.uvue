@@ -36,7 +36,7 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { $u, useLocale } from '@/uni_modules/uview-pro-x';
 import { libraryCategories } from './config';
 import { currentNewVersion } from '@/version';

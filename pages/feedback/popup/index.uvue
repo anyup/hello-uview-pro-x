@@ -471,7 +471,8 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { $u, useLocale, useSafeArea, useWindowInfo, type BeforeChangeInterceptor, type PopupCloseIconPos, type PopupMode } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
@@ -622,7 +623,7 @@
     /** 遮罩样式弹窗显隐 */
     const maskStyleShow = ref(false);
     /** 遮罩自定义样式：蓝色半透明遮罩（键统一连字符） */
-    const maskCustomStyle = ref<UTSJSONObject>({
+    const maskCustomStyle = ref<JsonObject>({
         'background-color': 'rgba(24, 144, 255, 0.35)'
     });
 

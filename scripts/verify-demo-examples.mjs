@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// 校验 uView-Pro-x 示例页（pages/<语义分类>/<演示>/index.uvue + code.uts 代码归档）符合示例编写规范。
-// 权威：.agents/skills/component-writer/references/spec/08-demo-example.md（index.uvue ↔ code.uts 一一对应 / custom-class 约定 / prop 完整性）。
+// 校验 uView-Pro-x 示例页（pages/<语义分类>/<演示>/index.uvue + code.ts 代码归档）符合示例编写规范。
+// 权威：.agents/skills/component-writer-ts/references/spec/08-demo-example.md（index.uvue ↔ code.ts 一一对应 / custom-class 约定 / prop 完整性）。
 // 三层结构与 verify-script-order.mjs 一致：check（读）→ fix（写，仅 FIXERS 注册）→ baseline/registry（豁免/省略注册表）。
 // 用法：
 //   node scripts/verify-demo-examples.mjs                             # 扫描全部示例页
@@ -113,7 +113,7 @@ function buildCustomClassCapability() {
     return cap;
 }
 
-// 检测：demo 模板/code.uts 片段里，绑定在"支持 custom-class 的 ux- 组件"上的 class/:class 应改为 custom-class/:custom-class
+// 检测：demo 模板/code.ts 片段里，绑定在"支持 custom-class 的 ux- 组件"上的 class/:class 应改为 custom-class/:custom-class
 function checkCustomClass(src) {
     const issues = [];
     const tmpl = extractTemplate(src) || { body: src };
@@ -178,17 +178,17 @@ function checkCodeArchive(indexSrc, codeSrc, hasCodeUts) {
     while ((m = codeRe.exec(indexSrc))) refs.add(m[1]);
     const usedDemoBlock = refs.size > 0;
     if (usedDemoBlock && !hasCodeUts) {
-        issues.push(`示例使用了 <demo-block :code="..."> 但缺少 code.uts 归档`);
+        issues.push(`示例使用了 <demo-block :code="..."> 但缺少 code.ts 归档`);
         return issues;
     }
     if (!hasCodeUts) return issues;
     const exported = parseCodesKeys(codeSrc);
     for (const r of refs) {
-        if (!exported.has(r)) issues.push(`代码归档缺失：:code="codes.${r}" 在 code.uts 的 codes 导出中未定义`);
+        if (!exported.has(r)) issues.push(`代码归档缺失：:code="codes.${r}" 在 code.ts 的 codes 导出中未定义`);
     }
     // 孤儿导出（文档专用片段允许，仅提示）
     for (const e of exported) {
-        if (!refs.has(e)) issues.push(`孤儿片段：code.uts 导出了 codes.${e} 但 index.uvue 未通过 :code 引用（如为文档专用片段可忽略）`);
+        if (!refs.has(e)) issues.push(`孤儿片段：code.ts 导出了 codes.${e} 但 index.uvue 未通过 :code 引用（如为文档专用片段可忽略）`);
     }
     return issues;
 }
@@ -198,7 +198,7 @@ function checkCodeArchive(indexSrc, codeSrc, hasCodeUts) {
 // 全局通用 prop：所有组件统一声明、通过 external-class 属性（custom-class/自定义样式）使用，不要求每次演示显式传入
 const UNIVERSAL_PROPS = new Set(['customClass', 'customStyle']);
 
-// 提取组件声明的 props（camelCase 集合）。componentUvuePath 为组件 .uvue 绝对路径（须为路径，函数内部读文件定位 types.uts）。
+// 提取组件声明的 props（camelCase 集合）。componentUvuePath 为组件 .uvue 绝对路径（须为路径，函数内部读文件定位 types.ts）。
 function getDeclaredProps(componentUvuePath) {
     const file = read(componentUvuePath);
     const script = file.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)?.[1] || '';
@@ -210,9 +210,11 @@ function getDeclaredProps(componentUvuePath) {
         // 先在本文件找类型定义
         let def = findTypeBlock(file, name);
         if (def !== null) return def;
-        // 再到同目录 types.uts 找
+        // 再到同目录 types 定义找
         const dir = join(componentUvuePath, '..');
-        for (const cand of [join(dir, 'types.uts'), join(dir, `${basename(componentUvuePath, '.uvue')}.types.uts`)]) {
+        const stem = basename(componentUvuePath, '.uvue');
+        const cands = ['types.ts', `${stem}.types.ts`].map((f) => join(dir, f));
+        for (const cand of cands) {
             if (!existsSync(cand)) continue;
             const r = findTypeBlock(read(cand), name);
             if (r !== null) return r;
@@ -263,7 +265,7 @@ function subjectComponents(demoName) {
     return ['ux-' + kebab];
 }
 
-// 检测：演示（index.uvue 模板 + code.uts 片段）未演示的声明 props → 差值。
+// 检测：演示（index.uvue 模板 + code.ts 片段）未演示的声明 props → 差值。
 // 仅检查本示例页主体组件（demoName 映射）；页面引用的其它组件（如 subsection/button 作交互控件）豁免。
 function checkPropsCompleteness(indexSrc, codeUts, registry, demoName) {
     const issues = [];
@@ -336,7 +338,7 @@ function extractTopFunctions(script) {
  * UniEvent 类型无 detail 属性，web/小程序 uts 插件会报 Property 'detail' does not exist。
  * 具名事件类型（UniInputEvent/UniChangeEvent/UniSwiperChangeEvent 等）的 detail 合法，不查。
  * 只查「函数参数声明为 : UniEvent（含 e?: UniEvent）」的函数体内裸 `param.detail` 访问，
- * 须改 `(param as unknown as UTSJSONObject)['detail']` 断言（先转 unknown 消除类型转换警告）。
+ * 须改 `(param as unknown as JsonObject)['detail']` 断言（先转 unknown 消除类型转换警告）。
  */
 function checkDetailAccess(source) {
     const script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)?.[1];
@@ -352,7 +354,7 @@ function checkDetailAccess(source) {
             const stripped = fn.body.split('\n')[i].replace(/\/\/.*$/, '');
             for (const p of params) {
                 if (new RegExp(`\\b${p}\\??\\.detail\\b`).test(stripped)) {
-                    issues.push(`函数 ${fn.name} 内裸 '${p}.detail' 访问：UniEvent 类型无 detail 属性（text 教训），须用 (${p} as unknown as UTSJSONObject)['detail'] 断言访问`);
+                    issues.push(`函数 ${fn.name} 内裸 '${p}.detail' 访问：UniEvent 类型无 detail 属性（text 教训），须用 (${p} as unknown as JsonObject)['detail'] 断言访问`);
                 }
             }
         }
@@ -424,7 +426,7 @@ async function askResolveProps(fixedSrc, codeUts, registry) {
 const customClassCap = buildCustomClassCapability();
 
 /**
- * 组件演示分包目录白名单（与 pages.json 的 subPackages 及 pages/tabbar/config.uts 的分类一一对应）。
+ * 组件演示分包目录白名单（与 pages.json 的 subPackages 及 pages/tabbar/config.ts 的分类一一对应）。
  * 旧无语义分包 componentsA|B|C 已废弃；新增分类必须同步更新此表，否则新页会默默不入门禁。
  * library / hooks 是 libs（utils / hooks）演示页，无 ux-* 主体组件，prop 完整性一项跳过。
  */
@@ -479,8 +481,10 @@ async function main() {
         const group = basename(dirname(dir));
         const isLibDemo = LIB_GROUP_RE.test(group);
         let indexSrc = read(join(dir, 'index.uvue'));
-        let codeUts = read(join(dir, 'code.uts'));
-        const hasCodeUts = existsSync(join(dir, 'code.uts'));
+        // 代码归档文件 code.ts
+        const codePath = join(dir, 'code.ts');
+        let codeUts = read(codePath);
+        const hasCodeUts = existsSync(codePath);
 
         if (fix) {
             const fixed = fixCustomClassSafe(indexSrc);
@@ -490,7 +494,7 @@ async function main() {
             }
             const fixedCode = fixCustomClassSafe(codeUts);
             if (fixedCode !== codeUts && hasCodeUts) {
-                writeFileSync(join(dir, 'code.uts'), fixedCode, 'utf8');
+                writeFileSync(codePath, fixedCode, 'utf8');
                 codeUts = fixedCode; totalFixed++;
             }
         }

@@ -871,7 +871,7 @@ function extractTopFunctions(script) {
  * UniEvent 类型无 detail 属性，web/小程序 uts 插件会报 Property 'detail' does not exist。
  * 具名事件类型（UniInputEvent/UniChangeEvent/UniSwiperChangeEvent 等）的 detail 合法，不查。
  * 只查「函数参数声明为 : UniEvent（含 e?: UniEvent）」的函数体内裸 `param.detail` 访问，
- * 须改 `(param as unknown as UTSJSONObject)['detail']` 断言（先转 unknown 消除类型转换警告）。
+ * 须改 `(param as unknown as JsonObject)['detail']` 断言（先转 unknown 消除类型转换警告）。
  */
 function checkDetailAccess(source) {
     const script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)?.[1];
@@ -887,7 +887,7 @@ function checkDetailAccess(source) {
             const stripped = fn.body.split('\n')[i].replace(/\/\/.*$/, '');
             for (const p of params) {
                 if (new RegExp(`\\b${p}\\??\\.detail\\b`).test(stripped)) {
-                    issues.push(`函数 ${fn.name} 内裸 '${p}.detail' 访问：UniEvent 类型无 detail 属性（text 教训），须用 (${p} as unknown as UTSJSONObject)['detail'] 断言访问`);
+                    issues.push(`函数 ${fn.name} 内裸 '${p}.detail' 访问：UniEvent 类型无 detail 属性（text 教训），须用 (${p} as unknown as JsonObject)['detail'] 断言访问`);
                 }
             }
         }
@@ -1709,13 +1709,17 @@ function injectRefs(script, decls) {
     return injectAtSegment(script, decls, ['constvar', 'computed', 'watch', 'cycle', 'function', 'expose']);
 }
 
-/** 把 ref 声明注入到整个 source 的 <script> 块内 */
+/** 把 ref 声明注入到整个 source 的 <script> 块内；用到 JsonObject 时确保类型导入存在 */
 function insertRefDecls(source, decls) {
     if (!decls.length) return source;
     const s = source.match(/(<script\b[^>]*>)([\s\S]*?)(<\/script>)/);
     if (!s) return source;
     const [full, open, body, close] = s;
-    return source.slice(0, s.index) + open + injectRefs(body, decls) + close + source.slice(s.index + full.length);
+    let newBody = injectRefs(body, decls);
+    if (decls.some((d) => d.includes('JsonObject')) && !/import[^\n]*\bJsonObject\b[^\n]*from/.test(body)) {
+        newBody = `\nimport type { JsonObject } from '@/uni_modules/uview-pro-x';\n` + newBody;
+    }
+    return source.slice(0, s.index) + open + newBody + close + source.slice(s.index + full.length);
 }
 
 /** 交互询问单个缺失 ref 的修复类型；非 TTY 返回 ''（不交互，仅 report） */
@@ -1726,13 +1730,13 @@ async function askRef(name) {
         rl.question(
             `\n[交互] 模板 ref="${name}" 在 <script> 中无声明（运行时不加则会 not defined）。如何修？\n` +
             `  1) 元素 ref   const ${name} = shallowRef<UniElement | null>(null)\n` +
-            `  2) 组件/泛型 const ${name} = shallowRef<UTSJSONObject | null>(null)\n` +
+            `  2) 组件/泛型 const ${name} = shallowRef<JsonObject | null>(null)\n` +
             `  0) 跳过本次  保留为 report\n` +
             `  输入 [0/1/2] 默认 1：`,
             (ans) => {
                 rl.close();
                 const v = (ans || '1').trim();
-                if (v === '2') resolve('UTSJSONObject');
+                if (v === '2') resolve('JsonObject');
                 else if (v === '0') resolve('');
                 else resolve('UniElement');
             }

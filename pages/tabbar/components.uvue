@@ -105,7 +105,7 @@
     </demo-page>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { $u, useLocale, useTheme, usePageScroll, type DarkMode } from '@/uni_modules/uview-pro-x';
 import { componentCategories } from './config';
 import { currentNewVersion, LIB_VERSION_TEXT } from '@/version';
