@@ -1,6 +1,6 @@
 # uView-Pro-x（演示工程 + 组件库维护）
 
-> uView Pro 组件库的 uni-app x TS 版本（Vue3 + TypeScript，2.0 起 ts 语言策略，需 HBuilderX 5.31+）**演示工程**：本仓库只承载示例页与宿主工程，组件库源码在私有仓库，编译时装配进来。支持 App（Android/iOS/鸿蒙）、H5、微信与支付宝小程序。1.x（UTS）资产停在各自 `main` 分支，2.0 在 `feature/dev-ts` 推进。
+> uView Pro 组件库的 uni-app x TS 版本（Vue3 + TypeScript，2.0 起 ts 语言策略，需 HBuilderX 5.31+）**演示工程**：本仓库只承载示例页与宿主工程，组件库源码在私有仓库，编译时装配进来。支持 App（Android/iOS/鸿蒙）、H5、微信与支付宝小程序。
 > 组件用 `ux-` 前缀；组件专属类名用 `useBEM` BEM（`ux-` 前缀），全局工具类（`u-line-1`、`u-iconfont` 等）保留 `u-` 前缀。
 
 ## 双仓库结构

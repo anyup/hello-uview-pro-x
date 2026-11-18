@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.0（2026-11-18）
+
+### 💥 Breaking Changes | 破坏性变更
+
+- **语言策略**：组件库与演示工程由 UTS 全量迁移为 TypeScript（TS + UVUE），源码扩展名 `.uts` → `.ts`；页面脚本 `<script setup lang="uts">` → `lang="ts"`
+- **工程入口**：`main.uts` → `main.ts`、`index.uts` → `index.ts`，示例页代码片段 `code.uts` → `code.ts`
+- **对象类型**：全局对象类型 `UTSJSONObject` 统一替换为 `JsonObject`，`types/global.uts` → `types/global.ts`
+- **编译基线**：要求 HBuilderX 5.31+（TypeScript 语言策略）；1.x（UTS）工程请在插件市场继续使用 1.x 历史版本
+- **兼容性**：组件对外 API（props / events / slots / 命令式方法）与 1.x 保持一致，业务代码无需改写；加密版插件仍用命名导入 `import { uViewProX } from '@/uni_modules/uview-pro-x'`（入口固定 `export * from './index'`，不转发 default）
+
+### ✨ Features | 新功能
+
+- **全量 TypeScript**：组件、工具库（`config` / `utils` / `styles` / `request`）、19 个 hooks、语言包与类型契约全部 TS 化，共 141 个源码文件
+- **类型契约**：`types/global.ts` 统一公共类型，`types/component-contracts.ts` 约束组件 Props 与事件载荷，错误在编译期暴露
+- **加密版兼容**：纯类型补同名 `const` 占位，`verify-type-shims` 逐一对账 146 个类型 0 违规
+- **内置请求层**：`http` axios 实例模型（`http.create` 派生、双向拦截器、上传下载进度）与 `useRequest` 页面三态（`loading` / `data` / `error`、`ctx.signal` 取消、卸载自动取消），失败统一 reject `HttpError`，`isCancel` 区分取消
+- **演示工程**：87 个示例页同步 TS 化，`main.ts` 装配 pinia（内置 3.0.4）、中 / 英 / 法语言包与多主题，页面代码片段统一为 `code.ts`
+- **技能与 API 快照**：消费侧拆分为 `uview-pro-x`（2.0 TS）与 `uview-pro-x-uts`（1.x UTS）双技能，编写规范新增 `component-writer-ts`；API 卡片 70 张随版本重生成，`model.json` 与全库指纹同步
+
+### ♻️ Refactors | 重构
+
+- **脚本编排**：`<script setup>` 统一 10 段顺序，`verify-script-order` 全库 0 违规
+- **样式与跨端**：主题仍走 SCSS `$u-*` 变量与运行时 `$u.color.*`，样式隔离 2.0 策略不变；`verify-uvue-css` 扫描 175 个 uvue，App 端样式限制 0 违规
+- **平台口径**：对外支持表述扩展为六大平台（App Android / iOS / 鸿蒙、H5、微信小程序、支付宝小程序），实测矩阵仍只记录已实测平台
+
+### 📝 Documentation | 文档
+
+- **readme**：重写为 TS + UVUE 定位，新增六大平台支持表、产品矩阵（uView Pro / Starter / X UTS / X TS 版）、HBuilderX 5.31+ 前置条件与 HTTP 请求示例
+- **文档站**：快速开始与指南统一为 `main.ts` / `lang="ts"` 口径；配置、主题、暗黑模式、国际化、pinia、自定义图标字体与请求层（`http` / `useRequest` / 最佳实践）同步更新
+- **示例与门禁**：`code.ts` 片段与示例页一一对应，技能 API 卡片与组件源码一致性由 `--check` 保证 0 漂移
+
+### 🤖 AI 升级提示词 | AI Upgrade Prompt
+
+迁移到 2.0 主要是语言口径变化。把下面整段提示词交给 AI 编码助手，让它对存量 1.x 项目逐项改造；改完要求它执行第 8 条自检并汇报改动文件清单：
+
+```text
+请把一个 uni-app x 项目（uview-pro-x 1.x，UTS 语言）升级到 uview-pro-x 2.0（TypeScript 语言）。严格按下列规则逐项改造，不做与语言无关的重构，完成后逐条自检并汇报改动文件清单：
+
+1. 脚本后缀：项目内所有 .uts 脚本文件改为 .ts，包括 pages/ 与 components/ 下的页面与组件脚本、根入口 main.uts → main.ts、入口导出 index.uts → index.ts、类型文件 types/global.uts → types/global.ts，以及 store/、utils/、hooks/ 等工具脚本；H5 工程的 index.html 中入口 script 的 src 同步改为 /main.ts。
+2. 页面语言标记：所有 .uvue 中的 <script setup lang="uts"> 改为 lang="ts"；只写了 <script setup>、未指定 lang 的显式补成 <script setup lang="ts">；非 setup 的 <script lang="uts"> 同样改为 lang="ts"。
+3. 对象类型：所有 UTSJSONObject 换成标准 TS 对象类型——结构固定的用 interface / type 声明字段，键任意的用 Record<string, any>（也可直接用 uview-pro-x 导出的 JsonObject，它等价于 Record<string, any>）；取值、赋值、增删、遍历一律用标准写法（obj.key、obj['key']、Object.keys、对象展开），禁止 getString / getNumber / getBoolean / getJSON / getArray / toMap 一类 UTS 专有方法。
+4. JSON 处理：删除 JSON.parseObject、JSON.parseArray 及其类型参数，统一改为标准 JSON.parse，结果用 as T / as T[] 收窄（如 JSON.parse(text) as User），需要容错时自己 try/catch；不要再保留任何 parseObject / parseArray 的封装。
+5. 原生侧不改：uni_modules 下的原生插件、原生标准组件与其 UI 一律保持 UTS 语言与原语法，不改文件后缀、不改 <script lang="uts">、不把内部实现改写成 TS。
+6. 跨语言传参对等：原生插件或原生标准 UI 组件的参数类型是 UTSJSONObject 时，TS 页面与 TS 组件直接传对应的普通对象即可（对象字面量或 Record<string, any>），两边是对等的，不需要 toMap，也不需要任何包装或转换。
+7. 保持不变：import 路径与 easycom 规则、组件 API（props / events / slots）、条件编译（#ifdef / #ifndef）、页面路由与主题配置都不动；仅当 import 里显式写了 .uts 后缀时，随文件改名同步为 .ts。
+8. 自检：全局搜索 .uts、lang="uts"、UTSJSONObject、parseObject、parseArray、toMap，确认 TS 侧 0 残留（原生插件内部命中属正常，不改）；再用 HBuilderX 5.31+ 编译，按「类型不匹配 / 属性不存在」逐个修正直到通过。
+```
+
 ## 1.0.31（2026-11-17）
 
 ### 🐛 Bug Fixes | Bug 修复

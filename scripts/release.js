@@ -7,6 +7,8 @@
  *   node scripts/release.js prerelease [alpha|beta|rc]       # 预览版本（默认不推送）
  *   node scripts/release.js 1.0.1                            # 直接指定版本号（默认不推送）
  *   node scripts/release.js patch --push                     # 提交并推送
+ *   node scripts/release.js tag                              # 用当前版本号提交暂存内容并打标签（不改版本号与日志）
+ *   node scripts/release.js tag --push                       # 同上，并推送提交与标签
  *   node scripts/release.js push                             # 推送上次未推送的发布
  *   node scripts/release.js undo                             # 撤销本地发布（仅未推送时）
  *
@@ -216,6 +218,110 @@ if (args[0] === 'undo') {
     }
 }
 
+// 特殊命令：tag - 用当前 package.json 版本直接提交暂存内容并打标签（不更新版本号与日志）
+if (args[0] === 'tag') {
+    console.log('🏷️  开始提交暂存内容并打标签...');
+    try {
+        const version = readJson('package.json').version;
+        const tagName = `v${version}`;
+        const pushTag = args.includes('--push');
+
+        if (!/^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?$/.test(version)) {
+            console.error(`❌ package.json 版本号不合法: ${version}`);
+            process.exit(1);
+        }
+
+        const stagedFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' }).trim();
+        if (!stagedFiles) {
+            console.error('❌ 暂存区没有内容，请先 git add 需要提交的文件');
+            process.exit(1);
+        }
+
+        let tagExists = false;
+        try {
+            execSync(`git rev-parse --verify --quiet "refs/tags/${tagName}"`, { stdio: 'pipe' });
+            tagExists = true;
+        } catch (e) {}
+
+        if (tagExists) {
+            console.error(`❌ 标签 ${tagName} 已存在`);
+            process.exit(1);
+        }
+
+        console.log(`📦 当前版本号: ${version}（不修改版本号与更新日志）`);
+        console.log('💾 提交暂存内容...');
+        execSync(
+            `git commit -m "${COMMIT_PREFIX} ${version}" -m "- Commit staged changes
+- Tag version ${version}"`,
+            { stdio: 'inherit' }
+        );
+
+        console.log(`🏷️  创建标签 ${tagName}...`);
+        execSync(`git tag -a "${tagName}" -m "Release version ${version}"`, { stdio: 'inherit' });
+
+        // 组件库（独立仓库）：提交版本产物并打同名标签
+        if (libRepoExists()) {
+            console.log('');
+            console.log('📦 提交组件库（uni_modules/uview-pro-x 独立仓库）...');
+            const libFiles = LIB_RELEASE_FILES.filter(file => fs.existsSync(file));
+            if (libFiles.length === 0) {
+                console.log('ℹ️  组件库无版本产物文件，跳过提交');
+            } else {
+                const libRelFiles = libFiles.map(file => path.relative(LIB_DIR, file));
+                libGit(`git add -- ${libRelFiles.join(' ')}`, { stdio: 'inherit' });
+                const staged = libGit(`git diff --cached --name-only -- ${libRelFiles.join(' ')}`).trim();
+                if (staged) {
+                    libGit(
+                        `git commit -m "${COMMIT_PREFIX} ${version}" -m "- Update package.json version
+- Sync changelog for ${version}" -- ${libRelFiles.join(' ')}`,
+                        { stdio: 'inherit' }
+                    );
+                    console.log('✅ 组件库发布提交完成');
+                } else {
+                    console.log('ℹ️  组件库无待提交变更，跳过提交');
+                }
+            }
+
+            if (libHasTag(tagName)) {
+                console.log(`ℹ️  组件库标签 ${tagName} 已存在，跳过创建`);
+            } else {
+                console.log(`🏷️  创建组件库标签 ${tagName}...`);
+                libGit(`git tag -a "${tagName}" -m "Release version ${version}"`, { stdio: 'inherit' });
+            }
+        }
+
+        if (pushTag) {
+            console.log('🚀 推送更改和标签...');
+            execSync('git push origin HEAD', { stdio: 'inherit' });
+            execSync(`git push origin "${tagName}"`, { stdio: 'inherit' });
+            if (libRepoExists()) {
+                try {
+                    console.log('🚀 推送组件库提交与标签...');
+                    libGit('git push origin HEAD', { stdio: 'inherit' });
+                    if (libHasTag(tagName)) {
+                        libGit(`git push origin "${tagName}"`, { stdio: 'inherit' });
+                    }
+                } catch (error) {
+                    console.warn(`⚠️  组件库推送失败: ${error.message}`);
+                    console.warn('💡 请在 uni_modules/uview-pro-x 目录内手动推送');
+                }
+            }
+        }
+
+        console.log('');
+        console.log(`✅ 已用版本 ${version} 提交暂存内容并打标签`);
+        console.log(`🏷️  标签 ${tagName} ${pushTag ? '已创建并推送' : '已创建（未推送）'}`);
+        if (!pushTag) {
+            console.log('💡 如需推送，运行: npm run release:push');
+            console.log('💡 如需撤销，运行: npm run release:undo');
+        }
+        process.exit(0);
+    } catch (error) {
+        console.error('❌ 提交并打标签失败:', error.message);
+        process.exit(1);
+    }
+}
+
 const shouldPush = args.includes('--push');
 // 默认生成 changelog，--no-changelog 跳过
 const skipChangelog = args.includes('--no-changelog');
@@ -276,6 +382,7 @@ if (!versionInput || (!isSemverType && !isDirectVersion)) {
     console.error('  --no-changelog                                           # 跳过 changelog 生成');
     console.error('');
     console.error('其他命令:');
+    console.error('  node scripts/release.js tag                              # 用当前版本号提交暂存内容并打标签（不改版本号与日志，可加 --push）');
     console.error('  node scripts/release.js push                             # 推送上次未推送的发布');
     console.error('  node scripts/release.js undo                             # 撤销本地发布（仅未推送时）');
     process.exit(1);
