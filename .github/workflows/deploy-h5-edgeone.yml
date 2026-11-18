@@ -17,7 +17,7 @@ jobs:
 
     env:
       # HBuilderX Linux 正式版（官方源）。升级 HBuilderX 时改这里。
-      HX_TARBALL_URL: https://download1.dcloud.net.cn/download/HBuilderX.5.24.2026081301.linux_x64.full.tar.gz
+      HX_TARBALL_URL: https://download1.dcloud.net.cn/download/HBuilderX.5.34.2026102909.linux_x64.full.tar.gz
       # EdgeOne Pages 产物目录（checkout 后仓库根即项目根，cli publish web 输出到 unpackage/dist/build/web）
       BUILD_DIR: unpackage/dist/build/web
       # EdgeOne Pages 项目名
@@ -62,7 +62,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: hbx.tar.gz
-          key: hbuilderx-5.24
+          key: hbuilderx-5.34
 
       # 4) 安装 HBuilderX Linux CLI（hit 时使用缓存的 tar.gz 直接解压，不再 curl）
       - name: Install HBuilderX Linux CLI
