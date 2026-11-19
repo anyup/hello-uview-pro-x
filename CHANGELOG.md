@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.2（2026-11-19）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-picker:** 修复选择器主题适配问题，统一三端样式，针对不同端（小程序、H5、App）做样式兼容处理
+- **ux-select:** 修复 select 选择器指示器边框颜色不跟随应用主题、蒙层颜色在暗色主题下显示异常的问题
+
 ## 2.0.1（2026-11-19）
 
 ### 🐛 Bug Fixes | Bug 修复
