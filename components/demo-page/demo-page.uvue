@@ -199,6 +199,13 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
 
 <style lang="scss">
 .demo-page {
+    /* 内容不满一屏时，下方露出的是「页面原生背景」（theme.json 的 backgroundColorContent）——
+       它随系统明暗解析、不随应用主题：应用暗黑 + 系统亮色会露白条，应用亮色 + 系统暗黑会露黑条。
+       根容器铺满视口，让透出的始终是主题底板（与 pages/search 的 .search-page 同一写法）。
+       App 端原生页面背景已由 useTheme 的 uni.setAppTheme 跟随应用主题，无需限高 */
+    /* #ifndef APP */
+    min-height: 100vh;
+    /* #endif */
     background-color: $u-bg-color;
 }
 </style>
