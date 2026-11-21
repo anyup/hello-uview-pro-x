@@ -460,15 +460,16 @@ const customStyle = `
 
 <script setup lang="ts">
 import { createStyle } from '@/uni_modules/uview-pro-x';
+import type { JsonObject } from '@/uni_modules/uview-pro-x';
 
-const customStyle = computed((): Record<string, any> => {
+const customStyle = computed((): JsonObject => {
     const style = createStyle();
     style['backgroundColor'] = '#000000';
     style['color'] = '#ffffff';
     return style;
 });
 
-const slotTextStyle = computed((): Record<string, any> => {
+const slotTextStyle = computed((): JsonObject => {
     const style = createStyle();
     style['color'] = '#ffffff';
     return style;
