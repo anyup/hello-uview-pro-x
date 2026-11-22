@@ -617,6 +617,20 @@
             "autoPlayOn": "自动开",
             "autoPlayOff": "自动关"
         },
+        "layout": {
+            "title": "栅格布局",
+            "subtitle": "12 分栏栅格，搭配 ux-row / ux-col 使用",
+            "basicTitle": "基础用法",
+            "basicDesc": "不同 span 组合实现等分或比例布局",
+            "spanTitle": "分栏占比",
+            "spanDesc": "通过 span 控制每列占 12 等分中的份数",
+            "offsetTitle": "偏移",
+            "offsetDesc": "通过 offset 让列向右偏移",
+            "gutterTitle": "栅格间隔",
+            "gutterDesc": "gutter 控制列之间间距",
+            "alignTitle": "对齐方式",
+            "alignDesc": "justify 水平排列，align 垂直排列"
+        },
         "circleProgress": {
             "title": "CircleProgress 环形进度条",
             "subtitle": "展示操作或任务的当前进度，是一个圆形的进度条。",

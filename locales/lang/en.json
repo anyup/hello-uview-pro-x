@@ -617,6 +617,20 @@
             "autoPlayOn": "Auto On",
             "autoPlayOff": "Auto Off"
         },
+        "layout": {
+            "title": "Grid Layout",
+            "subtitle": "12-column grid with ux-row / ux-col",
+            "basicTitle": "Basic Usage",
+            "basicDesc": "Combine span values for equal or proportional columns",
+            "spanTitle": "Column Span",
+            "spanDesc": "Control how many of 12 columns each cell occupies",
+            "offsetTitle": "Offset",
+            "offsetDesc": "Offset columns to the right",
+            "gutterTitle": "Gutter",
+            "gutterDesc": "Gutter controls spacing between columns",
+            "alignTitle": "Alignment",
+            "alignDesc": "justify for horizontal, align for vertical"
+        },
         "circleProgress": {
             "title": "CircleProgress",
             "subtitle": "Shows the current progress of an operation or task as a circular progress ring.",

@@ -1,8 +1,8 @@
 <template>
-    <demo-page :title="t('title')" :subtitle="t('subtitle')">
+    <demo-page :title="t('layout.title')" :subtitle="t('layout.subtitle')">
 
         <!-- 基础用法 -->
-        <demo-block :title="t('basicTitle')" :desc="t('basicDesc')" :code="codes.basic">
+        <demo-block :title="t('layout.basicTitle')" :desc="t('layout.basicDesc')" :code="codes.basic">
             <ux-row :gutter="5">
                 <ux-col :span="6">
                     <view class="grid-block block-primary"></view>
@@ -14,7 +14,7 @@
         </demo-block>
 
         <!-- 分栏占比 -->
-        <demo-block :title="t('spanTitle')" :desc="t('spanDesc')" :code="codes.span">
+        <demo-block :title="t('layout.spanTitle')" :desc="t('layout.spanDesc')" :code="codes.span">
             <ux-row :gutter="5">
                 <ux-col :span="4">
                     <view class="grid-block block-primary"></view>
@@ -38,7 +38,7 @@
         </demo-block>
 
         <!-- 偏移 -->
-        <demo-block :title="t('offsetTitle')" :desc="t('offsetDesc')" :code="codes.offset">
+        <demo-block :title="t('layout.offsetTitle')" :desc="t('layout.offsetDesc')" :code="codes.offset">
             <ux-row :gutter="5">
                 <ux-col :span="4">
                     <view class="grid-block block-primary"></view>
@@ -50,7 +50,7 @@
         </demo-block>
 
         <!-- 栅格间隔 -->
-        <demo-block :title="t('gutterTitle')" :desc="t('gutterDesc')" :code="codes.gutter">
+        <demo-block :title="t('layout.gutterTitle')" :desc="t('layout.gutterDesc')" :code="codes.gutter">
             <ux-row :gutter="20">
                 <ux-col :span="3">
                     <view class="grid-block block-primary"></view>
@@ -68,7 +68,7 @@
         </demo-block>
 
         <!-- 对齐方式 -->
-        <demo-block :title="t('alignTitle')" :desc="t('alignDesc')" :code="codes.align">
+        <demo-block :title="t('layout.alignTitle')" :desc="t('layout.alignDesc')" :code="codes.align">
             <ux-row justify="space-between" align="bottom">
                 <ux-col :span="6">
                     <view class="grid-block block-primary" :style="{ height: '50px' }"></view>
@@ -86,7 +86,7 @@
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
-    const { t } = useLocale('layout');
+    const { t } = useLocale('demo');
 </script>
 
 <style lang="scss">
