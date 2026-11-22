@@ -1,8 +1,8 @@
 ﻿<template>
-    <demo-page :title="t('title')" :subtitle="t('subtitle')">
+    <demo-page :title="t('circleProgress.title')" :subtitle="t('circleProgress.subtitle')">
 
         <!-- 基础用法 -->
-        <demo-block :title="t('basicTitle')" :desc="t('basicDesc')" :code="codes.basic">
+        <demo-block :title="t('circleProgress.basicTitle')" :desc="t('circleProgress.basicDesc')" :code="codes.basic">
             <view class="circle-wrap">
                 <ux-circle-progress :percent="65" type="primary">
                     <text class="circle-percent">65%</text>
@@ -11,7 +11,7 @@
         </demo-block>
 
         <!-- 主题颜色 -->
-        <demo-block :title="t('typeTitle')" :desc="t('typeDesc')" :code="codes.type">
+        <demo-block :title="t('circleProgress.typeTitle')" :desc="t('circleProgress.typeDesc')" :code="codes.type">
             <view class="row-wrap">
                 <view class="circle-item">
                     <ux-circle-progress :percent="70" type="primary" :width="80">
@@ -42,7 +42,7 @@
         </demo-block>
 
         <!-- 尺寸与线宽 -->
-        <demo-block :title="t('sizeTitle')" :desc="t('sizeDesc')" :code="codes.size">
+        <demo-block :title="t('circleProgress.sizeTitle')" :desc="t('circleProgress.sizeDesc')" :code="codes.size">
             <view class="row-wrap">
                 <view class="circle-item">
                     <ux-circle-progress :percent="60" type="primary" :width="70" :border-width="4">
@@ -66,7 +66,7 @@
         </demo-block>
 
         <!-- 动态进度 -->
-        <demo-block :title="t('dynamicTitle')" :desc="t('dynamicDesc')" :code="codes.dynamic">
+        <demo-block :title="t('circleProgress.dynamicTitle')" :desc="t('circleProgress.dynamicDesc')" :code="codes.dynamic">
             <view class="circle-wrap">
                 <ux-circle-progress :percent="percent" type="success">
                     <text class="circle-percent">{{ percent + '%' }}</text>
@@ -84,7 +84,7 @@
         </demo-block>
 
         <!-- 自定义样式 -->
-        <demo-block :title="t('customTitle')" :desc="t('customDesc')" :code="codes.custom">
+        <demo-block :title="t('circleProgress.customTitle')" :desc="t('circleProgress.customDesc')" :code="codes.custom">
             <view class="circle-wrap">
                 <ux-circle-progress
                     :percent="customPercent"
@@ -114,7 +114,7 @@
 import { useLocale } from '@/uni_modules/uview-pro-x';
 import { codes } from './code';
 
-const { t } = useLocale('circleProgress');
+const { t } = useLocale('demo');
 
 const percent = ref(65);
 
