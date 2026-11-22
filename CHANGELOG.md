@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.6（2026-11-22）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **button:** 修复 button 类型定义使用未导入类型的问题
+- **ux-sticky:** 修复自定义样式合并失效问题
+
+### ♻️ Code Refactoring | 代码重构
+
+- **customStyle:** 统一多个组件的customStyle类型，优化样式处理逻辑
+- **ux-button:** 优化按钮组件的样式绑定方式，增强样式兼容性
+
 ## 2.0.5（2026-11-21）
 
 ### 🐛 Bug Fixes | Bug 修复
