@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.9（2026-11-23）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-number-box:** 修复长按连续加减在桌面端失效及触屏点击重复触发问题，解决桌面端长按功能失效和触屏点击一次触发两次加减的问题
+
 ## 2.0.8（2026-11-23）
 
 ### 🐛 Bug Fixes | Bug 修复
