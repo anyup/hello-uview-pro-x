@@ -172,6 +172,24 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
 	// #endif
 	// #endif
 
+	// #ifdef H5
+	/**
+	 * iOS 17+ WebKit 首屏 fixed 浮层锚点缺陷兜底（仅部分机型 / 系统小版本触发，iPhone Air iOS 27.2.1 实测复现）：
+	 * 进入带 tabbar 的页面后第一次下滑，导航栏被画到视口中部、tabbar 移出屏幕，回弹一次后自愈。
+	 * 成因在浏览器的视口锚点首帧未更新，页面结构本身无错（文档根滚动 + 滚动内容内的 fixed 浮层）。
+	 * 这里在首屏模拟一次 1px 的滚动往返，把「滑一下才自愈」提前到用户操作之前；间隔 32ms 保证跨帧，避免两次滚动被合并。
+	 * 若后续更多机型复现且本兜底无效，应改为把滚动交给容器（fixed 浮层移出滚动内容）。
+	 */
+	onMounted(() => {
+		setTimeout(() => {
+			uni.pageScrollTo({ scrollTop: 1, duration: 0 });
+			setTimeout(() => {
+				uni.pageScrollTo({ scrollTop: 0, duration: 0 });
+			}, 32);
+		}, 120);
+	});
+	// #endif
+
 	// 底部标签栏图标名取自组件库内置图标库，故不设置 customIcon（设置了会走自定义字体图标库检索）
 	const tabbarList = computed<TabbarItem[]>(() => {
 		return [
