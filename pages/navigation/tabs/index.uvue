@@ -34,6 +34,26 @@
             />
         </demo-block>
 
+        <!-- 字号 -->
+        <demo-block :title="t('tabs.fontSizeTitle')" :desc="t('tabs.fontSizeDesc')" :code="codes.fontSize">
+            <ux-tabs
+                :current="tabsCurrent"
+                :font-size="20"
+                :list="basicList"
+                @change="onChange"
+            />
+        </demo-block>
+
+        <!-- 激活项样式 -->
+        <demo-block :title="t('tabs.activeItemTitle')" :desc="t('tabs.activeItemDesc')" :code="codes.activeItem">
+            <ux-tabs
+                :current="tabsCurrent"
+                :active-item-style="activeItemStyle"
+                :list="basicList"
+                @change="onChange"
+            />
+        </demo-block>
+
         <!-- 徽标 -->
         <demo-block :title="t('tabs.badgeTitle')" :desc="t('tabs.badgeDesc')" :code="codes.badge">
             <ux-tabs
@@ -48,7 +68,8 @@
 </template>
 
 <script setup lang="ts">
-    import { useLocale, type TabsItem } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale, type TabsItem } from '@/uni_modules/uview-pro-x';
+    import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
@@ -70,6 +91,14 @@
         { name: t('tabs.tab3'), count: 100 },
         { name: t('tabs.tab4') }
     ];
+
+    /** 激活项样式：圆角 + 主题浅灰底，颜色走 $u.color 令牌随亮/暗主题切换 */
+    const activeItemStyle = computed((): JsonObject => {
+        const style: JsonObject = {};
+        style['border-radius'] = '6px';
+        style['background-color'] = $u.color.bgGrayLight;
+        return style;
+    });
 
     /** 点击标签 */
     const onChange = (index: number) => {
