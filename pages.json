@@ -434,6 +434,12 @@
           }
         },
         {
+          "path": "popover/index",
+          "style": {
+            "navigationBarTitleText": "Popover 气泡菜单"
+          }
+        },
+        {
           "path": "swipeAction/index",
           "style": {
             "navigationBarTitleText": "SwipeAction 滑动单元格"

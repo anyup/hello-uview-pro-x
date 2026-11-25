@@ -79,6 +79,7 @@ const feedbackComponentItems: MenuItem[] = [
     { name: 'TopTips', zhName: '顶部提示', desc: 'tabbarMenu.topTipsDesc', icon: 'T', path: 'feedback/topTips/index' },
     { name: 'Collapse', zhName: '折叠面板', desc: 'tabbarMenu.collapseDesc', icon: 'C', path: 'feedback/collapse/index' },
     { name: 'Popup', zhName: '弹窗', desc: 'tabbarMenu.popupDesc', icon: 'P', path: 'feedback/popup/index' },
+    { name: 'Popover', zhName: '气泡菜单', desc: 'tabbarMenu.popoverDesc', icon: 'P', path: 'feedback/popover/index' },
     { name: 'SwipeAction', zhName: '滑动单元格', desc: 'tabbarMenu.swipeActionDesc', icon: 'S', path: 'feedback/swipeAction/index' },
     { name: 'Modal', zhName: '弹窗', desc: 'tabbarMenu.modalDesc', icon: 'M', path: 'feedback/modal/index' },
     { name: 'Mask', zhName: '遮罩层', desc: 'tabbarMenu.maskDesc', icon: 'M', path: 'feedback/mask/index' },

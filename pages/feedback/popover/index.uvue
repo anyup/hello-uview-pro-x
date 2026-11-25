@@ -1,0 +1,755 @@
+<template>
+    <demo-page :title="t('popover.title')" :subtitle="t('popover.subtitle')">
+
+        <!-- ==================== 分组 1 · 基础用法 ==================== -->
+        <view class="popover-group">
+            <view class="popover-group-head">
+                <text class="popover-group-index">01</text>
+                <text class="popover-group-title">{{ t('popover.groupBasic') }}</text>
+            </view>
+            <text class="popover-group-sub">{{ t('popover.groupBasicSub') }}</text>
+        </view>
+
+        <!-- B1 基础用法：v-model:show + #menu 插槽 -->
+        <demo-block :title="t('popover.basicTitle')" :desc="t('popover.basicDesc')" :code="codes.basic">
+            <view class="popover-row">
+                <ux-popover v-model:show="basicShow" placement="bottom-end">
+                    <ux-button custom-class="popover-trigger" shape="round" size="small" type="primary" :text="t('popover.basicTrigger')" @click="basicShow = true"></ux-button>
+                    <template #menu>
+                        <view class="popover-menu">
+                            <ux-cell-item :title="t('popover.menuItem1')" :arrow="false" @click="onPickMenu()"></ux-cell-item>
+                            <ux-cell-item :title="t('popover.menuItem2')" :arrow="false" @click="onPickMenu()"></ux-cell-item>
+                            <ux-cell-item :title="t('popover.menuItem3')" :arrow="false" :border-bottom="false" @click="onPickMenu()"></ux-cell-item>
+                        </view>
+                    </template>
+                </ux-popover>
+            </view>
+            <text class="popover-config-tip">{{ t('popover.basicTip') }}</text>
+        </demo-block>
+
+        <!-- ==================== 分组 2 · 方位 ==================== -->
+        <view class="popover-group">
+            <view class="popover-group-head">
+                <text class="popover-group-index">02</text>
+                <text class="popover-group-title">{{ t('popover.groupPlacement') }}</text>
+            </view>
+            <text class="popover-group-sub">{{ t('popover.groupPlacementSub') }}</text>
+        </view>
+
+        <!-- B2 六个方位：每个触发按钮一个独立实例（触发元素必须在自己实例的默认插槽里） -->
+        <demo-block :title="t('popover.placementTitle')" :desc="t('popover.placementDesc')" :code="codes.placement">
+            <!-- 六宫格：三等分等宽，比 flex 换行后的参差宽度更像一张表 -->
+            <view class="popover-grid">
+                <view class="popover-grid-cell">
+                    <ux-popover v-model:show="bottomEndShow" placement="bottom-end">
+                        <ux-button shape="round" size="small" :text="t('popover.placementBottomEnd')" @click="bottomEndShow = true"></ux-button>
+                        <template #menu>
+                            <view class="popover-menu popover-menu--compact">
+                                <text class="popover-menu-text">placement = bottom-end</text>
+                            </view>
+                        </template>
+                    </ux-popover>
+                </view>
+                <view class="popover-grid-cell">
+                    <ux-popover v-model:show="bottomShow" placement="bottom">
+                        <ux-button shape="round" size="small" :text="t('popover.placementBottom')" @click="bottomShow = true"></ux-button>
+                        <template #menu>
+                            <view class="popover-menu popover-menu--compact">
+                                <text class="popover-menu-text">placement = bottom</text>
+                            </view>
+                        </template>
+                    </ux-popover>
+                </view>
+                <view class="popover-grid-cell">
+                    <ux-popover v-model:show="bottomStartShow" placement="bottom-start">
+                        <ux-button shape="round" size="small" :text="t('popover.placementBottomStart')" @click="bottomStartShow = true"></ux-button>
+                        <template #menu>
+                            <view class="popover-menu popover-menu--compact">
+                                <text class="popover-menu-text">placement = bottom-start</text>
+                            </view>
+                        </template>
+                    </ux-popover>
+                </view>
+                <view class="popover-grid-cell">
+                    <ux-popover v-model:show="topEndShow" placement="top-end">
+                        <ux-button shape="round" size="small" :text="t('popover.placementTopEnd')" @click="topEndShow = true"></ux-button>
+                        <template #menu>
+                            <view class="popover-menu popover-menu--compact">
+                                <text class="popover-menu-text">placement = top-end</text>
+                            </view>
+                        </template>
+                    </ux-popover>
+                </view>
+                <view class="popover-grid-cell">
+                    <ux-popover v-model:show="topShow" placement="top">
+                        <ux-button shape="round" size="small" :text="t('popover.placementTop')" @click="topShow = true"></ux-button>
+                        <template #menu>
+                            <view class="popover-menu popover-menu--compact">
+                                <text class="popover-menu-text">placement = top</text>
+                            </view>
+                        </template>
+                    </ux-popover>
+                </view>
+                <view class="popover-grid-cell">
+                    <ux-popover v-model:show="topStartShow" placement="top-start">
+                        <ux-button shape="round" size="small" :text="t('popover.placementTopStart')" @click="topStartShow = true"></ux-button>
+                        <template #menu>
+                            <view class="popover-menu popover-menu--compact">
+                                <text class="popover-menu-text">placement = top-start</text>
+                            </view>
+                        </template>
+                    </ux-popover>
+                </view>
+            </view>
+            <text class="popover-config-tip">{{ t('popover.placementTip') }}</text>
+        </demo-block>
+
+        <!-- ==================== 分组 3 · 外观 ==================== -->
+        <view class="popover-group">
+            <view class="popover-group-head">
+                <text class="popover-group-index">03</text>
+                <text class="popover-group-title">{{ t('popover.groupAppearance') }}</text>
+            </view>
+            <text class="popover-group-sub">{{ t('popover.groupAppearanceSub') }}</text>
+        </view>
+
+        <!-- B3 箭头与外观：show-arrow / arrow-size / bg-color / border-radius / offset / duration -->
+        <demo-block :title="t('popover.appearanceTitle')" :desc="t('popover.appearanceDesc')" :code="codes.appearance">
+            <!-- 参数表：一行一个参数，左标题右控件；开关与档位同构，读完就能照抄 -->
+            <ux-cell-group>
+                <ux-cell-item :title="t('popover.arrowOn')" :arrow="false">
+                    <ux-switch v-model="arrowOn"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.bgColorLabel')" :arrow="false">
+                    <ux-switch v-model="bgPrimary"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.borderOn')" :arrow="false">
+                    <ux-switch v-model="borderOn"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.shadowOn')" :arrow="false">
+                    <ux-switch v-model="shadowOn"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.arrowSizeLabel')" :arrow="false">
+                    <view class="popover-segments">
+                        <ux-button
+                            v-for="(item, index) in arrowSizeList"
+                            :key="index"
+                            :type="arrowSize == item.value ? 'primary' : 'default'"
+                            custom-class="popover-segment"
+                            size="small"
+                            shape="round"
+                            :text="item.label"
+                            @click="arrowSize = item.value"
+                        ></ux-button>
+                    </view>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.radiusLabel')" :arrow="false">
+                    <view class="popover-segments">
+                        <ux-button
+                            v-for="(item, index) in radiusList"
+                            :key="index"
+                            :type="radius == item.value ? 'primary' : 'default'"
+                            custom-class="popover-segment"
+                            size="small"
+                            shape="round"
+                            :text="item.label"
+                            @click="radius = item.value"
+                        ></ux-button>
+                    </view>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.offsetLabel')" :arrow="false">
+                    <view class="popover-segments">
+                        <ux-button
+                            v-for="(item, index) in offsetList"
+                            :key="index"
+                            :type="offset == item.value ? 'primary' : 'default'"
+                            custom-class="popover-segment"
+                            size="small"
+                            shape="round"
+                            :text="item.label"
+                            @click="offset = item.value"
+                        ></ux-button>
+                    </view>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.durationLabel')" :arrow="false" :border-bottom="false">
+                    <view class="popover-segments">
+                        <ux-button
+                            v-for="(item, index) in durationList"
+                            :key="index"
+                            :type="duration == item.value ? 'primary' : 'default'"
+                            custom-class="popover-segment"
+                            size="small"
+                            shape="round"
+                            :text="item.label"
+                            @click="duration = item.value"
+                        ></ux-button>
+                    </view>
+                </ux-cell-item>
+            </ux-cell-group>
+            <!-- 操作区：动作单独成行，与上面的档位胶囊拉开距离，不会被当成一个参数值 -->
+            <ux-gap :height="12" />
+            <view class="popover-row">
+                <ux-popover
+                    v-model:show="appearanceShow"
+                    :arrow-size="arrowSize"
+                    :bg-color="appearanceBgColor"
+                    :border-radius="radius"
+                    :duration="duration"
+                    :offset="offset"
+                    :show-arrow="arrowOn"
+                    :show-border="borderOn"
+                    :show-shadow="shadowOn"
+                    placement="bottom-start"
+                >
+                    <ux-button custom-class="popover-trigger" shape="round" size="small" type="primary" :text="t('popover.openAppearance')" @click="appearanceShow = true"></ux-button>
+                    <template #menu>
+                        <view class="popover-menu">
+                            <view class="popover-menu-body">
+                                <text v-for="(line, index) in appearanceParams" :class="menuTextClass" :key="index">{{ line }}</text>
+                            </view>
+                            <!-- 按钮包进带内边距的容器：block 的 100% 只算容器内容宽，直接叠 margin 会顶破面板右边缘 -->
+                            <view class="popover-menu-footer">
+                                <ux-button block size="small" shape="round" :type="bgPrimary ? 'default' : 'primary'" :text="t('popover.closeLabel')" @click="appearanceShow = false"></ux-button>
+                            </view>
+                        </view>
+                    </template>
+                </ux-popover>
+            </view>
+            <text class="popover-config-tip">{{ t('popover.appearanceTip') }}</text>
+        </demo-block>
+
+        <!-- ==================== 分组 4 · 深色气泡（微信风格） ==================== -->
+        <view class="popover-group">
+            <view class="popover-group-head">
+                <text class="popover-group-index">04</text>
+                <text class="popover-group-title">{{ t('popover.groupWechat') }}</text>
+            </view>
+            <text class="popover-group-sub">{{ t('popover.groupWechatSub') }}</text>
+        </view>
+
+        <!-- B4 深色气泡：show-border / show-shadow 全关 + 固定深灰底，箭头与面板同色无缝 -->
+        <demo-block :title="t('popover.wechatTitle')" :desc="t('popover.wechatDesc')" :code="codes.wechat">
+            <view class="popover-row">
+                <ux-popover
+                    v-model:show="wechatShow"
+                    bg-color="#4c4c4c"
+                    placement="bottom-end"
+                    :arrow-size="12"
+                    :border-radius="8"
+                    :offset="10"
+                    :show-border="false"
+                    :show-shadow="false"
+                >
+                    <ux-button custom-class="popover-trigger" shape="round" size="small" type="primary" :text="t('popover.wechatTrigger')" @click="wechatShow = true"></ux-button>
+                    <template #menu>
+                        <view class="popover-wechat-menu">
+                            <view v-for="(item, index) in wechatItems" :key="index" class="popover-wechat-item" @click="onWechatPick()">
+                                <view class="popover-wechat-icon">
+                                    <ux-icon :name="item.icon" size="22" color="#ffffff"></ux-icon>
+                                </view>
+                                <text class="popover-wechat-text">{{ item.label }}</text>
+                            </view>
+                        </view>
+                    </template>
+                </ux-popover>
+            </view>
+            <text class="popover-config-tip">{{ t('popover.wechatTip') }}</text>
+        </demo-block>
+
+        <!-- B5 评论操作气泡：深色横排「图标 + 文字」，面板在触发元素上方（placement=top-end），三角从面板下沿指向触发点 -->
+        <demo-block :title="t('popover.actionBarTitle')" :desc="t('popover.actionBarDesc')" :code="codes.actionBar">
+            <view class="popover-comment">
+                <view class="popover-comment-main">
+                    <text class="popover-comment-name">{{ t('popover.actionBarName') }}</text>
+                    <text class="popover-comment-text">{{ t('popover.actionBarContent') }}</text>
+                </view>
+                <ux-popover
+                    v-model:show="actionBarShow"
+                    bg-color="#3d3d3d"
+                    placement="top-end"
+                    :arrow-size="14"
+                    :border-radius="10"
+                    :offset="10"
+                    :show-border="false"
+                    :show-shadow="false"
+                >
+                    <view class="popover-more" @click="actionBarShow = true">
+                        <ux-icon name="more-dot-fill" size="20" color="#909399"></ux-icon>
+                    </view>
+                    <template #menu>
+                        <view class="popover-action-bar">
+                            <view v-for="(item, index) in actionItems" :key="index" class="popover-action-item" @click="onActionPick()">
+                                <ux-icon :name="item.icon" size="22" color="#ffffff"></ux-icon>
+                                <text class="popover-action-text">{{ item.label }}</text>
+                            </view>
+                        </view>
+                    </template>
+                </ux-popover>
+            </view>
+            <text class="popover-config-tip">{{ t('popover.actionBarTip') }}</text>
+        </demo-block>
+
+        <!-- ==================== 分组 5 · 遮罩与关闭 ==================== -->
+        <view class="popover-group">
+            <view class="popover-group-head">
+                <text class="popover-group-index">05</text>
+                <text class="popover-group-title">{{ t('popover.groupMask') }}</text>
+            </view>
+            <text class="popover-group-sub">{{ t('popover.groupMaskSub') }}</text>
+        </view>
+
+        <!-- B6 遮罩、关闭行为、层级与动态内容重测：同样是参数表 + 操作区 -->
+        <demo-block :title="t('popover.maskTitle')" :desc="t('popover.maskDesc')" :code="codes.mask">
+            <ux-cell-group>
+                <ux-cell-item :title="t('popover.maskDim')" :arrow="false">
+                    <ux-switch v-model="maskDim"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.maskCloseOn')" :arrow="false">
+                    <ux-switch v-model="maskCloseAble"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.contentCloseOn')" :arrow="false">
+                    <ux-switch v-model="contentCloseAble"></ux-switch>
+                </ux-cell-item>
+                <ux-cell-item :title="t('popover.zIndexLabel')" :arrow="false" :border-bottom="false">
+                    <view class="popover-segments">
+                        <ux-button
+                            v-for="(item, index) in zIndexList"
+                            :key="index"
+                            :type="popoverZIndex == item.value ? 'primary' : 'default'"
+                            custom-class="popover-segment"
+                            size="small"
+                            shape="round"
+                            :text="item.label"
+                            @click="popoverZIndex = item.value"
+                        ></ux-button>
+                    </view>
+                </ux-cell-item>
+            </ux-cell-group>
+            <!-- 操作区：主动作（打开遮罩）在前，次动作（追加菜单项）在后 -->
+            <ux-gap :height="12" />
+            <view class="popover-row">
+                <ux-popover
+                    v-model:show="maskShow"
+                    :content-close-able="contentCloseAble"
+                    :mask-bg-color="maskBgColor"
+                    :mask-close-able="maskCloseAble"
+                    :refresh-key="refreshKey"
+                    :z-index="popoverZIndex"
+                    placement="bottom-end"
+                >
+                    <ux-button custom-class="popover-trigger" shape="round" size="small" type="primary" :text="t('popover.openMask')" @click="maskShow = true"></ux-button>
+                    <template #menu>
+                        <view class="popover-menu">
+                            <ux-cell-item :title="t('popover.menuItem1')" :arrow="false" @click="onMaskPick()"></ux-cell-item>
+                            <ux-cell-item :title="t('popover.menuItem2')" :arrow="false" :border-bottom="extraItems > 0"></ux-cell-item>
+                            <ux-cell-item v-for="(item, index) in extraLabels" :key="index" :title="item.title" :arrow="false" :border-bottom="!item.last"></ux-cell-item>
+                        </view>
+                    </template>
+                </ux-popover>
+                <ux-button custom-class="popover-trigger" shape="round" size="small" :text="t('popover.addItem')" @click="addMenuItem()"></ux-button>
+            </view>
+            <text class="popover-config-tip">{{ t('popover.maskTip') }}</text>
+        </demo-block>
+
+        <!-- ==================== 分组 6 · 使用说明（不绑定 code） ==================== -->
+        <demo-block :title="t('popover.usageTitle')" :desc="t('popover.usageDesc')">
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('popover.usage1')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('popover.usage2')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('popover.usage3')" />
+            <ux-gap :height="8" />
+            <ux-alert-tips type="primary" :show-icon="true" :title="t('popover.usage4')" />
+        </demo-block>
+
+    </demo-page>
+</template>
+
+<script setup lang="ts">
+    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { codes } from './code';
+
+    const { t } = useLocale('demo');
+
+    /* ------------------------- B1 基础用法 ------------------------- */
+
+    const basicShow = ref<boolean>(false);
+
+    /** 点菜单项后由调用方自己关：组件不在插槽里替你猜点击语义 */
+    function onPickMenu(): void {
+        basicShow.value = false;
+    }
+
+    /* ------------------------- B2 六个方位 ------------------------- */
+
+    // 触发元素必须落在自己实例的默认插槽里，所以六个方位各一个实例
+    const bottomEndShow = ref<boolean>(false);
+    const bottomShow = ref<boolean>(false);
+    const bottomStartShow = ref<boolean>(false);
+    const topEndShow = ref<boolean>(false);
+    const topShow = ref<boolean>(false);
+    const topStartShow = ref<boolean>(false);
+
+    /* ------------------------- B3 箭头与外观 ------------------------- */
+
+    const arrowOn = ref<boolean>(true);
+    const bgPrimary = ref<boolean>(false);
+    const borderOn = ref<boolean>(true);
+    const shadowOn = ref<boolean>(true);
+    const arrowSize = ref<number>(8);
+    const radius = ref<number>(8);
+    const offset = ref<number>(8);
+    const duration = ref<number>(200);
+    const appearanceShow = ref<boolean>(false);
+
+    const arrowSizeList: { label: string; value: number }[] = [
+        { label: '6', value: 6 },
+        { label: '8', value: 8 },
+        { label: '12', value: 12 }
+    ];
+
+    const radiusList: { label: string; value: number }[] = [
+        { label: '0', value: 0 },
+        { label: '8', value: 8 },
+        { label: '16', value: 16 }
+    ];
+
+    const offsetList: { label: string; value: number }[] = [
+        { label: '0', value: 0 },
+        { label: '8', value: 8 },
+        { label: '20', value: 20 }
+    ];
+
+    const durationList: { label: string; value: number }[] = [
+        { label: '0', value: 0 },
+        { label: '200', value: 200 },
+        { label: '600', value: 600 }
+    ];
+
+    /** 留空走主题白底，'primary' 走主题色名解析（组件内部 isThemeColor 判定） */
+    const appearanceBgColor = computed<string>((): string => bgPrimary.value ? 'primary' : '');
+
+    /** 回显行：插槽内容由调用方自己拼，组件不参与 */
+    const appearanceParams = computed<string[]>((): string[] => [
+        'show-arrow = ' + arrowOn.value.toString(),
+        'show-border = ' + borderOn.value.toString(),
+        'show-shadow = ' + shadowOn.value.toString(),
+        'arrow-size = ' + arrowSize.value.toString(),
+        'border-radius = ' + radius.value.toString(),
+        'offset = ' + offset.value.toString(),
+        'duration = ' + duration.value.toString(),
+        'bg-color = ' + (appearanceBgColor.value != '' ? appearanceBgColor.value : 'default')
+    ]);
+
+    /** 背景切成主题色后正文必须反白，否则深色正文在主题色底上对比不足 */
+    const menuTextClass = computed<string>((): string => bgPrimary.value ? 'popover-menu-text popover-menu-text--inverse' : 'popover-menu-text');
+
+    /* ------------------------- B4 深色气泡（微信风格） ------------------------- */
+
+    const wechatShow = ref<boolean>(false);
+
+    /** 深色底上的菜单项：图标走 ux-icon 内置集成图标，颜色必须落在每个 text 上（App 端 text 不继承父级颜色） */
+    const wechatItems = computed<{ icon: string; label: string }[]>((): { icon: string; label: string }[] => [
+        { icon: 'chat-fill', label: t('popover.wechatItem1') },
+        { icon: 'account-fill', label: t('popover.wechatItem2') },
+        { icon: 'scan', label: t('popover.wechatItem3') },
+        { icon: 'rmb', label: t('popover.wechatItem4') }
+    ]);
+
+    /** 点一项就关：气泡式菜单选完即消失 */
+    function onWechatPick(): void {
+        wechatShow.value = false;
+    }
+
+    /* ------------------------- B5 评论操作气泡 ------------------------- */
+
+    const actionBarShow = ref<boolean>(false);
+
+    /** 横排操作项：图标走 ux-icon 内置集成图标，文案走多语言（深底白字由页面样式给） */
+    const actionItems = computed<{ icon: string; label: string }[]>((): { icon: string; label: string }[] => [
+        { icon: 'file-text', label: t('popover.actionCopy') },
+        { icon: 'share', label: t('popover.actionShare') },
+        { icon: 'chat', label: t('popover.actionTranslate') },
+        { icon: 'heart', label: t('popover.actionDislike') },
+        { icon: 'warning', label: t('popover.actionReport') }
+    ]);
+
+    /** 选完即关：操作类气泡点完一项就收回，不留在页面上 */
+    function onActionPick(): void {
+        actionBarShow.value = false;
+    }
+
+    /* ------------------------- B6 遮罩与关闭行为 ------------------------- */
+
+    const maskDim = ref<boolean>(true);
+    const maskCloseAble = ref<boolean>(true);
+    const contentCloseAble = ref<boolean>(false);
+    const popoverZIndex = ref<string>('');
+    const refreshKey = ref<number>(0);
+    const maskShow = ref<boolean>(false);
+
+    const zIndexList: { label: string; value: string }[] = [
+        { label: t('popover.zIndexDefault'), value: '' },
+        { label: '2000', value: '2000' }
+    ];
+
+    /** 半透明才看得出遮罩覆盖范围；全透明时遮罩只做点击捕获 */
+    const maskBgColor = computed<string>((): string => maskDim.value ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0)');
+
+    /** 追加的菜单项条数：菜单内容尺寸变了，必须改 refreshKey 触发重新测位与翻转判断 */
+    const extraItems = ref<number>(0);
+
+    /** 追加项自带分隔线标记：模板里不读数组长度，否则原生端可能读到越界值 */
+    const extraLabels = computed<{ title: string; last: boolean }[]>((): { title: string; last: boolean }[] => {
+        const list: { title: string; last: boolean }[] = [];
+        for (let i = 0; i < extraItems.value; i++) {
+            list.push({ title: t('popover.menuExtra') + ' ' + (i + 1).toString(), last: i == extraItems.value - 1 });
+        }
+        return list;
+    });
+
+    /** 追加一条并同步改 refreshKey：不递增值组件不会重新测位，面板会停在旧位置 */
+    function addMenuItem(): void {
+        extraItems.value = extraItems.value + 1;
+        refreshKey.value = refreshKey.value + 1;
+    }
+
+    /** 遮罩演示的菜单项：content-close-able 打开时组件自己关，关闭时由此处手动关 */
+    function onMaskPick(): void {
+        if (!contentCloseAble.value) {
+            maskShow.value = false;
+        }
+    }
+</script>
+
+<style lang="scss">
+    /* ------------------------- 分组段落头 ------------------------- */
+    .popover-group {
+        padding: 0 4px;
+        margin-top: 20px;
+        margin-bottom: 8px;
+    }
+
+    /* 序号 + 标题同行：章节层次靠序号建立，避免与块标题撞名时读不出谁包含谁 */
+    .popover-group-head {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .popover-group-index {
+        font-size: 12px;
+        font-weight: bold;
+        color: $u-type-primary;
+        margin-right: 6px;
+    }
+
+    .popover-group-title {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 15px;
+        font-weight: bold;
+        color: $u-main-color;
+    }
+
+    .popover-group-sub {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-tips-color;
+        line-height: 1.6;
+        margin-top: 2px;
+    }
+
+    /* ------------------------- 档位与触发按钮 ------------------------- */
+    /* 触发按钮必须在 flex 容器里：组件只给触发区 align-self: flex-start，
+       父容器不是 flex 时触发区会占满一行，测位得到的宽度就不是按钮宽度了 */
+    .popover-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 六宫格：三等分，间距用内边距做，相邻块共享 8px 间隙；
+       按钮宽度跟内容（popover 触发区自带 align-self: flex-start），格子里居中即可 */
+    .popover-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0 -4px;
+    }
+
+    .popover-grid-cell {
+        box-sizing: border-box;
+        width: 33.3333%;
+        padding: 4px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .popover-trigger {
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* 参数表里的档位分段：贴右对齐，项间 6px（不用 margin-bottom，行高由单元格控制） */
+    .popover-segments {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .popover-segment {
+        margin-left: 6px;
+    }
+
+    .popover-config-tip {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-tips-color;
+        line-height: 1.6;
+        margin-top: 8px;
+    }
+
+    /* ------------------------- 菜单内容 ------------------------- */
+    /* 面板宽度由内容撑开：给菜单内容一个最小宽度，箭头与左右对齐才有可观察的差异 */
+    .popover-menu {
+        min-width: 180px;
+    }
+
+    .popover-menu--compact {
+        min-width: 140px;
+        padding: 10px 14px;
+    }
+
+    .popover-menu-body {
+        padding: 10px 14px;
+    }
+
+    .popover-menu-text {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 12px;
+        color: $u-content-color;
+        line-height: 1.8;
+    }
+
+    /* 主题色底上的反白正文：面板切到 primary 后深色正文对比不足，白色与任何主题主色都能拉开对比 */
+    .popover-menu-text--inverse {
+        color: #ffffff;
+    }
+
+    /* ------------------------- 微信风格深色气泡 ------------------------- */
+    /* 深灰底、无描边、无阴影：箭头与面板同色无缝，只靠圆角与留白撑出形状 */
+    .popover-wechat-menu {
+        min-width: 180px;
+        padding: 6px 0;
+    }
+
+    .popover-wechat-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 12px 18px;
+    }
+
+    /* 图标固定占位：同一个横向基线，文字不会因为图标宽窄而错位 */
+    .popover-wechat-icon {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+    }
+
+    /* 颜色必须落在 text 自身：App 端 text 不继承父级颜色，深底上会变成读不清的默认黑 */
+    .popover-wechat-text {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 14px;
+        color: #ffffff;
+        margin-left: 12px;
+    }
+
+    /* ------------------------- 评论操作气泡（深色横排） ------------------------- */
+    /* 模拟一条评论：右侧「更多」是触发元素，气泡向上弹出 */
+    .popover-comment {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        background-color: #f5f6f7;
+        border-radius: 10px;
+    }
+
+    .popover-comment-main {
+        flex: 1;
+        margin-right: 12px;
+    }
+
+    .popover-comment-name {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 14px;
+        font-weight: bold;
+        color: $u-main-color;
+    }
+
+    .popover-comment-text {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 13px;
+        color: $u-content-color;
+        margin-top: 4px;
+    }
+
+    .popover-more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+    }
+
+    /* 面板宽度由内容撑开：min-width 撑出五等分的横向空间，各操作项靠 flex: 1 均分 */
+    .popover-action-bar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        min-width: 300px;
+        padding: 16px 6px 14px 6px;
+    }
+
+    .popover-action-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* 深底白字：颜色必须落在 text 自身，App 端 text 不继承父级颜色 */
+    .popover-action-text {
+        /* #ifndef APP */
+        display: block;
+        /* #endif */
+        font-size: 13px;
+        color: #ffffff;
+        margin-top: 8px;
+    }
+
+    /* 菜单底部动作区：内边距留给容器，里面的 block 按钮才是安全的 100% 宽 */
+    .popover-menu-footer {
+        padding: 6px 14px 12px 14px;
+    }
+</style>
