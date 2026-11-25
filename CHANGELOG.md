@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.11（2026-11-25）
+
+### ✨ Features | 新功能
+
+- **useWindowInfo:** 新增可手动刷新窗口信息的方法，用于在视口尺寸变化时获取最新数据
+- **ux-popover:** 新增气泡菜单组件 ux-popover，支持自定义方位、间距、箭头、样式等配置，可根据屏幕边界自动翻转方位，适配多端场景，满足触发展开自定义菜单的需求
+- 新增popover组件的完整演示页面，包含基础用法、方位选择、外观配置、深色气泡、评论操作气泡、遮罩与关闭行为等6种场景
+
 ## 2.0.10（2026-11-25）
 
 ### 🐛 Bug Fixes | Bug 修复
