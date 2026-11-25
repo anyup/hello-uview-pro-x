@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.10（2026-11-25）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- **ux-tabs:** 修复App端tab文字样式失效问题，优化activeItemStyle样式逻辑
+- **demo-page:** 修复 H5 端 iOS 17+ 首屏 fixed 浮层锚点缺陷
+
+### ✨ Features | 新功能
+
+- **tabs:** 新增字号和激活项样式的使用示例
+
 ## 2.0.9（2026-11-23）
 
 ### 🐛 Bug Fixes | Bug 修复
