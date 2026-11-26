@@ -26,7 +26,7 @@
             <view class="demo-header-title-row">
                 <text v-if="enName !== ''" class="demo-header-en">{{ enName }}</text>
                 <text class="demo-header-title">{{ zhName }}</text>
-                <!-- 页面版本印章：传入 since 才显示（ux-tag 镂空），版本号来自 @/version -->
+                <!-- 页面版本印章：按当前页面路由从 @/version 自动取，登记过才显示（ux-tag 镂空） -->
                 <view v-if="sinceVersion !== ''" class="demo-header-stamp">
                     <ux-tag :text="'NEW v' + sinceVersion" type="error" mode="plain" size="default" shape="square" />
                 </view>
@@ -59,7 +59,7 @@
             <view class="demo-header-title-row">
                 <text v-if="enName !== ''" class="demo-header-en">{{ enName }}</text>
                 <text class="demo-header-title">{{ zhName }}</text>
-                <!-- 页面版本印章：传入 since 才显示（ux-tag 镂空），版本号来自 @/version -->
+                <!-- 页面版本印章：按当前页面路由从 @/version 自动取，登记过才显示（ux-tag 镂空） -->
                 <view v-if="sinceVersion !== ''" class="demo-header-stamp">
                     <ux-tag :text="'NEW v' + sinceVersion" type="error" mode="plain" size="default" shape="square" />
                 </view>
@@ -77,6 +77,7 @@
 <script setup lang="ts">
 import type { JsonObject } from '@/uni_modules/uview-pro-x';
 	import { $u, useLocale, useTheme, type TabbarItem } from '@/uni_modules/uview-pro-x'
+	import { sinceOf } from '@/version';
 
 	defineOptions({
 		name: 'demo-page',
@@ -89,7 +90,7 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
 		showTabbar?: boolean;
 		hideHeader?: boolean;
 		hideNavbar?: boolean;
-		/** 页面首次支持版本号（不含 v），传值时头部标题右侧显示版本印章，取值用 @/version 的 sinceOf */
+		/** 页面首次支持版本号（不含 v）：一般不用传，未传时按当前页面路由到 @/version 的 SINCE_ENTRIES 自动查，仅在路由与登记不一致时才用它覆盖 */
 		since?: string;
 	}>();
 	const emit = defineEmits(['scroll']);
@@ -106,8 +107,31 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
 		// #endif
 	});
 
-	/** 页面印章版本号：未传 since 时为空，不渲染印章 */
-	const sinceVersion = computed<string>(() => props.since ?? '');
+	/**
+	 * 页面印章版本号：按页面栈顶路由到 @/version 的 SINCE_ENTRIES 里查首次支持版本，
+	 * 新增演示页只需在 version 里登记一行，页面本身不再传 since。
+	 * getCurrentPages() 不参与依赖收集，取到非空值即冻结，避免换主题等重渲染时按别人的路由误判；
+	 * 页面栈未就绪（路由为空）时本次留空，下次渲染再试。
+	 */
+	let ownerSince = '';
+
+	const resolvePageSince = (): string => {
+		const pages = getCurrentPages();
+		if (pages.length === 0) return '';
+		const route = pages[pages.length - 1].route;
+		if (route === '') return '';
+		// 页面栈路由形如 pages/feedback/popover/index，登记表用去掉 pages/ 的短路径
+		const short = route.startsWith('/') ? route.substring(1) : route;
+		return sinceOf(short.startsWith('pages/') ? short.substring(6) : short);
+	};
+
+	/** 页面印章版本号：显式传入 props.since 优先（覆盖异常场景），否则按路由自动判定 */
+	const sinceVersion = computed<string>(() => {
+		const manual = props.since ?? '';
+		if (manual !== '') return manual;
+		if (ownerSince === '') ownerSince = resolvePageSince();
+		return ownerSince;
+	});
 
 	// 头部标题拆分：title 为「英文名 中文名…」格式（首段英文字母开头、次段以中文字符开头）时，
 	// 首段作为主题色英文标签，其余部分作为中文大标题；否则整体显示（英文环境、纯中文标题、首页等）

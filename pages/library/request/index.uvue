@@ -1,5 +1,5 @@
 <template>
-    <demo-page :title="t('request.title')" :subtitle="t('request.subtitle')" :since="sinceOf('library/request/index')">
+    <demo-page :title="t('request.title')" :subtitle="t('request.subtitle')">
         <!-- 基础 GET -->
         <demo-block :title="t('request.getTitle')" :desc="t('request.getDesc')" :code="codes.get">
             <ux-button :text="t('request.getText')" type="primary" shape="round" @click="runGet" />
@@ -50,7 +50,6 @@
 import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { http, useLocale } from '@/uni_modules/uview-pro-x';
     import type { HttpCallConfig, HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
-    import { sinceOf } from '@/version';
     import { codes } from './code';
 
     const { t } = useLocale('demo');

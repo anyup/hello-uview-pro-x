@@ -1,5 +1,5 @@
 <template>
-    <demo-page :title="t('request.bpTitle')" :subtitle="t('request.bpSubtitle')" :since="sinceOf('library/request/best-practice/index')">
+    <demo-page :title="t('request.bpTitle')" :subtitle="t('request.bpSubtitle')">
         <!-- 1. 模块单例：两个模块分别 import，读到同一份配置 -->
         <demo-block :title="t('request.bpSharedTitle')" :desc="t('request.bpSharedDesc')">
             <ux-button type="primary" :block="true" :text="t('request.bpSharedText')" @click="readShared" />
@@ -40,7 +40,6 @@
 import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { useLocale } from '@/uni_modules/uview-pro-x';
     import type { HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
-    import { sinceOf } from '@/version';
     import { request } from '../demo-api/request';
     import { cdnRequest, installCdnInterceptors, isCdnInterceptorsInstalled } from '../demo-api/cdn';
     import { describeSharedInstance } from '../demo-api/second-reader';

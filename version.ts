@@ -10,7 +10,7 @@
  * 印章取数规则：
  * - 入口印章（组件页 / 工具页列表）：仅当 since == LIB_VERSION（本轮新版本）时显示，下个版本自动收起
  * - 页面印章（demo-page 头部）：显示该页首次支持的版本，长期保留
- * 新增演示页时，页面头部传 `:since="sinceOf('xxx/index')"` 即可显示页面印章。
+ * 新增演示页时无需改页面：demo-page 会按当前页面路由到 SINCE_ENTRIES 自动取页面印章版本。
  */
 
 import { version } from '@/package.json';
@@ -33,7 +33,8 @@ export type SinceEntry = {
 export const SINCE_ENTRIES: SinceEntry[] = [
     { path: 'library/request/index', since: '1.0.24' },
     { path: 'library/request/best-practice/index', since: '1.0.24' },
-    { path: 'library/useRequest/index', since: '1.0.24' }
+    { path: 'library/useRequest/index', since: '1.0.24' },
+    { path: 'feedback/popover/index', since: '2.0.11' }
 ];
 
 /** 取页面首次支持版本；未登记返回空串 */

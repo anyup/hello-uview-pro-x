@@ -1,5 +1,5 @@
 <template>
-    <demo-page :title="t('useRequestPage.title')" :subtitle="t('useRequestPage.subtitle')" :since="sinceOf('library/useRequest/index')">
+    <demo-page :title="t('useRequestPage.title')" :subtitle="t('useRequestPage.subtitle')">
         <!-- 基础三态 -->
         <demo-block :title="t('useRequestPage.basicTitle')" :desc="t('useRequestPage.basicDesc')" :code="codes.basic">
             <ux-button :text="t('useRequestPage.basicText')" type="primary" shape="round" @click="runBasic" />
@@ -33,7 +33,6 @@
 import type { JsonObject } from '@/uni_modules/uview-pro-x';
     import { http, useLocale, useRequest } from '@/uni_modules/uview-pro-x';
     import type { HttpCallConfig, HttpError, HttpResponse } from '@/uni_modules/uview-pro-x';
-    import { sinceOf } from '@/version';
     import { codes } from './code';
 
     const { t } = useLocale('demo');
