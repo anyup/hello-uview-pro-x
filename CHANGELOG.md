@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.12（2026-11-26）
+
+### ✨ Features | 新功能
+
+- **ux-input:** 新增前后置插槽支持，可在输入框前后添加自定义内容，点击事件阻止冒泡
+- **input:** 新增输入框后置内容插槽演示示例，包含单位和验证码按钮两种场景
+
 ## 2.0.11（2026-11-25）
 
 ### ✨ Features | 新功能
