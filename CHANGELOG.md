@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.13（2026-11-26）
+
+### 🐛 Bug Fixes | Bug 修复
+
+- 修复英文国际化中秒单位的大小写错误
+
+### ✨ Features | 新功能
+
+- 新增反馈组件 Popover 的版本登记，修改组件自动从路由匹配版本信息
+
 ## 2.0.12（2026-11-26）
 
 ### ✨ Features | 新功能
