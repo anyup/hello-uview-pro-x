@@ -121,6 +121,25 @@
             </view>
         </demo-block>
 
+        <!-- 后置内容 -->
+        <demo-block :title="t('input.suffixTitle')" :desc="t('input.suffixDesc')" :code="codes.suffix">
+            <view class="input-demo">
+                <ux-input v-model="suffixValue" type="digit" :placeholder="t('input.suffixPlaceholder')" border>
+                    <template #suffix>
+                        <text class="input-suffix-unit">{{ t('input.suffixUnit') }}</text>
+                    </template>
+                </ux-input>
+            </view>
+            <view class="input-demo">
+                <ux-input v-model="suffixPhoneValue" :placeholder="t('input.suffixPhonePlaceholder')" border>
+                    <template #suffix>
+                        <ux-tag :text="t('input.suffixCodeBtn')" type="primary" size="mini" shape="round" @click="onSendCode" />
+                    </template>
+                </ux-input>
+            </view>
+            <text class="input-status">{{ t('input.suffixSentTip') }}: {{ codeSentCount }}</text>
+        </demo-block>
+
         <!-- 自动聚焦 -->
         <demo-block :title="t('input.focusTitle')" :desc="t('input.focusDesc')" :code="codes.focus">
             <view class="input-demo">
@@ -227,6 +246,12 @@
     const heightValue = ref('');
     /** 前置内容演示值 */
     const prefixValue = ref('');
+    /** 后置内容演示值（单位） */
+    const suffixValue = ref('');
+    /** 后置内容演示值（按钮） */
+    const suffixPhoneValue = ref('');
+    /** 后置插槽按钮点击次数（验证插槽内点击可正常派发） */
+    const codeSentCount = ref(0);
     /** 自动聚焦演示值 */
     const focusValue = ref('');
     /** 自动增高演示值 */
@@ -376,6 +401,12 @@
         trim.value = !trim.value;
     };
 
+    /** 后置插槽中的按钮点击：确认插槽内点击可正常触发且不被输入框根节点影响 */
+    const onSendCode = () => {
+        codeSentCount.value += 1;
+        uni.showToast({ title: t('input.suffixCodeSent'), icon: 'none' });
+    };
+
     /** 切换验证状态 */
     const toggleValidateState = () => {
         validateState.value = !validateState.value;
@@ -395,6 +426,12 @@
 
     /* 状态文字 */
     .input-status {
+        font-size: 14px;
+        color: $u-content-color;
+    }
+
+    /* 后置插槽内的单位文本 */
+    .input-suffix-unit {
         font-size: 14px;
         color: $u-content-color;
     }

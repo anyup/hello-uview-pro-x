@@ -151,6 +151,38 @@ const value = ref<string>('');
 </script>
 `;
 
+/** 后置内容 */
+const suffix = `
+<template>
+    <ux-input v-model="value" type="digit" placeholder="请输入金额" border>
+        <template #suffix>
+            <text class="input-suffix-unit">元</text>
+        </template>
+    </ux-input>
+    <ux-input v-model="phone" placeholder="请输入手机号" border>
+        <template #suffix>
+            <ux-tag text="获取验证码" type="primary" size="mini" shape="round" @click="onSendCode" />
+        </template>
+    </ux-input>
+</template>
+
+<script setup lang="ts">
+const value = ref<string>('');
+const phone = ref<string>('');
+
+const onSendCode = () => {
+    uni.showToast({ title: '验证码已发送', icon: 'none' });
+};
+</script>
+
+<style scoped>
+.input-suffix-unit {
+    font-size: 14px;
+    color: #606266;
+}
+</style>
+`;
+
 /** 自动聚焦 */
 const focus = `
 <template>
@@ -212,6 +244,7 @@ export const codes = {
     state,
     height,
     prefix,
+    suffix,
     focus,
     autoHeight,
     trim,
