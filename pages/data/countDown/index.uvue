@@ -46,38 +46,102 @@
 
         <!-- 毫秒刷新 -->
         <demo-block :title="t('countDown.msTitle')" :desc="t('countDown.msDesc')" :code="codes.ms">
-            <ux-count-down :timestamp="5" :millisecond="true"></ux-count-down>
+            <ux-count-down :timestamp="3660" :millisecond="true"></ux-count-down>
+        </demo-block>
+
+        <!-- 格式模板 -->
+        <demo-block :title="t('countDown.formatTitle')" :desc="t('countDown.formatDesc')" :code="codes.format" since="2.0.14">
+            <ux-count-down :timestamp="90061" format="DD HH:mm:ss"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="90061" format="HH:mm:ss"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="7200" format="mm:ss"></ux-count-down>
+            <view class="demo-gap"></view>
+            <ux-count-down :timestamp="125" format="mm:ss.SSS" :millisecond="true"></ux-count-down>
+        </demo-block>
+
+        <!-- 格式化 + 自定义单位文案 -->
+        <demo-block :title="t('countDown.formatI18nTitle')" :desc="t('countDown.formatI18nDesc')" :code="codes.formatI18n" since="2.0.14">
+            <ux-count-down :timestamp="90061" :format="formatI18nText"></ux-count-down>
+        </demo-block>
+
+        <!-- 自定义插槽 -->
+        <demo-block :title="t('countDown.slotTitle')" :desc="t('countDown.slotDesc')" :code="codes.slot" since="2.0.14">
+            <ux-count-down :timestamp="3661" format="HH:mm:ss">
+                <template #default="{ current }">
+                    <view class="demo-slot-row">
+                        <view class="demo-slot-block"><text class="demo-slot-block-text">{{ pad(current.hours) }}</text></view>
+                        <text class="demo-slot-colon">:</text>
+                        <view class="demo-slot-block"><text class="demo-slot-block-text">{{ pad(current.minutes) }}</text></view>
+                        <text class="demo-slot-colon">:</text>
+                        <view class="demo-slot-block"><text class="demo-slot-block-text">{{ pad(current.seconds) }}</text></view>
+                        <text class="demo-slot-suffix">{{ t('countDown.slotSuffix') }}</text>
+                    </view>
+                </template>
+            </ux-count-down>
         </demo-block>
 
         <!-- 手动控制 -->
         <demo-block :title="t('countDown.controlTitle')" :desc="t('countDown.controlDesc')" :code="codes.control">
-            <ux-count-down ref="countDownRef" :timestamp="10" :autoplay="false"></ux-count-down>
+            <ux-count-down ref="countDownRef" :timestamp="60" :autoplay="false" @end="onControlEnd"></ux-count-down>
             <view class="demo-gap"></view>
             <view class="demo-btn-row">
                 <view class="demo-btn" @click="startCountDown"><text class="demo-btn-text">{{ t('countDown.startBtn') }}</text></view>
-                <view class="demo-btn" @click="endCountDown"><text class="demo-btn-text">{{ t('countDown.endBtn') }}</text></view>
+                <view class="demo-btn" @click="pauseCountDown"><text class="demo-btn-text">{{ t('countDown.pauseBtn') }}</text></view>
+                <view class="demo-btn" @click="resetCountDown"><text class="demo-btn-text">{{ t('countDown.resetBtn') }}</text></view>
             </view>
+            <text class="demo-status">{{ controlStatusText }}</text>
         </demo-block>
 
     </demo-page>
 </template>
 
 <script setup lang="ts">
-    import { useLocale } from '@/uni_modules/uview-pro-x';
+    import { $u, useLocale } from '@/uni_modules/uview-pro-x';
     import { codes } from './code';
     const { t } = useLocale('demo');
 
     /** countDown 组件实例 */
     const countDownRef = ref<any>();
 
+    /** 手动控制状态：idle 未开始 / running 倒计时中 / paused 已暂停 / ended 已结束 */
+    const controlStatus = ref<string>('idle');
+
+    /** 手动控制的状态文案 */
+    const controlStatusText = computed((): string => {
+        if (controlStatus.value == 'running') return t('countDown.statusRunning');
+        if (controlStatus.value == 'paused') return t('countDown.statusPaused');
+        if (controlStatus.value == 'ended') return t('countDown.statusEnded');
+        return t('countDown.statusIdle');
+    });
+
+    /** 自定义单位词的模板：format 是普通字符串 prop，单位词可拼接应用自己的语言包 */
+    const formatI18nText = computed((): string => `HH ${t('countDown.unitHour')} mm ${t('countDown.unitMinute')} ss ${t('countDown.unitSecond')}`);
+
+    /** 两位补零（插槽示例中自行格式化文本） */
+    const pad = (value: number): string => $u.padZero(value);
+
     /** 手动开始倒计时 */
     const startCountDown = () => {
         countDownRef.value?.start();
+        controlStatus.value = 'running';
     };
 
-    /** 手动结束倒计时 */
-    const endCountDown = () => {
-        countDownRef.value?.end();
+    /** 手动暂停倒计时 */
+    const pauseCountDown = () => {
+        countDownRef.value?.pause();
+        controlStatus.value = 'paused';
+    };
+
+    /** 手动重置倒计时（回到初始 timestamp，未开始） */
+    const resetCountDown = () => {
+        countDownRef.value?.reset();
+        controlStatus.value = 'idle';
+    };
+
+    /** 倒计时结束 */
+    const onControlEnd = () => {
+        controlStatus.value = 'ended';
     };
 </script>
 
@@ -108,6 +172,47 @@
     .demo-btn-text {
         font-size: 13px;
         color: #2979ff;
+    }
+
+    .demo-status {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #909399;
+    }
+
+    .demo-slot-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .demo-slot-block {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        background-color: #2979ff;
+    }
+
+    .demo-slot-block-text {
+        font-size: 13px;
+        color: #ffffff;
+    }
+
+    .demo-slot-colon {
+        margin-left: 5px;
+        margin-right: 5px;
+        font-size: 14px;
+        color: #2979ff;
+    }
+
+    .demo-slot-suffix {
+        margin-left: 8px;
+        font-size: 13px;
+        color: #909399;
     }
 
 </style>

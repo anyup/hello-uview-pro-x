@@ -122,7 +122,7 @@
         </demo-block>
 
         <!-- 后置内容 -->
-        <demo-block :title="t('input.suffixTitle')" :desc="t('input.suffixDesc')" :code="codes.suffix">
+        <demo-block :title="t('input.suffixTitle')" :desc="t('input.suffixDesc')" :code="codes.suffix" since="2.0.12">
             <view class="input-demo">
                 <ux-input v-model="suffixValue" type="digit" :placeholder="t('input.suffixPlaceholder')" border>
                     <template #suffix>

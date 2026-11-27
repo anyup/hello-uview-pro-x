@@ -4,6 +4,10 @@
             <view class="demo-block-title-wrap">
                 <view class="demo-block-bar"></view>
                 <text class="demo-block-title" :max-lines="1">{{ title }}</text>
+                <!-- 示例版本标签：仅显式传入 since 时显示 -->
+                <view v-if="since !== ''" class="demo-block-since">
+                    <ux-tag :text="'v' + since" type="error" mode="plain" size="mini" shape="square" />
+                </view>
             </view>
             <!-- 标题右侧扩展区：状态标签等 -->
             <view class="demo-block-extra">
@@ -38,6 +42,7 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
      * - showDesc：是否显示描述
      * - code：该区块的演示代码（非空时标题右侧显示复制按钮，点击复制可直接运行的代码片段）
      * - copyText：复制按钮文案
+     * - since：该示例的首次支持版本（不含 v 前缀），非空时标题右侧显示版本标签；同时驱动文档站示例标题的版本标记
      * - customStyle：自定义样式（对象或字符串）
      */
     const props = withDefaults(defineProps<{
@@ -46,6 +51,7 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
         showDesc?: boolean;
         code?: string;
         copyText?: string;
+        since?: string;
         customStyle?: JsonObject | string;
     }>(), {
         title: '',
@@ -53,6 +59,7 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
         showDesc: true,
         code: '',
         copyText: '',
+        since: '',
         customStyle: (): JsonObject => {}
     });
 
@@ -138,6 +145,15 @@ import type { JsonObject } from '@/uni_modules/uview-pro-x';
         -webkit-line-clamp: 1;
         flex-shrink: 1;
         /* #endif */
+    }
+
+    /* 示例版本标签：跟在标题后，固定宽度不参与收缩 */
+    .demo-block-since {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 6px;
+        flex-shrink: 0;
     }
 
     /* 标题右侧扩展区 */
