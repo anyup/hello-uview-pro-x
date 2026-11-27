@@ -71,5 +71,15 @@
     "confirmHold": "点击完成保持键盘不收起，平台原生行为，有意省略",
     "placeholderStyle": "placeholder 内联样式，演示页未覆盖，有意省略",
     "selectOpen": "type=select 右侧图标旋转状态，select 演示未覆盖，有意省略"
+  },
+  "signature": {
+    "bgColor": "示例统一用 export-bg-color 演示（画布与导出一致）；bg-color 只做签名区容器底色、不写入导出图，同屏演示两种底色来源易误判为导出无色，留待 API 文档说明，有意省略",
+    "gridType": "书写格在独立演示页 signatureGrid 完整演示，签名页只保留签名相关示例，有意省略",
+    "gridSize": "书写格在独立演示页 signatureGrid 完整演示，签名页只保留签名相关示例，有意省略",
+    "gridColor": "书写格在独立演示页 signatureGrid 完整演示，签名页只保留签名相关示例，有意省略",
+    "guideText": "书写格在独立演示页 signatureGrid 完整演示，签名页只保留签名相关示例，有意省略",
+    "guideColor": "书写格在独立演示页 signatureGrid 完整演示，签名页只保留签名相关示例，有意省略",
+    "gridAlign": "书写格对齐在独立演示页 signatureGrid 演示，签名页只保留签名相关示例，有意省略",
+    "exportGrid": "纯净导出在独立演示页 signatureGrid 演示，签名页只保留签名相关示例，有意省略"
   }
 }

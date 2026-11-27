@@ -34,7 +34,9 @@ export const SINCE_ENTRIES: SinceEntry[] = [
     { path: 'library/request/index', since: '1.0.24' },
     { path: 'library/request/best-practice/index', since: '1.0.24' },
     { path: 'library/useRequest/index', since: '1.0.24' },
-    { path: 'feedback/popover/index', since: '2.0.11' }
+    { path: 'feedback/popover/index', since: '2.0.11' },
+    { path: 'form/signature/index', since: '2.0.15' },
+    { path: 'form/signatureGrid/index', since: '2.0.15' }
 ];
 
 /** 取页面首次支持版本；未登记返回空串 */

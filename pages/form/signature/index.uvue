@@ -1,0 +1,240 @@
+<template>
+    <demo-page :title="t('signature.title')" :subtitle="t('signature.subtitle')">
+
+        <!-- 基础用法 -->
+        <demo-block :title="t('signature.basicTitle')" :desc="t('signature.basicDesc')" :code="codes.basic">
+            <ux-signature @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 自定义画笔 -->
+        <demo-block :title="t('signature.lineTitle')" :desc="t('signature.lineDesc')" :code="codes.line">
+            <ux-signature line-color="#fa3534" :line-width="6" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 提示语 -->
+        <demo-block :title="t('signature.tipsTitle')" :desc="t('signature.tipsDesc')" :code="codes.tips">
+            <ux-signature tips="请在此签名确认" :tips-size="20" tips-color="rgba(144, 147, 153, 0.45)" @submit="onSubmit" />
+            <ux-gap :height="8" />
+            <ux-signature :show-tips="false" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 按钮配置 -->
+        <demo-block :title="t('signature.buttonTitle')" :desc="t('signature.buttonDesc')" :code="codes.button">
+            <ux-signature :show-revoke="true" clear-text="重写" revoke-text="撤销" confirm-text="保存" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 实例方法 -->
+        <demo-block :title="t('signature.methodTitle')" :desc="t('signature.methodDesc')" :code="codes.method">
+            <ux-signature
+                ref="signatureRef"
+                :height="160"
+                :show-clear="false"
+                :show-confirm="false"
+                :show-revoke="false"
+            />
+            <view class="signature-actions">
+                <view class="signature-action">
+                    <ux-button size="small" @click="onManualClear">{{ t('signature.clearAction') }}</ux-button>
+                </view>
+                <view class="signature-action">
+                    <ux-button size="small" type="warning" @click="onManualRevoke">{{ t('signature.revokeAction') }}</ux-button>
+                </view>
+                <view class="signature-action">
+                    <ux-button size="small" type="primary" @click="onManualDone">{{ t('signature.exportAction') }}</ux-button>
+                </view>
+            </view>
+        </demo-block>
+
+        <!-- 背景与导出格式：底色为浅色时必须显式给深色笔迹，否则暗黑模式下默认浅色笔迹不可见 -->
+        <demo-block :title="t('signature.backgroundTitle')" :desc="t('signature.backgroundDesc')" :code="codes.background">
+            <ux-signature export-bg-color="#ffffff" line-color="#303133" tips="背景色 #ffffff · jpeg" export-format="jpeg" :quality="0.6" @submit="onSubmit" />
+            <ux-gap :height="8" />
+            <ux-signature export-bg-color="#f8f8f8" line-color="#303133" tips="背景色 #f8f8f8" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 自定义尺寸 -->
+        <demo-block :title="t('signature.sizeTitle')" :desc="t('signature.sizeDesc')" :code="codes.size">
+            <ux-signature width="80%" :height="140" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 禁用书写 -->
+        <demo-block :title="t('signature.disabledTitle')" :desc="t('signature.disabledDesc')" :code="codes.disabled">
+            <ux-signature :disabled="true" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 预览弹窗：确定后展示签名图，可保存到相册 -->
+        <ux-modal
+            v-model="showPreview"
+            :cancel-text="t('signature.saveAction')"
+            :confirm-text="t('signature.confirmAction')"
+            :show-cancel-button="true"
+            :show-confirm-button="true"
+            :title="t('signature.previewTitle')"
+            @cancel="onSaveImage"
+        >
+            <image :src="preview" class="signature-preview" mode="widthFix" />
+        </ux-modal>
+
+    </demo-page>
+</template>
+
+<script setup lang="ts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+/** 预览弹窗显示状态 */
+const showPreview = ref(false);
+
+/** 待预览的签名 base64 */
+const preview = ref<string>('');
+
+/** 实例方法演示：组件暴露 clear / revoke / done / resize */
+const signatureRef = ref<any>(null);
+
+/**
+ * 确定：有笔迹则弹窗预览，无笔迹提示先书写
+ * @param image 导出图片
+ */
+function onSubmit(image: string): void {
+    if (image == '') {
+        uni.showToast({ title: t('signature.noSignTip'), icon: 'none' });
+        return;
+    }
+    preview.value = image;
+    showPreview.value = true;
+}
+
+/** 外部按钮：清空 */
+function onManualClear(): void {
+    signatureRef.value?.clear();
+}
+
+/** 外部按钮：撤销 */
+function onManualRevoke(): void {
+    signatureRef.value?.revoke();
+}
+
+/** 外部按钮：导出并弹窗预览 */
+function onManualDone(): void {
+    onSubmit(signatureRef.value?.done() ?? '');
+}
+
+/**
+ * 从 dataURL 头推断图片后缀，落盘临时文件时使用
+ * @param base64 图片 dataURL
+ */
+function base64FileType(base64: string): string {
+    const prefix = 'data:image/';
+    if (!base64.startsWith(prefix)) return 'png';
+    const end = base64.indexOf(';', prefix.length);
+    if (end <= prefix.length) return 'png';
+    const type = base64.substring(prefix.length, end).toLowerCase();
+    return type == '' ? 'png' : type;
+}
+
+/**
+ * base64 转本地临时文件路径：H5 原样回传（仅用于预览），App/小程序写临时文件供保存相册
+ * @param base64 图片 dataURL
+ */
+function base64ToPath(base64: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        const flagIndex = base64.indexOf('base64,');
+        const data = flagIndex < 0 ? base64 : base64.substring(flagIndex + 7);
+        if (data == '') {
+            reject(new Error('base64 数据为空'));
+            return;
+        }
+        // #ifdef WEB
+        resolve(base64);
+        // #endif
+        // #ifndef WEB
+        let buffer: ArrayBuffer | null = null;
+        try {
+            buffer = uni.base64ToArrayBuffer(data);
+        } catch (e) {
+            reject(new Error('base64 转换失败'));
+            return;
+        }
+        if (buffer == null) {
+            reject(new Error('base64 转换失败'));
+            return;
+        }
+        const filePath = `${uni.env.USER_DATA_PATH}/ux-signature-${Date.now()}.${base64FileType(base64)}`;
+        uni.getFileSystemManager().writeFile({
+            filePath,
+            data: buffer,
+            success: () => {
+                resolve(filePath);
+            },
+            fail: (err) => {
+                reject(new Error(err.errMsg));
+            }
+        });
+        // #endif
+    });
+}
+
+/**
+ * 保存到系统相册
+ * @param filePath 本地图片路径
+ */
+function saveToAlbum(filePath: string): void {
+    uni.saveImageToPhotosAlbum({
+        filePath,
+        success: () => {
+            uni.showToast({ title: t('signature.saveSuccess'), icon: 'none' });
+        },
+        fail: (err) => {
+            uni.showToast({ title: err.errMsg, icon: 'none' });
+        }
+    });
+}
+
+/** 保存图片：H5 提示不支持，App/小程序写临时文件后存入相册 */
+async function onSaveImage(): Promise<void> {
+    // #ifdef WEB
+    uni.showToast({ title: t('signature.saveUnsupported'), icon: 'none' });
+    // #endif
+    // #ifndef WEB
+    try {
+        const filePath = await base64ToPath(preview.value);
+        // #ifdef APP-HARMONY
+        uni.getImageInfo({
+            src: filePath,
+            success: (res) => {
+                saveToAlbum(res.path);
+            },
+            fail: (err) => {
+                uni.showToast({ title: err.errMsg, icon: 'none' });
+            }
+        });
+        // #endif
+        // #ifndef APP-HARMONY
+        saveToAlbum(filePath);
+        // #endif
+    } catch (e) {
+        uni.showToast({ title: t('signature.saveFail'), icon: 'none' });
+    }
+    // #endif
+}
+</script>
+
+<style lang="scss">
+.signature-preview {
+    width: 100%;
+}
+
+.signature-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.signature-action {
+    margin-left: 10px;
+}
+</style>

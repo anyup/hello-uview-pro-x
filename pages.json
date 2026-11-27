@@ -350,6 +350,18 @@
           "style": {
             "navigationBarTitleText": "Slider 滑块"
           }
+        },
+        {
+          "path": "signature/index",
+          "style": {
+            "navigationBarTitleText": "Signature 签名板"
+          }
+        },
+        {
+          "path": "signatureGrid/index",
+          "style": {
+            "navigationBarTitleText": "Signature 书写格"
+          }
         }
       ]
     },

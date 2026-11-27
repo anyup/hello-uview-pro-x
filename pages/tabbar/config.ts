@@ -58,7 +58,9 @@ const formComponentItems: MenuItem[] = [
     { name: 'Checkbox', zhName: '复选框', desc: 'tabbarMenu.checkboxDesc', icon: 'C', path: 'form/checkbox/index' },
     { name: 'Radio', zhName: '单选框', desc: 'tabbarMenu.radioDesc', icon: 'R', path: 'form/radio/index' },
     { name: 'Switch', zhName: '开关', desc: 'tabbarMenu.switchDesc', icon: 'S', path: 'form/switch/index' },
-    { name: 'Slider', zhName: '滑块', desc: 'tabbarMenu.sliderDesc', icon: 'S', path: 'form/slider/index' }
+    { name: 'Slider', zhName: '滑块', desc: 'tabbarMenu.sliderDesc', icon: 'S', path: 'form/slider/index' },
+    { name: 'Signature', zhName: '签名板', desc: 'tabbarMenu.signatureDesc', icon: 'S', path: 'form/signature/index' },
+    { name: 'SignatureGrid', zhName: '书写格', desc: 'tabbarMenu.signatureGridDesc', icon: 'G', path: 'form/signatureGrid/index' }
 ];
 
 /** 数据展示 */
