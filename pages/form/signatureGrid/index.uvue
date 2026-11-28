@@ -1,0 +1,316 @@
+<template>
+    <demo-page :title="t('signatureGrid.title')" :subtitle="t('signatureGrid.subtitle')">
+
+        <!-- 格子类型：米字 / 田字 / 九宫，描红文字直接标出类型便于对照 -->
+        <demo-block :title="t('signatureGrid.typeTitle')" :desc="t('signatureGrid.typeDesc')" :code="codes.type">
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="米字格"
+                :height="160"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature
+                grid-type="tian"
+                :grid-size="56"
+                guide-text="田字格"
+                :height="160"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature
+                grid-type="nine"
+                :grid-size="56"
+                guide-text="九宫格"
+                :height="160"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+        </demo-block>
+
+        <!-- 格子大小：同一画布下格子越大每行格数越少 -->
+        <demo-block :title="t('signatureGrid.sizeTitle')" :desc="t('signatureGrid.sizeDesc')" :code="codes.size">
+            <ux-signature grid-type="mi" :grid-size="32" :height="140" :show-tips="false" @submit="onSubmit" />
+            <ux-gap :height="8" />
+            <ux-signature grid-type="mi" :grid-size="64" :height="140" :show-tips="false" @submit="onSubmit" />
+            <ux-gap :height="8" />
+            <ux-signature grid-type="mi" :grid-size="96" :height="140" :show-tips="false" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 网格与描红颜色：默认参考线红，可换成钢笔蓝、铅笔灰 -->
+        <demo-block :title="t('signatureGrid.colorTitle')" :desc="t('signatureGrid.colorDesc')" :code="codes.color">
+            <ux-signature
+                grid-type="tian"
+                :grid-size="56"
+                guide-text="水墨"
+                grid-color="rgba(64, 158, 255, 0.75)"
+                guide-color="rgba(64, 158, 255, 0.35)"
+                :height="140"
+                export-bg-color="#ffffff"
+                line-color="#1f2d3d"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="听雨"
+                grid-color="#c0c4cc"
+                guide-color="rgba(96, 98, 102, 0.35)"
+                :height="140"
+                export-bg-color="#f7f8fa"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+        </demo-block>
+
+        <!-- 描红内容：单字居中，长句自动换行，放不下的字自动截断 -->
+        <demo-block :title="t('signatureGrid.guideTitle')" :desc="t('signatureGrid.guideDesc')" :code="codes.guide">
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="永"
+                :height="140"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="书山有路勤为径学海无涯苦作舟"
+                :height="140"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+        </demo-block>
+
+        <!-- 格线对齐：默认居中，设为 top 时顶齐，适合字帖式从上往下书写 -->
+        <demo-block :title="t('signatureGrid.alignTitle')" :desc="t('signatureGrid.alignDesc')" :code="codes.align">
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="居中"
+                :height="160"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="顶齐"
+                grid-align="top"
+                :height="160"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+        </demo-block>
+
+        <!-- 导出与撤销：格线写在画布内，撤销/清空后重铺，导出图保留网格；描红只作屏幕提示，不写入导出图 -->
+        <demo-block :title="t('signatureGrid.exportTitle')" :desc="t('signatureGrid.exportDesc')" :code="codes.exportImage">
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="签名练习"
+                :show-revoke="true"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature grid-type="mi" :grid-size="56" guide-text="签到" :height="140" :show-tips="false" @submit="onSubmit" />
+        </demo-block>
+
+        <!-- 导出笔迹：同一块板对照 export-grid 开与关，屏幕上的格子都不变，只有导出图不同 -->
+        <demo-block :title="t('signatureGrid.inkTitle')" :desc="t('signatureGrid.inkDesc')" :code="codes.inkExport">
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="不含格"
+                :export-grid="false"
+                :show-revoke="true"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+            <ux-gap :height="8" />
+            <ux-signature
+                grid-type="mi"
+                :grid-size="56"
+                guide-text="含格"
+                :export-grid="true"
+                export-bg-color="#ffffff"
+                line-color="#303133"
+                :show-tips="false"
+                @submit="onSubmit"
+            />
+        </demo-block>
+
+        <!-- 预览弹窗：上为纯净导出（底色 + 笔迹），下为含格导出 -->
+        <ux-modal
+            v-model="showPreview"
+            :cancel-text="t('signatureGrid.saveAction')"
+            :confirm-text="t('signatureGrid.confirmAction')"
+            :show-cancel-button="true"
+            :show-confirm-button="true"
+            :title="t('signatureGrid.previewTitle')"
+            @cancel="onSaveImage"
+        >
+            <image :src="preview" class="signature-grid-preview" mode="widthFix" />
+        </ux-modal>
+
+    </demo-page>
+</template>
+
+<script setup lang="ts">
+import { useLocale } from '@/uni_modules/uview-pro-x';
+import { codes } from './code';
+
+const { t } = useLocale('demo');
+
+/** 预览弹窗显示状态 */
+const showPreview = ref(false);
+
+/** 待预览的导出图 base64 */
+const preview = ref<string>('');
+
+/**
+ * 确定：有笔迹则弹窗预览导出图，无笔迹提示先书写
+ * @param image 导出图片
+ */
+function onSubmit(image: string): void {
+    if (image == '') {
+        uni.showToast({ title: t('signatureGrid.noSignTip'), icon: 'none' });
+        return;
+    }
+    preview.value = image;
+    showPreview.value = true;
+}
+
+/**
+ * 从 dataURL 头推断图片后缀，落盘临时文件时使用
+ * @param base64 图片 dataURL
+ */
+function base64FileType(base64: string): string {
+    const prefix = 'data:image/';
+    if (!base64.startsWith(prefix)) return 'png';
+    const end = base64.indexOf(';', prefix.length);
+    if (end <= prefix.length) return 'png';
+    const type = base64.substring(prefix.length, end).toLowerCase();
+    return type == '' ? 'png' : type;
+}
+
+/**
+ * base64 转本地临时文件路径：H5 原样回传（仅用于预览），App/小程序写临时文件供保存相册
+ * @param base64 图片 dataURL
+ */
+function base64ToPath(base64: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        const flagIndex = base64.indexOf('base64,');
+        const data = flagIndex < 0 ? base64 : base64.substring(flagIndex + 7);
+        if (data == '') {
+            reject(new Error('base64 数据为空'));
+            return;
+        }
+        // #ifdef WEB
+        resolve(base64);
+        // #endif
+        // #ifndef WEB
+        let buffer: ArrayBuffer | null = null;
+        try {
+            buffer = uni.base64ToArrayBuffer(data);
+        } catch (e) {
+            reject(new Error('base64 转换失败'));
+            return;
+        }
+        if (buffer == null) {
+            reject(new Error('base64 转换失败'));
+            return;
+        }
+        const filePath = `${uni.env.USER_DATA_PATH}/ux-signature-grid-${Date.now()}.${base64FileType(base64)}`;
+        uni.getFileSystemManager().writeFile({
+            filePath,
+            data: buffer,
+            success: () => {
+                resolve(filePath);
+            },
+            fail: (err) => {
+                reject(new Error(err.errMsg));
+            }
+        });
+        // #endif
+    });
+}
+
+/**
+ * 保存到系统相册
+ * @param filePath 本地图片路径
+ */
+function saveToAlbum(filePath: string): void {
+    uni.saveImageToPhotosAlbum({
+        filePath,
+        success: () => {
+            uni.showToast({ title: t('signatureGrid.saveSuccess'), icon: 'none' });
+        },
+        fail: (err) => {
+            uni.showToast({ title: err.errMsg, icon: 'none' });
+        }
+    });
+}
+
+/** 保存图片：H5 提示不支持，App/小程序写临时文件后存入相册 */
+async function onSaveImage(): Promise<void> {
+    // #ifdef WEB
+    uni.showToast({ title: t('signatureGrid.saveUnsupported'), icon: 'none' });
+    // #endif
+    // #ifndef WEB
+    try {
+        const filePath = await base64ToPath(preview.value);
+        // #ifdef APP-HARMONY
+        uni.getImageInfo({
+            src: filePath,
+            success: (res) => {
+                saveToAlbum(res.path);
+            },
+            fail: (err) => {
+                uni.showToast({ title: err.errMsg, icon: 'none' });
+            }
+        });
+        // #endif
+        // #ifndef APP-HARMONY
+        saveToAlbum(filePath);
+        // #endif
+    } catch (e) {
+        uni.showToast({ title: t('signatureGrid.saveFail'), icon: 'none' });
+    }
+    // #endif
+}
+</script>
+
+<style lang="scss">
+.signature-grid-preview {
+    width: 100%;
+}
+</style>
