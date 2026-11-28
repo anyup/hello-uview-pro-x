@@ -31,9 +31,6 @@ export type SinceEntry = {
 
 /** 新增能力登记表：新增页面时在此追加一行 */
 export const SINCE_ENTRIES: SinceEntry[] = [
-    { path: 'library/request/index', since: '1.0.24' },
-    { path: 'library/request/best-practice/index', since: '1.0.24' },
-    { path: 'library/useRequest/index', since: '1.0.24' },
     { path: 'feedback/popover/index', since: '2.0.11' },
     { path: 'form/signature/index', since: '2.0.15' },
     { path: 'form/signatureGrid/index', since: '2.0.15' }
